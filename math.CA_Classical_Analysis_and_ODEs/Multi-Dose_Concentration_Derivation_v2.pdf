@@ -1,0 +1,378 @@
+%PDF-1.4
+% ASCII repository edition
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R] /Count 8 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< >>
+stream
+BT
+/F2 18 Tf 72 715 Td 22 TL
+(Deriving the Multi-Dose Concentration Formula) Tj T*
+(From a First-Order Differential Equation) Tj T*
+(via an Infinite Geometric Series) Tj
+/F1 11 Tf 0 -70 Td 16 TL
+(Brian Tenneson) Tj T*
+(M.S., Applied Data Science - Currently Unaffiliated) Tj T*
+(Version 2 - July 19, 2026) Tj T*
+(email: btenneson2301@baypath.edu) Tj
+/F1 9 Tf 0 -70 Td 13 TL
+(Copyright [c] Brian Tenneson. All Rights Reserved.) Tj T*
+(btenneson2301.substack.com) Tj
+/F1 9 Tf 0 -70 Td 13 TL
+(This document was generated using Fable from Mathematica notebooks created) Tj T*
+(by the author. Mathematical claims, interpretations, and final decisions remain) Tj T*
+(the responsibility of the author.) Tj
+/F1 8 Tf 0 -85 Td 11 TL
+(GitHub repository edition: typography is normalized to standard PDF fonts for) Tj T*
+(reliable repository transport. The mathematical content, section order, equation) Tj T*
+(numbering, authorship, version, and source list follow Version 2.) Tj
+/F1 8 Tf 180 -115 Td
+(Page 1 of 8) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< >>
+stream
+BT
+/F2 14 Tf 54 735 Td 18 TL
+(Abstract) Tj
+/F1 9 Tf 0 -28 Td 12 TL
+(Beginning with the first-order elimination law c'[t] = k1 c[t], I construct the) Tj T*
+(single-dose concentration profile, superpose n doses to obtain a finite geometric) Tj T*
+(series, and pass to the limit n -> infinity. The steady-state peak and trough then) Tj T*
+(follow by evaluating a single closed form at the two endpoints of one dosing cycle,) Tj T*
+(and the finite-n expression reproduces the ManyDoseConcentration function of the) Tj T*
+(underlying Mathematica notebooks exactly.) Tj T*
+(The derivation reduces to one structural observation: a sum of exponential tails) Tj T*
+(offset by equal time steps is a geometric series. Anchoring that sum at the most) Tj T*
+(recent dose makes the closed form, its limit, and both clinical extremes follow in) Tj T*
+(a few lines of algebra. Elimination is written in base two so the half-life is read) Tj T*
+(directly off every formula. Default dosing period: one dose per 24 hours.) Tj
+/F2 11 Tf 0 -32 Td
+(Keywords) Tj
+/F1 8 Tf 0 -16 Td 11 TL
+(pharmacokinetics; first-order elimination; half-life; absorption ramp; superposition;) Tj T*
+(geometric series; steady state; accumulation multiplier; peak; trough; fluctuation) Tj T*
+(index; ManyDoseConcentration; closed form; dosing period.) Tj
+/F2 12 Tf 0 -35 Td
+(Contents) Tj
+/F1 8.5 Tf 0 -18 Td 15 TL
+(Symbols and standing conventions ........................................ 3) Tj T*
+(1  The Elimination Law and Its Half-Life Parameterisation ............... 3) Tj T*
+(2  The Single-Dose Concentration Profile ............................... 4) Tj T*
+(3  Superposition of n Doses: A Finite Geometric Series ................. 4) Tj T*
+(4  The Steady-State Limit ............................................... 5) Tj T*
+(5  Peak, Trough, and the Fluctuation Index .............................. 6) Tj T*
+(6  Recovering the ManyDoseConcentration Function ........................ 7) Tj T*
+(7  Summary and Conclusion ............................................... 7) Tj T*
+(Acknowledgements and Sources ............................................. 8) Tj
+/F1 8 Tf 190 -55 Td
+(Page 2 of 8) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< >>
+stream
+BT
+/F2 13 Tf 54 735 Td 17 TL
+(Symbols and standing conventions) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(t = time [h]; h = elimination half-life [h]; x = absorption duration [h];) Tj T*
+(P = dosing period [h, default 24]; tau = time since current dose finished absorbing.) Tj T*
+(Base-two convention: elimination is written as 2^[-t/h], so after one half-life) Tj T*
+(the factor is 1/2, after two it is 1/4, and after m it is 2^[-m].) Tj
+/F2 13 Tf 0 -34 Td
+(1  The Elimination Law and Its Half-Life Parameterisation) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(A drug is cleared at a rate proportional to the amount present. This first-order) Tj T*
+(law is the entire physical input to the model.) Tj
+/F2 9 Tf 0 -18 Td
+(Definition 1.1 - First-order elimination law) Tj
+/F3 9 Tf 35 -17 Td
+(c'[t] = k1 c[t],    k1 < 0.                                      [1]) Tj
+/F1 9 Tf -35 -19 Td 12 TL
+(Proposition 1.2. Every solution has the form) Tj
+/F3 9 Tf 35 -16 Td
+(c[t] = k2 exp[k1 t].                                               [2]) Tj
+/F1 9 Tf -35 -18 Td 12 TL
+(Separating variables gives dc/c = k1 dt; integrating gives ln|c| = k1 t + const.) Tj T*
+(Thus c[t] = k2 exp[k1 t].) Tj
+/F2 9 Tf 0 -18 Td
+(Proposition 1.3 - Half-life reparameterisation) Tj
+/F1 9 Tf 0 -16 Td 12 TL
+(The half-life h is defined by c[t+h] = [1/2] c[t]. Imposing this on [2] gives) Tj
+/F3 8.5 Tf 25 -17 Td
+(exp[k1 h] = 1/2  <=>  k1 h = -ln 2  <=>  k1 = -[ln 2]/h.          [3]) Tj
+/F1 9 Tf -25 -18 Td
+(Substituting [3] into [2] gives) Tj
+/F3 9 Tf 35 -16 Td
+(c[t] = k2 * 2^[-t/h].                                              [4]) Tj
+/F1 9 Tf -35 -18 Td 12 TL
+(Remark 1.4. In base two the half-life is manifest; powers of 2 replace powers of e) Tj T*
+(from this point on.) Tj
+/F1 8 Tf 190 -55 Td
+(Page 3 of 8) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< >>
+stream
+BT
+/F2 13 Tf 54 735 Td 17 TL
+(2  The Single-Dose Concentration Profile) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(An oral dose is not absorbed instantaneously. Over an absorption window of length x) Tj T*
+(the drug enters the blood at a constant rate; afterwards [4] governs its decay.) Tj
+/F2 9 Tf 0 -18 Td
+(Definition 2.1 - Single-dose profile, normalised to unit concentration at t = x) Tj
+/F3 8.3 Tf 15 -17 Td 11 TL
+(c_single[t] = t/x,                 0 < t <= x;) Tj T*
+(c_single[t] = 2^[-[t-x]/h],        t > x.                           [5]) Tj
+/F1 9 Tf -15 -18 Td 12 TL
+(The profile satisfies c_single[0] = 0 and c_single[x] = 1 and is continuous at t=x.) Tj
+/F2 9 Tf 0 -18 Td
+(Definition 2.3 - Finish-of-absorption time) Tj
+/F3 9 Tf 45 -16 Td
+(t_k = [k-1]P + x.                                                   [6]) Tj
+/F1 9 Tf -45 -18 Td
+(For t > t_k the residual tail of dose k is) Tj
+/F3 8.5 Tf 15 -16 Td
+(c_k[t] = 2^[-[t-t_k]/h] = 2^[-[t-x-[k-1]P]/h].                    [7]) Tj
+/F2 13 Tf -15 -31 Td
+(3  Superposition of n Doses: A Finite Geometric Series) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(Equation [1] is linear, so contributions add. After n doses, at a time t in the) Tj T*
+(elimination phase of the current cycle,) Tj
+/F3 8.5 Tf 10 -17 Td
+(C_n[t] = sum[k=1..n] 2^[-[t-x-[k-1]P]/h].                          [8]) Tj
+/F1 9 Tf -10 -18 Td
+(Form A - anchored at the first dose:) Tj
+/F3 8.2 Tf 5 -16 Td 11 TL
+(C_n[t] = 2^[-[t-x]/h] sum[j=0..n-1] [2^[P/h]]^j) Tj T*
+(       = 2^[-[t-x]/h] [2^[nP/h]-1]/[2^[P/h]-1].                   [9]) Tj
+/F1 9 Tf -5 -18 Td 12 TL
+(Here the ratio 2^[P/h] is greater than 1: measured from the first dose, later terms) Tj T*
+(are larger. Form A is the expression implemented in the notebooks.) Tj
+/F1 8 Tf 190 -50 Td
+(Page 4 of 8) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< >>
+stream
+BT
+/F2 12 Tf 54 735 Td 16 TL
+(3  Superposition of n Doses - continued) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(Let tau be elapsed time since the current dose finished absorbing:) Tj
+/F3 8.5 Tf 20 -16 Td
+(tau = t - t_n = t - x - [n-1]P,    0 <= tau <= P-x.              [10]) Tj
+/F1 9 Tf -20 -18 Td
+(Re-index [8] by i=n-k, cycles into the past. Then Form B is) Tj
+/F3 8.2 Tf 5 -16 Td 11 TL
+(C_n[tau] = sum[i=0..n-1] 2^[-[tau+iP]/h]) Tj T*
+(         = 2^[-tau/h] sum[i=0..n-1] r^i,   r := 2^[-P/h], 0<r<1. [11]) Tj T*
+(C_n[tau] = 2^[-tau/h] [1-r^n]/[1-r]) Tj T*
+(         = 2^[-tau/h] [1-2^[-nP/h]]/[1-2^[-P/h]].                [12]) Tj
+/F1 9 Tf -5 -22 Td 12 TL
+(The two forms agree after substituting t=[n-1]P+x+tau into [9]. Only Form B has a) Tj T*
+(finite n -> infinity limit because it holds tau fixed inside the current cycle.) Tj T*
+(Mixing the prefactor of one form with the ratio of the other is the algebraic trap.) Tj
+/F2 13 Tf 0 -32 Td
+(4  The Steady-State Limit) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(Since 0<r<1, r^n = 2^[-nP/h] -> 0. Therefore) Tj
+/F3 8.5 Tf 15 -17 Td 11 TL
+(C_inf[tau] = 2^[-tau/h]/[1-2^[-P/h]]) Tj T*
+(           = 2^[[P-tau]/h]/[2^[P/h]-1].                          [13]) Tj
+/F1 9 Tf -15 -18 Td
+(Written as the tails of all past doses,) Tj
+/F3 8 Tf 5 -16 Td 11 TL
+(C_inf[tau] = 2^[-tau/h] + 2^[-[tau+P]/h] + 2^[-[tau+2P]/h] + ...) Tj T*
+(           = 2^[-tau/h]/[1-2^[-P/h]].                            [14]) Tj
+/F1 9 Tf -5 -20 Td 12 TL
+(The accumulation multiplier is [1-2^[-P/h]]^-1 = 2^[P/h]/[2^[P/h]-1].) Tj T*
+(If h >> P there is strong accumulation; if h << P the multiplier tends to 1.) Tj
+/F1 8 Tf 190 -55 Td
+(Page 5 of 8) Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 14 0 R >>
+endobj
+14 0 obj
+<< >>
+stream
+BT
+/F2 13 Tf 54 735 Td 17 TL
+(5  Peak, Trough, and the Fluctuation Index) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(Formula [13] decreases monotonically in tau, so the steady-state extremes occur at) Tj T*
+(the endpoints of tau in [0,P-x].) Tj
+/F2 9 Tf 0 -18 Td
+(Theorem 5.1 - Steady-state peak, at tau = 0) Tj
+/F3 8.4 Tf 10 -17 Td 11 TL
+(peak_ss = C_inf[0] = 1/[1-2^[-P/h]]) Tj T*
+(        = 2^[P/h]/[2^[P/h]-1] = 1 + 1/[2^[P/h]-1].               [15]) Tj
+/F1 9 Tf -10 -18 Td 12 TL
+(The 1 is the dose just absorbed; the remaining term is everything left from prior) Tj T*
+(doses.) Tj
+/F2 9 Tf 0 -18 Td
+(Theorem 5.2 - Steady-state trough, at tau = P-x) Tj
+/F3 8.4 Tf 10 -17 Td 11 TL
+(trough_ss = C_inf[P-x] = 2^[-[P-x]/h]/[1-2^[-P/h]]) Tj T*
+(          = 2^[x/h]/[2^[P/h]-1].                                 [16]) Tj
+/F2 9 Tf -10 -18 Td
+(Corollary 5.3 - Fluctuation index) Tj
+/F3 9 Tf 35 -17 Td
+(peak_ss / trough_ss = 2^[[P-x]/h].                                [17]) Tj
+/F1 9 Tf -35 -20 Td 12 TL
+(The swing depends only on how many half-lives fit into the gap P-x between the end) Tj T*
+(of absorption and the next dose. Larger x or smaller P flattens the profile; a short) Tj T*
+(half-life sharpens it.) Tj
+/F2 9 Tf 0 -18 Td
+(Proposition 5.4 - Agreement with notebook definitions, P = 24) Tj
+/F3 8.1 Tf 5 -17 Td 11 TL
+(trough_min[x,h] = 2^[x/h]/[2^[24/h]-1].                            [18]) Tj T*
+(peak_max[x,h] = 1/[2^[24/h]-1] + [[12+x-12 ceil[x/24]] ceil[x/24]]/x. [19]) Tj
+/F1 9 Tf -5 -20 Td 12 TL
+(For 0<x<=24, ceil[x/24]=1, so the second term in [19] reduces to 1 and [19]) Tj T*
+(becomes exactly [15]. The ceiling expression generalises x>P.) Tj
+/F1 8 Tf 190 -55 Td
+(Page 6 of 8) Tj
+ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 16 0 R >>
+endobj
+16 0 obj
+<< >>
+stream
+BT
+/F2 13 Tf 54 735 Td 17 TL
+(6  Recovering the ManyDoseConcentration Function) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(For finitely many doses the notebooks evaluate Form A, [9], using ceilings to) Tj T*
+(identify the current cycle. With P=24, set) Tj
+/F3 9 Tf 45 -17 Td
+(n = ceil[t/24],       m = ceil[[t-x]/24].                          [20]) Tj
+/F1 9 Tf -45 -20 Td 12 TL
+(Thus n counts doses administered and m counts those that have finished absorbing.) Tj
+/F2 9 Tf 0 -18 Td
+(Theorem 6.2 - Complete finite-n profile) Tj
+/F3 7.7 Tf 0 -17 Td 10.5 TL
+(For 0 < t <= x:) Tj T*
+(  C[t;x,h] = [[12+t-12n] n]/x.) Tj T*
+(For t > x:) Tj T*
+(  C[t;x,h] = 2^[[x-t]/h] [2^[24m/h]-1]/[2^[24/h]-1] [n-m]) Tj T*
+(             - [-12-t+12n+12m]/x.                                [21]) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(The first bracket of the lower branch is Form A with nP replaced by 24m: the finite) Tj T*
+(geometric series summing tails of the m doses that have completed absorption. The) Tj T*
+(second bracket is the absorption-ramp correction and vanishes whenever n=m.) Tj T*
+(Letting m -> infinity with tau fixed returns [13].) Tj
+/F2 13 Tf 0 -30 Td
+(7  Summary and Conclusion) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(The derivation reduces to one observation: a sum of exponential tails offset by equal) Tj T*
+(time steps is a geometric series. Anchoring the sum at the most recent dose makes the) Tj T*
+(closed form, its limit, and both clinical extremes follow in a few lines of algebra.) Tj T*
+(The base-two convention makes half-life visible at every stage. The finite-n ceiling) Tj T*
+(form is Form A of the same series with the current cycle identified by [20].) Tj
+/F3 8 Tf 0 -20 Td 10.5 TL
+(Step 1: c' = k1 c -> c[t] = k2 2^[-t/h].) Tj T*
+(Step 2: ramp t/x on [0,x], then 2^[-[t-x]/h].) Tj T*
+(Step 3: C_n[tau] = 2^[-tau/h] [1-r^n]/[1-r], r=2^[-P/h].) Tj T*
+(Step 4: C_inf[tau] = 2^[-tau/h]/[1-2^[-P/h]].) Tj T*
+(Step 5: peak, trough, and fluctuation follow from the endpoints.) Tj T*
+(Step 6: finite-n form is ManyDoseConcentration, with the cycle ceilings.) Tj
+/F1 8 Tf 190 -45 Td
+(Page 7 of 8) Tj
+ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R /F2 20 0 R /F3 21 0 R >> >> /Contents 18 0 R >>
+endobj
+18 0 obj
+<< >>
+stream
+BT
+/F2 13 Tf 54 735 Td 17 TL
+(Acknowledgements) Tj
+/F1 9 Tf 0 -22 Td 12 TL
+(This document was generated using Fable from Mathematica notebooks created by the) Tj T*
+(author. Source material: drugs from scratch Mathematica notebooks, Levels 1-8,) Tj T*
+(including the Cymbalta application, together with the Python translation) Tj T*
+(ManyDoseConcentrationdrugs2.ipynb. All mathematical claims, interpretations, and) Tj T*
+(final decisions remain the responsibility of the author.) Tj
+/F2 13 Tf 0 -35 Td
+(Sources) Tj
+/F1 8.6 Tf 0 -22 Td 12 TL
+([1] Tenneson, B. drugs from scratch Mathematica notebooks, Levels 1-8, including) Tj T*
+(    the Cymbalta application, and ManyDoseConcentrationdrugs2.ipynb.) Tj T*
+([2] Gibaldi, M., and Perrier, D. [1982]. Pharmacokinetics, 2nd ed. Marcel Dekker.) Tj T*
+([3] Rowland, M., and Tozer, T. N. [2011]. Clinical Pharmacokinetics and) Tj T*
+(    Pharmacodynamics: Concepts and Applications, 4th ed. Lippincott Williams) Tj T*
+(    and Wilkins.) Tj
+/F2 12 Tf 0 -42 Td
+(Repository transport note) Tj
+/F1 8.6 Tf 0 -20 Td 12 TL
+(This GitHub edition exists solely to allow reliable publication through a text-only) Tj T*
+(repository connector. It preserves the Version 2 derivation and citations but) Tj T*
+(normalizes typography to ASCII-safe standard PDF fonts. It is not byte-identical to) Tj T*
+(the author's original typeset PDF.) Tj
+/F2 10 Tf 0 -45 Td
+(Core result) Tj
+/F3 8.8 Tf 0 -18 Td 11 TL
+(C_inf[tau] = 2^[-tau/h]/[1-2^[-P/h]]) Tj T*
+(peak_ss = 1/[1-2^[-P/h]]) Tj T*
+(trough_ss = 2^[x/h]/[2^[P/h]-1]) Tj T*
+(peak_ss / trough_ss = 2^[[P-x]/h]) Tj
+/F1 8 Tf 0 -65 Td 11 TL
+(Copyright [c] Brian Tenneson. All Rights Reserved.) Tj T*
+(btenneson2301.substack.com) Tj
+/F1 8 Tf 190 -45 Td
+(Page 8 of 8) Tj
+ET
+endstream
+endobj
+19 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman >>
+endobj
+20 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold >>
+endobj
+21 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+trailer
+<< /Root 1 0 R /Size 22 >>
+startxref
+0
+%%EOF
