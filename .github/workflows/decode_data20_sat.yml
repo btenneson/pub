@@ -14,27 +14,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Reconstruct and normalize PDF
+      - name: Reconstruct and validate PDF
         shell: bash
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ghostscript poppler-utils
-          : > /tmp/sat.pdf
-          for f in \
+          cat \
             .upload/data20sat/part_00 \
             .upload/data20sat/part_01 \
             .upload/data20sat/part_02 \
             .upload/data20sat/part_03 \
             .upload/data20sat/part_04 \
             .upload/data20sat/part_05 \
-            .upload/data20sat/part_06_00; do
-            base64 -d "$f" >> /tmp/sat.pdf
-          done
+            .upload/data20sat/part_06_00 \
+            | base64 --decode --ignore-garbage > /tmp/sat.pdf
+          test "$(pdfinfo /tmp/sat.pdf | awk '/^Pages:/ {print $2}')" = "2"
           mkdir -p 'math.AC — Commutative Algebra'
           gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \
-             -sOutputFile='math.AC — Commutative Algebra/Solving SAT in polynomial time - Brian Tenneson.pdf' \
+             -sOutputFile='math.AC — Commutative Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf' \
              /tmp/sat.pdf
-          test "$(pdfinfo 'math.AC — Commutative Algebra/Solving SAT in polynomial time - Brian Tenneson.pdf' | awk '/^Pages:/ {print $2}')" = "2"
+          test "$(pdfinfo 'math.AC — Commutative Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf' | awk '/^Pages:/ {print $2}')" = "2"
           git rm -r .upload/data20sat
 
       - name: Commit classified PDF
@@ -42,6 +41,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add 'math.AC — Commutative Algebra/Solving SAT in polynomial time - Brian Tenneson.pdf'
+          git add 'math.AC — Commutative Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf'
           git commit -m 'Add SAT Gröbner-basis paper under commutative algebra'
           git push
