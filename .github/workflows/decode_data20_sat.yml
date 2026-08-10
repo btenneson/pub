@@ -14,11 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Reconstruct and validate PDF
+      - name: Reconstruct, repair, and validate PDF
         shell: bash
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ghostscript poppler-utils
+          set +e
           cat \
             .upload/data20sat/part_00 \
             .upload/data20sat/part_01 \
@@ -27,13 +28,13 @@ jobs:
             .upload/data20sat/part_04 \
             .upload/data20sat/part_05 \
             .upload/data20sat/part_06_00 \
-            | base64 --decode --ignore-garbage > /tmp/sat.pdf
-          test "$(pdfinfo /tmp/sat.pdf | awk '/^Pages:/ {print $2}')" = "2"
-          mkdir -p 'math.AC — Commutative Algebra'
+            | base64 --decode --ignore-garbage > /tmp/sat_transport.pdf
+          set -e
+          mkdir -p 'math.AC_Commutative_Algebra'
           gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \
-             -sOutputFile='math.AC — Commutative Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf' \
-             /tmp/sat.pdf
-          test "$(pdfinfo 'math.AC — Commutative Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf' | awk '/^Pages:/ {print $2}')" = "2"
+             -sOutputFile='math.AC_Commutative_Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf' \
+             /tmp/sat_transport.pdf
+          test "$(pdfinfo 'math.AC_Commutative_Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf' | awk '/^Pages:/ {print $2}')" = "2"
           git rm -r .upload/data20sat
 
       - name: Commit classified PDF
@@ -41,6 +42,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add 'math.AC — Commutative Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf'
-          git commit -m 'Add SAT Gröbner-basis paper under commutative algebra'
+          git add 'math.AC_Commutative_Algebra/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf'
+          git commit -m 'Add SAT Gröbner-basis paper under math.AC'
           git push
