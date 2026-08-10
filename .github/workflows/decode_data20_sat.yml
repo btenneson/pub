@@ -24,11 +24,12 @@ jobs:
               .upload/data20sat/part_02 \
               .upload/data20sat/part_03 \
               .upload/data20sat/part_04 \
-              .upload/data20sat/part_05 | base64 -d > /tmp/sat_truncated.pdf
+              .upload/data20sat/part_05 \
+              .upload/data20sat/part_06_00 | base64 -d > /tmp/sat.pdf
           mkdir -p 'math.AC — Commutative Algebra'
           gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \
              -sOutputFile='math.AC — Commutative Algebra/Solving SAT in polynomial time - Brian Tenneson.pdf' \
-             /tmp/sat_truncated.pdf
+             /tmp/sat.pdf
           test "$(pdfinfo 'math.AC — Commutative Algebra/Solving SAT in polynomial time - Brian Tenneson.pdf' | awk '/^Pages:/ {print $2}')" = "2"
           git rm -r .upload/data20sat
 
