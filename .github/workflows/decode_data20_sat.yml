@@ -19,13 +19,17 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ghostscript poppler-utils
-          cat .upload/data20sat/part_00 \
-              .upload/data20sat/part_01 \
-              .upload/data20sat/part_02 \
-              .upload/data20sat/part_03 \
-              .upload/data20sat/part_04 \
-              .upload/data20sat/part_05 \
-              .upload/data20sat/part_06_00 | base64 -d > /tmp/sat.pdf
+          : > /tmp/sat.pdf
+          for f in \
+            .upload/data20sat/part_00 \
+            .upload/data20sat/part_01 \
+            .upload/data20sat/part_02 \
+            .upload/data20sat/part_03 \
+            .upload/data20sat/part_04 \
+            .upload/data20sat/part_05 \
+            .upload/data20sat/part_06_00; do
+            base64 -d "$f" >> /tmp/sat.pdf
+          done
           mkdir -p 'math.AC — Commutative Algebra'
           gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite \
              -sOutputFile='math.AC — Commutative Algebra/Solving SAT in polynomial time - Brian Tenneson.pdf' \
