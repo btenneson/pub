@@ -1,0 +1,157 @@
+ALD Implementation Policies: Creativity,
+Shared Memory, and the
+Excluded-Middle Benchmark
+Working policies for moving the Automatic Logic Decider from
+mathematical framework to benchmarkable code
+
+1. Purpose
+The immediate engineering goal is to implement an Automatic Logic Decider (ALD) that
+receives a formal environment A and a conjecture C, runs distinct Prover, Refuter, and
+Independence searches over a shared verifier-certified mathematical memory, and returns a
+settlement only when it possesses an appropriate certificate. The first benchmark target is the
+law of excluded middle, C := φ ∨ ¬φ.
+The implementation must preserve the central separation already established in the research
+framework: verification determines correctness; search determines attention. Creativity therefore
+changes which legal possibilities receive computational resources, not the axioms, inference
+rules, side conditions, or acceptance standard.
+
+
+2. Benchmark semantics: every answer is relative to
+a formal system
+
+Policy 2.1 — Freeze the formal environment before search
+Every benchmark run must identify the formal system A, the target C, the representation of ¬C,
+the admissible inference rules, the verifier, and any background assumptions before the run
+begins. The ALD must never report that excluded middle is simply 'true' or 'false' without
+specifying the formal environment relative to which the certificate was produced.
+Rationale. The current ALD framework explicitly makes settlement relative to A. Its
+excluded-middle example notes that φ ∨ ¬φ is valid in classical propositional logic but is not
+generally derivable in intuitionistic logic. The benchmark is therefore partly a test that the
+software respects its formal environment rather than silently importing classical assumptions.
+
+
+Policy 2.2 — Use certificate-based settlement only
+The public settlement labels are PROVED, REFUTED, and INDEPENDENT. PROVED requires
+a verifier-accepted certificate for A ⊢ C. REFUTED requires a verifier-accepted certificate for A ⊢
+
+<<<PAGE_BREAK>>>
+¬C. INDEPENDENT requires an appropriate metamathematical certificate establishing the
+required non-derivability or relative-consistency/model conditions for both sides.
+Rationale. Failure to discover a proof of C or ¬C is not a certificate of independence. The code
+must embody this distinction rather than relying on operator judgment after a long search.
+
+
+Policy 2.3 — Add non-settlement execution states
+The implementation must also expose at least BOUNDED_UNKNOWN and
+IMPLEMENTATION_FAILURE as run statuses. BOUNDED_UNKNOWN means that the frozen
+resource limit was reached without a settlement certificate. IMPLEMENTATION_FAILURE
+means that a crash, verifier error, corrupted checkpoint, incompatible formal environment, or
+other software failure prevented a valid conclusion.
+Rationale. The mathematical CSA function is partial, and the creativity protocol already requires
+a clean distinction among verified success, bounded unknown, frontier exhaustion, and
+implementation failure. These execution states prevent a finite benchmark from pretending to
+have solved an undecided mathematical search.
+
+
+3. Agent architecture
+
+Policy 3.1 — Keep three logically distinct objectives
+The initial ALD shall contain three named objective roles: Prover P searches for A ⊢ C; Refuter
+R searches for A ⊢ ¬C; Independence I searches for an appropriate independence certificate.
+The roles may use different internal algorithms and do not need identical inference mechanisms.
+Rationale. The architecture is intended to combine competing settlement objectives with
+cooperation over verified mathematical knowledge. Treating the three roles as merely three
+copies of one search policy would discard the principal design advantage.
+
+
+Policy 3.2 — Preserve private search state
+Each agent shall maintain its own frontier, ranking state, random state, learned-policy state,
+restart history, local hypotheses, and search-control parameters unless a particular experiment
+explicitly declares some of these shared.
+Rationale. The shared bank should transmit mathematical discoveries without forcing all agents
+into the same attentional trajectory. Sharing full frontier state by default risks converting a
+heterogeneous population into one effectively duplicated search.
+
+
+Policy 3.3 — Make agent profiles genuinely heterogeneous
+At least during creativity experiments, P, R, and I should be allowed different configurations of
+action-selection temperature, candidate width, breadth-versus-depth allocation, novelty
+pressure, restart behavior, lemma-construction willingness, and proof-length tolerance.
+Heterogeneity must be logged and reproducible.
+
+<<<PAGE_BREAK>>>
+Rationale. The creativity framework treats these controls as search inputs rather than creativity
+itself. Different profiles create distinct routes through proof space, but their value must be judged
+by verified outcomes rather than by how exploratory they appear.
+
+
+4. Shared verified lemma bank
+
+Policy 4.1 — The bank is append-only and monotonic
+Let L_t be the verified mathematical bank after round t. A verified deposit D_t updates the bank
+by L_{t+1} = L_t ∪ D_t. Accepted mathematical knowledge is not deleted during a run.
+Rationale. Monotonic shared memory is the central cooperation mechanism in the ALD
+framework. A result produced for one settlement objective becomes available to all later
+searches.
+
+
+Policy 4.2 — Nothing enters the shared bank without verification
+Agents may propose speculative, stochastic, learned, high-temperature, or otherwise risky
+candidate statements, but a candidate becomes shared mathematical infrastructure only after
+the trusted verifier accepts it.
+Rationale. This keeps aggressive creative search compatible with logical integrity. Search may
+be wrong frequently; the shared bank must not be.
+
+
+Policy 4.3 — Share verified lemmas, not mandatory attention
+Every verified lemma becomes available to every agent, but no agent is required to immediately
+expand from it. Each agent's ranking policy decides whether and when the new lemma
+deserves attention.
+Rationale. This is the main defense against bank-induced convergence. Shared knowledge
+should enlarge each agent's legal opportunity set without collapsing the population's diversity.
+
+
+Policy 4.4 — Record provenance and cross-objective reuse
+Each LemmaRecord should contain at least: lemma_id, formal statement, normalized form or
+hash, producing agent, producing objective, parent premises, verification result and verifier
+version, production cost, deposit time or expansion, novelty features, reuse count, and
+cross-objective reuse count.
+Rationale. We want to measure whether the bank itself creates value. A Prover lemma later
+used productively by Refuter or Independence is stronger evidence for inter-agent cooperation
+than a lemma used only by its producer.
+
+<<<PAGE_BREAK>>>
+5. Creativity policy
+
+Policy 5.1 — Optimize verified creative yield, not raw exploration
+For a fixed target and frozen protocol, use the existing creativity objective C(u) = D(u)N(u),
+where D is the probability of verified success and N is expected normalized structural novelty
+conditional on success. Do not equate maximum temperature, entropy, randomization, or
+novelty pressure with maximum creativity.
+Rationale. The creativity manuscript proves that increasing exploration can strictly reduce
+success and creative yield, that equal entropy can correspond to different creative yield, and
+that novelty alone can select a worse prover.
+
+
+Policy 5.2 — Permit controlled counterfactual admission
+Every proof-oriented agent should retain a predeclared mechanism for occasionally admitting a
+legal candidate outside the ordinary learned or heuristic candidate cap. The probability or
+budget for such admissions must be bounded, logged, and included in total cost.
+Rationale. The counterfactual-rescue result gives a precise case where a necessary
+proof-enabling action lies outside a deterministic cap: the capped policy has zero success
+probability, while a counterfactual policy can restore positive success probability.
+
+
+Policy 5.3 — Use adaptive creativity only through explicit signals
+A later ALD controller may increase exploration after predeclared stagnation signals and
+decrease it after verified progress. Candidate signals include repeated frontier states, prolonged
+absence of new verified lemmas, repeated failure of the highest-ranked branch family, low
+novelty of admitted actions, or prolonged lack of goal reduction.
+Rationale. Adaptive creativity is theoretically worth testing because the adaptive policy class can
+include fixed policies, but empirical superiority is not guaranteed. Controller overhead, bad
+signals, or overfitting can make adaptation worse.
+
+
+Policy 5.4 — Preserve a diversity reserve
+The scheduler should reserve some nonzero fraction of global search resources for agents or
+branches that remain mathematically distinct from the currently dominant route. A new bank
