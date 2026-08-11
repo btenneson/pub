@@ -1,0 +1,75 @@
+name: Publish DATA 2.0.1 PDF to cs.LO and math.LO
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish_data_2_0_1_pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install LaTeX and PDF validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk texlive-latex-extra texlive-fonts-recommended texlive-pictures poppler-utils xz-utils
+
+      - name: Reconstruct and validate DATA 2.0.1 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/data201_xz_payload/part_*.txt > /tmp/DATA_2_0_1_Proof_Horizon_Architecture.tex.xz.b64
+          echo 'b5b6c7b9454af5417263f9052089ecdf64c2a07dae863ce27da1245cf9c7d21c  /tmp/DATA_2_0_1_Proof_Horizon_Architecture.tex.xz.b64' | sha256sum -c -
+          base64 -d /tmp/DATA_2_0_1_Proof_Horizon_Architecture.tex.xz.b64 > /tmp/DATA_2_0_1_Proof_Horizon_Architecture.tex.xz
+          xz -d /tmp/DATA_2_0_1_Proof_Horizon_Architecture.tex.xz
+          grep -F 'DATA 2.0.1: From a Target Formula to a Verified Minimum-Cost Proof' /tmp/DATA_2_0_1_Proof_Horizon_Architecture.tex
+
+      - name: Compile PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/data201_build
+          cp /tmp/DATA_2_0_1_Proof_Horizon_Architecture.tex /tmp/data201_build/
+          cd /tmp/data201_build
+          latexmk -pdf -interaction=nonstopmode -halt-on-error DATA_2_0_1_Proof_Horizon_Architecture.tex
+          test -s DATA_2_0_1_Proof_Horizon_Architecture.pdf
+          pdfinfo DATA_2_0_1_Proof_Horizon_Architecture.pdf | grep -E '^Pages:[[:space:]]+19$'
+          pdftotext DATA_2_0_1_Proof_Horizon_Architecture.pdf /tmp/data201.txt
+          grep -F 'DATA 2.0.1: From a Target Formula to a Verified' /tmp/data201.txt
+          grep -F 'Minimum-Cost Proof' /tmp/data201.txt
+
+      - name: Publish under both arXiv-style subject folders
+        shell: bash
+        run: |
+          set -euo pipefail
+          name='DATA_2_0_1_Proof_Horizon_Architecture_FINAL.pdf'
+          src='/tmp/data201_build/DATA_2_0_1_Proof_Horizon_Architecture.pdf'
+          mkdir -p cs.LO_Logic_in_Computer_Science math.LO_Logic
+          cp "$src" "cs.LO_Logic_in_Computer_Science/$name"
+          cp "$src" "math.LO_Logic/$name"
+          test -s "cs.LO_Logic_in_Computer_Science/$name"
+          test -s "math.LO_Logic/$name"
+          test "$(sha256sum "cs.LO_Logic_in_Computer_Science/$name" | cut -d' ' -f1)" = "$(sha256sum "math.LO_Logic/$name" | cut -d' ' -f1)"
+
+      - name: Commit PDFs and remove one-time builder
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cs.LO_Logic_in_Computer_Science/DATA_2_0_1_Proof_Horizon_Architecture_FINAL.pdf
+          git add math.LO_Logic/DATA_2_0_1_Proof_Horizon_Architecture_FINAL.pdf
+          git rm -r .github/data201_xz_payload .github/data201_payload .github/workflows/publish_data_2_0_1_pdf.yml
+          git commit -m 'Publish DATA 2.0.1 Proof-Horizon PDF under cs.LO and math.LO'
+          git push
