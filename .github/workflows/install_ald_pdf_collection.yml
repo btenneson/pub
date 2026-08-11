@@ -19,6 +19,9 @@ jobs:
         with:
           ref: ald_upload_fix
 
+      - name: Install PDF verifier and renderer
+        run: python -m pip install --quiet reportlab pypdf
+
       - name: Build collection
         shell: bash
         run: |
@@ -37,13 +40,57 @@ jobs:
           curl -fL --retry 3 "$SNAP/Automated_Logical_Deciders_Certificate_Halting_Shared_Lemma_Pools_and_ML_Guidance.pdf" -o "$D/Automated_Logical_Deciders_Certificate_Halting_Shared_Lemma_Pools_and_ML_Guidance.pdf"
           curl -fL --retry 3 'https://raw.githubusercontent.com/btenneson/Automatic-Logical-Deciding-Snapshot-August-2-2026-/main/Automated_Logical_Deciders_Research_Package%281%29/Automated_Logical_Deciders_Research_Notebook_Entry_001.pdf' -o "$D/Automated_Logical_Deciders_Research_Notebook_Entry_001.pdf"
 
-          # Public source paper.
+          # Exact public source paper.
           curl -fL --retry 3 'https://arxiv.org/pdf/2404.09939v3' -o "$D/2404_09939v3.pdf"
 
-          # Export the three corresponding Google Docs as fresh PDFs.
-          curl -fL --retry 3 'https://docs.google.com/document/d/10wtff45WwBuy5Ow3uxmBM5vLqcKJHYMJiUuWjePk_Sw/export?format=pdf' -o "$D/Automatic_Logic_Deciders_A_Mathematical_Framework_for_Multi_Agent_Conjecture_Settling.pdf"
-          curl -fL --retry 3 'https://docs.google.com/document/d/1s1pge6ZGqigUn1MIoDMCBlBqTB3tz3o8PvuU0T8iYnY/export?format=pdf' -o "$D/ALD_Implementation_Policies_Creativity_and_Excluded_Middle_Benchmark.pdf"
-          curl -fL --retry 3 'https://docs.google.com/document/d/1fjLKhBSu9E6DKTd96lKZxsYbKO0nojGzEKOlOpuaYjg/export?format=pdf' -o "$D/NOTALD_Massive_Tied_Ocean_Benchmark_Proposal.pdf"
+          # The three remaining originals came from private Google Docs.  Their private
+          # export endpoints cannot be reached by an unauthenticated GitHub runner, so
+          # rebuild working PDFs from text extracted from the uploaded originals.
+          cat .ald_transfer/implementation.part00.txt .ald_transfer/implementation.part01.txt .ald_transfer/implementation.part02.txt > .ald_transfer/implementation.txt
+
+          python - <<'PY'
+          from pathlib import Path
+          from reportlab.pdfgen import canvas
+          from reportlab.pdfbase import pdfmetrics
+          from reportlab.pdfbase.ttfonts import TTFont
+          from reportlab.lib.pagesizes import letter
+
+          font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
+          pdfmetrics.registerFont(TTFont('DejaVuSansMono', font_path))
+
+          jobs = [
+              ('.ald_transfer/framework.txt', 'Automated_Logical_Deciders_and_Conjecture_Settling/Automatic_Logic_Deciders_A_Mathematical_Framework_for_Multi_Agent_Conjecture_Settling.pdf'),
+              ('.ald_transfer/implementation.txt', 'Automated_Logical_Deciders_and_Conjecture_Settling/ALD_Implementation_Policies_Creativity_and_Excluded_Middle_Benchmark.pdf'),
+              ('.ald_transfer/notald.txt', 'Automated_Logical_Deciders_and_Conjecture_Settling/NOTALD_Massive_Tied_Ocean_Benchmark_Proposal.pdf'),
+          ]
+
+          width, height = letter
+          left = 36
+          top = height - 36
+          bottom = 34
+          font_size = 7.25
+          leading = 9.15
+
+          for src, dst in jobs:
+              text = Path(src).read_text(encoding='utf-8')
+              c = canvas.Canvas(dst, pagesize=letter, pageCompression=1)
+              c.setTitle(Path(dst).stem.replace('_', ' '))
+              y = top
+              c.setFont('DejaVuSansMono', font_size)
+              for raw in text.splitlines():
+                  if raw.strip() == '<<<PAGE_BREAK>>>':
+                      c.showPage()
+                      c.setFont('DejaVuSansMono', font_size)
+                      y = top
+                      continue
+                  if y < bottom:
+                      c.showPage()
+                      c.setFont('DejaVuSansMono', font_size)
+                      y = top
+                  c.drawString(left, y, raw[:132])
+                  y -= leading
+              c.save()
+          PY
 
       - name: Verify PDFs
         shell: bash
@@ -51,15 +98,41 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
+          from hashlib import sha256
+          from pypdf import PdfReader
+
           d = Path('Automated_Logical_Deciders_and_Conjecture_Settling')
+          expected_pages = {
+              '2404_09939v3.pdf': 27,
+              'ALD_Implementation_Policies_Creativity_and_Excluded_Middle_Benchmark.pdf': 8,
+              'Automated_Logical_Deciders_ALD_001.pdf': 2,
+              'Automated_Logical_Deciders_Brochure.pdf': 2,
+              'Automated_Logical_Deciders_Certificate_Halting_Shared_Lemma_Pools_and_ML_Guidance.pdf': 25,
+              'Automated_Logical_Deciders_Research_Notebook_Entry_001.pdf': 13,
+              'Automatic_Logic_Deciders_A_Mathematical_Framework_for_Multi_Agent_Conjecture_Settling.pdf': 7,
+              'Data_ATP_Creativity_Treatise_v0_1.pdf': 26,
+              'NOTALD_Massive_Tied_Ocean_Benchmark_Proposal.pdf': 6,
+          }
+          exact_sha256 = {
+              '2404_09939v3.pdf': '5ca6ff27f6c107e37a27cf22523782a5651d47fff41f109efbdfe44eaafaf948',
+              'Automated_Logical_Deciders_ALD_001.pdf': 'e4084c000e42d67126ad8e9a083328dc703946582131b838cf71e4fd1f4f29ce',
+              'Automated_Logical_Deciders_Brochure.pdf': 'f2e16c462e1d1a0f96a0eb5dbb5505fafb095450ff324da837838bcb9b9daef8',
+              'Automated_Logical_Deciders_Certificate_Halting_Shared_Lemma_Pools_and_ML_Guidance.pdf': 'eb4ca7924d46684f3ab19874369074784110e503c6a8e2371d3ac5cc4fad0882',
+              'Automated_Logical_Deciders_Research_Notebook_Entry_001.pdf': 'd2cbaf7056082e6463d92610f073fd0f2d57c7c6d0b67c34577f791988bd9ce9',
+              'Data_ATP_Creativity_Treatise_v0_1.pdf': '5f02ba76dc62a290744dd550b240a11f4497731a8bee0e1a2e424dda62b5671f',
+          }
           files = sorted(d.glob('*.pdf'))
           assert len(files) == 9, f'expected 9 PDFs, found {len(files)}'
           for p in files:
               b = p.read_bytes()
               assert b.startswith(b'%PDF-'), f'{p} is not a PDF'
               assert b'%%EOF' in b[-4096:], f'{p} lacks PDF EOF marker'
-              assert len(b) > 10000, f'{p} is unexpectedly small'
-              print(f'OK {p.name}: {len(b)} bytes')
+              pages = len(PdfReader(str(p)).pages)
+              assert pages == expected_pages[p.name], f'{p.name}: expected {expected_pages[p.name]} pages, got {pages}'
+              if p.name in exact_sha256:
+                  digest = sha256(b).hexdigest()
+                  assert digest == exact_sha256[p.name], f'{p.name}: SHA-256 mismatch'
+              print(f'OK {p.name}: {len(b)} bytes, {pages} pages')
           PY
 
       - name: Commit verified collection
