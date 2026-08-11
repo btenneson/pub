@@ -1,0 +1,73 @@
+name: Install ALD PDF collection
+
+on:
+  push:
+    branches: [ald_upload_fix]
+    paths:
+      - '.github/workflows/install_ald_pdf_collection.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ald_upload_fix
+
+      - name: Build collection
+        shell: bash
+        run: |
+          set -euo pipefail
+          D='Automated_Logical_Deciders_and_Conjecture_Settling'
+          rm -rf "$D"
+          mkdir -p "$D"
+
+          # Exact copies already present in this repository.
+          cp 'cs.LO_Logic_in_Computer_Science/data_atp_creativity_treatise_v0_1.pdf' "$D/Data_ATP_Creativity_Treatise_v0_1.pdf"
+          cp 'cs.LO_Logic_in_Computer_Science/Automated_Logical_Deciders_ALD_001.pdf' "$D/Automated_Logical_Deciders_ALD_001.pdf"
+
+          # Exact public snapshot copies.
+          SNAP='https://raw.githubusercontent.com/btenneson/Automatic-Logical-Deciding-Snapshot-August-2-2026-/main/Automated_Logical_Deciders_Research_Package'
+          curl -fL --retry 3 "$SNAP/Automated_Logical_Deciders_Brochure.pdf" -o "$D/Automated_Logical_Deciders_Brochure.pdf"
+          curl -fL --retry 3 "$SNAP/Automated_Logical_Deciders_Certificate_Halting_Shared_Lemma_Pools_and_ML_Guidance.pdf" -o "$D/Automated_Logical_Deciders_Certificate_Halting_Shared_Lemma_Pools_and_ML_Guidance.pdf"
+          curl -fL --retry 3 "$SNAP/Automated_Logical_Deciders_Research_Notebook_Entry_001.pdf" -o "$D/Automated_Logical_Deciders_Research_Notebook_Entry_001.pdf"
+
+          # Public source paper.
+          curl -fL --retry 3 'https://arxiv.org/pdf/2404.09939v3' -o "$D/2404_09939v3.pdf"
+
+          # Export the three corresponding Google Docs as fresh PDFs.
+          curl -fL --retry 3 'https://docs.google.com/document/d/10wtff45WwBuy5Ow3uxmBM5vLqcKJHYMJiUuWjePk_Sw/export?format=pdf' -o "$D/Automatic_Logic_Deciders_A_Mathematical_Framework_for_Multi_Agent_Conjecture_Settling.pdf"
+          curl -fL --retry 3 'https://docs.google.com/document/d/1s1pge6ZGqigUn1MIoDMCBlBqTB3tz3o8PvuU0T8iYnY/export?format=pdf' -o "$D/ALD_Implementation_Policies_Creativity_and_Excluded_Middle_Benchmark.pdf"
+          curl -fL --retry 3 'https://docs.google.com/document/d/1fjLKhBSu9E6DKTd96lKZxsYbKO0nojGzEKOlOpuaYjg/export?format=pdf' -o "$D/NOTALD_Massive_Tied_Ocean_Benchmark_Proposal.pdf"
+
+      - name: Verify PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          d = Path('Automated_Logical_Deciders_and_Conjecture_Settling')
+          files = sorted(d.glob('*.pdf'))
+          assert len(files) == 9, f'expected 9 PDFs, found {len(files)}'
+          for p in files:
+              b = p.read_bytes()
+              assert b.startswith(b'%PDF-'), f'{p} is not a PDF'
+              assert b'%%EOF' in b[-4096:], f'{p} lacks PDF EOF marker'
+              assert len(b) > 10000, f'{p} is unexpectedly small'
+              print(f'OK {p.name}: {len(b)} bytes')
+          PY
+
+      - name: Commit verified collection
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Automated_Logical_Deciders_and_Conjecture_Settling
+          git commit -m 'Add verified ALD and conjecture settling PDF collection'
+          git push origin HEAD:ald_upload_fix
