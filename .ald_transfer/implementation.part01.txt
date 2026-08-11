@@ -1,0 +1,155 @@
+lemma may increase priority, but it must not automatically monopolize all three agents.
+Rationale. A shared bank has two opposing effects: it can enable cross-agent discoveries, but it
+can also cause premature convergence. The implementation should deliberately preserve
+enough independent search to test which effect dominates.
+
+<<<PAGE_BREAK>>>
+Policy 5.5 — Measure emergent cross-agent creativity
+In addition to C_P, C_R, and C_I, record a system-level ALD creative yield and a cross-objective
+reuse statistic. One useful initial quantity is X = useful cross-objective lemma reuses / total
+verified lemma-production cost. A second diagnostic should count successful dependency
+chains such as P → R, R → I, P → I, and longer cross-objective chains.
+Rationale. The strongest form of ALD creativity may exist between agents rather than inside any
+one agent: one objective discovers mathematical infrastructure that changes what another
+objective can discover.
+
+
+6. Scheduler and resource accounting
+
+Policy 6.1 — Begin with a fair scheduler
+The first implementation should use a simple auditable scheduler, such as round-robin
+activation of P, R, and I, or another rule that guarantees every live agent continuing access to
+resources. More adaptive scheduling should be introduced only after the baseline is
+reproducible.
+Rationale. The mathematical framework permits any fair scheduling rule. Starting simple makes
+causal interpretation of later creativity gains easier.
+
+
+Policy 6.2 — Charge all work to one global budget
+The benchmark budget must include agent expansions, lemma construction, verification,
+shared-bank indexing, communication, replay, restart overhead, and any learned-model
+inference that is material to the comparison. Hardware, wall-clock caps, memory caps, and
+committed-expansion rules must be frozen before matched trials.
+Rationale. A shared population must not appear more creative merely because it secretly
+receives more computation. The shared-lemma population conjecture explicitly requires
+matched global resource accounting.
+
+
+Policy 6.3 — Stop immediately on the first valid settlement
+certificate
+When the bank receives a valid PROVED, REFUTED, or INDEPENDENT settlement certificate,
+the scheduler halts all agents and records the winning certificate, producing agent, dependency
+chain, resource cost, and bank state.
+Rationale. This matches the certificate-based stopping rule in the ALD framework and gives an
+unambiguous first-settlement time for anytime-efficiency measurement.
+
+<<<PAGE_BREAK>>>
+7. Excluded-middle benchmark policy
+
+Policy 7.1 — Represent the target explicitly
+The benchmark configuration shall store C := φ ∨ ¬φ as the positive target and ¬C := ¬(φ ∨
+¬φ) as the refutation target. The exact parser representation and normalization must be frozen
+and hashable so that every agent and verifier is solving the same object.
+
+
+Policy 7.2 — Start with a known sanity-check environment
+The first end-to-end benchmark should use an explicitly classical propositional environment in
+which excluded middle is expected to be provable. This is a software sanity test: the Prover
+should be capable of producing a certificate that the trusted verifier accepts, while Refuter and
+Independence remain active competitors until settlement.
+Rationale. A benchmark whose expected outcome is understood helps detect parser, rule-set,
+verifier, or scheduling mistakes before the harder question of independence certification is
+introduced.
+
+
+Policy 7.3 — Do not hard-code the expected answer
+The benchmark harness may know the expected outcome for evaluation, but no search agent,
+ranking model, prompt, lemma bank, or verifier input may receive the answer or a target-specific
+proof route unless that information condition is explicitly part of a separate declared experiment.
+Rationale. The benchmark is intended to test conjecture settling, not answer retrieval or
+leakage.
+
+
+Policy 7.4 — Treat independence as a separate implementation
+milestone
+The Independence agent must not be considered complete merely because it can run in
+parallel. Before it can emit INDEPENDENT, the implementation must define the exact certificate
+class it can produce and the verifier capable of checking that certificate. Possible methods
+identified by the framework include suitable model pairs, relative consistency, forcing, model
+construction, or proof-theoretic methods; the initial code should choose a tractable certificate
+type rather than pretending to support all of them.
+Rationale. Independence is metamathematical and structurally different from ordinary proof
+search. Its certificate semantics therefore need their own engineering contract.
+
+
+8. Minimum code interfaces implied by these policies
+FormalEnvironment: immutable identifier for axioms, inference rules, parser/normalizer version,
+verifier version, and background assumptions.
+
+<<<PAGE_BREAK>>>
+ConjectureSpec: stores C, ¬C, normalization hashes, and the declared certificate classes for
+positive, negative, and independence settlement.
+AgentState: private state for P, R, or I, including frontier, policy parameters, seed, learned-state
+reference, restart history, and counters.
+Agent.step(bank_snapshot, budget_slice) -> CandidateContribution | NO_RESULT: performs
+one bounded activation and proposes at most the configured contribution unit.
+Verifier.verify(candidate, environment) -> VerificationResult: the only authority allowed to
+approve a shared mathematical deposit or settlement certificate.
+SharedLemmaBank.deposit(verified_record): append-only insertion with normalized duplicate
+handling and provenance metadata.
+Scheduler.next_agent(global_state) -> AgentId: initially fair and auditable; later eligible for
+adaptive policies under controlled experiments.
+SettlementMonitor.check(bank) -> PROVED | REFUTED | INDEPENDENT | NONE: halts only
+on a verified certificate.
+RunResult: settlement label if certified; otherwise BOUNDED_UNKNOWN or
+IMPLEMENTATION_FAILURE, together with resource accounting, logs, seeds, environment
+hashes, and artifact paths.
+
+
+9. Creativity experiment required before claiming
+maximization
+We should not say that the ALD 'maximizes creativity' merely because the architecture contains
+several creative agents. We should run matched experiments that estimate the response
+surface under fixed information, verifier, hardware, theorem set, seeds, and global budget.
+At minimum compare: (A) isolated P/R/I with no inter-agent lemma sharing; (B) heterogeneous
+P/R/I with the shared verified bank; (C) the same shared architecture with counterfactual
+admission disabled; and later (D) adaptive versus fixed creativity controls. Report D, N, C = DN,
+anytime creative efficiency, settlement rate, discovery cost, proof or certificate quality, reusable
+lemma yield, cross-objective reuse, instability, and resource overhead.
+The central implementation question is therefore not 'How high can we turn creativity?' but
+'Which controlled search policies and information-sharing mechanisms convert a fixed global
+budget into the greatest verified, novel, and reusable mathematical discovery?'
+
+
+10. Initial acceptance criteria for ALD-LEM-01
+1. The formal environment and target hashes are printed and logged before search.
+2. P, R, and I are instantiated with distinct objective identifiers and separate private state.
+3. All shared-bank deposits pass the trusted verifier.
+4. The bank is monotonic and records lemma provenance.
+5. At least one controlled counterfactual-search mechanism can be enabled or disabled by
+configuration.
+6. All meaningful work is charged to a frozen global budget.
+
+<<<PAGE_BREAK>>>
+7. A finite budget limit returns BOUNDED_UNKNOWN rather than INDEPENDENT.
+8. A settlement label is emitted only with a machine-checkable certificate reference.
+9. The classical excluded-middle sanity benchmark can reach PROVED without answer
+leakage.
+10. The run log is sufficient to reconstruct which agent produced every accepted lemma and
+which later agents reused it.
+11. Matched isolated-versus-shared trials can be run with the same seeds and total resource
+budget.
+12. The system records enough data to estimate creative yield and cross-agent creative
+contribution.
+
+
+11. Source basis and status
+These policies are an implementation-oriented synthesis of the uploaded Automatic Logic
+Deciders: A Mathematical Framework for Multi-Agent Conjecture Settling and Creativity in
+Automated Theorem Proving: A Data-ATP Experimental Treatise, plus the current design
+discussion. The ALD framework supplies the three settlement objectives, shared monotonic
+lemma bank, verifier separation, private agent state, certificate classes, scheduler abstraction,
+and excluded-middle example. The creativity treatise supplies the operational distinction
+between exploratory controls and measured creativity, C = DN creative yield, counterfactual
+rescue, adaptive-creativity rationale, fixed-budget experimental discipline, and the
+shared-lemma population conjecture.
