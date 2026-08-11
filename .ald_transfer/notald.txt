@@ -1,0 +1,236 @@
+NOTALD Massive Tied-Ocean
+Benchmark Proposal
+PROPOSAL ONLY — DO NOT RUN
+
+
+
+
+1. Purpose and status
+This document records the benchmark we intend to run later. It is a proposal and freeze
+candidate only. No benchmark instances are to be generated, trained on, executed, timed, or
+submitted to a prover as part of preparing this document.
+
+The purpose of NOTALD is implementation validation. The benchmark deliberately presents the
+ALD with the negation of a theorem whose proof horizon is externally known. The system is
+therefore pointed at the wrong polarity on purpose. A correct implementation should recover by
+having the Refuter find the theorem on the opposite side, while the Prover is assigned a
+non-theorem side and must not manufacture a false proof. The benchmark is also intended to
+measure transfer from tied lower-resolution problems to larger related problems under a
+common learning protocol.
+
+
+
+
+2. Notation correction
+We reserve P for the Prover role and R for the Refuter role. To avoid using P for two different
+things, the Ocean problem family is written 𝒫(L), with a calligraphic P.
+
+L is a number: the externally established minimum proof length, or proof horizon, under the
+frozen Ocean inference metric. 𝒫(L) is the problem instance having that horizon.
+
+Therefore the corrected example is:
+
+L = 2.5 × 10^3 = 2500,
+so 𝒫(L) = 𝒫(2.5 × 10^3) = 𝒫(2500).
+
+It is not correct to write L = 𝒫(2500), because L is a number and 𝒫(2500) is a benchmark
+problem.
+
+<<<PAGE_BREAK>>>
+3. Background: the transparent calibration theorem
+F(n)
+The transparent calibration family is defined by
+
+Γ_n = {p_0} ∪ {¬p_i ∨ p_(i+1) : 0 ≤ i < n},
+
+with target
+
+F(n) = p_n.
+
+Hypotheses are free, and one binary-resolution application counts as one inference. The direct
+unit-propagation proof derives p_1, p_2, …, p_n in exactly n counted inferences.
+
+The lower bound is also n. Every implication link ¬p_i ∨ p_(i+1) is necessary. If the link from
+p_k to p_(k+1) is removed, there is a valuation making p_0 through p_k true and all later atoms
+false while satisfying the remaining hypotheses and falsifying p_n. Thus every sound proof must
+depend on p_0 and all n implication clauses. A binary inference DAG with n+1 necessary leaves
+requires at least n binary inference nodes. Since an n-step proof exists and fewer than n steps
+are impossible,
+
+L*(F(n) | Γ_n) = n.
+
+This is the clean calibration fact behind the Ocean benchmark. F(n) is the transparent chain; it
+should not be confused with the hidden-route Ocean problem.
+
+
+
+
+4. The hidden-route Ocean problem 𝒫(L)
+For the Ocean family, take a frozen directed graph G = (V,E) with source s and target t. Encode
+the source as the fact p_s. Encode every directed edge u → v as the clause ¬p_u ∨ p_v. The
+theorem target is T_L := p_t.
+
+A native binary-resolution proof corresponds to following a directed path from s to t. Before the
+ATP sees the problem, the benchmark generator and an independent graph check establish that
+the shortest source-to-target path has length exactly L:
+
+d(s,t) = L.
+
+Under the frozen metric this gives
+
+L*(T_L | Γ_L) = L.
+
+<<<PAGE_BREAK>>>
+No ATP can return a valid native Ocean proof shorter than L, because that would encode a
+source-to-target route shorter than the independently verified shortest path. This is a property of
+the frozen problem, not a timeout claim and not an empirical guess about an ATP.
+
+The Ocean can contain dead ends, detours, misleading branches, parallel corridors, and other
+search burden while preserving the same shortest proof horizon L. The trick ATP, Depths-F, is
+retained as a calibration control because it is specialized to this implication/reachability structure
+and largely removes the navigation problem. It is not to be interpreted as a fair general-purpose
+ATP competitor.
+
+
+
+
+5. NOTALD: deliberate wrong-polarity evaluation
+For each Ocean theorem T_L in 𝒫(L), NOTALD is not given T_L as its conjecture. Instead it is
+given
+
+C_L := ¬T_L.
+
+The benchmark designer knows that T_L is derivable with minimum native proof length L, but
+the running system is not given the expected status, the shortest route, the answer label, or an
+informative filename.
+
+Using P for Prover and R for Refuter, P searches for Γ_L ⊢ C_L, that is, Γ_L ⊢ ¬T_L. R searches
+for Γ_L ⊢ ¬C_L. After a frozen classical normalization of the double negation, R's target is the
+native theorem Γ_L ⊢ T_L.
+
+Thus R is the role expected to detect theoremhood in NOTALD. P is deliberately assigned the
+non-theorem side. However, P failing or timing out is not itself a certificate of non-theoremhood.
+The benchmark is successful only when a status-appropriate verified certificate is produced.
+
+For these frozen consistent Ocean instances, the expected final classification of C_L is
+REFUTABLE, or REFUTED if the current implementation uses that display label, because R
+should produce a verified proof of T_L. INDEPENDENT is wrong because T_L is provable.
+INCONSISTENT or CONTRADICTION is also wrong unless the base hypotheses themselves
+admit a verified contradiction. Budget exhaustion without a conclusive certificate must remain
+UNKNOWN or BOUNDED_UNKNOWN.
+
+The point of NOTALD is not to trick the verifier. It is to test whether the implementation can
+recover from a deliberately wrong-polarity conjecture without being told which agent is
+supposed to win.
+
+<<<PAGE_BREAK>>>
+6. Massive tied benchmark grid
+The proof horizons are
+
+L = c × 10^n,
+
+where n ∈ {1,2,3,4,5} and c ∈ {1, 2.5, 7.5}.
+
+This gives 15 benchmark depths:
+
+n = 1: 10, 25, 75
+n = 2: 100, 250, 750
+n = 3: 1,000, 2,500, 7,500
+n = 4: 10,000, 25,000, 75,000
+n = 5: 100,000, 250,000, 750,000
+
+For example, L = 2.5 × 10^3 = 2500, so the associated Ocean instance is 𝒫(2.5 × 10^3) =
+𝒫(2500), and NOTALD receives the negated conjecture C_2500 = ¬T_2500. The correct
+opposing certificate is a proof of T_2500 whose native Ocean proof cannot contain fewer than
+2500 counted edge-resolution inferences.
+
+
+
+
+7. Tied-to-each-other learning protocol
+The 15 problems form one deliberately related benchmark family. Their relationship is known to
+the benchmark designer but is not to be advertised to the systems through answer-bearing
+filenames, comments, L* annotations, shortest-path metadata, or target-specific hints. The
+systems may infer regularities from permitted training data.
+
+For a held-out evaluation problem 𝒫(L), every learning ATP or ALD must receive the same
+permitted lower-resolution tied training set. The natural tied set consists of benchmark siblings
+with smaller L. This is intended to measure whether learning on lower-resolution relatives
+improves head-to-head performance on larger relatives.
+
+The exact training artifact bundle must be frozen before execution. In particular, before the run
+we must decide whether lower-resolution access includes only problem files, verified
+certificates, search traces, shared-bank events, or some specified subset. Whatever rule is
+chosen must be identical for every learning system to which it applies.
+
+The held-out evaluation instance itself, its answer label, its shortest route, and its target-specific
+proof certificate must not be placed in training. The relation among the tied problems should be
+learnable from legitimate prior experience, not disclosed as an answer channel.
+
+<<<PAGE_BREAK>>>
+8. Systems in the head-to-head comparison
+The proposed comparison includes the trick ATP / Depths-F calibration control, Data-ATP, Data
+2.0.1, the four professional ATPs already selected for the benchmark suite, and the NOTALD
+system.
+
+If a professional ATP is not a learning system, the tied-learning rule does not artificially add
+learning to it. It receives the same frozen evaluation problem and the resource protocol
+appropriate to its class. Exact software versions and the identities of the four professional ATPs
+must be frozen in the final run manifest.
+
+
+
+
+9. Blinding, fairness, and implementation checks
+Before execution, every evaluation instance should be sealed so that the system cannot read
+the intended answer from presentation details. The final protocol should remove L*,
+expected-status, and generator-answer comments; use opaque instance identifiers; neutralize
+informative symbol names where the existing Ocean protocol permits it; shuffle presentation
+order without changing the formal graph; keep the answer key and independently verified
+shortest path outside the solver process; and freeze verifier, parser, normalization, resource
+accounting, seeds, training exposure, and hardware rules before the first scored run.
+
+The benchmark is designed to test logical polarity recovery, implementation safety, depth
+scaling, lower-resolution transfer, and shared-memory behavior. P must not generate a false
+proof of ¬T_L. R should eventually return the valid opposing proof of T_L when resources
+suffice. Independence and Inconsistency must not produce false settlements. If any agent
+produces incompatible certified evidence for the same frozen instance, that is an
+implementation or audit alarm, not a normal benchmark outcome.
+
+
+
+
+10. Planned reporting and pre-run freeze items
+The final scored benchmark should report, per system and per depth, the final certified status,
+correctness, charged search expansions to the first accepted conclusive certificate, returned
+proof or certificate length, L/L* for native Ocean proofs, per-agent work for NOTALD where
+available, wall-clock time, peak memory, shared-lemma production and cross-role reuse where
+applicable, BOUNDED_UNKNOWN separately from logical failure, and every invalid certificate
+or contradictory evidence as an audit failure.
+
+Head-to-head rates should be computed only after the run protocol, tie rules, budgets, and
+handling of UNKNOWN are frozen.
+
+<<<PAGE_BREAK>>>
+Before any execution we still need to freeze the number of independently generated instances
+or seeds at each of the 15 depths; the exact four professional ATPs and software versions;
+global resource budgets and stopping rules; the lower-resolution training artifact bundle;
+whether all smaller-L siblings or only specified tied predecessors are exposed; the normalization
+rule for ¬¬T_L → T_L without adding artificial Ocean proof cost; the verifier and proof-counting
+convention; the blinded file-generation and answer-key procedure; and the scoring rule for
+head-to-head comparisons.
+
+Until those items are frozen, this document is a benchmark proposal, not a run authorization.
+
+
+
+
+Technical background
+The transparent F(n) definition, its exact n-inference proof and lower bound, and the
+hidden-route Ocean generalization come from the existing Proof Horizon and Ocean technical
+notes. Those notes distinguish the transparent F(n) calibration chain from the hidden-route
+Ocean family and define the Ocean proof horizon from an independently verified shortest
+source-to-target path. The NOTALD polarity-reversal design in this proposal applies that
+calibrated family to the current multiagent ALD architecture.
+
+<<<PAGE_BREAK>>>
