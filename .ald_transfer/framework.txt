@@ -1,0 +1,301 @@
+    A Mathematical Framework for Multi-Agent Conjecture Settling
+
+
+
+                                                Abstract
+          We describe an abstract framework for mathematical conjecture settling by a collection of
+      cooperating agents operating over a shared bank of verified mathematical statements.
+          Agents may pursue different settlement objectives, including proving a conjecture, proving
+      its negation, or establishing its independence from a specified axiom system.
+          Unlike independent dovetailed proof searches, the agents communicate through a monotoni-
+      cally growing shared lemma bank. Every verified result produced by one agent therefore becomes
+      available as a premise to every subsequent agent.
+          The framework separates the mathematical structure of conjecture settling from any par-
+      ticular implementation by automated theorem provers, proof assistants, search algorithms, or
+      learned systems.
+
+
+1    Formal Setting
+Let A be a formal axiom system and let C be a conjecture expressed in the language of A.
+   We distinguish three possible settlement objectives:
+
+                                                 A ⊢ C,
+
+
+                                                A ⊢ ¬C,
+    and
+
+                                      A⊬C        and       A ⊬ ¬C.
+   The third condition corresponds to independence of C from A, assuming the relevant consistency
+and metatheoretic conditions are satisfied.
+   Failure to discover a proof of either C or ¬C is not by itself a certificate of independence.
+
+
+2    The Shared Lemma Bank
+Let Lt denote the collection of verified statements available after round t.
+   Initially,
+
+                                                L0 = A.
+    More generally, one may distinguish background axioms B from problem-specific assumptions
+A, in which case
+
+                                              L0 = B ∪ A.
+
+
+                                                    1
+
+<<<PAGE_BREAK>>>
+   During round t, agents may derive new verified statements. Let Dt denote the set of statements
+successfully deposited during that round.
+   The bank evolves according to
+
+                                          Lt+1 = Lt ∪ Dt .
+    Consequently,
+
+                                             Lt ⊆ Lt+1 .
+   Thus mathematical knowledge accumulated by the system is monotonic: once a verified lemma
+has entered the bank, it remains available to all future agents.
+
+
+3     Agents
+For the initial system, consider three agents:
+
+                                           G = {P, R, I}.
+    Their objectives are different even though they operate over the same bank.
+
+3.1   The Prover
+The prover P seeks a certificate establishing
+
+                                                 A ⊢ C.
+    At each activation, P may select any finite collection of statements from the current bank,
+
+                                            ΓP ⊆ﬁn Lt ,
+    apply an admissible inference procedure, and attempt to produce a new verified statement.
+
+3.2   The Refuter
+The refuter R seeks a certificate establishing
+
+                                                 A ⊢ ¬C.
+   It has access to the same lemma bank as the prover.
+   Thus a lemma discovered while attempting to prove C may later assist the search for ¬C, and
+conversely.
+
+3.3   The Independence Agent
+The independence agent I seeks a certificate establishing that C is independent of A.
+   Conceptually, its objective is
+
+                                    A⊬C           and      A ⊬ ¬C.
+    Unlike ordinary proof search, this generally requires metamathematical certificates.
+    For example, an independence argument may establish suitable models
+
+
+                                                    2
+
+<<<PAGE_BREAK>>>
+                                             M |= A ∪ {C}
+    and
+
+                                           N |= A ∪ {¬C}.
+   Other implementations may use relative consistency proofs, forcing, model construction, proof-
+theoretic methods, or other appropriate metamathematical techniques.
+
+
+4    One-Step Agent Action
+An agent activation is deliberately abstract.
+   For an agent g, define
+
+                                                Stepg (Lt )
+    to be a computation which reads any finite subset of the current bank and returns either no
+result or a single candidate contribution.
+    Thus
+
+                                        Stepg (Lt ) ∈ {⊥} ∪ F ,
+   where F is the set of well-formed statements or certificates and ⊥ denotes failure to produce a
+contribution on that activation.
+   If the returned contribution passes the system’s verifier, it is deposited into the bank.
+   Therefore an agent follows the abstract cycle
+
+                          read bank → take one step → verify → deposit .
+   The agent may use arbitrarily many previously established premises in taking that step, while
+depositing at most one new verified result per activation.
+
+
+5    Global State
+Let St denote the complete state of the conjecture-settling system at round t.
+   Abstractly,
+
+                                    St = (Lt , sP (t), sR (t), sI (t)) ,
+    where sP , sR , sI represent any private search state maintained by the respective agents.
+    A transition operator
+
+                                            T : St −→ St+1
+    represents one scheduled activation.
+    For a round-robin scheduler, for example,
+
+                                          P, R, I, P, R, I, . . .
+  are activated successively.
+  The mathematical framework does not require round-robin scheduling. Any fair scheduling rule
+may be substituted.
+
+                                                     3
+
+<<<PAGE_BREAK>>>
+6      Settlement Certificates
+Define three certificate classes:
+
+                                 Cert+ (C),         Cert− (C),       Cert0 (C).
+      They represent respectively:
+
+                                            Cert+ (C) :     A ⊢ C,
+
+
+                                           Cert− (C) :      A ⊢ ¬C,
+      and
+
+                                    Cert0 (C) :    C is independent of A.
+      A conjecture is settled when the bank contains a valid member of one of these certificate classes.
+
+
+7      The Conjecture-Settling Procedure
+We may therefore define a partial conjecture-settling function
+
+                                                    CSA (C).
+      Its possible outputs are
+
+                        CSA (C) ∈ {PROVED, REFUTED, INDEPENDENT}.
+      More precisely,
+
+                                           CSA (C) = PROVED
+      when a valid certificate for A ⊢ C is deposited;
+
+                                          CSA (C) = REFUTED
+      when a valid certificate for A ⊢ ¬C is deposited; and
+
+                                      CSA (C) = INDEPENDENT
+      when a valid independence certificate is deposited.
+      The function is partial because an unrestricted mathematical search need not terminate.
+
+
+8      Stopping Rule
+Let
+
+                                                  Solved(Lt , C)
+      mean that Lt contains a valid settlement certificate for C.
+      The system terminates at the first time
+
+
+                                                        4
+
+<<<PAGE_BREAK>>>
+                                    τ = min{t : Solved(Lt , C)}.
+   At time τ , all agents halt.
+   Thus the agents compete with respect to settlement objectives while cooperating with respect
+to mathematical knowledge.
+
+
+9    Monotonicity
+Proposition 1. If statements are added to the bank but never removed, then
+                                              Lt ⊆ Lt+1
+for every t.
+Proof. By definition,
+                                          Lt+1 = Lt ∪ Dt .
+Therefore every element of Lt is also an element of Lt+1 .
+
+
+10 Soundness of the Bank
+Let V be a trusted verification procedure.
+   A candidate statement x may enter the bank only when
+
+                                              V (x) = 1.
+    Consequently, search and verification are separated.
+    An agent may be heuristic, stochastic, learned, incomplete, or even frequently wrong in its
+proposals without compromising the logical integrity of the shared bank, provided that the verifier
+itself is sound.
+Proposition 2. Suppose every initial element of L0 is admissible and every subsequent deposit is
+accepted only after sound verification. Then every element of every Lt is admissible.
+
+
+11 Generalization to Many Agents
+Nothing essential depends on there being exactly three agents.
+   Let
+
+                                       G = {g1 , g2 , . . . , gn }.
+    Each agent has some objective Oi and transition procedure
+
+                                                Stepgi .
+    All agents communicate through the same evolving mathematical memory:
+
+                                       L0 ⊆ L1 ⊆ L2 ⊆ · · · .
+   Different agents may employ entirely different reasoning mechanisms.
+   For example, one agent could be implemented by a saturation-based automated theorem prover,
+another by model search, another by an SMT solver, and another by a learned proof-search policy.
+   The shared-bank abstraction does not depend upon their internal implementations.
+
+                                                    5
+
+<<<PAGE_BREAK>>>
+12 Example: Law of Excluded Middle
+As an initial test conjecture, consider
+
+                                           C := φ ∨ ¬φ.
+   The prover seeks
+
+                                           A ⊢ φ ∨ ¬φ.
+   The refuter seeks
+
+                                          A ⊢ ¬(φ ∨ ¬φ).
+   The independence agent seeks an appropriate certificate that neither statement follows from
+the chosen axiom system.
+   The expected outcome depends critically upon the underlying logic.
+   For example, the law of excluded middle is valid in classical propositional logic but is not
+generally derivable in intuitionistic logic.
+   This illustrates why every conjecture-settling problem must specify not merely a conjecture C,
+but the formal system A relative to which settlement is sought.
+
+
+13 Discussion
+The essential feature of the framework is not parallelism alone.
+    Independent proof searches can be dovetailed without communicating. Here, however, successful
+intermediate mathematical work becomes shared infrastructure.
+    If agent gi proves lemma λ, then
+
+                                            λ ∈ Lt+1 ,
+    and every later agent may immediately use λ.
+    The system therefore combines competition among objectives with cooperation among deriva-
+tions.
+    A useful conceptual summary is
+
+                many searches + one verified memory + certificate-based stopping .
+
+
+14 Conclusion
+We have defined an abstract multi-agent conjecture-settling process consisting of:
+
+  1. a formal background theory,
+
+  2. a conjecture,
+
+  3. a monotonically growing shared lemma bank,
+
+  4. multiple agents pursuing distinct settlement objectives,
+
+  5. a trusted verification mechanism,
+
+                                                6
+
+<<<PAGE_BREAK>>>
+  6. a scheduler, and
+
+  7. a certificate-based stopping condition.
+
+   The framework deliberately leaves the internal reasoning algorithm of each agent unspecified.
+   This permits automated theorem provers, model finders, proof assistants, symbolic algorithms,
+and learned reasoning systems to be substituted without changing the abstract conjecture-settling
+architecture.
+
+
+
+
+                                               7
+
+<<<PAGE_BREAK>>>
