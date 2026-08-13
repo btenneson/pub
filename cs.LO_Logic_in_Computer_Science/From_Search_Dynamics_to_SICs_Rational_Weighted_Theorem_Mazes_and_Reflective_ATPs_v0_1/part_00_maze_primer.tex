@@ -37,6 +37,21 @@ d_w(s,Z)=\inf\{w(P):P\text{ is a directed path from }s\text{ to some }z\in Z\}.
 \]
 For a finite maze with nonnegative weights and a reachable exit, the infimum is attained by a simple path.
 
+\subsection{Effective naming of rational edge weights}
+The author's earlier closed-form surjection
+\[
+r:\mathbb N\twoheadrightarrow\mathbb Q
+\]
+provides an explicit natural-number naming scheme for rational values \cite{rationalcoding}. Taking
+\[
+r_+(n)=|r(n)|
+\]
+gives a surjection $r_+:\mathbb N\twoheadrightarrow\Qnn$. Hence a theorem-maze edge may store a natural code $k_e$ while its exact declared cost is
+\[
+w(e)=r_+(k_e).
+\]
+This coding is not needed for Dijkstra or A*---ordinary reduced numerator/denominator pairs already suffice---but it is useful conceptually and computationally when one wants every exact rational cost to have a discrete address. It also keeps two roles separate: rational codes name edge costs, while Hilbert-style coordinates and orderings may later be used to name or prioritize regions of the state space \cite{hilbert}.
+
 \subsection{What ``escaping the maze'' normally costs}
 Let $n=|V|$ and $m=|E|$. The following are the standard worst-case graph-operation bounds needed later. They describe an \emph{explicitly represented} finite maze. Exact rational arithmetic adds the cost of exact integer addition and comparison; the table suppresses that bit-complexity factor and records the usual graph-search bounds \cite{clrs,dijkstra,astar,floyd}.
 
