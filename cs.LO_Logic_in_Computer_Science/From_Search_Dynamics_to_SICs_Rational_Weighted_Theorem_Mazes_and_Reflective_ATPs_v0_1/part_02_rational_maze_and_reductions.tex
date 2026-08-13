@@ -1,0 +1,99 @@
+\section{Theorem proving as rationally weighted maze solving}
+The graph-theoretic viewpoint from \emph{Depths of a Simulation} can be strengthened into a transfer principle. Proof search is treated as directed graph traversal: proof states are vertices, legal inference transactions are edges, and target states are exits \cite{depths}.
+
+\begin{definition}[Rationally weighted theorem maze]
+A rationally weighted theorem maze is
+\[
+\mathcal G=(V,E,s,Z,w)
+\]
+where $(V,E)$ is a directed graph, $s\in V$ is the initial proof/search state, $Z\subseteq V$ is the set of certificate-bearing exits, and
+\[
+w:E\to\Qnn
+\]
+assigns each directed edge an exact nonnegative rational cost. The cost of a finite path $P=(e_1,\ldots,e_m)$ is
+\[
+w(P)=\sum_{i=1}^{m}w(e_i)\in\Qnn.
+\]
+\end{definition}
+
+Rational weights are a deliberate restriction. They can be stored, added, and compared exactly. This avoids making a logical optimality theorem depend on floating-point ordering accidents. Integer transaction counts are the special case $w(e)\in\N$.
+
+\begin{theorem}[Rational-Weighted Maze Transfer Principle]
+Let $\mathcal A$ be a maze-search algorithm whose correctness theorem holds for a class $\mathscr C$ of effectively presented directed graphs with nonnegative rational edge weights. Suppose a theorem-proving or settlement problem can be encoded as a member of $\mathscr C$ so that:
+\begin{enumerate}[label=(\roman*)]
+\item vertices encode admissible proof/search states;
+\item directed edges encode admissible transactions or inference steps;
+\item target vertices are exactly states containing a verifier-accepted certificate of the requested type; and
+\item path weight is the declared ATP search cost.
+\end{enumerate}
+Then applying $\mathcal A$ to the encoded theorem maze yields an ATP/ALD/AMLD search policy with the same route-finding and path-cost guarantee, subject to the same graph-theoretic hypotheses.
+\end{theorem}
+\begin{proof}
+The encoding is a cost-preserving correspondence between maze paths and admissible search paths. Therefore any path returned by $\mathcal A$ pulls back to an admissible ATP path, and any optimality guarantee over the maze path weights transfers to the declared ATP search cost. Logical acceptance still requires the independent certificate verifier.
+\end{proof}
+
+\begin{remark}[Examples]
+For finite nonnegative rationally weighted theorem mazes, Dijkstra's algorithm gives a minimum-cost route. A* gives the same conclusion under the usual admissibility conditions, with the standard implementation qualifications concerning consistency and node reopening. On a finite DAG, dynamic programming after a topological ordering gives minimum-cost routes. These are not new graph theorems; the contribution is the exact pullback to verifier-backed proof or settlement search.
+\end{remark}
+
+\begin{caution}[Search cost versus native proof cost]
+A weighted theorem maze may price search transactions, macro rules, verifier calls, or other operations. That metric need not equal native proof length. If a banked lemma is transparently expanded before native proof cost is measured, the bank may dramatically reduce search cost while leaving the native minimum proof Horizon unchanged \cite{data3}. Every reported shortest-path claim must therefore name the metric and presentation.
+\end{caution}
+
+\section{Search-space reduction before learning}
+The graph interpretation provides several exact or theorem-backed reductions before any learned heuristic is trusted.
+
+\subsection{Cumulative verified-history collapse}
+Many transient trajectories can lead to the same permanent verified ledger. If the objective is mathematical settlement rather than replaying every heuristic choice, states that differ only in irrelevant transient history can often share downstream mathematical information. Care is required because the cumulative history alone need not determine future controller behavior, but it is already a major conceptual reduction in what must be remembered as mathematical progress.
+
+\subsection{Novelty DAG}
+In the novelty state theorem graph, retain only nontrivial transitions that add new verified information. Strict inclusion then rules out directed cycles, producing a DAG \cite{depths}. Identity moves, rediscovery loops, and reversible syntactic wandering can be suppressed or represented outside the verified-state graph.
+
+\subsection{Quotienting by verified equivalence}
+When the formal system supplies a sound equivalence relation and the search objective is invariant under it, equivalent presentations can be quotiented or canonically oriented. This is a standard graph reduction, but in ATP design it can eliminate large families of syntactic duplicates. The quotient must be verifier-respecting; heuristic similarity is not enough.
+
+\subsection{Conservative compilation and macro edges}
+\emph{Depths of a Simulation} proves a conservative compilation result for finite provable workloads: verified derivations can be packaged as sound derived rules, lowering target transaction counts without changing theoremhood \cite{depths}. In graph language, a previously expensive verified path is replaced by a reusable macro edge. This is the mathematical justification for viewing a theorem library as a compression layer over repeated proof structure.
+
+\subsection{Shared verified landmarks}
+A shared bank can turn repeated rediscovery into one verified discovery followed by cheaper retrieval. DATA 3.0 gives a conditional repeated-substructure savings theorem and separately shows that transparent lemma reuse need not change the native proof Horizon \cite{data3}. For search, the bank changes the geometry; for native minimum proof cost, it need not.
+
+\subsection{Incumbent bounds}
+The Proof-Horizon program supplies an especially useful reduction. Once any valid proof or settlement certificate of cost $B$ is verified, the unknown optimum $c^*$ satisfies
+\[
+c^*\le B.
+\]
+For minimum-cost certification, all candidates with cost $\ge B$ are irrelevant to the question whether a cheaper certificate exists. Each improved incumbent shrinks the remaining bounded region \cite{horizon,data201}.
+
+\begin{proposition}[Rational branch-and-bound pruning]
+Let $\mathcal G$ be a theorem maze with nonnegative rational edge weights. Let $B$ be the cost of a verified incumbent route to an exit. For a reached vertex $v$, let $g(v)$ be the exact cost already incurred and let $h(v)\in\Qnn$ be a valid lower bound on the cost of every continuation from $v$ to an exit. If
+\[
+g(v)+h(v)\ge B,
+\]
+then no route through $v$ can improve the incumbent, so $v$ may be pruned from a search whose sole objective is to find a route of cost $<B$.
+\end{proposition}
+\begin{proof}
+Every continuation through $v$ has total cost at least $g(v)+h(v)\ge B$.
+\end{proof}
+
+This proposition combines the Horizon incumbent idea with ordinary weighted-maze branch-and-bound. Even the trivial lower bound $h=0$ removes every partial path whose cost has already reached $B$; stronger admissible lower bounds remove more.
+
+\section{Heuristic branches and where to look}
+The Branch-Covering Theorem in \emph{Depths} says, roughly, that a proof-covering nondeterministic policy contains a branch able to shadow a shortest proof; heuristics then face the navigation problem of allocating enough computation to such branches \cite{depths}. This does not identify the good branch, but it transforms the intelligence problem into ranking, covering, diversification, and resource allocation.
+
+For a theorem maze, a learned critic can estimate quantities such as
+\[
+\widehat d(v,Z),\qquad
+\widehat P(\text{settlement within budget}\mid v),\qquad
+\widehat Q(v,a),
+\]
+without ever acquiring proof authority. The verifier decides acceptance. The learned model decides where to spend the next unit of search.
+
+A practical architecture can combine exact and heuristic components:
+\[
+\begin{aligned}
+&\text{exact rational costs}+\text{incumbent bound}+\text{admissible lower bounds}\\
+&\qquad +\text{learned ranking}+\text{portfolio diversity}+\text{verified bank}.
+\end{aligned}
+\]
+The exact pieces prune safely; the learned pieces reorder or allocate the remaining work.

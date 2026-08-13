@@ -1,0 +1,79 @@
+\section{Prior synthetic benchmark evidence, with disclaimers}
+The technical companion to the Proof Horizon reported an $L^*=100$ synthetic dry tournament on 20 independently seeded finite ``oceans.'' Each ocean had an externally established shortest successful route of exactly 100 edges. General searchers were not told $L^*=100$ and were not given the hidden shortest route. The stopping rule was first verifier-accepted proof \cite{horizoncomp}.
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrrrr}
+\toprule
+System & Finished & Optimum first & Median $L$ & Median $E$ & Median time (ms)\\
+\midrule
+Depths-F specialized control & 20/20 & 20/20 & 100 & 100 & 0.002\\
+BFS & 20/20 & 20/20 & 100 & 10928.5 & 3.013\\
+DFS & 20/20 & 4/20 & 115 & 1747.5 & 0.487\\
+Beam-64 & 19/20 & 16/20 & 100 & 5546.5 & 2.664\\
+Data-ATP Hilbert-only ablation & 20/20 & 6/20 & 115 & 1317.5 & 7.115\\
+Data-ATP full dry stand-in & 20/20 & 11/20 & 100 & 375 & 30.747\\
+DATA 2.0.1 fast wing & 20/20 & 7/20 & 115 & 121.5 & 28.570\\
+DATA 2.0.1 Horizon certifier & 20/20 & 20/20 certified & 100 & 10928.5 & 3.037\\
+\bottomrule
+\end{tabularx}
+\caption{Previously reported synthetic dry results at $L^*=100$; reproduced here only as architectural evidence and benchmark context, not as a production-performance claim.}
+\end{table}
+
+\paragraph{Required disclaimer.}
+These numbers are \emph{not} production benchmarks of the full Data-ATP or DATA repositories, do not establish superiority on natural mathematics, and should not be read as a universal speedup theorem. They are executable stand-ins designed to separate intrinsic path length from navigation overhead and to test measurement, failure reporting, and architecture. In that dry setting, the fuller Data-ATP stand-in used far fewer median expansions than BFS while the separate Horizon certifier recovered/certified the known optimum at exhaustive-search cost. The result motivates, but does not validate, the larger search-reduction program \cite{horizoncomp}.
+
+\section{A proposed rational-weight theorem-maze benchmark}
+The next benchmark should test the graph-theoretic claim directly and should use exact rational weights rather than floating-point surrogates.
+
+\begin{definition}[Rational Ocean benchmark family]
+A benchmark instance is a finite or effectively bounded directed theorem maze with:
+\begin{enumerate}
+\item a planted or independently certified minimum settlement cost $L_w^*\in\Qnn$;
+\item exact edge weights $a/b$ stored in reduced rational form;
+\item a frozen verifier and certificate language;
+\item adjustable width, dead-end density, alternative successful routes, repeated substructures, and misleading locality;
+\item optional typed exits for $P$, $R$, $I$, and $\bot$;
+\item a hidden shortest route unavailable to general searchers.
+\end{enumerate}
+\end{definition}
+
+The benchmark should compare at least a rational Dijkstra baseline, rational A* with frozen admissible heuristics, BFS on unit-weight controls, beam/best-first variants, portfolio search, shared-bank ablations, and the relevant ATP/ALD/AMLD architecture. Every addition must preserve exact certificate checking.
+
+Primary measurements should include verified settlement rate and type, first-settlement cost, certified minimum settlement cost where attempted, node/edge expansions, wall-clock time, peak memory, verifier time, bank deposits and retrievals, restarts, and the gap
+\[
+\Delta=\Cost(\text{first verified settlement})-L_w^*.
+\]
+For minimum-cost experiments, report separately the cost of discovery and the cost of certification.
+
+\paragraph{Benchmark disclaimer.}
+A rational-weight synthetic maze is a controlled model of proof-search geometry, not a claim that real theorem libraries have the same distribution. Success is meaningful only if ranking survives held-out changes in width, decoys, weight denominators, representation, and eventually frozen natural formal-mathematics benchmarks.
+
+\section{Reflective ATPs: proving things about the prover}
+Once the cumulative-history SIC satisfies ATP conditions, the induced ATP can itself be given a formal target language containing an effective code of a frozen machine $M$.
+
+Let $M^{\#}$ be a coded or tagged copy of the machine, in the spirit of the tagging constructions in \emph{Depths of a Simulation} \cite{depths}. The meta-ATP can then search for derivations of statements such as
+\[
+\text{``every accepted $P$-certificate of $M^{\#}$ verifies,''}
+\]
+\[
+\text{``the terminal states of $M^{\#}$ are absorbing,''}
+\]
+\[
+\text{``this scheduler is fair on this finite benchmark,''}
+\]
+or bounded search facts such as
+\[
+\text{``no certificate of declared cost $<B$ occurs in this effectively finite layer.''}
+\]
+If such a theorem is independently verified, it may be deposited in a typed meta-level bank and used by a controller as mathematical information about the search process.
+
+\begin{theorem}[Meta-ATP construction, schematic form]
+Suppose the cumulative-history lift of $M$ is an effective ATP $A_M$, and the background formal theory effectively represents a frozen code $M^{\#}$ together with the relevant syntactic verification predicates. Then $A_M$ can search for every derivable encoded property of $M^{\#}$ expressible in that theory. Any accepted result is a theorem of the background formal system, not an oracle statement about semantic truth.
+\end{theorem}
+
+\begin{caution}[No unrestricted self-certification]
+This construction does not evade Tarski, Goedel, Church, or ordinary consistency limitations. It is most credible for bounded, syntactic, relative, conditional, and verifier-checkable properties. A machine proving a coded local fact about its search is not the same thing as a machine proving its unrestricted global soundness.
+\end{caution}

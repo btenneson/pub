@@ -1,0 +1,71 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{mathrsfs}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue,pdftitle={From Search Dynamics to Semi-Ideal Computers},pdfauthor={Brian Tenneson}}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{conjecture}[definition]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{caution}[definition]{Caution}
+
+\newcommand{\Qnn}{\mathbb{Q}_{\ge 0}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Fix}{\operatorname{Fix}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Ind}{\operatorname{Ind}}
+\newcommand{\Dep}{\operatorname{Dep}}
+\newcommand{\SIC}{\operatorname{SIC}}
+\newcommand{\ATP}{\operatorname{ATP}}
+\newcommand{\DATA}{\operatorname{DATA}}
+\newcommand{\UNKNOWN}{\mathrm{UNKNOWN}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Search Dynamics, SICs, and Rational Theorem Mazes}
+\rhead{Tenneson, v0.1}
+\setlength{\headheight}{14pt}
+\cfoot{\thepage\ of \pageref{LastPage}}
+
+\title{\textbf{From Search Dynamics to Semi-Ideal Computers}\\[0.4em]
+\Large Cumulative Verified Histories, Rationally Weighted Theorem Mazes, and Reflective ATPs\\[0.6em]
+\large A General Framework for ATPs, ALDs, and AMLDs, with DATA as a Distinguished Case}
+\author{Brian Tenneson}
+\date{August 2026 -- Version 0.1}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\textbf{Suggested arXiv classifications:} primary \texttt{cs.LO}; secondary \texttt{cs.AI}; cross-list candidate \texttt{math.CO}.
+\end{center}
+
+\begin{abstract}
+This sequel develops a general bridge from staged verifier-backed search dynamics to semi-ideal computers (SICs), automated theorem provers (ATPs), automated logical deciders (ALDs), and automated metalogical deciders (AMLDs). The key construction is the \emph{cumulative history of verified information}: the permanent ledger obtained by unioning all mathematical information that has crossed an exact verification boundary through a given stage. The complete instantaneous search state may backtrack, restart, reallocate resources, forget heuristic proposals, and move nonmonotonically; its cumulative verified history is monotone by construction and therefore supplies the natural SIC state.
+
+The paper then makes the graph-theoretic identification precise. Under a suitable encoding, theorem proving is weighted maze solving: vertices are proof or settlement states, directed edges are admissible search or inference transactions, exits are certificate-bearing states, and edge costs are exact nonnegative rational numbers. Any maze-search method whose correctness theorem holds for the relevant class of rationally weighted directed graphs can be pulled back to an ATP policy under the corresponding hypotheses. This yields a disciplined search-reduction program based on novelty DAGs, quotienting, conservative compilation, shared verified landmarks, incumbent bounds, branch-and-bound pruning, Dijkstra/A*-style search, and multi-agent navigation. The resulting theory does not claim that long proofs become short or that computational hardness disappears. Its objective is narrower: reduce the part of the proof ocean that must actually be searched before a known-to-exist certified fixed point becomes computationally accessible.
+
+Finally, a sufficiently expressive induced ATP can be aimed at an effective code of the ATP, ALD, AMLD, or controller that generated it. This creates a verifier-gated meta-ATP able, within ordinary incompleteness and self-reference limits, to prove bounded, syntactic, relative, or conditional properties of the machine whose search is being optimized. DATA is treated as a distinguished implementation rather than as the general definition.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\input{part_01_foundations.tex}
+\input{part_02_rational_maze_and_reductions.tex}
+\input{part_03_benchmarks_and_reflection.tex}
+\input{part_04_data_and_conclusion.tex}
+\input{references.tex}
