@@ -1,0 +1,149 @@
+\section{Purpose and scope}
+The motivating observation is that several strands of the earlier program fit into one diagram:
+\[
+\text{search dynamics}
+\longrightarrow
+\text{cumulative verified history}
+\longrightarrow
+\text{SIC}
+\longrightarrow
+\begin{cases}
+\text{ATP},\\
+\text{ALD},\\
+\text{AMLD}.
+\end{cases}
+\]
+A rich implementation such as $\DATA(x)$ is then a special case. The general mathematics should not depend on the names Professor, Counselor, Picard, Dreamer, Horizon, Prover, Refuter, or Independence. Those modules matter operationally, but the structural results concern any verifier-backed staged search process satisfying the stated hypotheses.
+
+The central computational premise is equally modest. In many theorem-proving or conjecture-settling instances, a valid certificate and hence a terminal state exists mathematically, while available hardware may not reach it. The principal problem is therefore not fixed-point existence but \emph{computational accessibility}: how to shorten the hitting time, reduce the number of states that must be examined, compress repeated structure, and spend resources on branches that are more likely to reach a certificate.
+
+\section{General verified transition systems}
+\begin{definition}[Verified transition system]
+A verified transition system is a tuple
+\[
+\mathfrak M=(X,\mathcal F,\pi,V,\mathcal R)
+\]
+where $X$ is a set of complete instantaneous states, $\mathcal F=\{F_j:X\to X\}_{j\in J}$ is a family of admissible state transformations, $\pi$ is a controller or scheduling policy selecting transformations, $V$ is an exact verification gate for mathematical deposits, and $\mathcal R$ is the space of typed verified records.
+\end{definition}
+
+A run is a sequence
+\[
+x_0,x_1,x_2,\ldots,\qquad x_{n+1}=F_{j_n}(x_n),
+\]
+with $j_n$ selected by $\pi$ or by an allowed nondeterministic/stochastic rule. The state $x_n$ may include queues, heuristic parameters, random seeds, learned representations, resource allocations, untrusted proposals, checkpoints, and verified mathematical memory.
+
+\begin{caution}[The complete state need not be monotone]
+Nothing requires $x_n\subseteq x_{n+1}$ or any analogous order relation. A practical searcher may discard a queue, restore a checkpoint, lower a beam width, change a representation, or restart. Monotonicity will be imposed only on the verified-history projection.
+\end{caution}
+
+\section{The cumulative history of verified information}
+This construction is the bridge from general search dynamics to SICs.
+
+\begin{definition}[Verified stage output]
+Let $V_n$ denote the set of mathematical records newly accepted by the independent verifier during the transition into stage $n$. Set $V_1=\varnothing$ by convention, so that stage 1 is exactly the input stage. Depending on the machine, later $V_n$ may include formulas, proved lemmas, proof certificates, refutation certificates, independence or dependence certificates, model witnesses, provenance data, formally checked derived rules, or other typed mathematical objects.
+\end{definition}
+
+\begin{definition}[Cumulative history of verified information]
+For input $\Gamma$ and stage $n\ge 1$, define
+\[
+C_{\mathfrak M}(\Gamma,n)
+=
+\Gamma\cup\bigcup_{k=1}^{n}V_k.
+\]
+In particular, $C_{\mathfrak M}(\Gamma,1)=\Gamma$.
+This is the \emph{cumulative history of verified information} through stage $n$.
+\end{definition}
+
+The phrase is meant literally. $C_{\mathfrak M}(\Gamma,n)$ is not a snapshot of everything the machine currently believes, proposes, scores, or searches. It is the permanent ledger of what has crossed the verification boundary. Search states may be abandoned; verified mathematics is not silently revoked.
+
+\begin{proposition}[Cumulative-history monotonicity]
+For every run and every $n$,
+\[
+C_{\mathfrak M}(\Gamma,n)
+\subseteq
+C_{\mathfrak M}(\Gamma,n+1).
+\]
+\end{proposition}
+\begin{proof}
+By definition,
+\[
+C_{\mathfrak M}(\Gamma,n+1)
+=
+C_{\mathfrak M}(\Gamma,n)\cup V_{n+1}.
+\]
+\end{proof}
+
+\begin{remark}[Projection, not necessarily quotient dynamics]
+The cumulative history is a monotone observation of a possibly nonmonotone machine. Two complete states can have the same cumulative verified history while differing in queues, resources, or controller state and therefore having different futures. Thus the cumulative history need not be Markov-sufficient. It is a canonical SIC state even when it is not by itself a deterministic dynamical state.
+\end{remark}
+
+\section{The cumulative-history SIC theorem}
+The SIC framework used in \emph{Depths of a Simulation} consists of a stage-state map $C$ and halting map $H$ with an initial state, monotone accumulation, persistent halting, and freezing after halting \cite{depths}.
+
+\begin{definition}[Certificate halting]
+Fix a target condition $Z\subseteq\mathcal R$ of accepted terminal records. Define
+\[
+H_{\mathfrak M}(\Gamma,n)=1
+\quad\Longleftrightarrow\quad
+C_{\mathfrak M}(\Gamma,n)\cap Z\neq\varnothing.
+\]
+After the first such stage, the operational machine may halt. For SIC analysis, extend the halted computation constantly thereafter.
+\end{definition}
+
+\begin{theorem}[Cumulative-History SIC Theorem]
+Suppose verified records are persistent and the computation is extended constantly after its first accepted terminal certificate. Then
+\[
+M_{\mathfrak M}=(C_{\mathfrak M},H_{\mathfrak M})
+\]
+is a semi-ideal computer on the chosen verified-record universe.
+\end{theorem}
+\begin{proof}
+The initial condition is fixed by construction. Monotonicity is the previous proposition. If $H_{\mathfrak M}(\Gamma,n)=1$, then the accepted terminal record remains in every later cumulative history, so halting persists. By the constant extension convention, the cumulative state is frozen after the operational halt.
+\end{proof}
+
+\section{When the induced SIC is an ATP, ALD, or AMLD}
+\subsection{ATP specialization}
+If the verified records are formulas and proof certificates in a frozen formal system, and the machine halts on target $\varphi$ exactly when a verifier-accepted proof of $\varphi$ is in the cumulative history, then the induced SIC is a target-search ATP once the usual soundness and eventual-success conditions are imposed. The internal search machinery can be arbitrarily elaborate; the SIC sees only the monotone verified ledger.
+
+\subsection{ALD specialization}
+For a target sentence $\varphi$ over theory $G$, use typed terminal certificate classes
+\[
+\begin{aligned}
+P&:G\vdash\varphi, & R&:G\vdash\neg\varphi,\\
+I&:\Ind_G(\varphi), & \bot&:\text{certified inconsistency of the base presentation}.
+\end{aligned}
+\]
+An ALD is then a typed cumulative-history SIC whose halting condition is the appearance of an accepted supported settlement certificate.
+
+\subsection{AMLD specialization}
+At the metalogical level, define
+\[
+\Dep_G(\varphi):=(G\vdash\varphi)\lor(G\vdash\neg\varphi),
+\qquad
+\Ind_G(\varphi):=\neg\Dep_G(\varphi),
+\]
+and type every meta-certificate by an explicit metatheory. An AMLD is the same SIC-lift principle applied one logical level higher. Timeout, stagnation, and budget exhaustion remain $\UNKNOWN$ unless a certificate language explicitly proves otherwise.
+
+\section{Halting and absorbing fixed points}
+Let $T:X\to X$ be a deterministic macro-update for a complete-state model and let $\mathcal S\subseteq X$ be the certified settlement states. Extend terminal states as absorbing:
+\[
+x\in\mathcal S\Longrightarrow T(x)=x.
+\]
+If every nonterminal complete state changes under $T$, then
+\[
+\Fix(T)=\mathcal S.
+\]
+This is the fixed-point settlement pattern proved for DATA 3.0 under an explicit round-counter hypothesis \cite{data3}.
+
+\begin{proposition}[Fixed-Point/Halting Correspondence]
+Assume $\Fix(T)=\mathcal S$, and define $H(\Gamma,n)=1$ exactly when $x_n\in\mathcal S$. Then
+\[
+H(\Gamma,n)=1
+\quad\Longleftrightarrow\quad
+x_n\in\Fix(T).
+\]
+\end{proposition}
+
+\begin{caution}[Existence is not reachability]
+The identity $\Fix(T)=\mathcal S$ characterizes terminal states; it does not imply that a given orbit reaches one. A fixed point can exist while its hitting time exceeds every practical hardware, memory, or wall-clock budget. The search problem is therefore to reduce the cost of reaching a fixed point, not merely to prove that fixed points exist.
+\end{caution}
