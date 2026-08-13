@@ -1,0 +1,138 @@
+\section{Maze theory first: the minimum needed for theorem search}
+The main organizing idea of this sequel is deliberately elementary: before discussing SICs, fixed points, IFS language, or reflective control, treat theorem proving as maze solving. A maze is a graph-search problem. The classical shortest-path literature then tells us what can be solved efficiently once the graph is explicitly available, while the theorem-proving difficulty is pushed into the size and structure of the implicit graph that must be generated. Moore's early maze formulation, Dijkstra's weighted shortest-path algorithm, and the later A* theory are the basic classical reference points \cite{moore,dijkstra,astar,clrs}.
+
+\subsection{Mazes as directed graphs}
+For present purposes a maze is a directed graph with an entrance and one or more exits,
+\[
+\mathcal M=(V,E,s,Z),
+\]
+where $V$ is the vertex set, $E\subseteq V\times V$ is the directed edge set, $s\in V$ is the entrance, and $Z\subseteq V$ is the exit set. An edge $u\to v$ means that moving from $u$ to $v$ is legal. A finite directed walk is a sequence of legal edges; a path is a walk with no repeated vertices. In this manuscript the informal word ``tour'' means a finite directed walk from the entrance toward an exit, not necessarily a closed tour.
+
+A graph is \emph{sparse} when $|E|$ is of the same order as $|V|$ and \emph{dense} when $|E|=\Theta(|V|^2)$. This distinction matters because an $O(|V|+|E|)$ algorithm is linear in the explicit graph representation but becomes $O(|V|^2)$ on a dense maze \cite{clrs}.
+
+\subsection{Unweighted and weighted mazes}
+In an unweighted maze every edge may be assigned unit cost,
+\[
+w(e)=1.
+\]
+Then the cost of a path is simply its number of edges. Breadth-first search (BFS) therefore finds a route with the minimum number of edges from the entrance to an exit \cite{moore,clrs}.
+
+A weighted maze adds a cost map
+\[
+w:E\to\mathbb R.
+\]
+This paper restricts the exact ATP cost layer to
+\[
+w:E\to\Qnn.
+\]
+The restriction to exact nonnegative rational numbers is intentional. Rational weights can be represented by finite numerator/denominator pairs, added exactly, and compared exactly. Thus an optimality statement need not depend on floating-point roundoff. Dijkstra's algorithm applies to nonnegative weights, and A* adds an admissible estimate of the remaining cost \cite{dijkstra,astar,clrs}.
+
+The path cost is
+\[
+w(P)=\sum_{e\in P}w(e).
+\]
+The shortest escape cost is
+\[
+d_w(s,Z)=\inf\{w(P):P\text{ is a directed path from }s\text{ to some }z\in Z\}.
+\]
+For a finite maze with nonnegative weights and a reachable exit, the infimum is attained by a simple path.
+
+\subsection{What ``escaping the maze'' normally costs}
+Let $n=|V|$ and $m=|E|$. The following are the standard worst-case graph-operation bounds needed later. They describe an \emph{explicitly represented} finite maze. Exact rational arithmetic adds the cost of exact integer addition and comparison; the table suppresses that bit-complexity factor and records the usual graph-search bounds \cite{clrs,dijkstra,astar,floyd}.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{2.5cm}}
+\toprule
+Method & Guarantee & General explicit-graph worst case & Dense maze $m=\Theta(n^2)$\\
+\midrule
+DFS & Finds some reachable exit; not generally shortest & $O(n+m)$ & $O(n^2)$\\
+BFS & Minimum number of edges when all costs are $1$ & $O(n+m)$ & $O(n^2)$\\
+Dijkstra & Minimum total cost for nonnegative weights & $O((n+m)\log n)$ with a binary heap; $O(n^2)$ with a simple array implementation & $O(n^2)$ is standard and natural for dense graphs\\
+A* & Minimum cost under the usual admissibility/implementation hypotheses & Worst case may search essentially the same region as Dijkstra; $h=0$ reduces to Dijkstra & No worst-case asymptotic miracle follows from heuristic search alone\\
+DAG shortest path & Minimum total cost after a topological ordering & $O(n+m)$ & $O(n^2)$\\
+Floyd--Warshall & All-pairs shortest-path distances & $O(n^3)$ & $O(n^3)$\\
+\bottomrule
+\end{tabularx}
+\caption{Usual worst-case escape/shortest-path bounds for an explicit finite maze. The ATP difficulty discussed below is that the theorem maze is normally implicit and can be enormously larger than its logical input description.}
+\end{table}
+
+The table gives an important perspective. Rational edge weights do not by themselves make shortest-path search intractable. For a dense finite maze that has already been written down, BFS, Dijkstra with a dense implementation, and DAG shortest-path dynamic programming all have familiar $O(n^2)$ graph-operation bounds. The difficulty for ATP is that $n$ itself may be exponential or worse as a function of a compact formal problem description. A procedure polynomial in the number of explicit proof states can therefore still be impractical in the original theorem-proving input size. This explicit-versus-implicit distinction is central to the search-reduction program developed below.
+
+\subsection{From an ordinary maze to a theorem maze}
+Fix a formal system $F$, a set of hypotheses and/or available axioms $\Gamma$, and a target WFF $\varphi$. Following the theorem-graph program developed in the author's earlier work, use \emph{proof states} rather than individual formulas as vertices \cite{depths}. A proof state is a cumulative set $p$ of formulas already available, with
+\[
+\Gamma\subseteq p.
+\]
+The entrance is
+\[
+s=\Gamma.
+\]
+The exit set is
+\[
+Z_\varphi=\{p:\varphi\in p\}.
+\]
+Thus an ATP succeeds exactly when it reaches a proof state containing the target.
+
+The state formulation also resolves the arity issue for inference rules. Suppose $r$ is a $k$-ary inference rule and
+\[
+a_1,\ldots,a_k\in p
+\]
+are premises already present in the current state. If a legal application of $r$ derives $\beta$, place the directed edge
+\[
+p\xrightarrow{\,r(a_1,\ldots,a_k)\,}p\cup\{\beta\}.
+\]
+A binary or $k$-ary inference therefore remains a single ordinary graph edge because all premises are already contained in the source proof state. If one instead insists that vertices are individual WFFs, the natural object is a directed hypergraph or a bipartite formula/inference graph. For algorithmic purposes, the proof-state graph keeps the representation within ordinary directed graph theory \cite{depths}.
+
+A proof of $\varphi$ is therefore the pullback of a successful directed route
+\[
+\Gamma\rightsquigarrow Z_\varphi.
+\]
+The verifier checks that every edge label is a legitimate inference application. Graph search chooses the route; logic decides whether each move is legal.
+
+\subsection{Unit normalization and the BFS baseline}
+The clean baseline is
+\[
+\boxed{w(e)=1\quad\text{for every legal inference edge}.}
+\]
+Then a proof route $P=(e_1,\ldots,e_L)$ has cost
+\[
+w(P)=\sum_{i=1}^L1=L.
+\]
+Consequently the theorem-maze distance is exactly shortest proof length,
+\[
+d_1(\Gamma,Z_\varphi)=\min\{|P|:P\text{ proves }\varphi\}.
+\]
+This is the graph-theoretic form of the author's Proof-Horizon/BFS viewpoint: unit-weight breadth-first search reaches a target first at the minimum inference depth \cite{depths,horizon}. Choosing the unit weight $1$ is a normalization: one does not need to carry a separate physical unit through every formula. One edge simply means one unit of declared proof cost.
+
+\subsection{Rational weights are costs, not fractional inferences}
+After the unit case is understood, one may declare different exact rational costs,
+\[
+w(e)\in\Qnn.
+\]
+A weight such as $3/7$ means that the edge costs $3/7$ of the chosen cost unit. It does \emph{not} by itself mean that the inference is the fractional iterate $T^{3/7}$ of a logical transformation. Fractional iteration is a separate dynamical question requiring a semigroup or embedding law such as
+\[
+\Phi_{s+t}=\Phi_s\circ\Phi_t.
+\]
+The weighted-maze layer should therefore be established independently. Continuous or fractional search dynamics may later be placed over the maze as an optional model of navigation, but rational edge length alone does not imply fractional inference.
+
+\subsection{Where geometry and Hilbert ordering enter}
+The author's Hilbert theorem-search work proposes using space-filling-curve orderings as a navigation device after proof/search states have been embedded into a finite-dimensional feature representation \cite{hilbert}. In the maze language this is best viewed as an ordering policy for which region or frontier point to inspect next. It does not alter the legal edges, the verifier, or the edge costs. The classical shortest-path guarantees remain attached to BFS, Dijkstra, A*, DAG methods, and related graph algorithms; Hilbert ordering is a candidate locality-preserving heuristic to be benchmarked against those baselines.
+
+\subsection{The big picture before the rest of the paper}
+The sequel will therefore use the hierarchy
+\[
+\boxed{
+\text{formal system}
+\longrightarrow
+\text{theorem maze}
+\longrightarrow
+\text{weighted graph search}
+\longrightarrow
+\text{verified history / SIC}
+\longrightarrow
+\text{optional dynamical and reflective control}.
+}
+\]
+The first computational question is not whether a fixed point or proof exists in the abstract, but how much of the implicit maze must be generated and searched before a verifier-accepted exit is reached. The remaining sections study exact reductions of that search region, quotient ideas, incumbent bounds, learned navigation, and only afterward the broader SIC/IFS/reflective interpretation.
