@@ -111,16 +111,18 @@ This does not make state explosion disappear. Its value is structural: it turns 
 \subsection{What should be tested first}
 The first serious implementation target should therefore be a matched benchmark in which the same verifier-backed theorem mazes are searched under progressively stronger but separately measured reductions:
 \[
-\text{raw BFS/Dijkstra}
-\to
-\text{canonical proof states}
-\to
-\text{partial-order or quotient reduction}
-\to
-\text{verified landmarks/macros}
-\to
-\text{admissible abstraction}
-\to
-\text{incumbent-bounded A* or branch-and-bound}.
+\begin{array}{c}
+\text{raw BFS/Dijkstra}\\
+\downarrow\\
+\text{canonical proof states}\\
+\downarrow\\
+\text{partial-order or quotient reduction}\\
+\downarrow\\
+\text{verified landmarks/macros}\\
+\downarrow\\
+\text{admissible abstraction}\\
+\downarrow\\
+\text{incumbent-bounded A* or branch-and-bound.}
+\end{array}
 \]
 Learned ranking and Hilbert ordering can then be layered on the remaining region and evaluated by ablation. Fractional/continuous dynamics should be tested later, after the simpler graph reductions have been exhausted. This ordering makes failures informative: if a speedup occurs, the experiment can identify whether it came from structural compression, exact bounds, or heuristic navigation rather than attributing everything to one large architecture.
