@@ -1,0 +1,127 @@
+name: Compile rational theorem maze v0.2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/compile_rational_theorem_maze_v02.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended
+
+      - name: Apply two display-only line-wrap fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          roots = [
+              Path('cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2'),
+              Path('cs.AI_Artificial_Intelligence/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2'),
+              Path('math.CO_Combinatorics/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2'),
+          ]
+          old1 = r'''\[
+          \text{raw BFS/Dijkstra}
+          \to
+          \text{canonical proof states}
+          \to
+          \text{partial-order or quotient reduction}
+          \to
+          \text{verified landmarks/macros}
+          \to
+          \text{admissible abstraction}
+          \to
+          \text{incumbent-bounded A* or branch-and-bound}.
+          \]'''
+          new1 = r'''\[
+          \begin{array}{c}
+          \text{raw BFS/Dijkstra}\\
+          \downarrow\\
+          \text{canonical proof states}\\
+          \downarrow\\
+          \text{partial-order or quotient reduction}\\
+          \downarrow\\
+          \text{verified landmarks/macros}\\
+          \downarrow\\
+          \text{admissible abstraction}\\
+          \downarrow\\
+          \text{incumbent-bounded A* or branch-and-bound.}
+          \end{array}
+          \]'''
+          old2 = r'''\[
+          \boxed{
+          \text{formal system}
+          \longrightarrow
+          \text{theorem maze}
+          \longrightarrow
+          \text{weighted graph search}
+          \longrightarrow
+          \text{verified history / SIC}
+          \longrightarrow
+          \text{optional dynamical and reflective control}.
+          }
+          \]'''
+          new2 = r'''\[
+          \boxed{
+          \begin{array}{c}
+          \text{formal system}\\
+          \downarrow\\
+          \text{theorem maze}\\
+          \downarrow\\
+          \text{weighted graph search}\\
+          \downarrow\\
+          \text{verified history / SIC}\\
+          \downarrow\\
+          \text{optional dynamical and reflective control.}
+          \end{array}}
+          \]'''
+          for root in roots:
+              p = root / 'part_00_big_picture.tex'
+              s = p.read_text()
+              if old1 in s:
+                  p.write_text(s.replace(old1, new1))
+              p = root / 'part_00_maze_primer.tex'
+              s = p.read_text()
+              if old2 in s:
+                  p.write_text(s.replace(old2, new2))
+          PY
+
+      - name: Compile primary PDF
+        run: |
+          ROOT='cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2'
+          cd "$ROOT"
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          mv main.pdf From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2.pdf
+
+      - name: Copy compiled PDF to secondary classification folders
+        run: |
+          NAME='From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2.pdf'
+          SRC="cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2/$NAME"
+          cp "$SRC" "cs.AI_Artificial_Intelligence/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2/$NAME"
+          cp "$SRC" "math.CO_Combinatorics/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2/$NAME"
+
+      - name: Commit PDFs and line-wrap fixes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2 \
+            cs.AI_Artificial_Intelligence/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2 \
+            math.CO_Combinatorics/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit.'
+          else
+            git commit -m 'Compile rational theorem maze v0.2 PDF'
+            git push
+          fi
