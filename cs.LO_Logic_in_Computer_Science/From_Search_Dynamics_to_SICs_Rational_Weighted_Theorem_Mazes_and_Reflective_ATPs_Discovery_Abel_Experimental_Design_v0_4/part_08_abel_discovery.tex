@@ -1,0 +1,198 @@
+\section{The Abel equation and approximate discovery coordinates}\label{sec:abel-discovery}
+
+Section~\ref{sec:control-amld} introduced Abel coordinates as a possible progress variable for settlement control, while Section~\ref{sec:discovery} separated a binary verifier-backed discovery event from the graded state that precedes it. The two ideas fit naturally together. The classical Abel equation
+\[
+A(Tx)=A(x)+1
+\]
+conjugates iteration of a transformation $T$ to translation by one unit. In the theory of iterative functional equations this is one of the standard linearizing equations associated with iteration and conjugacy \cite{kuczmaife}. For theorem search, however, the relevant object is usually not one deterministic map but a controlled, possibly stochastic transition system. The aim is therefore not to assume that an exact global Abel function exists. It is to ask whether a scalar coordinate can be learned on audited trajectories so that motion toward discovery becomes approximately translational and therefore measurable.
+
+\subsection{The discovery set and the pre-terminal Abel law}
+Let $\mathcal D\subseteq X$ be the declared discovery set: states in which the current experiment has credited a strict verifier-backed discovery. The set is absorbing for measurement purposes. Thus after $X_t\in\mathcal D$ the experiment may freeze the trajectory, and no Abel translation law is required beyond the hitting time
+\[
+\tau_{\mathcal D}=\inf\{t:X_t\in\mathcal D\}.
+\]
+This restriction matters because an absorbing state has zero increment, whereas the Abel equation describes pre-terminal progress.
+
+Suppose a finite action set $\mathcal A$ controls a transition kernel
+\[
+X_{t+1}\sim K(\cdot\mid X_t,a_t),
+\]
+and each action carries an exact nonnegative rational cost
+\[
+c(x,a)\in\Qnn.
+\]
+The unit-cost case is $c\equiv1$, one unit per control epoch or verifier call.
+
+Define the optimal expected remaining discovery cost
+\[
+V^*(x)=\inf_{\pi}\mathbb E_x^\pi\!\left[\sum_{t<\tau_{\mathcal D}}c(X_t,a_t)\right],
+\qquad V^*(z)=0\quad(z\in\mathcal D),
+\]
+whenever this quantity is finite and the usual Bellman principle is valid.
+
+\begin{proposition}[Bellman-Abel correspondence for discovery]
+Assume $V^*$ satisfies the Bellman equation
+\[
+V^*(x)=\min_{a\in\mathcal A}\left\{c(x,a)+\mathbb E[V^*(X_{t+1})\mid X_t=x,a_t=a]\right\}
+\]
+for every $x\notin\mathcal D$. Set
+\[
+A^*(x)=-V^*(x).
+\]
+Then
+\[
+\max_{a\in\mathcal A}
+\left\{
+\mathbb E[A^*(X_{t+1})-A^*(x)\mid x,a]-c(x,a)
+\right\}=0.
+\]
+For every Bellman-optimal action $a^*(x)$,
+\[
+\mathbb E[A^*(X_{t+1})-A^*(x)\mid x,a^*(x)]=c(x,a^*(x)).
+\]
+In the unit-cost case,
+\[
+\max_a\mathbb E[A^*(X_{t+1})-A^*(x)\mid x,a]=1.
+\]
+\end{proposition}
+
+\begin{proof}
+Multiply the Bellman equation by $-1$ and use $A^*=-V^*$. This gives
+\[
+A^*(x)=\max_a\left\{\mathbb E[A^*(X_{t+1})\mid x,a]-c(x,a)\right\}.
+\]
+Subtracting $A^*(x)$ yields the first identity. Equality for an optimal action is immediate, and $c\equiv1$ gives the final statement.
+\end{proof}
+
+This proposition gives a precise sense in which the Abel equation can become involved with discovery. Bellman distance says how much expected discovery cost remains; the negative value $A^*$ is a coordinate in which an optimal transition advances by exactly the cost spent. With unit transaction cost, optimal expected motion is translation by one.
+
+\subsection{Abel drift, Bellman-Abel residual, and action scores}
+An exact $A^*$ will rarely be known on a large implicit theorem maze. Let $\widehat A$ be an approximation learned from earlier audited rungs. Define the conditional Abel drift of action $a$ by
+\[
+\widehat\mu_a(x)
+:=
+\mathbb E[\widehat A(X_{t+1})-\widehat A(x)\mid x,a].
+\]
+For unequal action costs, the cost-adjusted score is
+\[
+\widehat s_a(x)
+:=
+\widehat\mu_a(x)-c(x,a).
+\]
+Under the exact Bellman-Abel coordinate, the largest score is zero; optimal actions attain zero and suboptimal actions have nonpositive score. Thus a controller can use
+\[
+\widehat a(x)\in\arg\max_a\widehat s_a(x)
+\]
+as a local approximation to the Bellman-optimal discovery action. Under unit costs this is equivalent to maximizing predicted Abel drift.
+
+A statewise Bellman-Abel residual is
+\[
+\rho_{BA}(x)
+=
+\widehat A(x)-
+\max_a\left\{
+\mathbb E[\widehat A(X_{t+1})\mid x,a]-c(x,a)
+\right\}.
+\]
+A trajectory residual for a selected action is
+\[
+\epsilon_{A,t}
+=
+\widehat A(X_{t+1})-\widehat A(X_t)-c(X_t,a_t).
+\]
+The two residuals answer different questions. $\rho_{BA}$ asks whether the fitted coordinate is approximately Bellman-consistent at the state. $\epsilon_{A,t}$ asks how a particular executed transition departed from the ideal translation law. A model may have a modest average Bellman residual while a controller repeatedly chooses actions with poor realized increments; both quantities should therefore be logged.
+
+\subsection{Abel discovery advantage versus binary discovery gain}
+Section~\ref{sec:discovery} defined finite-budget binary discovery gain $\DG_R(a,x)$. An Abel coordinate provides a local graded analogue. Relative to a baseline action $a_0$, define
+\[
+\ADG_A(a,x)
+:=
+\mathbb E[\widehat A(X_{t+1})-\widehat A(x)\mid x,a]
+-
+\mathbb E[\widehat A(X_{t+1})-\widehat A(x)\mid x,a_0].
+\]
+For unequal costs one should instead compare the cost-adjusted scores,
+\[
+\widetilde{\ADG}_A(a,x)=\widehat s_a(x)-\widehat s_{a_0}(x).
+\]
+
+These quantities are not definitions of mathematical discovery and they are not automatically equal in sign to $\DG_R$. A one-step drift advantage need not produce a larger $R$-step hitting probability when there are detours, state aliasing, heavy tails, or model error. Their value is experimental: they can distinguish two failed trajectories that both have binary score zero at budget $R$ but move very differently through the search state space.
+
+\subsection{Approximation and action-gap stability}
+The practical question is not whether $\widehat A$ is numerically exact. It is whether approximation error is small enough to preserve useful action decisions.
+
+\begin{proposition}[Action-gap stability under Abel-score error]
+Fix a state $x$ and let
+\[
+s_a(x)=\mathbb E[A^*(X_{t+1})-A^*(x)\mid x,a]-c(x,a)
+\]
+be the true Bellman-Abel score. Suppose
+\[
+|\widehat s_a(x)-s_a(x)|\le\varepsilon
+\]
+for every action. If the best true action $a^*$ is unique and its gap over the second-best action satisfies
+\[
+s_{a^*}(x)-\max_{a\ne a^*}s_a(x)>2\varepsilon,
+\]
+then every maximizer of $\widehat s_a(x)$ is $a^*$.
+\end{proposition}
+
+\begin{proof}
+For any $a\ne a^*$,
+\[
+\widehat s_{a^*}\ge s_{a^*}-\varepsilon
+> s_a+\varepsilon
+\ge\widehat s_a.
+\]
+\end{proof}
+
+This gives a concrete meaning to ``good enough'' Abel approximation. A small absolute error is not sufficient when competing interventions are nearly tied; a much larger error may be harmless when the action gap is large.
+
+\subsection{Positive Abel drift and discovery time}
+The settlement drift theorem from Section~\ref{sec:control-amld} applies directly when discovery rather than settlement is the absorbing target. Let $D_A(x)\ge0$ be a shifted discovery-distance surrogate, for example $D_A=-A$ after normalizing the discovery set to level zero. If a frozen policy satisfies
+\[
+\mathbb E[D_A(X_{t+1})-D_A(X_t)\mid\mathcal F_t]\le-\mu
+\]
+with $\mu>0$ before discovery, then under the same optional-stopping hypotheses,
+\[
+\mathbb E[\tau_{\mathcal D}]\le\frac{D_A(X_0)}{\mu}.
+\]
+Together with the finite-budget variance penalty already proved for Control AMLD, this suggests a discovery control signature containing at least
+\[
+(\widehat\mu,\widehat\sigma^2,\rho_{BA},\epsilon_A,h_R).
+\]
+The binary hazard $h_R$ says whether discovery occurs inside a declared horizon; Abel drift and residual say how the trajectory moves even when it does not.
+
+\subsection{Learning an approximate Abel coordinate without leakage}
+The forward-chaining requirement is strict. For rung $k$, $\widehat A_k$ may use only trajectories from rungs $<k$. The model, normalization, action grammar, feature map, and hyperparameters are frozen before rung $k$ is revealed to the verifier loop. Current-rung outcomes cannot be used to alter the coordinate that predicts the current rung.
+
+Two complementary fitting losses are useful. On audited progress-bearing segments of earlier successful trajectories, a pathwise Abel loss is
+\[
+\mathcal L_{\mathrm{path}}(A)
+=
+\sum_{(x,a,x')\in\mathcal T_{\mathrm{prog}}}
+ w(x,a,x')\bigl(A(x')-A(x)-c(x,a)\bigr)^2
++
+\lambda\sum_{z\in\mathcal D}A(z)^2.
+\]
+The terminal term anchors discovery at zero. Because not every attempted transition is optimal or even productive, the pathwise loss should not be indiscriminately imposed on all actions.
+
+A Bellman-style alternative uses all previously observed action outcomes:
+\[
+\mathcal L_{BA}(A)
+=
+\sum_{x\in\mathcal X_{\mathrm{train}}}
+\left[
+A(x)-
+\max_a\{\widehat{\mathbb E}[A(X')\mid x,a]-c(x,a)\}
+\right]^2
++
+\lambda\sum_{z\in\mathcal D}A(z)^2.
+\]
+The first loss asks for translation along audited productive paths; the second asks for approximate dynamic-programming consistency. Agreement between them would be especially informative. Disagreement is also useful because it may reveal that a scalar coordinate is insufficient.
+
+\begin{caution}[Approximation is a hypothesis, not a theorem of theorem proving]
+Nothing above proves that a low-dimensional Abel coordinate exists for unrestricted proof search, that it transfers between mathematical domains, or that one scalar captures trajectories containing necessary detours. The approximation is justified only by held-out drift, residual, calibration, and control performance. If those fail, the correct response is to enlarge the state representation, use a vector or history-valued coordinate, or abandon the Abel layer rather than force the data into the equation.
+\end{caution}
+
+The next section makes this falsifiability operational by treating each modification of the discovery controller as a new, frozen experimental iteration.

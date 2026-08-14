@@ -1,0 +1,177 @@
+\section{Experimental design for iterative discovery control}\label{sec:experimental-design}
+
+The discovery program is intentionally iterative. A failed intervention may reveal that the endpoint is too coarse, that the transformation grammar is weak, that the state representation omits a necessary variable, or that a promising idea simply does not transfer. Iteration is therefore not itself a methodological defect. The defect would be allowing information revealed by the current experiment to alter the current experiment while still reporting the result as if the protocol had been frozen in advance.
+
+The governing principle is:
+\begin{center}
+\emph{learn between experiments; freeze within experiments.}
+\end{center}
+A completed iteration may motivate a new feature, action family, Abel loss, budget, or controller. That change receives a new protocol version and is tested prospectively. The previous result remains an immutable audit artifact.
+
+\subsection{Three statistical units: rung, trajectory, transition}
+The experiment has three nested units that should not be conflated.
+\begin{enumerate}
+\item A \emph{rung} is a sealed theorem target with a fixed lower verified bank and declared representation interface.
+\item A \emph{trajectory} is one action-policy run on that rung under a fixed budget, seed, verifier, and candidate grammar.
+\item A \emph{transition} is one state-action-next-state observation inside a trajectory.
+\end{enumerate}
+A run may generate many transitions, but these transitions are not independent replications of the theorem-level effect. Settlement and binary discovery comparisons should therefore be paired primarily by rung. Transition-level Abel analyses should preserve rung or trajectory clustering rather than treat every verifier call as an independent theorem.
+
+\subsection{The frozen forward-chain protocol}
+For rungs $1,2,\ldots,K$, let $\mathcal H_{k-1}$ be the complete audited history available before rung $k$. A leak-free iteration performs the following steps in order.
+
+\begin{enumerate}[label=\textbf{E\arabic*.},leftmargin=2.7em]
+\item \textbf{Declare the semantics.} Freeze the verifier, equivalence relation, weak/operational discovery criteria, cost metric, resource horizon $R$, and strict rejection rules for incomplete certificates.
+\item \textbf{Declare the observables.} Freeze the state feature map $\phi(X)$, including any residual-goal, bank, representation, motif, and controller-state summaries used by the model.
+\item \textbf{Declare the actions.} Freeze the intervention grammar. For the present program these are ordinary search, motif development, residual-goal repair, representation modulation, and counterpoint-style search.
+\item \textbf{Fit only on the past.} Train the finite-horizon hazard model, mechanism model, and any Abel/Bellman approximation using only $\mathcal H_{k-1}$.
+\item \textbf{Freeze the prediction.} Before the first verifier call on rung $k$, record the predicted
+\[
+\widehat h_a(X_k;R)=\widehat{\Pr}(\tau_{\mathcal D}\le R\mid X_k,a),
+\]
+the predicted Abel score $\widehat s_a(X_k)$, and the selected action
+\[
+\widehat a_k\in\arg\max_a\widehat s_a(X_k)
+\]
+or the prospectively declared combined rule.
+\item \textbf{Run matched arms.} Give each intervention the same declared verifier-call budget, timeout, frozen lower bank, dependency environment, and seed schedule. Shared compiled sources may be cached, but their measured costs must be replay-accounted consistently.
+\item \textbf{Reveal and audit.} Only after all arms finish may the rung's outcomes, strict certificates, residual states, mechanism labels, and newly verified motifs enter the audit record.
+\item \textbf{Update the next iteration.} Add the audited rung to the training history for rung $k+1$. Any change to the model class, feature map, action grammar, or budget is a new experiment version rather than a retroactive correction to rung $k$.
+\end{enumerate}
+
+The strongest implementation records the pre-reveal predictions as a timestamped or hashed artifact before the verifier loop begins. This makes the no-peeking claim mechanically inspectable rather than dependent on memory.
+
+\subsection{The five-arm matched comparison}
+The current intervention set is:
+\[
+\begin{array}{ll}
+A_0:&\text{ordinary search},\\
+A_1:&\text{motif development},\\
+A_2:&\text{residual-goal repair},\\
+A_3:&\text{representation modulation},\\
+A_4:&\text{counterpoint-style search}.
+\end{array}
+\]
+The ordinary arm is the causal baseline. Every other arm must spend from the same budget $R$. Diagnostic tactics may inspect a goal and produce suggestions, but a suggestion is not a discovery until an explicit descendant source passes the strict verifier gate. Representation modulation may unfold, change basis, invoke a declared representation lemma, decompose, dualize, quotient, or normalize, but its transformation library must be frozen before the target is run. Counterpoint may exchange verified lemmas or diagnostic suggestions among coherent voices, but it receives no larger budget merely because it has more internal structure.
+
+The primary theorem-level endpoint is
+\[
+Y_R(a,k)=\mathbf 1\{\text{strict discovery on rung }k\text{ within }R\text{ calls under }a\}.
+\]
+The paired binary discovery gain is
+\[
+\DG_R(a,k)=Y_R(a,k)-Y_R(A_0,k)
+\]
+for a deterministic matched replay, or the corresponding probability difference when repeated randomization supports probability estimation.
+
+\subsection{Primary and secondary measurements}
+A single success percentage is insufficient for an iterative control program. Each rung should record at least:
+\begin{enumerate}
+\item strict discovery/settlement within $R$;
+\item verifier calls and exact declared cost to discovery;
+\item wall-clock verifier cost, kept separate from native proof cost;
+\item predicted hazard and its calibration score;
+\item predicted and realized Abel increments $\Delta\widehat A_t$;
+\item Bellman-Abel residual $\rho_{BA}$ and trajectory residuals $\epsilon_{A,t}$;
+\item increment variance and tail behavior;
+\item residual-goal signature changes and representation changes;
+\item strict rejects caused by `sorry', `admit', or equivalent incomplete-certificate conditions;
+\item mechanism labels and motif/lemma transfer into later rungs;
+\item action-selection regret relative to the per-rung hindsight oracle;
+\item later operational usefulness $U_R$ of any newly verified object.
+\end{enumerate}
+
+For hazard calibration, the Brier score
+\[
+\operatorname{BS}=\frac1N\sum_{i=1}^N(\widehat p_i-y_i)^2
+\]
+is a useful descriptive metric. For action choice, report both whether the selected action belongs to the hindsight argmax set and whether running only the prospectively selected action would have improved actual discovery rate or cost. A tie among all actions is not controller success merely because the selected action lies in the tied argmax set.
+
+\subsection{Iteration 1: the nine-rung H2 forward chain}
+The first explicit discovery forward-chain experiment used nine already solved H2-local targets, treated one at a time as if unknown. For rung $k$, only outcomes from rungs $<k$ were available to the predictor. Historical proof-search specifications and historical proof bodies were excluded, the current target's canonical proof body was not read, and settlement required a strict Lean certificate with no `sorry'/`admit' source token or compiler warning. Each of the five actions received
+\[
+R=8
+\]
+verifier calls with a 20-second per-call timeout.
+
+The aggregate result was:
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Action & Settled & Hit@1 & Hit@2 & Mean attempts on settled\\
+\midrule
+Ordinary search & 2/9 & 0.222 & 0.222 & 1\\
+Motif development & 2/9 & 0.000 & 0.000 & 3\\
+Residual-goal repair & 2/9 & 0.222 & 0.222 & 1\\
+Representation modulation & 2/9 & 0.111 & 0.111 & 4\\
+Counterpoint search & 2/9 & 0.222 & 0.222 & 1\\
+\bottomrule
+\end{tabular}
+\caption{First leak-free H2 discovery forward chain at matched budget $R=8$. All five arms reached exactly the same two of nine rungs.}
+\end{table}
+
+The two reachable rungs were the permutation-sign-square and complement-round-trip targets. None of the five arms discovered any of the remaining seven within the budget. Consequently, on every rung and every nonbaseline action, the realized binary matched gain was
+\[
+\DG_8(a,k)=0.
+\]
+The per-rung hindsight oracle across all five arms therefore also reached only $2/9$, exactly the ordinary-search reach. The frozen probability predictor had mean Brier score approximately $0.2218$. Its selected action belonged to the binary hindsight argmax set on $9/9$ rungs, but that statistic is vacuous here because the binary argmax set contained every action on every rung.
+
+This is a useful negative control. It does not show that motif development, repair, modulation, or counterpoint are intrinsically useless. It shows that the implemented grammars did not enlarge the strict $R=8$ reachable set, and that the binary endpoint supplied no differential training signal for choosing among them. The experiment therefore motivates a finer state-transition measurement rather than post hoc tuning of an exploration constant.
+
+\subsection{Iteration 2: Discovery Abel v4}
+The next experiment should preserve the same strict certificate gate and matched-budget logic while adding transition-level observation. Every verifier call should record the complete reproducible state summary before the action, the chosen intervention and candidate family, the next residual state, the exact declared cost, the strict verifier result, and the features required to evaluate $\widehat A$.
+
+For rung $k$, fit $\widehat A_k$ only on earlier rungs. Before revealing any current-rung outcome, freeze:
+\[
+\widehat h_a(X_k;R),\qquad
+\widehat\mu_a(X_k),\qquad
+\widehat s_a(X_k),\qquad
+\widehat a_k.
+\]
+Then run the same five arms. The principal new questions are:
+\begin{enumerate}[label=(\alph*)]
+\item Does positive held-out Abel drift predict later strict discovery even when $Y_R=0$ at the current horizon?
+\item Does the Bellman-Abel residual decrease as the training history grows?
+\item Does the intervention with largest predicted Abel score produce larger realized drift than ordinary search on unseen rungs?
+\item Does selecting the largest predicted drift eventually improve binary discovery probability, cost-to-discovery, or both?
+\item Are the gains robust when the target requires a temporary detour that makes a naive distance coordinate worse before it improves?
+\end{enumerate}
+
+The primary causal comparison remains the prospectively selected controller versus ordinary search. The four individual nonbaseline arms are mechanistic ablations. This keeps multiple exploratory comparisons from being mistaken for four separate confirmatory claims.
+
+\subsection{Analysis rules for small forward chains}
+With nine rungs, raw paired outcomes and uncertainty are more informative than elaborate significance claims. For binary outcomes, report the full $2\times2$ paired table against ordinary search and use an exact paired test only when discordant rungs exist. For continuous or ordinal costs, report paired rung-level differences and robust intervals. For Abel transition data, do not compute artificially tiny standard errors by treating hundreds of transitions from one rung as hundreds of independent theorem targets; resampling or uncertainty estimates should cluster at least by rung and preferably by theorem family.
+
+Model comparison must also remain forward. Hyperparameters may be selected from earlier rungs or from an independent development family, but not by observing which setting would have won on the current sealed rung. If a new loss, normalization, motif grammar, or feature set is proposed after examining the current results, that proposal becomes the next protocol version.
+
+\subsection{Escalation across theorem families}
+A discovery controller should not be trusted on a live frontier merely because it works on one local H2 sequence. A reasonable escalation ladder is:
+\[
+\begin{array}{c}
+\text{same nine H2 rungs with richer transition logging}\\
+\downarrow\\
+\text{larger solved Hodge-rung library}\\
+\downarrow\\
+\text{second formal theorem family with different mechanisms}\\
+\downarrow\\
+\text{sealed cross-family replication}\\
+\downarrow\\
+\text{application to the current unresolved frontier.}
+\end{array}
+\]
+At every stage the current target remains hidden from the model used to predict it. Cross-family replication is especially important for testing whether the Abel coordinate captures a transferable property of discovery dynamics rather than memorizing one local sequence of Hodge constructions.
+
+\subsection{Decision rules for the next iteration}
+The iterative program should have explicit reactions to possible outcomes.
+\begin{itemize}
+\item If binary discovery gain is positive and replicated, retain the successful intervention and test whether the gain survives new families and budgets.
+\item If binary gain is zero but Abel drift separates the arms and predicts later discovery, extend the horizon or strengthen the controller while keeping the graded signal frozen prospectively.
+\item If Abel drift separates arms but does not predict later discovery, treat it as a descriptive coordinate rather than a control variable.
+\item If no scalar coordinate predicts either progress or intervention benefit, test a vector or history-dependent representation instead of forcing a scalar Abel model.
+\item If an apparent gain disappears under the strict certificate gate, preserve the diagnostic trace but reject the mathematical conclusion.
+\item If a new representation or mechanism is invented after seeing a failure, document it as the hypothesis of the next iteration rather than rewriting the failed iteration as a success.
+\end{itemize}
+
+This versioned procedure turns repeated experimentation into cumulative evidence. The machine is allowed to learn from failure; the experiment is not allowed to forget that the failure happened.
