@@ -1,0 +1,75 @@
+\section{The theoremhood quotient: proofs as representatives}
+The maze picture suggests a deliberately coarse equivalence relation on successful routes. Fix a formal system $F$, hypotheses $\Gamma$, target theorem $\varphi$, and a theorem maze whose edge labels record the inference applications used along a directed walk. Let $\Pi(P)$ denote the pullback of a finite proof tour $P$ to its corresponding finite sequence of well-formed formulas (WFFs). Let $\mathcal W_\varphi$ be the set of finite directed tours from the entrance to a designated $\varphi$-exit, and let
+\[
+\mathcal P_\varphi
+=
+\{P\in\mathcal W_\varphi:\Pi(P)\text{ is a verifier-accepted proof of }\varphi\text{ from }\Gamma\}.
+\]
+Here ``tour'' means a finite directed walk from the entrance to an exit; no closed-walk convention is intended.
+
+\begin{definition}[Logical proof-tour relation]
+For $P,Q\in\mathcal W_\varphi$, write
+\[
+P\sim_\varphi Q
+\quad\Longleftrightarrow\quad
+\Pi(P)\text{ and }\Pi(Q)\text{ are both proofs of }\varphi\text{ from }\Gamma.
+\]
+\end{definition}
+
+\begin{theorem}[Proof-Tour Equivalence Theorem]
+Restricted to the successful proof-tour set $\mathcal P_\varphi$, the relation $\sim_\varphi$ is an equivalence relation. Equivalently, for any $P,Q\in\mathcal P_\varphi$,
+\[
+P\sim_\varphi Q
+\quad\Longleftrightarrow\quad
+\Pi(P)\text{ and }\Pi(Q)\text{ are both proofs of }\varphi\text{ from }\Gamma.
+\]
+If $\mathcal P_\varphi\neq\varnothing$, then every two successful tours are equivalent and therefore
+\[
+\mathcal P_\varphi/\!\sim_\varphi
+=
+\{[\varphi]\}.
+\]
+Thus the quotient forgets how the theorem was proved and remembers only the verified theoremhood represented by the successful class.
+\end{theorem}
+\begin{proof}
+Every $P\in\mathcal P_\varphi$ pulls back by definition to a verified proof of $\varphi$ from $\Gamma$. Hence every pair $P,Q\in\mathcal P_\varphi$ satisfies $P\sim_\varphi Q$. The restricted relation is therefore the universal relation on $\mathcal P_\varphi$, which is reflexive, symmetric, and transitive. If the set is nonempty, its quotient has exactly one class.
+\end{proof}
+
+This is the coarsest logical quotient for a fixed theorem. A short proof, a long proof, a proof discovered by BFS, a proof discovered by DATA, and any other verifier-accepted proof of the same $\varphi$ are different representatives of the same logical class $[\varphi]$. The route still matters computationally, but not for the bare fact $\Gamma\vdash_F\varphi$.
+
+\begin{corollary}[Proof Horizon as minimum representative cost]
+Let $w:E\to\Qnn$ be the declared exact rational edge-cost map. Define the class cost by
+\[
+H_w(\Gamma,\varphi)
+=
+\inf_{P\in[\varphi]} w(P).
+\]
+Whenever the presentation guarantees that the infimum is attained (for example, in a finite maze, an effectively proper bounded layer, or the unit-cost proof-length setting),
+\[
+H_w(\Gamma,\varphi)
+=
+\min_{P\in[\varphi]} w(P).
+\]
+Thus the weighted Proof Horizon is naturally a property of the entire theoremhood class rather than of any one chosen proof.
+\end{corollary}
+
+In the unit-cost normalization
+\[
+w(e)=1
+\quad\text{for every inference edge }e,
+\]
+we obtain
+\[
+w(P)=|P|
+\]
+and hence, whenever $\Gamma\vdash_F\varphi$,
+\[
+H_1(\Gamma,\varphi)
+=
+\min_{P\in[\varphi]}|P|,
+\]
+the shortest proof length. This recovers the unit-weight BFS/Proof-Horizon picture in quotient language: the theorem is the equivalence class, a concrete proof is a representative, and the Horizon is the cost of the cheapest representative.
+
+\begin{caution}[Logical quotient versus operational compression]
+The theoremhood quotient is conceptually strong but does not by itself supply a search shortcut. To recognize that an unexplored tour belongs to $[\varphi]$ is already to establish that its pullback proves $\varphi$. Operational compression therefore requires finer effectively recognizable quotients or canonicalizations---for example, commuting independent inference steps, verified DAG identities, syntactic normal forms, or other verifier-respecting reductions that preserve the chosen reachability and cost objective. The theoremhood quotient supplies the semantic endpoint against which those finer reductions can be compared.
+\end{caution}

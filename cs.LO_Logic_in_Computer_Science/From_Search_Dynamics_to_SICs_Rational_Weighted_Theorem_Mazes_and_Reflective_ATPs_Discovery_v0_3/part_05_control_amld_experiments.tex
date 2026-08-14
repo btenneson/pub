@@ -1,0 +1,216 @@
+\section{Control AMLD theory: from static compassing to feedback settlement}
+\label{sec:control-amld}
+
+The preceding sections separate logical authority from search policy: the verifier alone decides whether a certificate is accepted, while learned or hand-designed components decide where computational effort is spent. The next step is to make that policy itself a mathematical object. A \emph{control AMLD} is an AMLD equipped with a feedback controller whose actions allocate search effort among proof, refutation, independence, representation change, and meta-level reasoning while preserving conservative certificate semantics.
+
+\subsection{State, actions, and the control objective}
+Let $X_t$ denote the complete unsettled search state at control epoch $t$. It may contain the typed verified bank, the $P/R/I$ frontiers, learned compass features, resource counters, current incumbent certificates, and meta-level information. Let the action $u_t$ encode a resource allocation or search intervention, for example
+\[
+ u_t=(r_P,r_R,r_I,r_M,a_{\rm repr},a_{\rm bank}),
+ \qquad r_i\ge 0,\qquad \sum_i r_i\le R_t.
+\]
+The controlled transition law may be stochastic,
+\[
+ X_{t+1}\sim K(\,\cdot\mid X_t,u_t\,),
+\]
+while the settlement set $\mathcal S$ remains verifier-defined and absorbing. The controller does not certify theoremhood, refutability, or independence; it chooses computation intended to reach one of the accepted certificate classes sooner.
+
+A basic finite-horizon objective is
+\[
+ J_\pi(x;B)=\Pr_x^\pi(\tau_{\mathcal S}\le B),
+\]
+and a cost objective is
+\[
+ V_\pi(x)=\mathbb E_x^\pi\!\left[\sum_{t<\tau_{\mathcal S}} c(X_t,u_t)\right],
+\]
+with exact rational transaction costs available when desired. On a finite controlled theorem maze, standard Bellman recursion therefore supplies an exact benchmark value function against which a learned compass or scheduler can be compared. This makes control AMLD theory a bridge between the rational theorem-maze layer and the learned navigation layer rather than a replacement for either.
+
+\subsection{Abel coordinates and control-Lyapunov coordinates}
+The functional-equation viewpoint suggests searching for a scalar coordinate $A$ in which successful progress is approximately translation:
+\[
+ A(Tx)-A(x)\approx 1.
+\]
+Equivalently, with $V=-A$ up to an additive constant, useful actions should make a settlement-distance surrogate decrease. The relevant empirical quantity is not merely whether $A$ correlates with proof depth, but whether the \emph{executed controlled increments}
+\[
+ \Delta A_t=A(X_{t+1})-A(X_t)
+\]
+have positive drift and tolerable variance on held-out trajectories. A natural diagnostic is the Abel residual
+\[
+ \epsilon_A=\mathbb E\bigl|A(X_{t+1})-A(X_t)-1\bigr|.
+\]
+This is stricter than a static rank metric: a model can rank proof-DAG nodes well yet choose an off-DAG successor and immediately destroy the trajectory.
+
+\begin{theorem}[Abel-drift settlement bound]
+Let $D(X_t)\ge 0$ before settlement and suppose that, for some $\mu>0$,
+\[
+ \mathbb E[D(X_{t+1})-D(X_t)\mid\mathcal F_t]\le -\mu
+\]
+whenever $X_t\notin\mathcal S$. Under the standard optional-stopping integrability conditions, if $\tau$ is first settlement time, then
+\[
+ \mathbb E[\tau]\le \frac{D(X_0)}{\mu}.
+\]
+\end{theorem}
+\begin{proof}
+The stopped process $M_t=D(X_{t\wedge\tau})+\mu(t\wedge\tau)$ is a supermartingale. Hence
+\[
+ \mathbb E[D(X_{t\wedge\tau})]+\mu\mathbb E[t\wedge\tau]\le D(X_0).
+\]
+Discard the nonnegative first term and pass to the limit under the stated integrability hypotheses.
+\end{proof}
+
+\begin{theorem}[Finite-budget variance penalty]
+Assume progress increments have mean $\mu>0$ and variance $\sigma^2$, with independence or martingale-difference hypotheses sufficient for additive variance. If cumulative progress $D$ is required and $B\mu>D$, then Cantelli's inequality gives
+\[
+ \Pr\!\left(\sum_{t=1}^B\Delta A_t<D\right)
+ \le
+ \frac{B\sigma^2}{B\sigma^2+(B\mu-D)^2}.
+\]
+\end{theorem}
+
+Thus a control signature should include variance as well as drift. A policy with slightly smaller mean progress but much smaller variance may be preferable under a hard proof budget.
+
+\begin{theorem}[Robust Lyapunov control under compass error]
+Suppose a true control-Lyapunov quantity $V\ge0$ admits an ideal action with expected one-step decrease at least $\alpha>0$. If the learned action loses at most $\epsilon$ expected decrease relative to the ideal action at each unsettled state, then
+\[
+ \mathbb E[V(X_{t+1})-V(X_t)\mid X_t]\le-(\alpha-\epsilon).
+\]
+If $\epsilon<\alpha$, the same drift argument yields
+\[
+ \mathbb E[\tau]\le \frac{V(X_0)}{\alpha-\epsilon}.
+\]
+\end{theorem}
+
+This result gives a useful interpretation of compass error: the relevant question is whether approximation regret is smaller than the available control margin, not whether the learned distance is numerically exact.
+
+\subsection{P/R/I control and resource allocation}
+Equal-turn scheduling is a strong neutral baseline because it prevents starvation. Once agent-specific short-horizon response curves can be estimated, however, a feedback controller can ask a more precise question: where does the next unit of computation have the highest marginal settlement value?
+
+\begin{theorem}[Concave resource water filling]
+Suppose $m$ AMLD agents receive resources $r_i\ge0$ with $\sum_i r_i=R$, and agent $i$ contributes an increasing differentiable concave short-horizon settlement hazard $h_i(r_i)$. Any maximizer of
+\[
+ H(r)=\sum_i h_i(r_i)
+\]
+satisfies the KKT conditions
+\[
+ h_i'(r_i)=\lambda
+\]
+for active agents, while inactive agents satisfy $h_i'(0)\le\lambda$.
+\end{theorem}
+
+The theorem does not establish that real $P/R/I$ response curves are additive or concave. It states what optimal allocation looks like if those measurable assumptions are approximately true over a control epoch. This yields a direct experiment: estimate $h_P,h_R,h_I$ on sealed ALD/NOTALD tasks, compare water filling with equal-turn scheduling, and test whether a low-dimensional switching surface predicts reallocations.
+
+\subsection{Five deliberately open control-AMLD conjectures}
+The following are research targets rather than established properties of theorem search.
+\begin{enumerate}[label=\textbf{C\arabic*.},leftmargin=2.2em]
+\item \textbf{Low-dimensional performance signature.} A small vector of quantities such as global discrimination, distance-order quality, local tunneling quality, drift, variance, and Abel residual predicts held-out settlement probability and effort across broad theorem families.
+\item \textbf{Emergent Abel coordinate.} With sufficient true proof-DAG training, a scalar $A$ emerges for which successful controlled transitions have an approximately stationary residual $A(Tx)-A(x)-c$ on unseen theorem families.
+\item \textbf{Control-Lyapunov equivalence.} On a broad finitely branching class, highly reliable settlement guidance is essentially equivalent to the existence of a learnable scalar or low-dimensional control-Lyapunov representation.
+\item \textbf{P/R/I switching surfaces.} With a shared verified bank and online hazard estimates, near-optimal resource control can be represented by relatively simple switching surfaces rather than long-memory chaotic alternation.
+\item \textbf{Fast-global/slow-local learning.} Compass learning has at least two distinct scales: global proof-geometry discrimination matures relatively early, while local direct-parent tunneling requires substantially more true DAG data.
+\end{enumerate}
+
+\section{Our settlement-compass experiments}
+\label{sec:compass-experiments}
+
+The experimental program in the public ATP repository evolved in stages. Experiments 001 and 002 established the navigation-diagnostic machinery and small-DAG comparisons. Experiment 003 introduced shell-size comparisons. Those early studies were useful engineering and exploratory work, but changing training histories or candidate construction could confound a causal interpretation of training-set size. Experiment 004 was therefore redesigned as the primary clean learning-curve experiment. Experiment 005 then began the more demanding transition from static DAG ranking to executed control trajectories and Abel/Bellman diagnostics.
+
+The public result directory is
+\begin{center}
+\url{https://github.com/btenneson/ATP/tree/main/optimizations/settlement_compass/results}.
+\end{center}
+
+\subsection{Experiment 004: frozen nested shells and the MAX ``stupid case''}
+One eligible proof-DAG universe was split once into a sealed twenty-target test set and a training pool. Nested shells were taken from one frozen ordering,
+\[
+ S_{10}\subset S_{20}\subset S_{40}\subset S_{80}\subset S_{160}\subset S_{\max},
+\]
+with every shell trained from scratch under the same feature coordinates, negative samples, test candidate pools, seeds, and model class. The deliberately oversized MAX condition used all $3{,}612$ eligible remaining true training roots. This was designed to reveal whether additional true DAG data still mattered after the ordinary shells appeared to saturate.
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rrrrrr}
+\toprule
+Training roots & AUC & Distance $\rho$ & MAE & P@10 & Median direct-parent rank\\
+\midrule
+10 & 0.8353 & 0.2398 & 2.5042 & 0.450 & 569\\
+20 & 0.8650 & 0.2784 & 2.4310 & 0.415 & 237.5\\
+40 & 0.8761 & 0.3149 & 2.5080 & 0.490 & 219\\
+80 & 0.8876 & 0.3318 & 2.7019 & 0.570 & 251\\
+160 & 0.8880 & 0.3427 & 2.8086 & 0.555 & 199\\
+3612 (MAX) & 0.8824 & 0.3483 & 2.3993 & 0.670 & 57\\
+\bottomrule
+\end{tabular}
+\caption{Experiment 004 aggregate results on one sealed twenty-target set. The experiment is a retrospective proof-DAG navigation diagnostic, not an end-to-end ATP race.}
+\end{table}
+
+The global classifier essentially stops improving in AUC by the $80$--$160$ region, whereas local navigation remains sensitive to the very large corpus. At MAX, precision@10 reaches $0.670$, median first direct-parent rank falls to $57$, and the compass beats random direct-parent ordering on $17/20$ targets, versus $12/20$ at the 160 shell. The MAX classifier used roughly $1.98$ million classifier examples and $1.37$ million regression examples.
+
+\subsection{Illustrative learning-curve fits}
+With only six aggregate training conditions, curve fitting must remain descriptive. The purpose is to estimate plausible scales and design the next shells, not to declare a universal learning law. A simple saturation model is
+\[
+ y(n)=y_\infty-b e^{-n/\tau}.
+\]
+Least-squares fits to the current aggregate values give:
+\begin{table}[ht]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lrrrX}
+\toprule
+Metric and fitting range & $y_\infty$ & $\tau$ & $R^2$ & Interpretation\\
+\midrule
+AUC, shells 10--160 & 0.8868 & 14.3 & 0.982 & Very fast global-discrimination saturation; MAX AUC $0.8824$ is slightly below the fitted plateau.\\
+Distance Spearman, shells 10--160 & 0.3397 & 21.8 & 0.996 & Global distance ordering also matures quickly; MAX $0.3483$ modestly exceeds the five-shell extrapolation.\\
+Precision@10, all six conditions & 0.6643 & 137.6 & 0.893 & A substantially slower local/top-$k$ scale is compatible with the data.\\
+\bottomrule
+\end{tabularx}
+\caption{Illustrative one-timescale fits. The fitted $\tau$ values are model parameters, not proven sample-complexity constants.}
+\end{table}
+
+Under this model the P@10 timescale is about $9.6$ times the AUC timescale. That is quantitatively consistent with the fast-global/slow-local hypothesis, but the interval $160\to3612$ is too sparse to identify a genuine local exponential scale. A different low-parameter model also fits the local statistic reasonably well: on all six points, a log--log regression gives approximately
+\[
+ \operatorname{MedRank}_{\rm parent}(n)\approx 928\,n^{-0.335},
+\]
+with $R^2\approx0.889$ in log space. Because both saturation and power-law descriptions remain plausible at this resolution, the correct conclusion is experimental: add intermediate shells, not choose a favorite curve prematurely.
+
+The highest-value interpolation points are therefore roughly
+\[
+ n\in\{320,640,1280,2560\},
+\]
+with the original twenty test targets and every other frozen experimental choice unchanged. Model comparison should be done on predictive error, preferably by withholding one or more shell conditions or, better, by repeating the entire shell protocol on unrelated theorem families.
+
+\subsection{Experiment 005: the controller is harder than the compass}
+Experiment 005 extends the program to ``interpolation + retrospective executed DAG control trajectories'' and explicitly remains \emph{not} a live ATP race. The trajectory diagnostics begin measuring quantities required by the control theorems: learned and true drift, increment variance, Abel residual, Bellman-value error, hitting time, and trajectory settlement.
+
+One currently recorded aggregate at the 160-DAG shell is particularly instructive. Across $100$ retrospective trajectories, the learned progress coordinate had estimated drift
+\[
+ \widehat\mu\approx0.0526,
+\]
+learned increment variance about $0.659$, mean learned Abel residual about $1.016$, and Bellman-value MAE about $2.156$ on executed states, yet the recorded trajectory success rate was
+\[
+ 0/100.
+\]
+This is not a contradiction of the drift theorem: its hypotheses require a suitable uniform conditional decrease toward the actual settlement set, not merely a positive aggregate statistic on a mixture of transitions. The trajectories frequently terminate by selecting distractor/off-DAG states. The result is therefore scientifically useful: it shows exactly why control-AMLD evaluation must measure closed-loop trajectories rather than infer control quality from AUC, Spearman correlation, or static top-$k$ ranking alone.
+
+\subsection{What the experiments currently support}
+The present evidence is strongest for three claims of limited scope:
+\begin{enumerate}
+\item more true proof-DAG training measurably improves several held-out navigation statistics, with diminishing returns in global AUC;
+\item global discrimination and local tunneling need not saturate at the same training size;
+\item a static compass can look useful while a naive closed-loop controller still fails, so successor selection, off-DAG robustness, and control stability are independent research problems.
+\end{enumerate}
+The experiments do \emph{not} yet establish an end-to-end AMLD speedup, an optimal P/R/I resource policy, an Abel coordinate with stationary residual, or a universal two-timescale law.
+
+\subsection{Next control experiments}
+The next experiments should be deliberately causal and controller-facing:
+\begin{enumerate}[label=(\roman*)]
+\item fill the $160\to3612$ interval with frozen intermediate shells and refit one-, two-, and simple power-law learning curves;
+\item log complete executed trajectories so that $\mu$, $\sigma^2$, $\epsilon_A$, failure mode, and hitting time are measured per theorem rather than only in aggregate;
+\item on finite proof DAGs, compute the exact Bellman value function and compare the learned controller's action regret with the true one-step optimal action;
+\item run equal-turn versus hazard-water-filling $P/R/I$ schedules on sealed NOTALD controls before interpreting any gain on genuine independence problems;
+\item include deliberate detour mazes where every successful route must temporarily increase a naive distance, testing whether scalar Lyapunov control is sufficient or whether vector/history-valued state is required;
+\item retain an exhaustive/fair background search so that aggressive control changes order and resource allocation without silently deleting certificate-complete coverage.
+\end{enumerate}
+
+The control-AMLD program therefore turns a broad slogan---``make the search more intelligent''---into measurable quantities. The central empirical object is no longer just a classifier score; it is the distribution of verifier-respecting settlement trajectories under feedback.

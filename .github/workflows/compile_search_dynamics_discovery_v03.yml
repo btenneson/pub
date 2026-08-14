@@ -1,0 +1,53 @@
+name: Compile search dynamics Discovery v0.3
+
+on:
+  push:
+    paths:
+      - '.github/workflows/compile_search_dynamics_discovery_v03.yml'
+      - 'cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_v0_3/**.tex'
+      - 'cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_v0_3/README.md'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super
+
+      - name: Compile integrated v0.3 PDF
+        run: |
+          ROOT='cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_v0_3'
+          NAME='From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Addendum_v0_3.pdf'
+          cd "$ROOT"
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          mv main.pdf "$NAME"
+
+      - name: Upload compiled PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Addendum_v0_3
+          path: cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_v0_3/From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Addendum_v0_3.pdf
+
+      - name: Commit compiled PDF
+        run: |
+          ROOT='cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_v0_3'
+          NAME='From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Addendum_v0_3.pdf'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/$NAME"
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit.'
+          else
+            git commit -m 'Compile Discovery addendum v0.3 PDF'
+            git push
+          fi

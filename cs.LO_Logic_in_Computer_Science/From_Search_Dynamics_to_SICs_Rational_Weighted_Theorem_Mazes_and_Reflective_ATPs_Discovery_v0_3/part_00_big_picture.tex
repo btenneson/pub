@@ -1,0 +1,128 @@
+\section{Big picture: shrink the theorem maze before trying to outrun it}
+\label{sec:big-picture}
+
+\paragraph{Research judgment, not a theorem.}
+The ranking in this section is a research-priority assessment. It is based on which ideas attack the explicit bottleneck identified by the maze formulation---state-space explosion---while preserving exact logical correctness. Classical graph search already solves an explicitly presented finite maze efficiently relative to the size of that maze. The hard ATP problem is that the theorem maze is normally implicit and may be enormous before a useful exit is exposed. The most promising theories are therefore the ones that can provably or measurably reduce the state space, supply exact lower or upper bounds, or reuse verified structure before search expands most of the maze \cite{depths,horizon,data201}.
+
+\subsection{The program in one diagram}
+The proposed near-term hierarchy is
+\[
+\boxed{
+\begin{array}{c}
+\text{formal problem }(F,\Gamma,\varphi)\\[2pt]
+\downarrow\\[2pt]
+\text{implicit theorem maze }G\\[2pt]
+\downarrow\quad \text{exact quotient / partial-order / symmetry reduction}\\[2pt]
+G/\!\sim\\[2pt]
+\downarrow\quad \text{admissible abstraction and verified landmarks}\\[2pt]
+\bar G\\[2pt]
+\downarrow\quad \text{lower bound }h\text{ + verified incumbent }B\\[2pt]
+\text{incumbent-admissible search region}\\[2pt]
+\downarrow\\[2pt]
+\text{Dijkstra / A* / branch-and-bound / learned ordering}\\[2pt]
+\downarrow\\[2pt]
+\text{verifier-accepted exit.}
+\end{array}}
+\]
+The central aim is not to make every proof short. It is to arrange that the machine never materializes large families of routes that are redundant for the declared objective.
+
+\subsection{Most promising theories}
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{p{1.15cm}p{3.4cm}X}
+\toprule
+Priority & Theory or method & Why it looks promising for ATP search \\
+\midrule
+1 & Quotient state spaces, symmetry reduction, partial-order reduction, proof-DAG canonicalization & Directly attacks state explosion by identifying histories or interleavings that need not be explored separately. Model checking developed quotient, symmetry, and partial-order methods precisely because explicit reachability graphs explode; the proof-search analogue is to preserve theorem reachability and the chosen cost while exploring fewer representatives \cite{valmari,peled,symmetry,depths}. \\
+2 & Admissible abstraction + A* / branch-and-bound + Proof Horizon & Gives a mathematically safe way to combine a lower bound on cost-to-go with an upper bound from any verified incumbent. This can remove whole regions without trusting a learned guess. Pattern-database and abstraction heuristics show how abstract state spaces can generate admissible lower bounds in other search domains \cite{astar,korffelner,horizon,data201}. \\
+3 & Conservative compilation, verified shared landmarks, dynamic programming on proof DAGs & Reuses repeated verified substructure instead of rediscovering it. This is especially attractive when many routes share the same lemmas or subproofs; the author's earlier compilation and bank results give theorem-search-specific motivation \cite{depths,data3}. \\
+4 & Min-plus / tropical path algebra over exact rational costs & Gives a clean algebraic home for weighted theorem mazes: sequential inference costs add and alternative proof routes are minimized. It is more a unifying theory than a guaranteed speedup, but it may make dynamic programming, composition, and quotient costs easier to state and analyze \cite{gondranminoux}. \\
+5 & Learned cost-to-go, portfolio scheduling, Hilbert/locality ordering & Potentially powerful for deciding which surviving state to expand first. These methods can improve navigation without changing the verifier, but their advantage is empirical and distribution-dependent; Hilbert ordering in particular should be treated as a benchmarked locality heuristic rather than an optimality theorem \cite{hilbert,data3}. \\
+6 & IFS/semigroup, fractional iteration, reflective meta-ATP & Mathematically interesting long-term control theories. They may eventually describe hitting-time geometry or prove bounded facts about the searcher, but they are not prerequisites for the maze reduction program and currently have a less direct path to speed than exact quotienting and admissible bounds \cite{data3,depths}. \\
+\bottomrule
+\end{tabularx}
+\caption{Research-priority assessment for the maze-first program. The ordering is a judgment about likely leverage, not a proved dominance theorem.}
+\end{table}
+
+\subsection{The strongest near-term synthesis: quotient, abstraction, and bounds}
+The most concrete mathematical target is to combine exact state reduction with an admissible abstract distance. Let
+\[
+G=(V,E,s,Z,w)
+\]
+be a nonnegatively weighted theorem maze. First choose a verifier-respecting equivalence relation $\sim$ that merges only states whose distinction is irrelevant to the reachability and cost objective being preserved. Standard symmetry and partial-order reductions show how dramatic such reductions can be in other reachability systems, but the proof-specific preservation conditions must be proved rather than assumed \cite{valmari,peled,symmetry}.
+
+Next let
+\[
+\pi:V\to\bar V
+\]
+map the concrete maze into an abstract or relaxed maze $\bar G=(\bar V,\bar E,\bar Z,\bar w)$. Assume that every concrete path from $v$ to an exit maps to an abstract path from $\pi(v)$ to $\bar Z$ of no greater cost.
+
+\begin{proposition}[Abstract-distance lower bound]
+Under the preceding path-relaxation hypothesis,
+\[
+h(v):=d_{\bar w}(\pi(v),\bar Z)
+\]
+is admissible for the concrete theorem maze:
+\[
+h(v)\le d_w(v,Z).
+\]
+\end{proposition}
+\begin{proof}
+Every concrete $v$-to-exit path has an abstract image of no greater cost. Taking the minimum or infimum over abstract paths therefore cannot exceed the minimum or infimum over concrete paths.
+\end{proof}
+
+Now suppose the fast search wing has already found and verified an exit route of cost $B$. For a reached state $v$, let $g(v)$ be the exact cost already spent. Any route improving the incumbent must satisfy
+\[
+g(v)+h(v)<B.
+\]
+Therefore the next search can be confined to the \emph{incumbent-admissible region}
+\[
+\boxed{
+\mathcal C_B(h)=\{v\in V:g(v)+h(v)<B\}.
+}
+\]
+This is the clearest current mathematical answer to the question ``where should the ATP not look?'' The incumbent supplies an exact upper bound; the abstraction supplies an exact lower bound; quotienting reduces duplicate states before either bound is applied. The tighter the valid quotient and the lower bound, the smaller the region that remains eligible for an improving proof \cite{astar,korffelner,horizon}.
+
+\begin{caution}[Keep the cost metric fixed]
+The same metric must underlie $g$, $h$, and $B$. A native proof-length Horizon cannot be combined without proof with a heuristic that lower-bounds wall-clock search cost, and a macro-edge search cost need not equal the cost of its transparent native expansion. This metric-separation issue is already explicit in the DATA/Horizon framework \cite{data3}.
+\end{caution}
+
+\subsection{A natural algebra for proof classes: min-plus}
+The weighted maze and the proof-tour quotient fit the min-plus (tropical) semiring
+\[
+\mathbb T_{\mathbb Q}
+=\bigl(\Qnn\cup\{\infty\},\oplus,\otimes\bigr),
+\qquad
+a\oplus b=\min(a,b),\quad a\otimes b=a+b.
+\]
+Along one proof route, edge costs compose by $+$; among alternative routes proving the same theorem, the optimal representative is selected by $\min$. On a finite or otherwise effectively proper layer where the minimum is attained, the weighted Proof Horizon can therefore be written schematically as
+\[
+\boxed{
+H_w(\Gamma,\varphi)
+=
+\bigoplus_{P\in[\varphi]}
+\bigotimes_{e\in P} w(e).
+}
+\]
+This does not make state explosion disappear. Its value is structural: it turns ``proofs are paths and the Horizon is the cheapest representative'' into an ordinary algebraic-path statement, connecting the theorem-maze program to the established theory of graphs over semirings and dioids \cite{gondranminoux}.
+
+\subsection{What should be tested first}
+The first serious implementation target should therefore be a matched benchmark in which the same verifier-backed theorem mazes are searched under progressively stronger but separately measured reductions:
+\[
+\begin{array}{c}
+\text{raw BFS/Dijkstra}\\
+\downarrow\\
+\text{canonical proof states}\\
+\downarrow\\
+\text{partial-order or quotient reduction}\\
+\downarrow\\
+\text{verified landmarks/macros}\\
+\downarrow\\
+\text{admissible abstraction}\\
+\downarrow\\
+\text{incumbent-bounded A* or branch-and-bound.}
+\end{array}
+\]
+Learned ranking and Hilbert ordering can then be layered on the remaining region and evaluated by ablation. Fractional/continuous dynamics should be tested later, after the simpler graph reductions have been exhausted. This ordering makes failures informative: if a speedup occurs, the experiment can identify whether it came from structural compression, exact bounds, or heuristic navigation rather than attributing everything to one large architecture.

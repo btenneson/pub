@@ -1,0 +1,186 @@
+\section{Discovery}\label{sec:discovery}
+
+The preceding sections ask how a theorem maze can be compressed, bounded, navigated, and controlled. A different question is what it means for such a search to \emph{discover} something. For an automated system, this word should not be left as a synonym for ``the prover happened to finish.'' A useful formalization should distinguish a routine certificate from a genuinely new state transition, should be measurable on already solved problems, and should support a controller without permitting failure, timeout, or surprise to masquerade as mathematical knowledge.
+
+This section therefore treats discovery as a verifier-backed event with graded precursors and consequences. The endpoint can be binary once the experiment declares its equivalence relation and usefulness criterion; the approach to that endpoint need not be binary. Discovery readiness, finite-horizon discovery hazard, mechanism probability, discovery depth, and intervention gain can all be measured continuously.
+
+\subsection{Weak and operational discovery}
+Let $X_t$ be the complete operational state at stage $t$, including the verified bank, active goals, representation, frontier, controller state, resources, and proposal queues required to make the experiment reproducible. Let $B_t$ denote the cumulative verified bank, and let $q$ be a newly verifier-accepted mathematical record produced from $X_t$.
+
+Fix a verifier-respecting equivalence relation $\sim$ on records. The relation is part of the experimental declaration. It may identify alpha-renamings, canonicalized proof states, or other transformations whose preservation theorem has actually been established; it must not silently identify states merely because a heuristic says they look similar.
+
+\begin{definition}[Weak discovery]
+A verified record $q$ is a \emph{weak discovery} at stage $t$ when
+\[
+V(q)=1
+\qquad\text{and}\qquad
+[q]_{\sim}\notin B_t/\!\sim,
+\]
+where $V$ is the independent verifier gate.
+\end{definition}
+
+Weak discovery captures certified novelty. It deliberately does not require that every new lemma be important. In particular, the quotient prevents an ATP from claiming unlimited substantive discovery merely by producing syntactic variants when the declared equivalence already identifies them.
+
+To formalize usefulness, fix a target distribution $\mu$, a controller $\pi$, and a finite resource budget $R$. Let $D_{\pi}(C\mid X)$ be the settlement cost of target $C$ from state $X$, with value $+\infty$ if settlement does not occur. Define the capped finite-budget cost
+\[
+D_{\pi,R}(C\mid X):=\min\{D_{\pi}(C\mid X),R+1\}.
+\]
+Thus a failure to settle inside budget receives the finite penalty $R+1$. For a verified record $q$, define
+\[
+U_R(q\mid X_t)
+=
+\mathbb E_{C\sim\mu}
+\left[
+D_{\pi,R}(C\mid X_t)-D_{\pi,R}(C\mid X_t\oplus q)
+\right].
+\]
+Here $X_t\oplus q$ means that $q$ is made available through the declared verified-bank interface, with retrieval and verification overhead charged according to the benchmark protocol.
+
+\begin{definition}[Operational discovery]
+A weak discovery $q$ is an \emph{operational discovery at budget $R$} if
+\[
+U_R(q\mid X_t)>0,
+\]
+or if it satisfies another prospectively declared usefulness test, such as a strict increase in the verified reachable set within budget $R$.
+\end{definition}
+
+The adjective ``operational'' is essential. This definition does not claim to measure timeless mathematical significance. It measures whether a certified novelty changes what the declared machine can do under a declared workload and budget. Since usefulness may require later evaluation, the operational label can be assigned retrospectively even though the underlying weak-discovery event is recorded immediately.
+
+\subsection{Binary event, continuous precursors}
+For a fixed experiment define
+\[
+Y_t=
+\begin{cases}
+1,&\text{if an operational discovery is credited to stage }t,\\
+0,&\text{otherwise.}
+\end{cases}
+\]
+Thus the endpoint is binary. The state leading toward that event can nevertheless carry graded information. A practical discovery-readiness vector may include
+\[
+r_t=(N_t,G_t,R_t,L_t,K_t,X_t^{\times}),
+\]
+where, after normalization to a declared scale,
+\begin{itemize}
+\item $N_t$ measures novelty of generated proof structures modulo the chosen quotient;
+\item $G_t$ measures change in residual-goal signatures rather than repeated return to the same residual state;
+\item $R_t$ measures representation movement, such as basis, quotient, dual, complement, decomposition, or complexification moves;
+\item $L_t$ measures transfer of newly verified lemmas into later successful candidates;
+\item $K_t$ measures compression, for example replacement of recurrent subpaths by one verified reusable construction;
+\item $X_t^{\times}$ measures cross-voice transfer, where one coherent proof approach supplies a lemma or representation useful to another.
+\end{itemize}
+These coordinates are proposed observables, not axioms of discovery. Their value is determined by predictive and interventional tests on held-out rungs.
+
+\subsection{Discovery hazard and discovery depth}
+Let $\tau_{\mathrm{disc}}$ be the first stage at which an operational discovery occurs. For controller $\pi$ and remaining budget $R$, define the finite-horizon discovery hazard
+\[
+h_{\pi}(X_t;R)
+:=
+\Pr_{\pi}\!\left(\tau_{\mathrm{disc}}-t\le R\mid X_t\right).
+\]
+The quantity $h_{\pi}$ answers a more useful question than a bare retrospective label: conditional on the present state, how likely is the system to produce a discovery within the next declared amount of search?
+
+For a particular discovery class $d$, define its machine-relative discovery depth by
+\[
+D_{\mathrm{disc},\pi}(d\mid X_0)
+:=
+\inf\{\Cost(\gamma):\gamma\text{ is a verifier-respecting trajectory from }X_0\text{ to }d\}.
+\]
+This is the discovery analogue of settlement depth or a Proof Horizon. It is explicitly controller- and metric-relative. A mathematically simple idea may have large discovery depth for a machine whose representation makes the relevant transformation nearly inaccessible.
+
+One may also attach a mechanism label
+\[
+M\in\{\text{lemma},\text{quotient},\text{decomposition},\text{duality},\text{representation change},\text{generalization},\text{composition},\ldots\}
+\]
+and estimate both $\Pr(Y=1\mid X_t)$ and $\Pr(M=m\mid X_t,Y=1)$. The first estimates whether discovery is approaching; the second estimates which kind of discovery historically resolved comparable states.
+
+\subsection{Discovery gain as a control quantity}
+Suppose $a$ is an intervention---for example ordinary local proof extension, residual-goal repair, motif development, quotienting, representation modulation, or a counterpoint-style multi-voice exchange. Let $a_0$ be the declared baseline action. Define the finite-budget discovery gain
+\[
+\DG_R(a,X)
+=
+\Pr(\tau_{\mathrm{disc}}\le R\mid \operatorname{do}(a),X)
+-
+\Pr(\tau_{\mathrm{disc}}\le R\mid \operatorname{do}(a_0),X).
+\]
+
+\begin{caution}[Causal language]
+The $\operatorname{do}$ notation is justified only when the experiment actually identifies an intervention, for example by randomized action assignment, matched replay with frozen budgets and seeds, or another design that blocks the relevant confounding. Otherwise the corresponding quantity is an association and should be labeled as such.
+\end{caution}
+
+A discovery controller can then be posed as
+\[
+a_t\in\arg\max_a\widehat{\DG}_R(a,X_t),
+\]
+subject to certificate-completeness safeguards and any fair-search background process required by the formal setting. This removes the need for a fixed exploration probability $\varepsilon$. Exploration is triggered because a particular intervention has learned positive expected discovery gain in the current state, not because a global coin happens to come up ``explore.''
+
+\subsection{Retrospective controls on solved rungs}
+Previously solved theorem rungs provide an unusually clean laboratory because the existence of a certificate is known while the historical proof can be hidden from the experimental search. For each solved rung $k$, construct a sealed replay in which the system receives only the axioms, verified lower-rung bank, target statement, declared representation interface, and the same verifier used in the live program. Historical candidate bodies, historical ranking traces, and the target's canonical proof are excluded.
+
+Under a matched verifier-call budget compare intervention families such as
+\[
+\begin{array}{ll}
+A:&\text{ordinary local search},\\
+B:&\text{motif development},\\
+C:&\text{residual-goal recursive repair},\\
+D:&\text{representation modulation},\\
+E:&\text{counterpoint-style multi-voice search},\\
+F:&\text{a controller selecting among }A\text{--}E.
+\end{array}
+\]
+Record at least settlement, weak and operational discovery events, verifier calls, wall-clock cost, residual-goal signature changes, representation changes, mechanism labels, lemma transfer, and whether the discovered object changes later held-out settlement cost. Because diagnostic tactics can emit partial suggestions without proving their residual goals, every candidate must still pass the strict certificate gate; diagnostic output may generate descendants but may not certify them.
+
+The crucial control is to hold everything except the intervention fixed. A stronger design randomizes intervention assignment across repeated seeds or matched target instances. A weaker design that changes budgets, candidate banks, and training history simultaneously can estimate performance but cannot cleanly identify discovery gain.
+
+\subsection{Forward-chaining rung by rung}
+Retrospective replay becomes scientifically stronger when converted into a forward-chaining protocol. Let $\mathcal D_k$ contain only discovery trajectories from rungs settled before rung $k$. Train the discovery model on $\mathcal D_k$, freeze it, and only then expose the sealed target at rung $k$. After the rung is settled and its trajectory audited, update
+\[
+\mathcal D_{k+1}=\mathcal D_k\cup\{\text{audited trajectory for rung }k\}.
+\]
+No information from rung $k$ may influence the model used to predict rung $k$. Each rung is temporarily treated as the current frontier. The system can then be evaluated on whether it predicts which intervention family will help, whether its hazard is calibrated, and whether its selected policy lowers discovery depth relative to the frozen baseline.
+
+This protocol can be applied to a current frontier without claiming that earlier mathematics determines later mathematics. The legitimate inference is narrower: if earlier hidden-rung experiments show that certain observable stagnation states are preferentially escaped by representation changes, then a frozen controller may allocate more current resources to representation-changing interventions when the same measured state appears again.
+
+\subsection{Motifs, structured variation, and the music analogy}
+The control language gives a precise place for the structured-music analogy. Let $\mathcal M$ be a space of proof motifs: typed proof skeletons, useful lemma configurations, residual-goal patterns, or representations. Let
+\[
+\Gamma=\langle T_{\mathrm{vary}},T_{\mathrm{transpose}},T_{\mathrm{invert}},T_{\mathrm{modulate}},T_{\mathrm{compose}},\ldots\rangle
+\]
+be a semigroup generated by motif transformations. A search trajectory explores an orbit
+\[
+m,\quad T_1m,\quad T_2T_1m,\quad\ldots .
+\]
+Most orbit points are not discoveries. A point becomes a weak discovery only after independent verification and quotient novelty; it becomes an operational discovery only after the declared usefulness test is met.
+
+This is closer to musical development than to injecting ``structured noise.'' A motif can be varied, transposed, inverted, combined with another voice, or moved into a new representational key while retaining relations to its source. In proof search, analogous moves include dualization, quotienting, basis change, decomposition, generalization, complexification, or changing from a pointwise to a coordinate representation. Some such transformations need only generate proposals; they gain mathematical authority only when their resulting records survive the verifier. The music analogy supplies candidate transformation families. It is not itself evidence that those transformations improve theorem proving. That question is delegated to the controlled discovery-gain experiment.
+
+\subsection{Relation to SICs, ALDs, AMLDs, and fixed points}
+Discovery fits the earlier SIC framework without changing its semantics. A weak discovery is first of all a verifier-accepted record entering the cumulative history. The SIC state therefore remains monotone. Operational usefulness is an additional measured annotation; it is not needed to preserve verifier soundness or cumulative-history monotonicity. An ATP may discover a new lemma on its path to a proof; an ALD may discover a refutation-supporting or independence-supporting lemma; an AMLD may discover a reusable metatheorem about dependence or independence. None of these labels may be assigned from timeout or failed search.
+
+The search funnel is correspondingly extended:
+\[
+\begin{array}{c}
+\text{raw search}\\
+\downarrow\\
+\text{verified-history SIC}\\
+\downarrow\\
+\text{quotient / DAG reduction and compiled landmarks}\\
+\downarrow\\
+\text{incumbent bounds and exact / learned navigation}\\
+\downarrow\\
+\text{discovery-sensitive control}\\
+\downarrow\\
+\text{certificate-bearing fixed point.}
+\end{array}
+\]
+Discovery-sensitive control does not replace exact search reduction. It acts after the verifier, quotient, and cost semantics have been fixed, using earlier audited trajectories to decide which surviving mathematical transformation is worth trying next.
+
+\subsection{What would count as evidence}
+The discovery formalization should be judged by out-of-sample prediction and controlled intervention, not by whether its terminology sounds plausible. The strongest near-term evidence would be a sequence of sealed rung experiments in which:
+\begin{enumerate}
+\item the discovery model is trained only on earlier rungs and frozen;
+\item its hazard estimates are calibrated on held-out trajectories;
+\item its chosen mechanism predicts the intervention class that actually produces more verifier-backed discovery under equal budgets;
+\item the resulting discoveries measurably reduce later settlement cost or enlarge verified reach; and
+\item the advantage survives new theorem families, representations, and random seeds.
+\end{enumerate}
+A negative result is equally informative. If discovery features fail to predict intervention benefit, the controller should revert to the stronger exact methods already developed in the maze-first program rather than preserve a decorative extra layer.
