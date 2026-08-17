@@ -1,0 +1,40 @@
+name: Build DATA 4.2 PDF
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.tex'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-pictures lmodern
+
+      - name: Compile DATA 4.2 PDF
+        working-directory: cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory
+        run: |
+          pdflatex -interaction=nonstopmode -halt-on-error DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.tex
+          pdflatex -interaction=nonstopmode -halt-on-error DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.tex
+
+      - name: Commit compiled PDF
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.pdf
+          if git diff --cached --quiet; then
+            echo 'PDF unchanged.'
+          else
+            git commit -m 'Build DATA 4.2 PDF'
+            git push
+          fi
