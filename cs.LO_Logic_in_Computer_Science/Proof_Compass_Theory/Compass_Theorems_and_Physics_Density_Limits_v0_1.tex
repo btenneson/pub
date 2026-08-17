@@ -1,0 +1,491 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{tcolorbox}
+
+\definecolor{accent}{RGB}{24,111,120}
+\definecolor{accenttwo}{RGB}{58,76,132}
+\definecolor{soft}{RGB}{240,246,247}
+\definecolor{softtwo}{RGB}{242,243,249}
+\definecolor{warn}{RGB}{145,72,70}
+\definecolor{good}{RGB}{42,107,72}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accenttwo,
+  urlcolor=accent,
+  citecolor=accenttwo,
+  pdftitle={Compass Theorems and Physics-Density Limits},
+  pdfsubject={Sufficient-condition theorems for proof-compass learnability and navigation, quotient-density calibration, and empirical refutations from DATA 4.1-Q}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Compass Theorems and Physics-Density Limits}
+\rhead{\small August 17, 2026}
+\cfoot{\small \thepage\ of \pageref{LastPage}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Qcal}{\mathcal{Q}}
+\newcommand{\R}{\mathbb{R}}
+
+\title{\textbf{Compass Theorems and Physics-Density Limits}\\
+\large Sufficient Conditions for Learnable Proof Navigation and a DATA 4.1-Q Falsification Note}
+\date{August 17, 2026}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{1.0in}
+{\Huge\bfseries Compass Theorems and Physics-Density Limits\par}
+\vspace{0.25in}
+{\LARGE Sufficient Conditions for Learnable Proof Navigation\par}
+\vspace{0.20in}
+{\Large and a DATA 4.1-Q Falsification Note\par}
+\vspace{0.55in}
+{\large Companion note to \emph{Proof Compass Theory: Learnability, Shrinkage, and Control}\par}
+\vfill
+{\large Prepared for Brian Tenneson\par}
+\vspace{0.12in}
+{\large August 17, 2026\par}
+\vspace{0.45in}
+\begin{minipage}{0.86\textwidth}
+\small
+\textbf{Status and integrity note.}
+This note deliberately distinguishes mathematical theorems from empirical claims. The named compass statements below are proved only under the explicit sufficient hypotheses stated with each theorem. Those proofs do not establish the unrestricted conjectures for arbitrary theorem provers or arbitrary formal systems. The DATA 4.1-Q conclusions are statements about one frozen, preregistered 300-episode benchmark. In particular, the benchmark refutes its preregistered strong physics-density and shell-concentration propositions on that benchmark; it does not prove that physics can never help theorem search.
+\end{minipage}
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Executive Summary}
+
+This note records theorem forms of four compass claims and separates them from the empirical status of physics-derived density in DATA 4.1-Q.
+
+\begin{enumerate}[leftmargin=2.2em]
+\item \textbf{Compass Learnability Theorem.} Under IID sampling, a finite hypothesis class, empirical risk maximization, and a positive population accuracy gap above chance, sufficiently many solved examples yield an unseen-problem compass whose Top-1 accuracy is provably above chance.
+\item \textbf{Navigation Advantage Theorem.} Under the analogous rank-loss gap, the learned compass has strictly smaller expected candidate rank than an uninformed random ordering.
+\item \textbf{Quotient-Density Calibration Theorem.} Under local quotient constancy and one-hit transfer, expected rank decreases strictly as solved-example mass in the target's quotient neighborhood increases.
+\item \textbf{Density-Conditional Navigation Advantage Theorem.} Under the same quotient model, the expected gain of the compass over random navigation increases strictly with local quotient density. This theorem motivates the next empirical test in realistic proof data.
+\end{enumerate}
+
+The DATA 4.1-Q experiment should \emph{not} be summarized as ``density does not help.'' Formal quotient density/proximity was associated with substantially better navigation: the preregistered high-density half had Q64 mean rank $5.0733$ versus $10.5267$ in the low-density half. What failed was a more specific mechanism: \emph{concentrating an auxiliary physics corpus near the formal quotient frontier}. The broad physics pool slightly outperformed each concentrated shell, and the Q64 physics augmentation improved mean rank over the formal-only ranker by only $0.552\%$, far below the preregistered $10\%$ practical threshold.
+
+\begin{tcolorbox}[colback=soft,colframe=accent,title=Safe one-sentence conclusion]
+DATA 4.1-Q gives evidence that \textbf{formal quotient geometry and local formal density can help navigation}, while \textbf{physics-density concentration, as implemented in this experiment, did not add a practically important average advantage beyond the formal quotient ranker}; it does not establish that physics input in general is useless.
+\end{tcolorbox}
+
+\section{Formal Setting}
+
+\begin{definition}[Proof-navigation episode]
+A proof-navigation episode is a pair $(x,C(x))$, where $x$ is a visible proof-search state and
+\[
+C(x)=\{c_1,\ldots,c_K\}
+\]
+is a finite set of $K\ge 2$ candidate successor/support moves. Exactly one candidate, denoted $c^*(x)$, is designated as the correct hidden support for the episode.
+\end{definition}
+
+\begin{definition}[Compass and rank]
+A \emph{compass} $h$ assigns real scores to the candidates in each visible state and thereby induces an ordering. Let
+\[
+R_h(x)\in\{1,\ldots,K\}
+\]
+be the rank assigned to $c^*(x)$, with rank $1$ best.
+\end{definition}
+
+The Top-1 accuracy of $h$ under a distribution $\Dcal$ of episodes is
+\[
+A(h)=\Prob_{x\sim\Dcal}\{R_h(x)=1\}.
+\]
+Define the normalized rank loss
+\[
+L_h(x)=\frac{R_h(x)-1}{K-1}\in[0,1],
+\qquad
+L(h)=\E_{x\sim\Dcal}[L_h(x)].
+\]
+For an uninformed uniformly random ordering $U$,
+\[
+\E[R_U]=\frac{K+1}{2},
+\qquad
+\E[L_U]=\frac12,
+\qquad
+A(U)=\frac1K.
+\]
+
+\section{Compass Learnability Theorem}
+
+\begin{theorem}[Compass Learnability Theorem --- finite-class IID form]
+\label{thm:learn}
+Let $\Hcal$ be a finite class of compass rankers. Assume:
+\begin{enumerate}[label=(H\arabic*),leftmargin=2.7em]
+\item Training episodes $X_1,\ldots,X_m$ are IID draws from the same distribution $\Dcal$ used for future evaluation.
+\item Every episode has exactly $K$ candidates and one designated correct support.
+\item There exists $h^*\in\Hcal$ and $\gamma>0$ such that
+\[
+A(h^*)\ge \frac1K+2\gamma.
+\]
+\item The learned compass $\widehat h$ maximizes empirical Top-1 accuracy over $\Hcal$.
+\end{enumerate}
+Then for every $0<\delta<1$, if
+\[
+m\ge \frac{2}{\gamma^2}\log\!\left(\frac{2|\Hcal|}{\delta}\right),
+\]
+with probability at least $1-\delta$ over the training sample,
+\[
+A(\widehat h)\ge \frac1K+\gamma.
+\]
+Hence the learned compass has strictly above-chance Top-1 accuracy on unseen episodes.
+\end{theorem}
+
+\begin{proof}
+For fixed $h\in\Hcal$, Top-1 correctness is a Bernoulli random variable. Hoeffding's inequality gives
+\[
+\Prob\!\left(\left|\widehat A_m(h)-A(h)\right|>\frac\gamma2\right)
+\le 2\exp\!\left(-\frac{m\gamma^2}{2}\right).
+\]
+A union bound over $\Hcal$ implies
+\[
+\Prob\!\left(\sup_{h\in\Hcal}\left|\widehat A_m(h)-A(h)\right|>\frac\gamma2\right)
+\le 2|\Hcal|\exp\!\left(-\frac{m\gamma^2}{2}\right)\le\delta.
+\]
+On the complementary event, empirical optimality of $\widehat h$ yields
+\begin{align*}
+A(\widehat h)
+&\ge \widehat A_m(\widehat h)-\frac\gamma2\\
+&\ge \widehat A_m(h^*)-\frac\gamma2\\
+&\ge A(h^*)-\gamma\\
+&\ge \frac1K+\gamma.
+\end{align*}
+\end{proof}
+
+\begin{remark}[What the theorem does and does not assume]
+The substantive hypothesis is the existence of a representational gap in (H3). If the visible state is statistically independent of the correct move, no training procedure can manufacture predictive information. The theorem says that once an above-chance compass exists in the chosen finite class, ordinary uniform convergence makes that advantage learnable from sufficiently many solved examples.
+\end{remark}
+
+\section{Navigation Advantage Theorem}
+
+\begin{theorem}[Navigation Advantage Theorem --- finite-class rank-loss form]
+\label{thm:navigation}
+Let $\Hcal$ be finite. Assume IID training/evaluation as in Theorem~\ref{thm:learn}, and assume that for some $h^*\in\Hcal$ and $\gamma>0$,
+\[
+L(h^*)\le \frac12-2\gamma.
+\]
+Let $\widehat h$ minimize empirical normalized rank loss over $\Hcal$. If
+\[
+m\ge \frac{2}{\gamma^2}\log\!\left(\frac{2|\Hcal|}{\delta}\right),
+\]
+then with probability at least $1-\delta$,
+\[
+L(\widehat h)\le\frac12-\gamma,
+\]
+and therefore
+\[
+\E[R_{\widehat h}]
+\le \frac{K+1}{2}-\gamma(K-1)
+<\frac{K+1}{2}=\E[R_U].
+\]
+Thus the learned compass strictly improves expected navigation rank relative to uninformed random ordering.
+\end{theorem}
+
+\begin{proof}
+Because each normalized rank loss lies in $[0,1]$, Hoeffding's inequality and a union bound give, under the same sample-size condition,
+\[
+\sup_{h\in\Hcal}|\widehat L_m(h)-L(h)|\le\frac\gamma2
+\]
+with probability at least $1-\delta$. On that event,
+\begin{align*}
+L(\widehat h)
+&\le \widehat L_m(\widehat h)+\frac\gamma2\\
+&\le \widehat L_m(h^*)+\frac\gamma2\\
+&\le L(h^*)+\gamma\\
+&\le \frac12-\gamma.
+\end{align*}
+Finally $R=1+(K-1)L$, giving the displayed rank bound.
+\end{proof}
+
+\begin{corollary}[Fallback Safety]
+\label{cor:fallback}
+Suppose the compass changes only the order of a finite candidate set and never deletes a candidate. Then exhaustive fallback after the learned ordering preserves finite coverage of exactly the same candidate set. Consequently, Theorem~\ref{thm:navigation}'s expected navigation advantage can coexist with unchanged eventual finite coverage.
+\end{corollary}
+
+\begin{proof}
+A permutation preserves set membership. Exhaustively traversing the permuted list visits every candidate exactly as exhaustive traversal of the original list does.
+\end{proof}
+
+\section{Quotient-Density Calibration Theorem}
+
+Let $\Qcal$ be a quotient representation of proof states. For a target quotient state $q\in\Qcal$, let $B(q)$ be a measurable local quotient neighborhood. Define its solved-example mass
+\[
+p(q)=\Prob_{X\sim\Dcal}\{X\in B(q)\}.
+\]
+This $p(q)$ is a population notion of local quotient density under the training distribution.
+
+\begin{theorem}[Quotient-Density Calibration Theorem --- locally constant one-hit form]
+\label{thm:density}
+Fix a target $q$ and suppose:
+\begin{enumerate}[label=(Q\arabic*),leftmargin=2.7em]
+\item The $m$ solved training states are IID draws from $\Dcal$.
+\item \textbf{Local quotient constancy:} all states in $B(q)$ share the same transported correct successor class relevant to $q$.
+\item \textbf{One-hit transfer:} if at least one training state lies in $B(q)$, the compass ranks the correct successor at $q$ first.
+\item If no training state lies in $B(q)$, the ranker has no usable information for $q$ and uses a uniformly random ordering of the $K$ candidates.
+\end{enumerate}
+Then
+\[
+\boxed{
+\E[R\mid q]
+=1+\frac{K-1}{2}(1-p(q))^m
+}
+\]
+and, for $m>0$, $K>1$, and $0\le p(q)<1$,
+\[
+\frac{d}{dp}\E[R\mid q]
+=-\frac{m(K-1)}{2}(1-p)^{m-1}<0.
+\]
+Hence expected navigation rank decreases strictly with local quotient density.
+\end{theorem}
+
+\begin{proof}
+Let $N_q$ be the number of training samples in $B(q)$. Then
+\[
+N_q\sim\mathrm{Binomial}(m,p(q)),
+\qquad
+\Prob(N_q=0)=(1-p(q))^m.
+\]
+On $N_q>0$, the rank is $1$ by one-hit transfer. On $N_q=0$, expected rank is $(K+1)/2$. Thus
+\begin{align*}
+\E[R\mid q]
+&=1\cdot\bigl[1-(1-p)^m\bigr]
++\frac{K+1}{2}(1-p)^m\\
+&=1+\frac{K-1}{2}(1-p)^m.
+\end{align*}
+Differentiating gives the result.
+\end{proof}
+
+\begin{corollary}[Diminishing returns in already-dense regions]
+For fixed $K$ and $m$, the marginal reduction in expected rank from an increase in $p$ has magnitude
+\[
+\frac{m(K-1)}{2}(1-p)^{m-1},
+\]
+which decreases as $p$ increases whenever $m>1$. Thus the model predicts saturation: additional local density has diminishing marginal value in already-dense quotient regions.
+\end{corollary}
+
+\section{Density-Conditional Navigation Advantage Theorem}
+
+Define the expected navigation gain over random ordering at local density $p$ by
+\[
+G(p)=\E[R_U]-\E[R_{\mathrm{compass}}\mid p].
+\]
+
+\begin{theorem}[Density-Conditional Navigation Advantage Theorem --- quotient one-hit form]
+\label{thm:conditional}
+Under the hypotheses of Theorem~\ref{thm:density},
+\[
+\boxed{
+G(p)=\frac{K-1}{2}\left[1-(1-p)^m\right]
+}
+\]
+and
+\[
+G'(p)=\frac{m(K-1)}{2}(1-p)^{m-1}>0
+\]
+for $m>0$, $K>1$, and $0\le p<1$. Therefore the expected navigation advantage over an uninformed ordering increases strictly with local quotient density.
+\end{theorem}
+
+\begin{proof}
+Substitute Theorem~\ref{thm:density} and $\E[R_U]=(K+1)/2$:
+\begin{align*}
+G(p)
+&=\frac{K+1}{2}-\left[1+\frac{K-1}{2}(1-p)^m\right]\\
+&=\frac{K-1}{2}\left[1-(1-p)^m\right].
+\end{align*}
+Differentiation proves strict monotonicity.
+\end{proof}
+
+\begin{remark}[Why this remains the next empirical conjecture]
+The theorem is conditional on strong local constancy and one-hit transfer. Real Lean proof geometry need not satisfy either exactly. The empirical conjecture worth testing is therefore not whether the displayed theorem is correct---it is---but whether realistic solved-DAG density is positively associated with \emph{incremental navigation gain} on fresh held-out targets after the benchmark, density definition, split rule, and baseline are preregistered.
+\end{remark}
+
+\section{DATA 4.1-Q: Frozen Experimental Facts}
+
+The evidence in this section comes from the successful preregistered DATA 4.1-Q H2B2C0 token-value quotient experiment, GitHub Actions run \href{https://github.com/btenneson/Hodge/actions/runs/31989508241}{31989508241}. The Hodge repository is private at the time of writing. The preregistration commit was
+\texttt{8c42d6495120c4614b1e269e49c0f48787798cd9}; the frozen H2B2C0 frontier commit was \texttt{da61b21d95f69f97cd2cf8826f3f1310b2343eb0}; and the pinned mathlib commit was \texttt{ac47869476d367300219cbbb258ca07760b89821}.
+
+The benchmark contained $300$ held-out episodes, each with $32$ candidates. The token-value equivalence relation was exact canonical Lean constant identity: two elaborated token occurrences were equivalent exactly when their \texttt{Expr.const} canonical Lean \texttt{Name} was identical.
+
+\begin{table}[ht]
+\centering
+\caption{DATA 4.1-Q held-out navigation results. Lower mean rank is better.}
+\begin{tabular}{lrrrr}
+\toprule
+Arm & Mean rank & Median & Top-1 & Top-3 \\
+\midrule
+DATA 3.0 & 16.4067 & 17 & 0.0433 & 0.1133 \\
+DATA 4.0-Q & 24.4167 & 32 & 0.1167 & 0.1700 \\
+DATA 4.1-QF & 7.8433 & 1 & 0.6867 & 0.7200 \\
+DATA 4.1-Q32 & 7.8100 & 1 & 0.6933 & 0.7233 \\
+DATA 4.1-Q64 & 7.8000 & 1 & 0.6933 & 0.7233 \\
+DATA 4.1-Q128 & 7.7967 & 1 & 0.6933 & 0.7233 \\
+DATA 4.1-QB & \textbf{7.7900} & 1 & 0.6933 & 0.7233 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The preregistered quotient-density calibration comparison also favored the higher-density/proximity half:
+\[
+\text{Q64 high-density mean rank}=5.0733,
+\qquad
+\text{Q64 low-density mean rank}=10.5267.
+\]
+This is evidence consistent with quotient-density calibration, but it is not by itself a causal proof that increasing training density caused the rank reduction: the benchmark split observed naturally differing targets rather than randomizing density interventions.
+
+\section{Empirical Refutations and Denials}
+
+\subsection{Refutation of the Shell-Concentration Proposition}
+
+\begin{proposition}[Preregistered Shell-Concentration Proposition H4]
+On the frozen DATA 4.1-Q benchmark, at least one of Q32 or Q64 has lower mean rank than Q128, and Q128 has mean rank no greater than the broad physics arm QB.
+\end{proposition}
+
+\begin{proof}[Refutation on the frozen benchmark]
+The observed mean ranks were
+\[
+Q32=7.8100,\qquad
+Q64=7.8000,\qquad
+Q128=7.7967,\qquad
+QB=7.7900.
+\]
+Because lower rank is better,
+\[
+\min(Q32,Q64)=7.8000>7.7967=Q128,
+\]
+so neither concentrated smaller shell beats Q128. Moreover,
+\[
+Q128=7.7967>7.7900=QB,
+\]
+so Q128 does not beat or tie the broad corpus. Both required conjuncts fail. Therefore H4 is false on this frozen benchmark.
+\end{proof}
+
+The pairwise episode counts sharpen the same point. Q64 versus QB was tied on $299/300$ episodes; Q64 was better on $0$ and worse on $1$. Q128 versus QB was tied on $298/300$ episodes; Q128 was better on $0$ and worse on $2$. Thus the broad corpus did not win merely by a single enormous outlier while the concentrated shell frequently won smaller cases; in these comparisons the concentrated arm never beat QB.
+
+\subsection{Denial of the Strong Practical Physics-Density Advantage}
+
+\begin{proposition}[Strong Practical Physics-Density Advantage at the preregistered threshold]
+On the frozen DATA 4.1-Q benchmark, adding Q64 physics-density features to QF reduces mean rank by at least $10\%$ relative to QF.
+\end{proposition}
+
+\begin{proof}[Denial on the frozen benchmark]
+The formal-only mean rank was
+\[
+\overline R_{QF}=7.843333\ldots,
+\]
+while Q64 obtained
+\[
+\overline R_{Q64}=7.800000.
+\]
+The relative reduction was therefore
+\[
+\frac{7.843333\ldots-7.8}{7.843333\ldots}
+=0.00552486\ldots
+\approx0.552\%.
+\]
+This is strictly below the preregistered $10\%$ practical threshold. Hence the strong practical proposition is false on this benchmark.
+\end{proof}
+
+The weaker directional inequality did hold: $7.8000<7.8433$. Q64 also changed the formal-only ranking in only $11$ of $300$ episodes: six changes improved rank, five worsened it, and $289$ were ties. Thus the correct interpretation is \emph{small directional evidence with no practically large average effect}, not a theorem that physics can never help.
+
+\section{What the Density and Physics Results Actually Say}
+
+\subsection{It is not safe to say ``density does not help''}
+
+That statement is contradicted by both the sufficient-condition theory and the observed DATA 4.1-Q formal-density result.
+
+First, Theorem~\ref{thm:density} proves a regime in which increased local solved-example density strictly lowers expected rank. Second, on the frozen benchmark the high quotient-density/proximity half had Q64 mean rank $5.0733$, compared with $10.5267$ in the low half. The experiment does not establish causation, but it certainly does not support a blanket claim that density is useless.
+
+The more defensible statement is:
+\begin{quote}
+\emph{The usefulness of density depends on what is dense, how locality is defined, and whether nearby solved states transfer stable successor information.}
+\end{quote}
+
+\subsection{It is not safe to say ``inputting physics in general does not help''}
+
+DATA 4.1-Q tested one specific interface from physics to proof search: arXiv physics documents were projected into nine automatically constructed formal quotient coordinates, then used as auxiliary ranking features. That mechanism did not provide a practically important average improvement over QF, and concentrated physics shells did not beat the broad pool.
+
+However, this does not imply that all possible uses of physics are useless. Physics could in principle help through other representations, other mathematical frontiers, conditional activation on formally uncertain targets, symbolic identities, generated lemmas, analogy retrieval, or features orthogonal to the formal ranker. None of those universal alternatives was falsified by this experiment.
+
+A safe empirical statement is:
+\begin{tcolorbox}[colback=softtwo,colframe=accenttwo,title=Evidence-supported interpretation]
+On this frozen H2B2C0 proof-support ranking benchmark, the \textbf{formal quotient ranker supplied nearly all of the measured navigation advantage}. The tested physics-density augmentation was mostly redundant on average, and \textbf{making the physics corpus more locally concentrated did not improve performance}. This is evidence against strong global use of that particular physics-density signal, not evidence that physics can never help.
+\end{tcolorbox}
+
+\section{Next Empirical Test: Density-Conditional Navigation Advantage}
+
+The next preregistered experiment should directly test the realistic analogue of Theorem~\ref{thm:conditional}. A clean design is:
+
+\begin{enumerate}[leftmargin=2.1em]
+\item Freeze a quotient representation, target distribution, candidate-pool rule, baseline order, and learned compass before outcome inspection.
+\item Define local solved-DAG density using training data only; do not use held-out proof edges or outcomes.
+\item Partition or stratify held-out targets by preregistered density quantiles, or preferably treat density continuously.
+\item For each target, define compass gain
+\[
+\Delta(x)=R_{\mathrm{baseline}}(x)-R_{\mathrm{compass}}(x).
+\]
+\item Test the directional hypothesis that $\E[\Delta\mid p]$ is increasing in $p$, with a preregistered effect-size threshold in addition to significance or interval estimates.
+\item Preserve exhaustive fallback so navigation gain is tested without changing finite candidate coverage.
+\item Replicate on a fresh target sample. The current DATA 4.1-Q H5 result may motivate the hypothesis but should not be reused as confirmatory evidence for a post-hoc formulation.
+\end{enumerate}
+
+A particularly useful falsification condition is to declare the density-conditional conjecture unsupported if the preregistered high-density gain fails to exceed the low-density gain by the specified practical threshold, or if a confidence interval excludes that threshold even when the point estimate is positive.
+
+\section{Theorem and Evidence Ledger}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.31\textwidth} >{\raggedright\arraybackslash}p{0.24\textwidth} X}
+\toprule
+Statement & Status & Scope \\
+\midrule
+Compass Learnability & \textbf{Theorem} & Finite hypothesis class, IID data, positive above-chance population gap, empirical Top-1 maximization. \\
+Navigation Advantage & \textbf{Theorem} & Finite class, IID data, positive expected rank-loss gap, empirical rank-loss minimization. \\
+Fallback Safety & \textbf{Corollary} & Compass reorders but never deletes finite candidates. \\
+Quotient-Density Calibration & \textbf{Theorem} & Local quotient constancy, IID solved samples, one-hit transfer, random fallback when unseen. \\
+Density-Conditional Navigation Advantage & \textbf{Theorem} & Same idealized quotient hypotheses; realistic version remains the next empirical conjecture to test. \\
+Shell-Concentration H4 & \textbf{Refuted on DATA 4.1-Q} & Both preregistered conjuncts fail on the frozen 300-episode benchmark. \\
+Strong Practical Physics-Density Advantage & \textbf{Denied on DATA 4.1-Q} & Q64 improved mean rank only $0.552\%$, below the preregistered $10\%$ threshold. \\
+Physics input is universally useless & \textbf{Not established} & The experiment tests only one physics-to-formal projection/ranking mechanism at one frontier. \\
+Density is universally useless & \textbf{Contradicted by present theory/evidence} & Formal quotient density can help under sufficient conditions; benchmark H5 also favors the high-density/proximity half. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{References and Reproducibility Pointers}
+
+\begin{enumerate}[leftmargin=2.0em]
+\item W. Hoeffding, ``Probability Inequalities for Sums of Bounded Random Variables,'' \emph{Journal of the American Statistical Association}, 58(301), 13--30, 1963. The finite-class learning bounds above use Hoeffding's inequality followed by a union bound.
+\item \emph{Proof Compass Theory: Learnability, Shrinkage, and Control}, August 15, 2026. Public source and PDF: \url{https://github.com/btenneson/pub/tree/main/cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory}.
+\item DATA 4.1-Q H2B2C0 token-value quotient experiment, GitHub Actions run 31989508241, private repository \texttt{btenneson/Hodge}. Preregistration commit: \texttt{8c42d6495120c4614b1e269e49c0f48787798cd9}. Successful run commit: \texttt{3014fed743302f2f3c3bf0340c5e9529ee1cbb26}.
+\end{enumerate}
+
+\end{document}
