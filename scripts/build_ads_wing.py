@@ -82,11 +82,24 @@ def authored(text,path,repo):
         return True,'public_projects authorship context + filename/path contains “Tenneson”.'
     return False,''
 
+def substantive_ds_match(text):
+    for m in DS_RE.finditer(text):
+        before=norm(text[max(0,m.start()-140):m.start()])
+        # Ignore degree/credential bylines such as "Brian Tenneson M.S., Applied Data Science".
+        if re.search(r'(?:Brian\s+Tenneson.{0,70})?M\.?\s*S\.?\s*,?\s*$',before,re.I):
+            continue
+        return m
+    return None
+
 def title(text,filename):
-    skip=re.compile(r'^(?:Brian\s+Tenneson|Tenneson,\s*Brian|ADS\s*\d*|Applied Data Science)$',re.I)
-    for line in [norm(x) for x in text.splitlines() if norm(x)][:40]:
-        if 6<=len(line)<=150 and not skip.match(line):return line
-    return Path(filename).stem.replace('_',' ')
+    skip_exact=re.compile(r'^(?:Brian\s+Tenneson|Tenneson,\s*Brian|ADS\s*\d*|Applied Data Science)$',re.I)
+    date_only=re.compile(r'^\d{1,2}/\d{1,2}/\d{2,4}$')
+    for line in [norm(x) for x in text.splitlines() if norm(x)][:60]:
+        if not (6<=len(line)<=150):continue
+        if skip_exact.match(line) or date_only.match(line):continue
+        if line.startswith(('\\','%')) or 'academic integrity' in line.lower():continue
+        return line
+    return Path(filename).stem.replace('_',' ').replace('~',' ')
 
 def classify(text):
     t=text.lower(); scores=[]
@@ -106,7 +119,7 @@ def safe(name):return re.sub(r'[^A-Za-z0-9._-]+','_',name).strip('_') or 'docume
 
 def manifest_md(records):
     lines=['# Applied Data Science (ADS) Wing Manifest','',
-      'Generated from public repositories owned by `btenneson`. Eligibility requires author evidence plus at least one extracted-text marker: standalone `ADS`, `data science`, or `applied data science`.','']
+      'Generated from public repositories owned by `btenneson`. Eligibility requires author evidence plus either a standalone `ADS` marker or a substantive `data science` / `applied data science` mention. Degree-line-only mentions are ignored.','']
     groups=defaultdict(list)
     for r in records:groups[r['category']].append(r)
     for cat in sorted(groups):
@@ -159,7 +172,7 @@ def main():
                 f=Path(td)/('source'+ext); f.write_bytes(data)
                 try:text=extract(f)
                 except Exception as e:print('WARN extract',name,path,e); continue
-            am,dm=ADS_RE.search(text),DS_RE.search(text); ok,ae=authored(text,path,name)
+            am=ADS_RE.search(text); dm=substantive_ds_match(text); ok,ae=authored(text,path,name)
             if not (ok and (am or dm)):continue
             digest=hashlib.sha256(data).hexdigest()
             src={'repo':name,'path':path,'branch':branch,'blob_sha':item.get('sha',''),'html_url':f'https://github.com/{a.owner}/{name}/blob/{quote(branch,safe="")}/{quote(path,safe="/")}' }
@@ -171,7 +184,7 @@ def main():
             rec={'title':title(text,Path(path).name),'category':label,'category_slug':slug,'category_scores':scores,'tags':tags(text),'sha256':digest,'bytes':len(data),'local_path':dest.relative_to(root).as_posix(),'web_path':wdest.relative_to(web).as_posix(),'sources':[src],'match_evidence':{'author':ae,'ADS':snippet(text,am),'data_science':snippet(text,dm)}}
             records.append(rec); by_hash[digest]=rec; print('MATCH',name,path,'->',rec['local_path'])
     records.sort(key=lambda r:(r['category'],r['title'].lower())); generated=a.generated_at or 'GitHub Actions run'
-    payload={'schema_version':2,'owner':a.owner,'generated_at':generated,'scanned_document_candidates':scanned,'document_count':len(records),'documents':records}
+    payload={'schema_version':3,'owner':a.owner,'generated_at':generated,'scanned_document_candidates':scanned,'document_count':len(records),'documents':records}
     for d in (archive,web):
         (d/'manifest.json').write_text(json.dumps(payload,indent=2,ensure_ascii=False),encoding='utf-8'); (d/'MANIFEST.md').write_text(manifest_md(records),encoding='utf-8')
     (archive/'README.md').write_text('# Applied Data Science (ADS)\n\nCanonical copied archive for the ADS wing. See `MANIFEST.md` for provenance and categorization.\n',encoding='utf-8')
