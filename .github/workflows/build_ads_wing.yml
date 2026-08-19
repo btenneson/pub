@@ -1,0 +1,41 @@
+name: Build Applied Data Science (ADS) wing
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - ads-wing
+    paths:
+      - 'scripts/build_ads_wing.py'
+      - '.github/workflows/build_ads_wing.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install document extractors
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          python -m pip install --upgrade pip
+          python -m pip install requests python-docx python-pptx beautifulsoup4 lxml striprtf
+      - name: Rebuild ADS wing
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/build_ads_wing.py --owner btenneson --root . --generated-at "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+      - name: Commit generated ADS wing when changed
+        run: |
+          if git diff --quiet -- ADS docs/ADS docs/index.html; then
+            echo "No ADS changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- ADS docs/ADS docs/index.html
+          git commit -m "Rebuild Applied Data Science wing [skip ci]"
+          git push
