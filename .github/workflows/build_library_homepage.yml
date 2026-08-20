@@ -1,0 +1,62 @@
+name: Rebuild publication library homepage
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/papers/**'
+      - 'docs/ADS/manifest.json'
+      - 'scripts/build_library_homepage.py'
+      - '.github/workflows/build_library_homepage.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rebuild-publication-library-homepage
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Build searchable homepage
+        run: python scripts/build_library_homepage.py
+
+      - name: Validate generated site index
+        shell: bash
+        run: |
+          test -s docs/index.html
+          test -s docs/search-index.json
+          python - <<'PY'
+          import json
+          d=json.load(open('docs/search-index.json', encoding='utf-8'))
+          assert d['schema_version'] == 1
+          assert d['count'] == len(d['items'])
+          assert any(x['kind'] == 'Core paper' for x in d['items'])
+          assert any(x['kind'] == 'Applied Data Science' for x in d['items'])
+          print('searchable items:', d['count'])
+          PY
+
+      - name: Commit generated homepage if changed
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/index.html docs/search-index.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Rebuild searchable publication library homepage'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
