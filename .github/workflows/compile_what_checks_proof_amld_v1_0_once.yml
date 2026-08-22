@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/compile_what_checks_proof_amld_v1_0_once.yml'
+      - '.build/amld_v10/TRIGGER_V1_0'
   workflow_dispatch:
 
 permissions:
@@ -89,11 +89,7 @@ jobs:
             '.build/amld_v10'
 
           rm -f '.github/workflows/compile_what_checks_proof_amld_v0_8.yml'
-
-          # Rebuild the public search page after the superseded readers are gone.
           python scripts/build_library_homepage.py
-
-          # Remove this one-time finalizer from the finished repository.
           rm -f '.github/workflows/compile_what_checks_proof_amld_v1_0_once.yml'
 
       - name: Commit final canonical publication
