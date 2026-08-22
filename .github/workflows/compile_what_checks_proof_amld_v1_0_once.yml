@@ -1,4 +1,4 @@
-name: One-time compile What Checks the Proof AMLD textbook v1.0
+name: Finalize What Checks the Proof AMLD textbook v1.0
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: compile-what-checks-proof-amld-v1-0-once
+  group: finalize-what-checks-proof-amld-v1-0
   cancel-in-progress: false
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super
 
-      - name: Reconstruct v0.9 base and v1.0 transformation
+      - name: Reconstruct private-source build input in runner temp
         shell: bash
         run: |
           set -euo pipefail
@@ -52,7 +52,7 @@ jobs:
           grep -q 'Textbook Version 1.0' What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
           ! grep -Eqi 'v0[._ ]?8|v0[._ ]?9|Textbook Draft' What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
 
-      - name: Compile PDF
+      - name: Compile and validate PDF
         shell: bash
         run: |
           set -euo pipefail
@@ -64,32 +64,51 @@ jobs:
           test -s What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf
           ! grep -E 'Undefined control sequence|LaTeX Error|There were undefined references|Overfull' What_Checks_the_Proof_AMLD_Textbook_v1_0.log
 
-      - name: Publish canonical PDF and legacy aliases
+      - name: Publish one canonical PDF and remove superseded copies
         shell: bash
         run: |
           set -euo pipefail
           src="$RUNNER_TEMP/amld-v10/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf"
-          mkdir -p 'Automated_Logical_Deciders_and_Conjecture_Settling' 'documents and their sources'
-          cp "$src" 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf'
-          cp "$src" 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
-          cp "$src" 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf'
-          cp "$src" 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
-          cp "$src" 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf'
+          canonical='Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf'
+          mkdir -p 'Automated_Logical_Deciders_and_Conjecture_Settling'
+          cp "$src" "$canonical"
 
-      - name: Commit PDFs only
+          rm -f \
+            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
+            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.tex' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.tex'
+
+          rm -rf \
+            'docs/papers/what_checks_the_proof_amld_textbook_v0_8' \
+            'docs/papers/what_checks_the_proof_amld_textbook_v0_9' \
+            '.build/amld_v08' \
+            '.build/amld_v09' \
+            '.build/amld_v10'
+
+          rm -f '.github/workflows/compile_what_checks_proof_amld_v0_8.yml'
+
+          # Rebuild the public search page after the superseded readers are gone.
+          python scripts/build_library_homepage.py
+
+          # Remove this one-time finalizer from the finished repository.
+          rm -f '.github/workflows/compile_what_checks_proof_amld_v1_0_once.yml'
+
+      - name: Commit final canonical publication
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add \
-            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf' \
-            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
-            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf' \
-            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
-            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf'
+          git add -A
+          test -s 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf'
+          test -s 'docs/papers/what_checks_the_proof_amld_textbook_v1_0/index.html'
+          test ! -e 'docs/papers/what_checks_the_proof_amld_textbook_v0_8'
+          test ! -e 'docs/papers/what_checks_the_proof_amld_textbook_v0_9'
           if ! git diff --cached --quiet; then
-            git commit -m 'Publish What Checks the Proof AMLD textbook v1.0 PDF'
+            git commit -m 'Publish canonical What Checks the Proof v1.0 [skip ci]'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
