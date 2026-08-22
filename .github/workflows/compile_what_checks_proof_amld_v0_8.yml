@@ -1,0 +1,85 @@
+name: Compile What Checks the Proof AMLD textbook v0.8
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.build/amld_v08/**'
+      - '.github/workflows/compile_what_checks_proof_amld_v0_8.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compile-what-checks-proof-amld-v0-8
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super
+
+      - name: Reconstruct LaTeX source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p 'documents and their sources'
+          cat .build/amld_v08/source.bz2.b64.part00 \
+              .build/amld_v08/source.bz2.b64.part01 \
+              .build/amld_v08/source.bz2.b64.part02 \
+              .build/amld_v08/source.bz2.b64.part03 \
+              .build/amld_v08/source.bz2.b64.part04 \
+            | base64 -d | bunzip2 > 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.tex'
+          test -s 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.tex'
+          grep -q 'Textbook Draft v0.8' 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.tex'
+
+      - name: Compile PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd 'documents and their sources'
+          pdflatex -interaction=nonstopmode -halt-on-error What_Checks_the_Proof_AMLD_Textbook_v0_8.tex
+          pdflatex -interaction=nonstopmode -halt-on-error What_Checks_the_Proof_AMLD_Textbook_v0_8.tex
+          pdflatex -interaction=nonstopmode -halt-on-error What_Checks_the_Proof_AMLD_Textbook_v0_8.tex
+
+      - name: Publish logical-deciders copy
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p Automated_Logical_Deciders_and_Conjecture_Settling
+          cp 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
+             'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
+
+      - name: Validate publication files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.tex'
+          test -s 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
+          test -s 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
+
+      - name: Commit publication files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.tex' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
+            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish What Checks the Proof AMLD textbook v0.8'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
