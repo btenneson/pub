@@ -1,0 +1,95 @@
+name: One-time compile What Checks the Proof AMLD textbook v1.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/compile_what_checks_proof_amld_v1_0_once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compile-what-checks-proof-amld-v1-0-once
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super
+
+      - name: Reconstruct v0.9 base and v1.0 transformation
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/amld-v10"
+          mkdir -p "$work"
+          cat .build/amld_v09/source.bz2.b64.part00 \
+              .build/amld_v09/source.bz2.b64.part01 \
+              .build/amld_v09/source.bz2.b64.part02 \
+              .build/amld_v09/source.bz2.b64.part03 \
+              .build/amld_v09/source.bz2.b64.part04 \
+              .build/amld_v09/source.bz2.b64.part05 \
+              .build/amld_v09/source.bz2.b64.part06 \
+              .build/amld_v09/source.bz2.b64.part07 \
+              .build/amld_v09/source.bz2.b64.part08 \
+            | base64 -d | bunzip2 > "$work/v0_9.tex"
+          base64 -d .build/amld_v10/transform.py.bz2.b64 | bunzip2 > "$work/transform.py"
+          grep -q 'Textbook Draft v0.9' "$work/v0_9.tex"
+          cd "$work"
+          python transform.py
+          test -s What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
+          grep -q 'Textbook Version 1.0' What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
+          ! grep -Eqi 'v0[._ ]?8|v0[._ ]?9|Textbook Draft' What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
+
+      - name: Compile PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/amld-v10"
+          cd "$work"
+          pdflatex -interaction=nonstopmode -halt-on-error What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
+          pdflatex -interaction=nonstopmode -halt-on-error What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
+          pdflatex -interaction=nonstopmode -halt-on-error What_Checks_the_Proof_AMLD_Textbook_v1_0.tex
+          test -s What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf
+          ! grep -E 'Undefined control sequence|LaTeX Error|There were undefined references|Overfull' What_Checks_the_Proof_AMLD_Textbook_v1_0.log
+
+      - name: Publish canonical PDF and legacy aliases
+        shell: bash
+        run: |
+          set -euo pipefail
+          src="$RUNNER_TEMP/amld-v10/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf"
+          mkdir -p 'Automated_Logical_Deciders_and_Conjecture_Settling' 'documents and their sources'
+          cp "$src" 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf'
+          cp "$src" 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
+          cp "$src" 'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf'
+          cp "$src" 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf'
+          cp "$src" 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf'
+
+      - name: Commit PDFs only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf' \
+            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
+            'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish What Checks the Proof AMLD textbook v1.0 PDF'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
