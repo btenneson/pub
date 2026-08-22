@@ -28,22 +28,27 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super
 
-      - name: Reconstruct private-source build input in runner temp
+      - name: Reconstruct v1.0 build input in runner temp
         shell: bash
         run: |
           set -euo pipefail
           work="$RUNNER_TEMP/amld-v10"
           mkdir -p "$work"
-          cat .build/amld_v09/source.bz2.b64.part00 \
-              .build/amld_v09/source.bz2.b64.part01 \
-              .build/amld_v09/source.bz2.b64.part02 \
-              .build/amld_v09/source.bz2.b64.part03 \
-              .build/amld_v09/source.bz2.b64.part04 \
-              .build/amld_v09/source.bz2.b64.part05 \
-              .build/amld_v09/source.bz2.b64.part06 \
-              .build/amld_v09/source.bz2.b64.part07 \
-              .build/amld_v09/source.bz2.b64.part08 \
-            | base64 -d | bunzip2 > "$work/v0_9.tex"
+          compressed="$work/v0_9.tex.bz2"
+          : > "$compressed"
+          for p in \
+            .build/amld_v09/source.bz2.b64.part00 \
+            .build/amld_v09/source.bz2.b64.part01 \
+            .build/amld_v09/source.bz2.b64.part02 \
+            .build/amld_v09/source.bz2.b64.part03 \
+            .build/amld_v09/source.bz2.b64.part04 \
+            .build/amld_v09/source.bz2.b64.part05 \
+            .build/amld_v09/source.bz2.b64.part06 \
+            .build/amld_v09/source.bz2.b64.part07 \
+            .build/amld_v09/source.bz2.b64.part08; do
+            base64 -d "$p" >> "$compressed"
+          done
+          bunzip2 -c "$compressed" > "$work/v0_9.tex"
           base64 -d .build/amld_v10/transform.py.bz2.b64 | bunzip2 > "$work/transform.py"
           grep -q 'Textbook Draft v0.9' "$work/v0_9.tex"
           cd "$work"
@@ -72,7 +77,6 @@ jobs:
           canonical='Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v1_0.pdf'
           mkdir -p 'Automated_Logical_Deciders_and_Conjecture_Settling'
           cp "$src" "$canonical"
-
           rm -f \
             'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_8.pdf' \
             'Automated_Logical_Deciders_and_Conjecture_Settling/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf' \
@@ -80,14 +84,12 @@ jobs:
             'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.pdf' \
             'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_8.tex' \
             'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v0_9.tex'
-
           rm -rf \
             'docs/papers/what_checks_the_proof_amld_textbook_v0_8' \
             'docs/papers/what_checks_the_proof_amld_textbook_v0_9' \
             '.build/amld_v08' \
             '.build/amld_v09' \
             '.build/amld_v10'
-
           rm -f '.github/workflows/compile_what_checks_proof_amld_v0_8.yml'
           python scripts/build_library_homepage.py
           rm -f '.github/workflows/compile_what_checks_proof_amld_v1_0_once.yml'
