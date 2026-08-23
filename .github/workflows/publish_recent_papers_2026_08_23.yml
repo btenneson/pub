@@ -8,6 +8,7 @@ on:
       - '.github/workflows/publish_recent_papers_2026_08_23.yml'
       - '.build/recent_2026_08_23/shortest/**'
       - '.build/recent_2026_08_23/verified/**'
+      - '.build/recent_2026_08_23/what_checks/**'
       - 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex'
 
 permissions:
@@ -36,9 +37,11 @@ jobs:
           mkdir -p 'documents and their sources'
           cat .build/recent_2026_08_23/shortest/part00 .build/recent_2026_08_23/shortest/part01 .build/recent_2026_08_23/shortest/part02 | base64 -d | bunzip2 > 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex'
           cat .build/recent_2026_08_23/verified/part00 .build/recent_2026_08_23/verified/part01 .build/recent_2026_08_23/verified/part02a .build/recent_2026_08_23/verified/part02b .build/recent_2026_08_23/verified/part02c | base64 -d | bunzip2 > 'documents and their sources/Verified_Settlement_Search_v1_4.tex'
+          cat .build/recent_2026_08_23/what_checks/part00 .build/recent_2026_08_23/what_checks/part01 .build/recent_2026_08_23/what_checks/part02 .build/recent_2026_08_23/what_checks/part03 .build/recent_2026_08_23/what_checks/part04 .build/recent_2026_08_23/what_checks/part05 .build/recent_2026_08_23/what_checks/part06 | base64 -d | bunzip2 > 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex'
           test -s 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex'
           test -s 'documents and their sources/Verified_Settlement_Search_v1_4.tex'
           test -s 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex'
+          test -s 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex'
 
       - name: Compile publication PDFs
         shell: bash
@@ -55,6 +58,7 @@ jobs:
           compile_one 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' 'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' shortest
           compile_one 'documents and their sources/Verified_Settlement_Search_v1_4.tex' 'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' verified
           compile_one 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' 'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf' reflective
+          compile_one 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex' 'cs.LO_Logic_in_Computer_Science/What_Checks_the_Proof_AMLD_Textbook_v6_80.pdf' what_checks
 
       - name: Commit canonical sources and PDFs
         shell: bash
@@ -62,11 +66,11 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' 'documents and their sources/Verified_Settlement_Search_v1_4.tex' 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' 'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' 'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' 'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf'
+          git add 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' 'documents and their sources/Verified_Settlement_Search_v1_4.tex' 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex' 'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' 'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' 'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf' 'cs.LO_Logic_in_Computer_Science/What_Checks_the_Proof_AMLD_Textbook_v6_80.pdf'
           if git diff --cached --quiet; then
             echo 'Nothing to commit.'
           else
-            git commit -m 'Publish recent settlement and reflective-control papers'
+            git commit -m 'Publish What Checks the Proof v6.80 and refresh recent papers'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
