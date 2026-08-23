@@ -1,0 +1,31 @@
+name: Audit publication library
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'cs.LO_Logic_in_Computer_Science/**'
+      - 'Automated_Logical_Deciders_and_Conjecture_Settling/**'
+      - 'documents and their sources/**'
+      - 'scripts/audit_publication_library.py'
+      - '.github/workflows/audit_publication_library.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-publication-library
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run repository-local integrity audit
+        run: python scripts/audit_publication_library.py
