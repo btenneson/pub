@@ -60,17 +60,77 @@ jobs:
           compile_one 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' 'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf' reflective
           compile_one 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex' 'cs.LO_Logic_in_Computer_Science/What_Checks_the_Proof_AMLD_Textbook_v6_80.pdf' what_checks
 
-      - name: Commit canonical sources and PDFs
+      - name: Create canonical What Checks reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/papers/what_checks_the_proof_v6_80
+          cat > docs/papers/what_checks_the_proof_v6_80/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>What Checks the Proof? — Textbook Version 6.80</title>
+            <meta name="description" content="Canonical browser reader for What Checks the Proof? A Textbook Introduction to Automated Mathematical Logic Deciders, Textbook Version 6.80.">
+            <link rel="canonical" href="https://btenneson.github.io/pub/papers/what_checks_the_proof_v6_80/">
+            <style>
+              :root{color-scheme:light dark;--border:#8885}*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header{padding:1rem 1.1rem;border-bottom:1px solid var(--border)}header b{font-size:1.2rem;line-height:1.25}.sub{opacity:.76;margin:.35rem 0 0;font-size:.92rem}nav{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.8rem}nav a{display:inline-block;padding:.48rem .7rem;border:1px solid var(--border);border-radius:8px;text-decoration:none;font-weight:650}.reader{width:100%;height:calc(100vh - 165px);min-height:560px;border:0;background:#7772}.fallback{padding:.8rem 1.1rem;font-size:.9rem;opacity:.8;border-top:1px solid var(--border)}@media(max-width:600px){.reader{height:calc(100vh - 220px);min-height:500px}header{padding:.8rem}.fallback{padding:.7rem .8rem}}
+            </style>
+          </head>
+          <body>
+          <header>
+            <b>What Checks the Proof? A Textbook Introduction to Automated Mathematical Logic Deciders</b>
+            <p class="sub">Textbook Version 6.80 · Brian Tenneson · August 22, 2026</p>
+            <nav>
+              <a href="https://mozilla.github.io/pdf.js/web/viewer.html?file=https%3A%2F%2Fraw.githubusercontent.com%2Fbtenneson%2Fpub%2Fmain%2Fcs.LO_Logic_in_Computer_Science%2FWhat_Checks_the_Proof_AMLD_Textbook_v6_80.pdf" target="_blank" rel="noopener">Open full-screen reader</a>
+              <a href="https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/What_Checks_the_Proof_AMLD_Textbook_v6_80.pdf">Download PDF</a>
+              <a href="https://github.com/btenneson/pub/blob/main/documents%20and%20their%20sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex">LaTeX source</a>
+            </nav>
+          </header>
+          <iframe class="reader" title="PDF reader" src="https://mozilla.github.io/pdf.js/web/viewer.html?file=https%3A%2F%2Fraw.githubusercontent.com%2Fbtenneson%2Fpub%2Fmain%2Fcs.LO_Logic_in_Computer_Science%2FWhat_Checks_the_Proof_AMLD_Textbook_v6_80.pdf"></iframe>
+          <div class="fallback">The canonical reader uses the archive PDF directly. If the embedded reader is unavailable, use <strong>Open full-screen reader</strong> or <strong>Download PDF</strong>.</div>
+          </body>
+          </html>
+          HTML
+
+      - name: Rebuild and audit public library
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_library_homepage_v3.py
+          python scripts/audit_publication_library.py
+          python - <<'PY'
+          import json
+          d=json.load(open('docs/search-index.json', encoding='utf-8'))
+          assert d['count'] == 40, d['count']
+          assert d['items'][0]['href'] == 'papers/what_checks_the_proof_v6_80/'
+          assert d['items'][1]['href'] == 'papers/verified_settlement_search_v1_4/'
+          assert d['items'][2]['href'] == 'papers/shortest_settlement_optimal_control_v1_0/'
+          PY
+
+      - name: Commit canonical publication and public index
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' 'documents and their sources/Verified_Settlement_Search_v1_4.tex' 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex' 'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' 'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' 'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf' 'cs.LO_Logic_in_Computer_Science/What_Checks_the_Proof_AMLD_Textbook_v6_80.pdf'
+          git add \
+            'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' \
+            'documents and their sources/Verified_Settlement_Search_v1_4.tex' \
+            'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' \
+            'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex' \
+            'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' \
+            'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' \
+            'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf' \
+            'cs.LO_Logic_in_Computer_Science/What_Checks_the_Proof_AMLD_Textbook_v6_80.pdf' \
+            'docs/papers/what_checks_the_proof_v6_80/index.html' \
+            'docs/index.html' \
+            'docs/search-index.json'
           if git diff --cached --quiet; then
             echo 'Nothing to commit.'
           else
-            git commit -m 'Publish What Checks the Proof v6.80 and refresh recent papers'
+            git commit -m 'Publish What Checks the Proof v6.80 as top-ranked publication'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
