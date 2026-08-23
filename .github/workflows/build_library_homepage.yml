@@ -7,7 +7,7 @@ on:
     paths:
       - 'docs/papers/**'
       - 'docs/ADS/manifest.json'
-      - 'scripts/build_library_homepage.py'
+      - 'scripts/build_library_homepage_v2.py'
       - '.github/workflows/build_library_homepage.yml'
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
           python-version: '3.12'
 
       - name: Build searchable homepage
-        run: python scripts/build_library_homepage.py
+        run: python scripts/build_library_homepage_v2.py
 
       - name: Validate generated site index
         shell: bash
@@ -46,6 +46,10 @@ jobs:
           assert d['count'] == len(d['items'])
           assert any(x['kind'] == 'Core paper' for x in d['items'])
           assert any(x['kind'] == 'Applied Data Science' for x in d['items'])
+          # Canonical core readers must expose their archive PDF path.
+          missing=[x['title'] for x in d['items'] if x['kind']=='Core paper' and not x.get('archive_path')]
+          if missing:
+              raise SystemExit('Core readers missing archive PDF metadata: '+repr(missing))
           print('searchable items:', d['count'])
           PY
 
