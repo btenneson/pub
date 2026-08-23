@@ -52,8 +52,15 @@ jobs:
           if missing:
               raise SystemExit('Core readers missing archive PDF metadata: '+repr(missing))
           # The public default must begin with the silent editorial ranking.
-          assert d['items'][0]['href'] == 'papers/verified_settlement_search_v1_4/'
-          assert d['items'][1]['href'] == 'papers/shortest_settlement_optimal_control_v1_0/'
+          hrefs=[x['href'] for x in d['items']]
+          if 'papers/what_checks_the_proof_v6_80/' in hrefs:
+              assert hrefs[0] == 'papers/what_checks_the_proof_v6_80/'
+              assert hrefs[1] == 'papers/verified_settlement_search_v1_4/'
+              assert hrefs[2] == 'papers/shortest_settlement_optimal_control_v1_0/'
+          else:
+              # Transitional state before the canonical v6.80 reader is committed.
+              assert hrefs[0] == 'papers/verified_settlement_search_v1_4/'
+              assert hrefs[1] == 'papers/shortest_settlement_optimal_control_v1_0/'
           print('searchable items:', d['count'])
           PY
 
