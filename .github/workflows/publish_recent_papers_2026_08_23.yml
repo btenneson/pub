@@ -13,6 +13,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: publish-recent-papers-2026-08-23
+  cancel-in-progress: true
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -30,23 +34,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p 'documents and their sources'
-
-          cat \
-            .build/recent_2026_08_23/shortest/part00 \
-            .build/recent_2026_08_23/shortest/part01 \
-            .build/recent_2026_08_23/shortest/part02 \
-            | base64 -d | bunzip2 \
-            > 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex'
-
-          cat \
-            .build/recent_2026_08_23/verified/part00 \
-            .build/recent_2026_08_23/verified/part01 \
-            .build/recent_2026_08_23/verified/part02a \
-            .build/recent_2026_08_23/verified/part02b \
-            .build/recent_2026_08_23/verified/part02c \
-            | base64 -d | bunzip2 \
-            > 'documents and their sources/Verified_Settlement_Search_v1_4.tex'
-
+          cat .build/recent_2026_08_23/shortest/part00 .build/recent_2026_08_23/shortest/part01 .build/recent_2026_08_23/shortest/part02 | base64 -d | bunzip2 > 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex'
+          cat .build/recent_2026_08_23/verified/part00 .build/recent_2026_08_23/verified/part01 .build/recent_2026_08_23/verified/part02a .build/recent_2026_08_23/verified/part02b .build/recent_2026_08_23/verified/part02c | base64 -d | bunzip2 > 'documents and their sources/Verified_Settlement_Search_v1_4.tex'
           test -s 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex'
           test -s 'documents and their sources/Verified_Settlement_Search_v1_4.tex'
           test -s 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex'
@@ -56,32 +45,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/recent cs.LO_Logic_in_Computer_Science
-
           compile_one () {
-            src="$1"
-            out="$2"
-            stem="$3"
-            dir="build/recent/$stem"
+            src="$1"; out="$2"; stem="$3"; dir="build/recent/$stem"
             mkdir -p "$dir"
             cp "$src" "$dir/main.tex"
             (cd "$dir" && pdflatex -interaction=nonstopmode -halt-on-error main.tex && pdflatex -interaction=nonstopmode -halt-on-error main.tex && pdflatex -interaction=nonstopmode -halt-on-error main.tex)
             cp "$dir/main.pdf" "$out"
           }
-
-          compile_one \
-            'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' \
-            'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' \
-            shortest
-
-          compile_one \
-            'documents and their sources/Verified_Settlement_Search_v1_4.tex' \
-            'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' \
-            verified
-
-          compile_one \
-            'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' \
-            'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf' \
-            reflective
+          compile_one 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' 'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' shortest
+          compile_one 'documents and their sources/Verified_Settlement_Search_v1_4.tex' 'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' verified
+          compile_one 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' 'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf' reflective
 
       - name: Commit canonical sources and PDFs
         shell: bash
@@ -89,16 +62,11 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add \
-            'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' \
-            'documents and their sources/Verified_Settlement_Search_v1_4.tex' \
-            'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' \
-            'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' \
-            'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' \
-            'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf'
+          git add 'documents and their sources/Shortest_Settlement_Optimal_Control_v1_0.tex' 'documents and their sources/Verified_Settlement_Search_v1_4.tex' 'documents and their sources/Reflective_Compass_Control_Research_Program_v0_2.tex' 'cs.LO_Logic_in_Computer_Science/Shortest_Settlement_Optimal_Control_v1_0.pdf' 'cs.LO_Logic_in_Computer_Science/Verified_Settlement_Search_v1_4.pdf' 'cs.LO_Logic_in_Computer_Science/Reflective_Compass_Control_Research_Program_v0_2.pdf'
           if git diff --cached --quiet; then
             echo 'Nothing to commit.'
           else
             git commit -m 'Publish recent settlement and reflective-control papers'
-            git push
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
