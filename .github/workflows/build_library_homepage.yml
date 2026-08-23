@@ -8,6 +8,7 @@ on:
       - 'docs/papers/**'
       - 'docs/ADS/manifest.json'
       - 'scripts/build_library_homepage_v2.py'
+      - 'scripts/build_library_homepage_v3.py'
       - '.github/workflows/build_library_homepage.yml'
 
 permissions:
@@ -32,7 +33,7 @@ jobs:
           python-version: '3.12'
 
       - name: Build searchable homepage
-        run: python scripts/build_library_homepage_v2.py
+        run: python scripts/build_library_homepage_v3.py
 
       - name: Validate generated site index
         shell: bash
@@ -50,6 +51,9 @@ jobs:
           missing=[x['title'] for x in d['items'] if x['kind']=='Core paper' and not x.get('archive_path')]
           if missing:
               raise SystemExit('Core readers missing archive PDF metadata: '+repr(missing))
+          # The public default must begin with the silent editorial ranking.
+          assert d['items'][0]['href'] == 'papers/verified_settlement_search_v1_4/'
+          assert d['items'][1]['href'] == 'papers/shortest_settlement_optimal_control_v1_0/'
           print('searchable items:', d['count'])
           PY
 
@@ -65,4 +69,4 @@ jobs:
             git push origin HEAD:main
           fi
 
-# Explicitly retriggered after the 2026-08-23 recent-paper publication batch.
+# The public default order is curator-ranked but intentionally unlabeled.
