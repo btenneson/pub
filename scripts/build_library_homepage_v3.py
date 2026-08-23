@@ -26,6 +26,7 @@ spec.loader.exec_module(v2)
 # Overall editorial order, strongest first.  Keep this private to the builder:
 # the generated site deliberately does not expose rank numbers or scores.
 RANKED_HREFS = (
+    "papers/what_checks_the_proof_v6_80/",
     "papers/verified_settlement_search_v1_4/",
     "papers/shortest_settlement_optimal_control_v1_0/",
     "papers/search_dynamics_abel_v0_4/",
