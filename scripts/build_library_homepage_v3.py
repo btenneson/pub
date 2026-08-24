@@ -98,6 +98,15 @@ def main() -> None:
     if old not in page:
         raise RuntimeError("Expected default-sort code was not found in v2 output")
     page = page.replace(old, new, 1)
+
+    # Preserve the special AMLD guided-reading wing across all future rebuilds.
+    wing_link = '<a href="AMLD_Reading_Wing/">AMLD guided reading wing</a>'
+    nav = '<nav class="toplinks">'
+    if wing_link not in page:
+        if nav not in page:
+            raise RuntimeError("Homepage navigation block not found")
+        page = page.replace(nav, nav + wing_link, 1)
+
     v2.OUT_HTML.write_text(page, encoding="utf-8")
     print(f"wrote {len(items)} searchable items in curated overall order")
 

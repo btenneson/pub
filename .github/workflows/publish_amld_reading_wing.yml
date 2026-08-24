@@ -1,0 +1,124 @@
+name: Publish AMLD guided reading wing
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_amld_reading_wing.yml'
+      - '.build/amld_reading_wing/**'
+      - 'docs/AMLD_Reading_Wing/index.html'
+      - 'docs/AMLD_Reading_Wing/01_picard_protocol/**'
+      - 'scripts/build_library_homepage_v4.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-amld-guided-reading-wing
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install publication tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super poppler-utils zstd
+
+      - name: Reconstruct exact versioned LaTeX sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/amld_reading_wing
+          base64 -d '.build/amld_reading_wing/amld_complete_picture.tex.bz2.b64' | bunzip2 > build/amld_reading_wing/amld.tex
+          cp 'documents and their sources/Verified_Settlement_Search_v1_4.tex' build/amld_reading_wing/v14.tex
+          cat .build/amld_reading_wing/v14_v18/part* | base64 -d > build/amld_reading_wing/v14_v18.zst
+          zstd -q -d --patch-from=build/amld_reading_wing/v14.tex build/amld_reading_wing/v14_v18.zst -o build/amld_reading_wing/v18.tex
+          cat .build/amld_reading_wing/v18_v22/part* | base64 -d > build/amld_reading_wing/v18_v22.zst
+          zstd -q -d --patch-from=build/amld_reading_wing/v18.tex build/amld_reading_wing/v18_v22.zst -o build/amld_reading_wing/v22.tex
+          cat .build/amld_reading_wing/v22_v23/part* | base64 -d > build/amld_reading_wing/v22_v23.zst
+          zstd -q -d --patch-from=build/amld_reading_wing/v22.tex build/amld_reading_wing/v22_v23.zst -o build/amld_reading_wing/v23.tex
+          cat .build/amld_reading_wing/v23_v25/part* | base64 -d > build/amld_reading_wing/v23_v25.zst
+          zstd -q -d --patch-from=build/amld_reading_wing/v23.tex build/amld_reading_wing/v23_v25.zst -o build/amld_reading_wing/v25.tex
+          cp 'documents and their sources/What_Checks_the_Proof_AMLD_Textbook_v6_80.tex' build/amld_reading_wing/wctp.tex
+
+          printf '%s  %s\n' \
+            'be5a597abd3d12127d516f8787329583a9829e906e4d5cae50ce352c6195fbe5' build/amld_reading_wing/amld.tex \
+            '0feee79d2d3c3df1ff4c885aed0f512adf54b746392e50aad3c3240c82877791' build/amld_reading_wing/v18.tex \
+            'fb2efbd779d07bd833218ce735a4a78ebf877bc944f15085098a6a9b2be282aa' build/amld_reading_wing/v22.tex \
+            'f8e0c1975d7abb8cbceea5d08349b9a35d48aa492ac4aba49048703f47e31f67' build/amld_reading_wing/v23.tex \
+            'f4fd438888f1592a9421988c819e715140f5bd273d434af4628abe1153e791ac' build/amld_reading_wing/v25.tex \
+            'c68754afd2e0fcc774edb355435e5ac3fdfe3c05116b2c905eec4f5b2744ec82' build/amld_reading_wing/wctp.tex \
+            | sha256sum -c -
+
+      - name: Compile the six source-backed PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/AMLD_Reading_Wing build/amld_reading_wing/pdf
+          compile_one () {
+            src="$1"; out="$2"; stem="$3"
+            dir="build/amld_reading_wing/pdf/$stem"
+            mkdir -p "$dir"
+            cp "$src" "$dir/main.tex"
+            for pass in 1 2 3; do
+              (cd "$dir" && pdflatex -interaction=nonstopmode -halt-on-error main.tex >/dev/null)
+            done
+            cp "$dir/main.pdf" "$out"
+          }
+          compile_one build/amld_reading_wing/amld.tex 'docs/AMLD_Reading_Wing/02_amld_complete_picture.pdf' amld
+          compile_one build/amld_reading_wing/wctp.tex 'docs/AMLD_Reading_Wing/03_what_checks_the_proof_v6_80.pdf' wctp
+          compile_one build/amld_reading_wing/v18.tex 'docs/AMLD_Reading_Wing/04_verified_settlement_search_v1_8.pdf' v18
+          compile_one build/amld_reading_wing/v22.tex 'docs/AMLD_Reading_Wing/05_verified_settlement_search_v2_2.pdf' v22
+          compile_one build/amld_reading_wing/v23.tex 'docs/AMLD_Reading_Wing/06_verified_settlement_search_v2_3.pdf' v23
+          compile_one build/amld_reading_wing/v25.tex 'docs/AMLD_Reading_Wing/07_verified_settlement_search_v2_5.pdf' v25
+
+      - name: Validate page counts and reading-wing links
+        shell: bash
+        run: |
+          set -euo pipefail
+          pages () { pdfinfo "$1" | awk '/^Pages:/ {print $2}'; }
+          test "$(pages docs/AMLD_Reading_Wing/02_amld_complete_picture.pdf)" = 12
+          test "$(pages docs/AMLD_Reading_Wing/03_what_checks_the_proof_v6_80.pdf)" = 113
+          test "$(pages docs/AMLD_Reading_Wing/04_verified_settlement_search_v1_8.pdf)" = 38
+          test "$(pages docs/AMLD_Reading_Wing/05_verified_settlement_search_v2_2.pdf)" = 46
+          test "$(pages docs/AMLD_Reading_Wing/06_verified_settlement_search_v2_3.pdf)" = 53
+          test "$(pages docs/AMLD_Reading_Wing/07_verified_settlement_search_v2_5.pdf)" = 62
+          test -s docs/AMLD_Reading_Wing/index.html
+          test -s docs/AMLD_Reading_Wing/01_picard_protocol/index.html
+          grep -Fq 'Recommended reading order: 1 → 2 → 3 → 4 → 5 → 6 → 7' docs/AMLD_Reading_Wing/index.html
+          for f in 02_amld_complete_picture.pdf 03_what_checks_the_proof_v6_80.pdf 04_verified_settlement_search_v1_8.pdf 05_verified_settlement_search_v2_2.pdf 06_verified_settlement_search_v2_3.pdf 07_verified_settlement_search_v2_5.pdf; do
+            test -s "docs/AMLD_Reading_Wing/$f"
+            grep -Fq "$f" docs/AMLD_Reading_Wing/index.html
+          done
+
+      - name: Rebuild the main publication-library homepage
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_library_homepage_v4.py
+          grep -Fq 'href="AMLD_Reading_Wing/">AMLD guided reading wing</a>' docs/index.html
+
+      - name: Commit published wing if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/AMLD_Reading_Wing docs/index.html docs/search-index.json
+          if git diff --cached --quiet; then
+            echo 'Publication wing already up to date.'
+          else
+            git commit -m 'Publish AMLD guided reading wing artifacts'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
