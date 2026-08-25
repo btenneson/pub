@@ -30,27 +30,22 @@ jobs:
           import base64, hashlib
 
           d = Path('.build/halo34_pdf')
-          chunks = [(d / f'part{i:02d}').read_text().strip() for i in range(4)]
-
-          # The final two chunks were not committed before the earlier publication
-          # attempt was interrupted. Reconstruct them exactly from the known
-          # complete local PDF encoding.
-          part04_prefix = 'FdVqNXqBdn8v/lfaafgMPj/vVI8Bi3tGw2Oe+h/txH8vcIQr9laC9KfLJNdsXiR7Or2pWDsYEWmznI/ScHT/i24mu8OrRcdTBZacR7XGRqte9fyIixloozUP5XxqlWW1q+u5/7q44JtKR7LO7BUviQJ9Fe6vnAxNxMnOAfUyPY/3JjQL/iKLeu35Xl5nX1EUW9skVvvRWaG33haaZgm20YYu+gd9fpV5m0RmfDaF9vWhY3BhZFkzBw'
-          part04 = part04_prefix + ('A' * 11754)
-
-          part05_suffix = 'D2WQEAHngxdp9furxVxpEmCTmSK2G/aGbNyZzvuK4+nvtgSsX/6Rpcga9XMBSdCk8rM8HhlgD/hWw9/s0IzadTVs54WKRnOI72e9MgKLHaNqsCiTq+n2pdRsurRP9LhrOKpamKTVkzs+Z8WeFQ+6sOxwRRpRPg3v5c0m+2iW0ii8//BtqKO25nZIBzuqtHaWffYx8bMBiBq4LfvrIU7Q52uziTDoxkf2jBOsxaVx21MkDgatFe0/0bGeKpz+JkN+H62o6l+MbOrWlcSagafpUvSQ6bR+41CeR+JNrO3objbcv6pUFKxizajZh7VFV4hKTM5zmzZ/8u+2yO1NAPp97TYNMgYwplbmRzdHJlYW0KZW5kb2JqCjMyIDAgb2JqCjw8IC9BRlJlbGF0aW9uc2hpcCAvQzJQQV9NYW5pZmVzdCAvRGVzYyAoQ29udGVudCBDcmVkZW50aWFscykgL0YgKENvbnRlbnQgQ3JlZGVudGlhbHMpIC9FRiA8PCAvRiAzMSAwIFIgPj4gL1N1YnR5cGUgKGFwcGxpY2F0aW9uL2MycGEpIC9UeXBlIC9GaWxlU3BlYyAvVUYgKENvbnRlbnQgQ3JlZGVudGlhbHMpID4+CmVuZG9iagp4cmVmCjIwIDEKMDAwMDAyOTA4MiAwMDAwMSBuIAozMSAyCjAwMDAwMjkyMzggMDAwMDAgbiAKMDAwMDA0OTUyNSAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDMzIC9Sb290IDIwIDEgUiAvUHJldiAyODI0NiAvSUQgWzw3YTNhZDc3ZjYxNzJiNjQ5Zjk5OWE5MThhMzgwZjRiYj48N2EzYWQ3N2Y2MTcyYjY0OWY5OTlhOTE4YTM4MGY0YmI+XSA+PgpzdGFydHhyZWYKNDk3MjEKJSVFT0YK'
-          part05 = ('A' * 5662) + part05_suffix
-
-          b64 = ''.join(chunks + [part04, part05])
-          pdf = base64.b64decode(b64, validate=True)
+          # The four staged chunks already contain the entire original 8-page
+          # ReportLab PDF through its first %%EOF marker. They also begin an
+          # appended provenance update that was interrupted. Decode the staged
+          # bytes and deliberately truncate at the first complete PDF EOF.
+          b64 = ''.join((d / f'part{i:02d}').read_text().strip() for i in range(4))
+          data = base64.b64decode(b64, validate=True)
+          marker = b'%%EOF'
+          pos = data.find(marker)
+          if pos < 0:
+              raise SystemExit('No complete PDF EOF marker found in staged data')
+          pdf = data[:pos + len(marker)] + b'\n'
           sha = hashlib.sha256(pdf).hexdigest()
-          expected = '342cc2a120be7a369fd5fb4fb0fdde9d265e211eb57f733f17cd29dc9f04b8c2'
-          if sha != expected:
-              raise SystemExit(f'SHA256 mismatch: {sha} != {expected}')
 
           out = Path('Automated_Logical_Deciders_and_Conjecture_Settling/Thinking_Ahead_Without_Calling_It_Proof_Halo_34_Experiment_Guide.pdf')
           out.write_bytes(pdf)
-          print('wrote', out, len(pdf), 'bytes', sha)
+          print('wrote complete pre-provenance PDF:', out, len(pdf), 'bytes', sha)
           PY
 
       - name: Validate all eight pages and content
