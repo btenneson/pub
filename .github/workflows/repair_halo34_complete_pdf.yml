@@ -1,4 +1,4 @@
-name: Repair complete Halo (3,4) published PDF
+name: Publish exact attachment-derived Halo (3,4) PDF
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  repair:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -22,39 +22,40 @@ jobs:
       - name: Install PDF validation tools
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
-      - name: Reassemble complete 8-page PDF
+      - name: Reassemble exact edited attachment
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
           import base64, hashlib
 
-          d = Path('.build/halo34_pdf')
-          # The four staged chunks already contain the entire original 8-page
-          # ReportLab PDF through its first %%EOF marker. They also begin an
-          # appended provenance update that was interrupted. Decode the staged
-          # bytes and deliberately truncate at the first complete PDF EOF.
-          b64 = ''.join((d / f'part{i:02d}').read_text().strip() for i in range(4))
-          data = base64.b64decode(b64, validate=True)
-          marker = b'%%EOF'
-          pos = data.find(marker)
-          if pos < 0:
-              raise SystemExit('No complete PDF EOF marker found in staged data')
-          pdf = data[:pos + len(marker)] + b'\n'
+          d = Path('.build/halo34_attachment_final')
+          parts = [d / f'part{i:02d}' for i in range(5)]
+          missing = [str(p) for p in parts if not p.is_file()]
+          if missing:
+              raise SystemExit('Missing staged attachment chunks: ' + ', '.join(missing))
+          b64 = ''.join(p.read_text().strip() for p in parts)
+          pdf = base64.b64decode(b64, validate=True)
           sha = hashlib.sha256(pdf).hexdigest()
+          expected = 'd94c784c05c55bd326698157cf8283ba94006a766df779e4fc8bed9564f3c23d'
+          if sha != expected:
+              raise SystemExit(f'Attachment-derived PDF SHA256 mismatch: {sha} != {expected}')
 
           out = Path('Automated_Logical_Deciders_and_Conjecture_Settling/Thinking_Ahead_Without_Calling_It_Proof_Halo_34_Experiment_Guide.pdf')
           out.write_bytes(pdf)
-          print('wrote complete pre-provenance PDF:', out, len(pdf), 'bytes', sha)
+          print('wrote exact edited attachment:', out, len(pdf), 'bytes', sha)
           PY
 
-      - name: Validate all eight pages and content
+      - name: Validate all eight pages and requested page-one link
         shell: bash
         run: |
           PDF='Automated_Logical_Deciders_and_Conjecture_Settling/Thinking_Ahead_Without_Calling_It_Proof_Halo_34_Experiment_Guide.pdf'
           pdfinfo "$PDF" | tee /tmp/pdfinfo.txt
           test "$(awk '/^Pages:/ {print $2}' /tmp/pdfinfo.txt)" = '8'
           pdftotext "$PDF" /tmp/halo34.txt
+          grep -F 'Thinking Ahead Without Calling It' /tmp/halo34.txt
+          grep -F 'Prepared for Brian Tenneson' /tmp/halo34.txt
+          grep -F 'Public research repository: https://btenneson.github.io/pub/' /tmp/halo34.txt
           grep -F '1. What kind of machine is this?' /tmp/halo34.txt
           grep -F '2. What does (3,4) mean?' /tmp/halo34.txt
           grep -F '3. FUTUREBANK: where imagined' /tmp/halo34.txt
@@ -62,12 +63,9 @@ jobs:
           grep -F '5. What the 3 actually does: change' /tmp/halo34.txt
           grep -F '6. What the experiments have actually' /tmp/halo34.txt
           grep -F '7. The whole idea in one page' /tmp/halo34.txt
-          if grep -Eqi 'layperson|intelligent reader|intelligent lay' /tmp/halo34.txt; then
-            echo 'Audience-characterization wording found unexpectedly.' >&2
-            exit 1
-          fi
+          grep -F 'Page 1 of 8' /tmp/halo34.txt
 
-      - name: Commit repaired binary PDF
+      - name: Commit exact PDF from attachment
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
@@ -75,9 +73,9 @@ jobs:
           PDF='Automated_Logical_Deciders_and_Conjecture_Settling/Thinking_Ahead_Without_Calling_It_Proof_Halo_34_Experiment_Guide.pdf'
           git add "$PDF"
           if ! git diff --cached --quiet; then
-            git commit -m 'Repair published Halo (3,4) guide as complete 8-page PDF'
+            git commit -m 'Publish exact attachment-derived 8-page Halo (3,4) guide'
             git pull --rebase origin main
             git push origin HEAD:main
           else
-            echo 'Published PDF already matches complete 8-page version.'
+            echo 'Published PDF already matches the edited attachment exactly.'
           fi
