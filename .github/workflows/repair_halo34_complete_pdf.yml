@@ -1,0 +1,88 @@
+name: Repair complete Halo (3,4) published PDF
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair_halo34_complete_pdf.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install PDF validation tools
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Reassemble complete 8-page PDF
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, hashlib
+
+          d = Path('.build/halo34_pdf')
+          chunks = [(d / f'part{i:02d}').read_text().strip() for i in range(4)]
+
+          # The final two chunks were not committed before the earlier publication
+          # attempt was interrupted. Reconstruct them exactly from the known
+          # complete local PDF encoding.
+          part04_prefix = 'FdVqNXqBdn8v/lfaafgMPj/vVI8Bi3tGw2Oe+h/txH8vcIQr9laC9KfLJNdsXiR7Or2pWDsYEWmznI/ScHT/i24mu8OrRcdTBZacR7XGRqte9fyIixloozUP5XxqlWW1q+u5/7q44JtKR7LO7BUviQJ9Fe6vnAxNxMnOAfUyPY/3JjQL/iKLeu35Xl5nX1EUW9skVvvRWaG33haaZgm20YYu+gd9fpV5m0RmfDaF9vWhY3BhZFkzBw'
+          part04 = part04_prefix + ('A' * 11754)
+
+          part05_suffix = 'D2WQEAHngxdp9furxVxpEmCTmSK2G/aGbNyZzvuK4+nvtgSsX/6Rpcga9XMBSdCk8rM8HhlgD/hWw9/s0IzadTVs54WKRnOI72e9MgKLHaNqsCiTq+n2pdRsurRP9LhrOKpamKTVkzs+Z8WeFQ+6sOxwRRpRPg3v5c0m+2iW0ii8//BtqKO25nZIBzuqtHaWffYx8bMBiBq4LfvrIU7Q52uziTDoxkf2jBOsxaVx21MkDgatFe0/0bGeKpz+JkN+H62o6l+MbOrWlcSagafpUvSQ6bR+41CeR+JNrO3objbcv6pUFKxizajZh7VFV4hKTM5zmzZ/8u+2yO1NAPp97TYNMgYwplbmRzdHJlYW0KZW5kb2JqCjMyIDAgb2JqCjw8IC9BRlJlbGF0aW9uc2hpcCAvQzJQQV9NYW5pZmVzdCAvRGVzYyAoQ29udGVudCBDcmVkZW50aWFscykgL0YgKENvbnRlbnQgQ3JlZGVudGlhbHMpIC9FRiA8PCAvRiAzMSAwIFIgPj4gL1N1YnR5cGUgKGFwcGxpY2F0aW9uL2MycGEpIC9UeXBlIC9GaWxlU3BlYyAvVUYgKENvbnRlbnQgQ3JlZGVudGlhbHMpID4+CmVuZG9iagp4cmVmCjIwIDEKMDAwMDAyOTA4MiAwMDAwMSBuIAozMSAyCjAwMDAwMjkyMzggMDAwMDAgbiAKMDAwMDA0OTUyNSAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDMzIC9Sb290IDIwIDEgUiAvUHJldiAyODI0NiAvSUQgWzw3YTNhZDc3ZjYxNzJiNjQ5Zjk5OWE5MThhMzgwZjRiYj48N2EzYWQ3N2Y2MTcyYjY0OWY5OTlhOTE4YTM4MGY0YmI+XSA+PgpzdGFydHhyZWYKNDk3MjEKJSVFT0YK'
+          part05 = ('A' * 5662) + part05_suffix
+
+          b64 = ''.join(chunks + [part04, part05])
+          pdf = base64.b64decode(b64, validate=True)
+          sha = hashlib.sha256(pdf).hexdigest()
+          expected = '342cc2a120be7a369fd5fb4fb0fdde9d265e211eb57f733f17cd29dc9f04b8c2'
+          if sha != expected:
+              raise SystemExit(f'SHA256 mismatch: {sha} != {expected}')
+
+          out = Path('Automated_Logical_Deciders_and_Conjecture_Settling/Thinking_Ahead_Without_Calling_It_Proof_Halo_34_Experiment_Guide.pdf')
+          out.write_bytes(pdf)
+          print('wrote', out, len(pdf), 'bytes', sha)
+          PY
+
+      - name: Validate all eight pages and content
+        shell: bash
+        run: |
+          PDF='Automated_Logical_Deciders_and_Conjecture_Settling/Thinking_Ahead_Without_Calling_It_Proof_Halo_34_Experiment_Guide.pdf'
+          pdfinfo "$PDF" | tee /tmp/pdfinfo.txt
+          test "$(awk '/^Pages:/ {print $2}' /tmp/pdfinfo.txt)" = '8'
+          pdftotext "$PDF" /tmp/halo34.txt
+          grep -F '1. What kind of machine is this?' /tmp/halo34.txt
+          grep -F '2. What does (3,4) mean?' /tmp/halo34.txt
+          grep -F '3. FUTUREBANK: where imagined' /tmp/halo34.txt
+          grep -F '4. Why imagination is useful - and' /tmp/halo34.txt
+          grep -F '5. What the 3 actually does: change' /tmp/halo34.txt
+          grep -F '6. What the experiments have actually' /tmp/halo34.txt
+          grep -F '7. The whole idea in one page' /tmp/halo34.txt
+          if grep -Eqi 'layperson|intelligent reader|intelligent lay' /tmp/halo34.txt; then
+            echo 'Audience-characterization wording found unexpectedly.' >&2
+            exit 1
+          fi
+
+      - name: Commit repaired binary PDF
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          PDF='Automated_Logical_Deciders_and_Conjecture_Settling/Thinking_Ahead_Without_Calling_It_Proof_Halo_34_Experiment_Guide.pdf'
+          git add "$PDF"
+          if ! git diff --cached --quiet; then
+            git commit -m 'Repair published Halo (3,4) guide as complete 8-page PDF'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo 'Published PDF already matches complete 8-page version.'
+          fi
