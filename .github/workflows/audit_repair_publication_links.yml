@@ -1,0 +1,99 @@
+name: Audit and repair publication links
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit_repair_publication_links.yml'
+      - 'scripts/publication_link_audit_repair.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: audit-repair-publication-links
+  cancel-in-progress: false
+
+jobs:
+  audit-repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Repair reader links and self-citations
+        run: |
+          mkdir -p build
+          python scripts/publication_link_audit_repair.py \
+            --apply --network \
+            --report docs/LINK_REPAIR_LOG.md \
+            --manifest build/link-repair-manifest.json || true
+
+      - name: Rebuild publication homepage
+        run: python scripts/build_library_homepage_v3.py
+
+      - name: Install LaTeX for changed papers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra lmodern cm-super latexmk
+
+      - name: Recompile papers whose self-citations changed
+        run: |
+          python - <<'PY'
+          import json, shutil, subprocess
+          from pathlib import Path
+          root=Path.cwd()
+          data=json.loads((root/'build/link-repair-manifest.json').read_text())
+          results=[]
+          for item in data.get('changed_sources', []):
+              src_rel=item.get('source',''); pdf_rel=item.get('pdf','')
+              if not src_rel.endswith('.tex') or not pdf_rel: continue
+              src=root/src_rel; out=root/'build'/'recompiled'/src.stem; out.mkdir(parents=True,exist_ok=True)
+              proc=subprocess.run(['latexmk','-pdf','-interaction=nonstopmode','-halt-on-error',f'-outdir={out}',src.name],cwd=src.parent,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+              built=out/(src.stem+'.pdf'); ok=proc.returncode==0 and built.exists() and built.stat().st_size>0
+              if ok:
+                  dest=root/pdf_rel; dest.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(built,dest)
+                  slug=item.get('reader','')
+                  if slug:
+                      local=root/'docs'/'papers'/slug/dest.name
+                      if local.exists(): shutil.copy2(built,local)
+              else:
+                  (root/'build'/f'compile_failed_{src.stem}.log').write_text(proc.stdout[-40000:],encoding='utf-8',errors='replace')
+              results.append({'source':src_rel,'pdf':pdf_rel,'ok':ok,'returncode':proc.returncode})
+          (root/'build/recompile-results.json').write_text(json.dumps(results,indent=2)+'\n')
+          print(json.dumps(results,indent=2))
+          PY
+
+      - name: Run final audit
+        run: |
+          python scripts/publication_link_audit_repair.py --network --report docs/LINK_AUDIT.md --manifest build/link-audit-final.json || true
+          python scripts/audit_publication_library.py || true
+
+      - name: Append compile status
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('docs/LINK_AUDIT.md')
+          results=json.loads(Path('build/recompile-results.json').read_text()) if Path('build/recompile-results.json').exists() else []
+          with p.open('a',encoding='utf-8') as f:
+              f.write('\n## Recompiled PDFs after citation-link repair\n')
+              if not results: f.write('- No canonical source/PDF pairs required recompilation.\n')
+              for r in results: f.write(f"- **{'PASS' if r['ok'] else 'FAILED'}** `{r['source']}` → `{r['pdf']}`\n")
+          PY
+
+      - name: Commit repairs and audit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A ':!build'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Audit and repair publication links'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo 'No publication-link changes to commit.'
+          fi
