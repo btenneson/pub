@@ -1,0 +1,48 @@
+name: Compile PRCOM Structure Notes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/compile_prcom_structure_notes.yml'
+      - 'documents and their sources/PRCOM_Structure_Notes.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compile-prcom-structure-notes
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern cm-super
+      - name: Compile note
+        run: |
+          mkdir -p build/prcom
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/prcom 'documents and their sources/PRCOM_Structure_Notes.tex'
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/prcom 'documents and their sources/PRCOM_Structure_Notes.tex'
+          test -s build/prcom/PRCOM_Structure_Notes.pdf
+          mkdir -p cs.LO_Logic_in_Computer_Science docs/papers/prcom_structure_notes
+          cp build/prcom/PRCOM_Structure_Notes.pdf cs.LO_Logic_in_Computer_Science/PRCOM_Structure_Notes.pdf
+          cp build/prcom/PRCOM_Structure_Notes.pdf docs/papers/prcom_structure_notes/PRCOM_Structure_Notes.pdf
+      - name: Commit compiled PDF
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cs.LO_Logic_in_Computer_Science/PRCOM_Structure_Notes.pdf docs/papers/prcom_structure_notes/PRCOM_Structure_Notes.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m 'Compile PRCOM Structure Notes PDF'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
