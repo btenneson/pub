@@ -10,6 +10,7 @@ on:
       - 'Automated_Logical_Deciders_and_Conjecture_Settling/**'
       - 'documents and their sources/**'
       - 'scripts/audit_publication_library.py'
+      - 'scripts/publication_link_audit_repair.py'
       - '.github/workflows/audit_publication_library.yml'
 
 permissions:
@@ -23,9 +24,22 @@ jobs:
   audit:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Run repository-local integrity audit
         run: python scripts/audit_publication_library.py
+      - name: Enforce clean reader links and live self-citations
+        run: |
+          python scripts/publication_link_audit_repair.py \
+            --report /tmp/LINK_AUDIT.md \
+            --manifest /tmp/link-audit.json > /tmp/link-audit-summary.json
+          cat /tmp/link-audit-summary.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/link-audit-summary.json', encoding='utf-8'))
+          bad={k:d.get(k,0) for k in ('ugly','broken','unresolved') if d.get(k,0)}
+          if bad:
+              raise SystemExit('publication link audit failed: '+repr(bad))
+          PY
