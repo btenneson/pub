@@ -1,0 +1,794 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Creativity in Automated Theorem Proving — Data-ATP Experimental Treatise v0.1 — source</title><link rel="canonical" href="https://btenneson.github.io/pub/papers/data_atp_creativity_treatise_v0_1/source.html"><style>body{font:15px/1.5 system-ui;max-width:1100px;margin:auto;padding:24px}pre{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid #8885;border-radius:10px;padding:16px}a{font-weight:650}</style></head><body><p><a href="./">← Back to article</a></p><h1>LaTeX source</h1><pre>\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{parskip}
+
+\definecolor{DataBlue}{RGB}{34,76,120}
+\definecolor{DataGray}{RGB}{90,96,104}
+\definecolor{DataLight}{RGB}{238,243,248}
+\definecolor{DataRed}{RGB}{150,45,45}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=DataBlue,
+  citecolor=DataBlue,
+  urlcolor=DataBlue,
+  pdftitle={Creativity in Automated Theorem Proving: A Data-ATP Experimental Treatise},
+  pdfauthor={Brian Tenneson}
+}
+\urlstyle{same}
+\setstretch{1.06}
+\setlist[itemize]{leftmargin=1.6em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=1.8em,itemsep=0.25em,topsep=0.35em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{DataGray}{Data-ATP Creativity Research Draft}}
+\fancyhead[R]{\small\textcolor{DataGray}{Version 0.1 -- August 8, 2026}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\newtheoremstyle{datatheorem}
+  {0.8em}{0.8em}{\itshape}{}% space above/below/body/indent
+  {\color{DataBlue}\bfseries}{.}{0.5em}{}
+\theoremstyle{datatheorem}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}{Conjecture}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{protocol}{Protocol}[section]
+\newtheorem{remark}{Remark}[section]
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prb}{\mathbb{P}}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\cY}{\mathcal{C}}
+\newcommand{\PiFix}{\Pi_{\mathrm{fix}}}
+\newcommand{\PiAd}{\Pi_{\mathrm{adapt}}}
+\newcommand{\Rtilde}{\widetilde{R}}
+
+\begin{document}
+\pagenumbering{gobble}
+
+\begin{titlepage}
+\centering
+\vspace*{0.65in}
+{\color{DataBlue}\rule{0.9\textwidth}{1.4pt}}\\[0.5in]
+{\Huge\bfseries Creativity in Automated Theorem Proving\\[0.18in]}
+{\Large A Data-ATP Experimental Treatise\\[0.16in]}
+{\large Definitions, Optimization, Theorems, Conjectures, and Near-Term Tests\\[0.5in]}
+{\color{DataBlue}\rule{0.9\textwidth}{1.4pt}}\\[0.65in]
+
+{\Large Brian Tenneson}\\[0.12in]
+{\large Private Research Draft -- Version 0.1}\\[0.12in]
+{\large August 8, 2026}\\[0.65in]
+
+\fcolorbox{DataBlue}{DataLight}{\parbox{0.84\textwidth}{
+\textbf{Status.} This document is a private experimental research draft. It is intended to turn the current ATP-creativity framework into testable Data-ATP protocols. The proved statements below are mathematical results under explicitly stated stylized assumptions; the conjectures are empirical or architectural claims that require experiments. Nothing labeled a conjecture is presented as established fact.
+}}\\[0.7in]
+
+\vfill
+{\small\textcolor{DataGray}{Source-driven LaTeX manuscript. Bibliographic metadata review completed August 8, 2026.}}
+\end{titlepage}
+\pagenumbering{roman}
+
+\begin{abstract}
+Automated theorem proving has an asymmetry at its core: formal verification can determine whether a proposed certificate is correct, while search must decide which of an enormous number of possible legal constructions deserve finite computational attention. This manuscript develops a testable theory of \emph{creativity in an automated theorem prover} around that distinction. Creativity is operationalized as verified structural novelty under frozen information, formal environment, training, and computational-resource conditions. Exploratory controls---temperature, candidate width, breadth-depth allocation, novelty preference, restarts, lemma construction, and proof-length tolerance---are treated as inputs rather than creativity itself. Measured creative performance is instead an empirical outcome combining probability of verified discovery with normalized structural novelty.
+
+The manuscript extends the existing ATP Creativity framework with ten proved results under explicit assumptions. These include a creative-yield factorization theorem, verifier-separation theorem, a theorem showing that increasing softmax temperature can strictly reduce creative yield, a same-entropy/different-creativity theorem, a novelty-only optimization failure theorem, a counterfactual-rescue theorem, a random-mixture ceiling theorem, an adaptive-policy feasible-set dominance theorem, an anytime-creative-efficiency identity, and a fixed-target scarcity-weighting equivalence theorem. Claims that require genuine empirical evidence---including an inverted-U creativity curve, adaptive creativity superiority, shared-lemma population gains, and proof-geometric locality---are isolated as conjectures, each with an explicit falsification-oriented Data-ATP test plan.
+
+A near-term experimental program, DATP-CREAT-01, is specified in stages. The current long-running conservative Data-ATP search is documented as an operational baseline, not yet as evidence for or against a creativity hypothesis. The central research question is not whether an ATP can be made maximally exploratory, but whether a controlled amount and form of structured exploration can convert a fixed resource budget into more efficient, robust, novel, and transferable verified mathematical discovery.
+\end{abstract}
+
+\clearpage
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{Purpose and Scope}
+
+The immediate purpose of this document is experimental: to write down, before the next generation of Data-ATP experiments, what is meant by creativity, what quantities should be optimized, what can already be proved mathematically about the proposed metrics, and what must remain conjectural until matched trials are run.
+
+The starting point is the framework developed in the private ATP Creativity manuscripts: creativity is not an unanalyzed faculty but a controlled property of proof search, with verification deliberately kept separate from search policy \cite{tennesonC1,tennesonC2,tennesonCombined}. The same framework distinguishes an exploratory control index from observed creative performance and recommends repeated seeded trials, held-out theorem families, and sample-efficient optimization rather than optimizing a user-facing ``creativity knob&#x27;&#x27; directly \cite{tennesonC2,tennesonCombined}.
+
+This document makes a sharper three-way distinction:
+\[
+\boxed{
+\text{exploratory control}
+\;\neq\;
+\text{realized creativity}
+\;\neq\;
+\text{overall proof-search quality}.}
+\]
+
+A prover may be highly exploratory and accomplish little. A prover may be highly reliable yet reconstruct conventional routes. A prover may be genuinely creative but too expensive or unstable for a production role. The experimental goal is to discover which forms of exploration improve the objective actually declared for Data-ATP.
+
+\section{Foundational Separation: Truth Versus Attention}
+
+Formal automated reasoning has long separated proof procedures from the semantic or syntactic standards that make inferences valid; practical ATP engineering then adds search heuristics because legal search spaces become combinatorial \cite{fitting1996,harrison2009}. Proof-complexity work further emphasizes that the existence of a proof and the resources needed to represent or discover a proof are distinct questions \cite{cookreckhow1979}. Machine-learning-guided systems such as ENIGMA, DeepMath, DeepHOL/HOList, GPT-f, and LeanDojo place learned nonuniform priorities on candidate proof actions or premises without redefining formal correctness \cite{jakubuv2017,alemi2016,bansal2019,polu2020,yang2023}. This is the architectural location in which the present notion of creativity belongs.
+
+\begin{definition}[Verifier-separated ATP]
+A verifier-separated ATP consists of a search mechanism that proposes candidate proof actions or certificates and a sound formal verifier $V$ that alone determines acceptance. Search may change ranking, sampling, branching, restarts, lemma proposals, or resource allocation. It does not alter the axioms, inference rules, side conditions, or acceptance standard.
+\end{definition}
+
+The guiding sentence is therefore:
+\[
+\boxed{\text{Verification determines correctness; search determines attention.}}
+\]
+
+This matters because it permits aggressive experimental search without allowing ``creativity&#x27;&#x27; to become a euphemism for invalid inference. The HaloProof creativity-control notes state this division explicitly: creativity may alter which legal actions are attempted, but not substitution rules, distinct-variable requirements, axioms, definitions, or final verification \cite{tennesonHalo}.
+
+\section{Experimental Definition of ATP Creativity}
+
+\begin{definition}[Controlled ATP creativity]
+Fix a formal system $F$, hypotheses $\Gamma$, target theorem $\varphi$, verifier $V$, information condition $K$, training exposure $p$, and finite resource protocol $T$. Let $u$ denote a search-policy configuration. ATP creativity is operationalized as the production, under these frozen conditions, of a verifier-accepted proof whose normalized structure is novel relative to a predeclared comparison class.
+\end{definition}
+
+This definition requires three protections.
+
+\begin{enumerate}
+\item \textbf{Verification protection.} Invalid mathematics receives no creativity credit.
+\item \textbf{Novelty protection.} Syntactic padding, redundant detours, duplicate steps, irrelevant permutations, or merely renaming a familiar proof do not count as structural novelty.
+\item \textbf{Control protection.} A supposed creativity improvement may not be purchased by giving one condition more training data, target leakage, theorem-library access, expansions, memory, wall-clock privilege, or weaker checking.
+\end{enumerate}
+
+Candidate novelty features can include normalized proof-DAG distance, changed theorem dependencies, alternative decompositions, newly constructed reusable lemmas, different explicit maps or constructions, bypass of expected lemmas, and diversity across independent seeds \cite{tennesonC1,tennesonCombined}. Novelty search and quality-diversity research provide useful external analogues: diversity can be an explicit search objective, but diversity alone need not equal quality \cite{lehman2011,pugh2016,mouret2015}.
+
+\section{Controls Are Inputs, Not Creativity}
+
+Let the raw control vector be
+\[
+u=(\tau,w,b,n,r,\lambda,\ell),
+\]
+where $\tau$ is action-selection temperature, $w$ candidate width, $b$ breadth-versus-depth allocation, $n$ novelty pressure, $r$ restart or abandonment behavior, $\lambda$ willingness to construct intermediate lemmas, and $\ell$ proof-length tolerance or penalty.
+
+A formal-system-relative scalar
+\[
+c_F(u)=\sum_i \alpha_{i,F}z_{i,F}(u_i),
+\qquad
+\alpha_{i,F}\ge 0,
+\qquad
+\sum_i\alpha_{i,F}=1,
+\]
+may summarize how exploratory the configuration is. Behavioral normalization is preferable to raw-parameter normalization because identical numerical values can induce different behavior in different calculi or theorem libraries \cite{tennesonC2}.
+
+But $c_F(u)$ is not an observed creativity score. It is a compact description of the inputs.
+
+\subsection{Realized creative return}
+
+For a fixed target and budget, let $S_u$ be the event that policy $u$ finds a verifier-accepted proof. If successful, let $P_u$ be the normalized proof and let
+\[
+\nu(P_u)\in[0,1]
+\]
+be its predeclared structural-novelty score. Define $\nu(P_u)=0$ on failure for notational convenience. The \emph{realized creative return} is
+\[
+Z_u=\ind_{S_u}\,\nu(P_u),
+\]
+and the \emph{expected creative yield} is
+\[
+\cY(u)=\E[Z_u].
+\]
+
+Define also
+\[
+D(u)=\Prb(S_u)
+\]
+and, when $D(u)&gt;0$,
+\[
+N(u)=\E[\nu(P_u)\mid S_u].
+\]
+If $D(u)=0$, set $N(u)=0$.
+
+\section{Proved Results About Creativity Metrics}
+
+The theorems in this section are not empirical claims about Data-ATP. They are mathematical consequences of the definitions and stylized search models stated here. Their purpose is to prevent experimental interpretation errors before expensive trials are run.
+
+\subsection{Creative-yield factorization}
+
+\begin{theorem}[Creative-yield factorization]\label{thm:factor}
+For every policy configuration $u$,
+\[
+\cY(u)=D(u)N(u).
+\]
+\end{theorem}
+
+\begin{proof}
+If $D(u)=0$, both sides are zero by definition. If $D(u)&gt;0$, then
+\[
+\cY(u)
+=\E[\ind_{S_u}\nu(P_u)]
+=\Prb(S_u)\E[\nu(P_u)\mid S_u]
+=D(u)N(u),
+\]
+by conditioning on the success event.
+\end{proof}
+
+\begin{remark}
+The product is useful precisely because it punishes two different failure modes. If novelty is high but success is nearly impossible, $D$ drives the score down. If success is reliable but the system only reconstructs familiar proofs, $N$ drives the score down.
+\end{remark}
+
+\subsection{Verifier separation}
+
+\begin{theorem}[Search-policy soundness invariance]\label{thm:verifier}
+Assume $V$ is sound for $(F,\Gamma)$ in the sense that whenever $V$ accepts a certificate $P$ for $\varphi$, one has $\Gamma\vdash_F\varphi$. If every ATP condition accepts a target only through $V$, then changing the search policy, creativity controls, sampling distribution, agent profile, or ranking function cannot cause acceptance of a non-theorem.
+\end{theorem}
+
+\begin{proof}
+Let an arbitrary search policy emit a certificate $P$ that is accepted. By hypothesis, acceptance occurs only because $V$ accepts $P$. By soundness of $V$, $\Gamma\vdash_F\varphi$. The argument does not depend on how $P$ was proposed. Therefore replacing one search policy by another changes discovery behavior but not the soundness implication from acceptance to theoremhood.
+\end{proof}
+
+This is the formal reason creativity should be allowed to act on search but not on verification. A related verifier-separation proposition already appears in the Version 47 ATP analysis \cite{tennesonDepths47}.
+
+\subsection{More exploration can strictly hurt}
+
+\begin{theorem}[High-temperature counterexample]\label{thm:temperature}
+There exists a finite verifier-separated proof-search problem in which increasing softmax temperature strictly increases exploratory dispersion while strictly decreasing both proof success probability and expected creative yield.
+\end{theorem}
+
+\begin{proof}
+Consider a one-step budget with exactly two legal actions, $a_\star$ and $b$. Action $a_\star$ immediately yields a verified proof of novelty $\nu_0&gt;0$; action $b$ exhausts the budget without proof. Let the learned scores satisfy $s_\star&gt;s_b$ and define $\Delta=s_\star-s_b&gt;0$. Under softmax temperature $\tau&gt;0$,
+\[
+p_\tau(a_\star)=\frac{e^{s_\star/\tau}}{e^{s_\star/\tau}+e^{s_b/\tau}}
+=\frac{1}{1+e^{-\Delta/\tau}}.
+\]
+Because $x(\tau)=\Delta/\tau$ is strictly decreasing and the logistic function is strictly increasing,
+\[
+\frac{d}{d\tau}p_\tau(a_\star)&lt;0.
+\]
+Hence $D(\tau)=p_\tau(a_\star)$ strictly decreases. Since the only successful proof has novelty $\nu_0$,
+\[
+\cY(\tau)=\nu_0p_\tau(a_\star)
+\]
+also strictly decreases. Meanwhile the binary action distribution approaches $(1/2,1/2)$ as $\tau$ increases, so its Shannon entropy increases whenever $p_\tau(a_\star)&gt;1/2$. Thus greater temperature and greater action entropy can coincide with worse proof search and worse creative yield.
+\end{proof}
+
+\begin{corollary}
+There is no general theorem that ``maximum exploration&#x27;&#x27; or ``maximum temperature&#x27;&#x27; is the optimal creativity setting for an ATP.
+\end{corollary}
+
+\subsection{Entropy cannot define creativity by itself}
+
+\begin{theorem}[Same entropy, different creative yield]\label{thm:entropy}
+There exist two policies with identical action entropy but different proof success probabilities and different creative yields.
+\end{theorem}
+
+\begin{proof}
+Use the same one-step two-action problem as in Theorem~\ref{thm:temperature}. Let policy $A$ choose the proving action $a_\star$ with probability $p$, where $p\in(1/2,1)$, and let policy $B$ choose $a_\star$ with probability $1-p$. The binary entropy
+\[
+H(p)=-p\log p-(1-p)\log(1-p)
+\]
+is symmetric, so $H(p)=H(1-p)$. Yet
+\[
+D_A=p&gt;1-p=D_B,
+\]
+and with proof novelty $\nu_0&gt;0$,
+\[
+\cY_A=\nu_0p&gt;\nu_0(1-p)=\cY_B.
+\]
+Thus equal behavioral entropy need not imply equal creativity.
+\end{proof}
+
+Entropy remains useful as a diagnostic of realized diversity, but it cannot replace outcome measurement.
+
+\subsection{Novelty alone can select the worse prover}
+
+\begin{theorem}[Conditional-novelty optimization failure]\label{thm:noveltytrap}
+There exist ATP policies $A$ and $B$ such that $N(B)&gt;N(A)$ but $\cY(B)&lt;\cY(A)$.
+\end{theorem}
+
+\begin{proof}
+Choose any $0&lt;n_A&lt;n_B\le 1$. Let $D(A)=1$ and choose $D(B)$ such that
+\[
+0&lt;D(B)&lt;\frac{n_A}{n_B}.
+\]
+Set $N(A)=n_A$ and $N(B)=n_B$. Then $N(B)&gt;N(A)$, but
+\[
+\cY(B)=D(B)n_B&lt;n_A=D(A)n_A=\cY(A).
+\]
+\end{proof}
+
+Thus optimizing novelty conditional on success can prefer a system that almost never proves anything. This is a reason to optimize a joint outcome such as $DN$ rather than novelty alone.
+
+\subsection{Counterfactual rescue}
+
+\begin{theorem}[Counterfactual-rescue lower bound]\label{thm:rescue}
+Suppose a proof-search state $S$ has a unique proof-enabling first action $a_\star$ within the remaining budget. A deterministic candidate-cap policy admits only ranks $1,\dots,k$, while $a_\star$ has rank $r&gt;k$. Then the capped policy has success probability zero. If a counterfactual policy selects $a_\star$ with probability at least $p&gt;0$ and, conditional on that selection, completes a verified proof within budget with probability at least $q&gt;0$, then
+\[
+D_{\mathrm{cf}}\ge pq.
+\]
+If every such completed proof has novelty at least $\nu_0&gt;0$, then
+\[
+\cY_{\mathrm{cf}}\ge pq\nu_0&gt;0.
+\]
+\end{theorem}
+
+\begin{proof}
+The deterministic cap never admits $a_\star$, so by the uniqueness assumption no within-budget proof can be reached and its success probability is zero. Under counterfactual selection, the event ``select $a_\star$ and then complete the proof&#x27;&#x27; has probability at least $pq$, yielding $D_{\mathrm{cf}}\ge pq$. Multiplying by the lower novelty bound gives the creative-yield inequality.
+\end{proof}
+
+The theorem captures the mechanism seen in the controlled \texttt{prcom} proof-of-concept: learned ranking moved a useful assertion substantially upward, but counterfactual admission was still needed to cross the candidate cap \cite{tennesonDepths47}. That finite-instance result motivates, but does not itself prove, a general creativity advantage.
+
+\subsection{A random portfolio is not automatically better}
+
+\begin{theorem}[Random-mixture ceiling]\label{thm:mixture}
+Let $\pi_1,\dots,\pi_m$ be fixed full-budget policies with expected creative yields $\cY_1,\dots,\cY_m$. Consider a run-level mixture that, before search begins, chooses policy $\pi_i$ with probability $w_i$, where $w_i\ge 0$ and $\sum_iw_i=1$, and then runs only that policy with no adaptation or information sharing. Then
+\[
+\cY_{\mathrm{mix}}=\sum_{i=1}^m w_i\cY_i
+\le \max_i\cY_i.
+\]
+\end{theorem}
+
+\begin{proof}
+By the law of total expectation conditioned on the selected policy,
+\[
+\cY_{\mathrm{mix}}
+=\sum_i w_i\E[Z\mid\pi_i]
+=\sum_iw_i\cY_i.
+\]
+A convex combination cannot exceed its largest component.
+\end{proof}
+
+\begin{remark}
+This theorem is deliberately useful for population design. A population is not guaranteed to help merely because it contains different personalities. To beat the random-mixture ceiling in expected creative yield, it must exploit something beyond pre-run randomization: state-dependent specialization, resource reallocation, target conditioning, shared verified lemmas, cooperative search, different risk objectives, or some other within-run interaction.
+\end{remark}
+
+\subsection{Why adaptive creativity is worth testing}
+
+\begin{theorem}[Adaptive-policy feasible-set dominance]\label{thm:adaptive}
+Let $\PiFix$ be a class of fixed-control policies and let $\PiAd$ be an adaptive class that contains every fixed policy as the special case of a controller that never changes its controls. For any expected utility functional $U(\pi)$ defined on both classes,
+\[
+\sup_{\pi\in\PiAd}U(\pi)
+\ge
+\sup_{\pi\in\PiFix}U(\pi).
+\]
+\end{theorem}
+
+\begin{proof}
+Because $\PiFix\subseteq\PiAd$, optimization over the larger feasible set cannot have a smaller supremum than optimization over the subset.
+\end{proof}
+
+\begin{remark}
+This is a possibility theorem, not an empirical superiority theorem. Finite data, controller overhead, miscalibration, or overfitting may cause an implemented adaptive system to perform worse. The theorem only says that a correctly defined adaptive policy class does not lose the best fixed policies from its theoretical option set.
+\end{remark}
+
+\subsection{Rewarding earlier creative discovery}
+
+Let $\tau_u\in[0,\infty]$ denote the expansion count or time at which the first accepted proof is discovered, with $\tau_u=\infty$ on failure. Let $\nu_u\in[0,1]$ be the novelty of that first proof, and set $\nu_u=0$ on failure. Define the time-indexed creative yield
+\[
+\cY_u(t)=\E\left[\nu_u\ind_{\{\tau_u\le t\}}\right].
+\]
+For a horizon $T&gt;0$, define the \emph{Anytime Creative Efficiency}
+\[
+\operatorname{ACE}_T(u)
+=\frac{1}{T}\int_0^T\cY_u(t)\,dt.
+\]
+
+\begin{theorem}[Anytime creative-efficiency identity]\label{thm:ace}
+For every policy $u$ and horizon $T&gt;0$,
+\[
+\operatorname{ACE}_T(u)
+=\frac{1}{T}\E\left[\nu_u(T-\tau_u)_+\right],
+\]
+where $(x)_+=\max\{x,0\}$.
+\end{theorem}
+
+\begin{proof}
+Because the integrand is nonnegative, Tonelli&#x27;s theorem permits interchange of expectation and integration:
+\begin{align*}
+\operatorname{ACE}_T(u)
+&amp;=\frac{1}{T}\int_0^T\E\left[\nu_u\ind_{\{\tau_u\le t\}}\right]dt\\
+&amp;=\frac{1}{T}\E\left[\nu_u\int_0^T\ind_{\{\tau_u\le t\}}dt\right]\\
+&amp;=\frac{1}{T}\E\left[\nu_u(T-\tau_u)_+\right].
+\end{align*}
+\end{proof}
+
+This metric distinguishes ``found at expansion 2,000&#x27;&#x27; from ``found at expansion 79,999&#x27;&#x27; even when both runs ultimately succeed inside an 80,000-expansion budget.
+
+\subsection{Scarcity weighting does not change a fixed-target optimum}
+
+Let a target-relative scarcity weight $R_F(\Gamma,\varphi)\ge0$ be fixed independently of policy, as in the ATP Creativity proof-space framework \cite{tennesonC1,tennesonCombined}. Define
+\[
+\cY_F^\star(u)=R_F(\Gamma,\varphi)\cY(u).
+\]
+
+\begin{theorem}[Fixed-target scarcity equivalence]\label{thm:scarcity}
+For a fixed target with $R_F(\Gamma,\varphi)&gt;0$,
+\[
+\arg\max_u \cY_F^\star(u)
+=
+\arg\max_u \cY(u).
+\]
+If $R_F(\Gamma,\varphi)=0$, then every policy has weighted score zero.
+\end{theorem}
+
+\begin{proof}
+For positive constant $R_F$, multiplication by $R_F$ preserves all order comparisons among the values $\cY(u)$. If $R_F=0$, the weighted objective is identically zero.
+\end{proof}
+
+Scarcity weighting therefore matters primarily when aggregating across targets; it is not a reason to change which policy wins a matched experiment on one fixed theorem.
+
+\section{From Creativity to Better Proof Search}
+
+A high creativity score is not automatically the same as a better ATP. Let
+\begin{itemize}
+\item $S(u)$ denote verified success rate,
+\item $K(u)$ normalized computational cost,
+\item $V(u)$ run-to-run instability,
+\item $Q(u)$ proof quality or simplicity,
+\item $C(u)$ benchmark creative performance.
+\end{itemize}
+A declared system utility might take the form
+\[
+U(u)=\beta_C C(u)+\beta_SS(u)+\beta_QQ(u)-\beta_KK(u)-\beta_VV(u),
+\]
+with coefficients determined by the prover&#x27;s intended role \cite{tennesonC2}. For a research prover, novel mathematics may be highly valued. For a production verifier, reliability and cost may dominate. A Pareto frontier is often more scientifically transparent than pretending there is a universal scalar definition of ``best.&#x27;&#x27;
+
+The external quality-diversity literature is relevant here because it explicitly studies the joint production of diverse and high-performing solutions rather than diversity alone \cite{pugh2016,mouret2015}. In ATPs, the analogy must be made carefully: formal proof validity remains a hard acceptance constraint, while diversity applies to verified routes, intermediate structures, or search behavior.
+
+\section{The Creativity Curve as an Empirical Object}
+
+The current private framework predicts a plausible inverted-U relationship: very low exploration may overexploit familiar routes; moderate exploration may rescue ranking mistakes and discover reusable lemmas; very high exploration may waste a finite budget on poorly directed branching \cite{tennesonC1,tennesonCombined}. This is closely related to the general exploration--exploitation problem studied in reinforcement learning, although the ATP setting has the additional hard constraint of formal verification \cite{sutton2018}. Theorem~\ref{thm:temperature} proves only that ``more exploration is always better&#x27;&#x27; is false in general. It does not prove an inverted U.
+
+The quantity to estimate is a response surface such as
+\[
+(u,\varphi,K,p,T)\longmapsto
+\left(D,N,\cY,\operatorname{ACE},S,K_{\mathrm{cost}},V,Q\right).
+\]
+Because ATP trials are noisy and expensive, sequential design methods such as Bayesian optimization and tree-structured Parzen estimators are natural candidates for tuning after a clean calibration/validation/test split is frozen \cite{snoek2012,bergstra2011}. The optimizer should target observed outcome metrics, not merely the scalar control index.
+
+\section{Near-Term Data-ATP Experimental Program}
+
+\begin{protocol}[DATP-CREAT-01: Creativity isolation pilot]\label{prot:pilot}
+The first Data-ATP creativity experiment should use a deliberately simple, auditable matched design before population agents, dynamic geometry, or adaptive controllers are introduced.
+\end{protocol}
+
+\subsection{Stage A: control validation on inexpensive targets}
+
+Use theorem targets that can be run repeatedly at modest budgets. The first private pilot can include already familiar diagnostic targets such as \texttt{prcom}, \texttt{prcon}, and \texttt{0cn}, supplemented by a predeclared frozen sample of additional pre-target theorems. The purpose is not to prove that these targets are difficult; it is to verify that creativity controls actually induce the intended behavioral changes and that logging is sufficient.
+
+Freeze:
+\begin{itemize}
+\item formal database and declaration cutoff;
+\item target/downstream-proof exclusion rules;
+\item model architecture, weights, and preprocessing;
+\item verifier implementation and hash;
+\item hardware allocation;
+\item primary expansion budget;
+\item memory and wall-clock safety caps;
+\item maximum logical depth/open-goal constraints;
+\item proof normalization and novelty scoring rules;
+\item random-seed list before examining outcomes.
+\end{itemize}
+
+The first factorial grid should be
+\[
+\text{guidance}\in\{\text{off},\text{on}\}
+\quad\times\quad
+c\in\{0,0.25,0.50,0.75,1.00\}.
+\]
+Use one search agent initially. A pilot of five seeds per cell is sufficient to debug the protocol; a larger repeated-seed study should follow only after the instrumentation is stable.
+
+\subsection{Stage B: transfer to \texttt{sgrpcl}}
+
+Do not tune on \texttt{sgrpcl} after inspecting its creativity outcomes. Select a small number of configurations from Stage A using predeclared criteria, freeze them, and then transfer them to \texttt{sgrpcl}. The present long-running conservative run can serve as an operational baseline if its exact configuration and environment are fully preserved, but it is not by itself a creativity comparison because no matched alternate-creativity condition has yet been run.
+
+\subsection{Stage C: harder transfer and HaloProof}
+
+After the cheap-target and \texttt{sgrpcl} stages establish reproducibility, test the same mechanism on the substantially harder HaloProof benchmark. This is where lemma construction, structural novelty, and search-profile differences should become substantially more informative than on short routine targets.
+
+\subsection{What to record}
+
+Every run should log at least:
+\begin{itemize}
+\item theorem and condition identifiers;
+\item raw and normalized creativity controls;
+\item seed and environment/verifier hashes;
+\item committed expansions and elapsed time;
+\item open-goal count and frontier size over time;
+\item candidate ranks before and after learned guidance;
+\item realized action entropy and candidate width;
+\item counterfactual admissions and whether they enter successful proofs;
+\item restarts and branch-abandonment events;
+\item attempted, verified, reused, and discarded lemmas;
+\item proof certificate and normalized proof DAG on success;
+\item checkpoint/replay overhead;
+\item clean distinction among verified success, bounded unknown, frontier exhaustion, and implementation failure.
+\end{itemize}
+
+\subsection{Primary estimands}
+
+For each target and condition estimate
+\[
+D,\qquad N,\qquad \cY=DN,\qquad \operatorname{ACE}_T,
+\]
+along with expansion discovery cost, wall-clock cost, peak memory, proof length, and instability across seeds. Report components separately even when an aggregate score is used.
+
+\section{Current Operational Baseline: Conservative Data-ATP Run}
+
+A console excerpt supplied for this draft shows the conservative run continuing to commit expansions rather than stalling at a static counter. Over the excerpt, the run moves from 13,630 committed expansions at 64,811 seconds to 13,930 committed expansions at 70,884 seconds: 300 additional committed expansions over 6,073 seconds (about 1.69 hours, averaging about 20.2 seconds per committed expansion across this particular mixed segment). The instantaneous rate is clearly not constant.
+
+The open-goal count changes from one to three near expansion 13,780 and then from three to two near expansion 13,890. This is worth preserving because it illustrates why open-goal count is not a monotone ``distance to proof&#x27;&#x27; metric. Opening subgoals can reflect decomposition of a promising branch, while later discharge can reduce the count. The run excerpt is therefore evidence of continuing computation and state change, not evidence that a proof is imminent.
+
+\begin{center}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+Committed expansions &amp; Elapsed seconds &amp; Open goals &amp; Note\\
+\midrule
+13,630 &amp; 64,811 &amp; 1 &amp; excerpt start\\
+13,770 &amp; 65,048 &amp; 1 &amp; last shown one-goal point\\
+13,780 &amp; 65,098 &amp; 3 &amp; goal count increases\\
+13,880 &amp; 68,995 &amp; 3 &amp; three-goal region\\
+13,890 &amp; 69,177 &amp; 2 &amp; one goal discharged/removed\\
+13,930 &amp; 70,884 &amp; 2 &amp; excerpt end\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For D-A-T-P-CREAT-01, this run should be archived with exact configuration, checkpoint, and breadcrumbs. It may later become a matched baseline, but its scientific role should not be retroactively changed after results are known.
+
+\section{Conjectures for Data-ATP}
+
+The following statements are intentionally separated from the proved results. Each receives its own page and an explicit near-term test. A failed test is scientifically useful: the point is to make the claims falsifiable before architecture is added merely because it sounds intelligent.
+
+\clearpage
+\subsection{Interior Creativity Optimum}
+
+\begin{conjecture}[Data-ATP inverted-U conjecture]\label{conj:u}
+For sufficiently difficult, route-blind ($K_0$) theorem families under a fixed finite resource protocol, Data-ATP&#x27;s expected creative yield $\cY(c)$ has an interior maximizer $c^\star\in(0,1)$ over a suitably calibrated one-dimensional creativity path, rather than being maximized at both endpoints.
+\end{conjecture}
+
+\textbf{Why it is plausible.} Low exploration can overtrust an imperfect ranking; very high exploration can diffuse a fixed budget. The two mechanisms can produce opposite slopes at opposite ends.
+
+\textbf{Near-term test.} Run the Stage A five-point grid under identical budgets and seeds. Fit a response surface with uncertainty intervals. Predeclare what size of endpoint/interior difference counts as practically meaningful. Repeat on held-out targets before calling the curve general.
+
+\textbf{Falsification.} A monotone or flat relationship on a sufficiently powered held-out benchmark refutes the conjecture for that benchmark and implementation.
+
+\clearpage
+\subsection{Guidance--Creativity Compensation}
+
+\begin{conjecture}[Guidance--creativity compensation conjecture]\label{conj:guidance}
+As the calibration and ranking quality of a learned legal-move model improves, the optimal amount of undirected counterfactual exploration decreases on average, while remaining strictly positive on theorem families for which the ranker retains nonzero tail error on proof-enabling actions.
+\end{conjecture}
+
+\textbf{Interpretation.} Better intelligence should reduce the amount of insurance required against ranking mistakes, but a finite learned ranker can still assign a necessary action just outside the active candidate frontier.
+
+\textbf{Near-term test.} Cross guidance off/on with the creativity grid in Protocol~\ref{prot:pilot}. Compare the fitted maximizing $c$ values and record successful proofs in which a counterfactual admission rescues an action outside the ordinary candidate cap.
+
+\textbf{Falsification.} If better-guided conditions consistently require equal or greater undirected exploration, or if the interaction is absent across held-out theorem families, the proposed compensation relation is unsupported.
+
+\clearpage
+\subsection{Stagnation-Triggered Adaptive Creativity}
+
+\begin{conjecture}[Adaptive stagnation conjecture]\label{conj:adaptive}
+On heterogeneous theorem families, a controller that increases exploration after well-defined stagnation signals and decreases exploration after verified progress achieves greater held-out anytime creative efficiency than every tested fixed-creativity configuration under the same global expansion and hardware protocol.
+\end{conjecture}
+
+Possible stagnation signals include repeated frontier states, low novelty in admitted actions, repeated failure of the top-ranked branch family, absence of new verified lemmas, or prolonged lack of goal reduction. ``Progress&#x27;&#x27; must be defined without peeking at a hidden reference proof.
+
+\textbf{Near-term test.} First identify the best fixed settings on calibration targets. Freeze them. Then compare against an adaptive controller whose trigger rules were also fixed before the test targets are revealed.
+
+\textbf{Falsification.} If the adaptive controller cannot beat the best fixed baseline after accounting for its computational overhead, the conjecture fails for that controller and benchmark.
+
+\clearpage
+\subsection{Verified Lemma Reuse and Population Search}
+
+\begin{conjecture}[Shared-lemma population conjecture]\label{conj:lemmas}
+For theorem families containing reusable intermediate structure, a population of heterogeneous Data-ATP agents sharing a verifier-certified lemma pool achieves higher held-out creative yield or anytime proof efficiency than (i) the best isolated fixed agent and (ii) a run-level random mixture of the same agent profiles, under the same global committed-expansion budget.
+\end{conjecture}
+
+The random-mixture ceiling in Theorem~\ref{thm:mixture} explains why simple personality diversity is insufficient. The conjectured advantage requires interaction: one agent&#x27;s verified discovery changes what another agent can do. Large-library ATP research likewise shows that learned premise selection and useful-lemma mining can materially strengthen search \cite{kaliszyk2014,kaliszyk2015}.
+
+\textbf{Near-term test.} After the single-agent creativity protocol is stable, compare isolated profiles, a run-level mixture, and a genuinely shared verified-lemma population. Charge lemma construction and communication against the same global budget.
+
+\textbf{Falsification.} No improvement beyond the best isolated agent or mixture after matched-budget accounting means the shared structure did not earn its architectural cost on that benchmark.
+
+\clearpage
+\subsection{Proof Geometry and Locality}
+
+\begin{conjecture}[Proof-geometric locality conjecture]\label{conj:geometry}
+If a coordinate encoding of candidate proof actions is constructed so that geometric proximity is positively associated with proof-theoretic relevance, then a locality-preserving traversal or allocation rule can achieve lower expected discovery cost than an arbitrary enumeration under the same fixed budget on at least some nontrivial theorem families.
+\end{conjecture}
+
+This is the bridge between the current creativity program and the Hilbert-inspired Data-ATP search-geometry proposal. A space-filling curve preserves geometric locality; the unresolved problem is whether the encoding gives that geometry mathematical meaning.
+
+\textbf{Near-term test.} Freeze the same candidate-action set and compare random, lexicographic, conventional learned ranking, and locality-preserving traversal. Measure not only theorem success but neighborhood coherence, legal-action yield, useful lemma density, redundancy, and anytime efficiency.
+
+\textbf{Falsification.} If coordinate proximity does not predict proof-theoretic relevance, a locality-preserving traversal is preserving the wrong geometry and should not be expected to help.
+
+\clearpage
+\subsection{Creativity and Transfer}
+
+\begin{conjecture}[Moderate-creativity transfer conjecture]\label{conj:transfer}
+Search configurations selected for moderate verified structural novelty on calibration theorem families generalize better to theorem families with novel premises or unfamiliar proof structure than configurations selected solely for in-distribution success rate, provided total training information and resources are held fixed.
+\end{conjecture}
+
+This is motivated by the possibility that controlled exploration encourages reusable stepping stones rather than only reproducing familiar trajectories. Modern theorem-proving benchmarks increasingly emphasize held-out or novel-premise generalization, making transfer a natural place to test the claim \cite{yang2023,bansal2019}.
+
+\textbf{Near-term test.} Separate theorem families into calibration, validation, and untouched transfer sets. Select one configuration by success alone and another by a declared creative-yield criterion, then compare both once on the transfer set.
+
+\textbf{Falsification.} If creativity-selected configurations fail to improve transfer, or improve only after target-family tuning, the conjecture is not supported.
+
+\section{Optimization Strategy}
+
+After basic controls are validated, treat ATP creativity as a noisy black-box response surface. Let
+\[
+\widehat{U}(u)
+\]
+model the chosen multi-objective utility on calibration data. Expensive trial regimes favor sample-efficient sequential optimization such as Gaussian-process Bayesian optimization or tree-structured Parzen estimation \cite{snoek2012,bergstra2011}. However, a transparent coarse grid remains valuable initially because it reveals whether the instrumentation itself behaves monotonically in the intended control variables.
+
+The recommended sequence is:
+\begin{enumerate}
+\item validate each control independently;
+\item measure interactions on a small factorial grid;
+\item fit uncertainty-aware response surfaces;
+\item choose a candidate optimum using calibration/validation only;
+\item evaluate once on untouched held-out theorem families;
+\item publish or archive the full outcome distribution, not only successful examples.
+\end{enumerate}
+
+A single winning seed is not a creativity result. A theorem-proof certificate establishes correctness of one proof; repeated matched trials establish a claim about a search policy.
+
+\section{What Would Count as a Better Proof Searcher?}
+
+A Data-ATP configuration should be called better only relative to a declared objective. A strong research criterion is:
+\begin{quote}
+Under fixed information, verifier, hardware, and budget, does the policy increase the probability and/or speed of discovering verifier-accepted proofs on held-out targets while preserving or improving proof quality, robustness, structural diversity, or reusable lemma production?
+\end{quote}
+
+The answer could be ``yes&#x27;&#x27; even if the resulting proofs are not maximally novel. Conversely, a highly novel but rarely successful policy may be interesting as a scientific probe but not as the best prover.
+
+This suggests maintaining at least two scoreboards:
+\begin{enumerate}
+\item \textbf{Proof-search scoreboard:} success, expansion discovery cost, wall time, memory, robustness, proof quality.
+\item \textbf{Creative-discovery scoreboard:} normalized novelty, creative yield, anytime creative efficiency, reusable lemma yield, route diversity.
+\end{enumerate}
+
+The best architecture may lie on a Pareto frontier rather than at the maximum of either scoreboard alone.
+
+\section{Research Commitments for the Next Data-ATP Iteration}
+
+Before the next creativity-enabled run, the project should commit to the following private experimental rules:
+\begin{enumerate}
+\item Creativity changes search allocation, never formal acceptance.
+\item The user-facing scalar control is not itself called measured creativity in the data analysis.
+\item Total resources are frozen or explicitly charged; higher creativity does not silently buy more computation.
+\item Reference-route information is separated into explicit information conditions $K_0,K_1,K_2$.
+\item Novelty is scored only on verifier-accepted, normalized proofs.
+\item Seeds and target partitions are declared before outcomes are inspected.
+\item Current \texttt{sgrpcl} results are archived as baseline observations, not retrofitted into a matched experiment.
+\item Failed searches, bounded unknowns, crashes, and replay events are part of the dataset.
+\item Conjectures in this document remain conjectures until the declared test actually supports them.
+\item Architecture complexity must earn its way in through measured gains.
+\end{enumerate}
+
+\section{Conclusion}
+
+The central idea can be stated without anthropomorphism. Formal proof search is a resource-allocation problem over a vast set of legal possibilities. Learning supplies a prior ordering of attention. Creativity controls how willing the system is to depart from that ordering, search alternative neighborhoods, construct intermediate lemmas, restart, or preserve multiple competing theories of the proof. Verification remains unchanged.
+
+The mathematical results in this draft already rule out several tempting mistakes. Maximum temperature need not be best. Entropy does not uniquely determine creativity. Novelty alone can select a worse prover. Randomly mixing creative personalities cannot outperform the best constituent in expectation unless the architecture adds something more. Adaptive policies are theoretically worth considering because they contain fixed policies as special cases, but their actual benefit remains empirical. Counterfactual exploration has a clean rescue mechanism when a proof-enabling action lies outside an ordinary candidate cap.
+
+The near-term Data-ATP question is therefore precise:
+\begin{center}
+\fcolorbox{DataBlue}{DataLight}{\parbox{0.86\textwidth}{\centering\bfseries Which forms and amounts of structured exploration turn a fixed budget into better verified discovery?}}
+\end{center}
+The right answer may be moderate creativity, adaptive creativity, a portfolio of cooperating agents, learned proof geometry, or none of these on a given benchmark. The point of D-A-T-P-CREAT-01 is to make that answer something the system can measure rather than something the architecture assumes.
+
+\clearpage
+\appendix
+\section{Metric Summary}
+
+\begin{longtable}{@{}p{0.25\textwidth}p{0.27\textwidth}p{0.40\textwidth}@{}}
+\toprule
+Quantity &amp; Definition &amp; Interpretation\\
+\midrule
+\endhead
+Control index &amp; $c_F(u)=\sum_i\alpha_i z_i(u_i)$ &amp; Exploratory setting summary; input, not outcome.\\
+Success probability &amp; $D(u)=\Prb(S_u)$ &amp; Probability of a verified proof inside the frozen protocol.\\
+Conditional novelty &amp; $N(u)=\E[\nu(P_u)\mid S_u]$ &amp; Expected structural novelty among successful runs.\\
+Creative yield &amp; $\cY(u)=D(u)N(u)$ &amp; Expected verified novelty per run.\\
+Scarcity-weighted yield &amp; $R_F(\Gamma,\varphi)\cY(u)$ &amp; Target-relative weighting; useful mainly across targets.\\
+Discovery cost &amp; $\tau_u$ or expansion count &amp; Work before first verifier-accepted proof.\\
+Anytime creative efficiency &amp; $T^{-1}\E[\nu_u(T-\tau_u)_+]$ &amp; Rewards novel proofs that are found earlier.\\
+Overall utility &amp; declared $U(u)$ &amp; Multi-objective role-dependent ATP quality.\\
+\bottomrule
+\end{longtable}
+
+\section{Bibliographic Review Note}
+
+The external bibliography below was metadata-reviewed for this private draft on August 8, 2026. Author names, titles, years, venues, and DOI/arXiv identifiers were cross-checked against primary publisher/proceedings pages or arXiv records when available. This statement concerns bibliographic metadata quality; it does \emph{not} imply that every cited item is peer-reviewed. Items explicitly identified as arXiv preprints are preprints. The private Tenneson manuscripts are listed separately as internal sources and are not represented as externally published or peer-reviewed works.
+
+\section*{Bibliography}
+\addcontentsline{toc}{section}{Bibliography}
+
+\begin{thebibliography}{99}
+
+\item[]\textbf{Internal research sources}
+
+\bibitem{tennesonC1}
+B. Tenneson, \emph{ATP Creativity I: Isolating and Controlling Creativity in Automated Theorem Proving}, private research manuscript, July 31, 2026.
+
+\bibitem{tennesonC2}
+B. Tenneson, \emph{ATP Creativity 02: Measuring the Creativity of an Automated Theorem Prover}, private research manuscript, August 4, 2026.
+
+\bibitem{tennesonCombined}
+B. Tenneson, \emph{ATP Creativity: Isolating, Controlling, Measuring, and Optimizing Creativity in Automated Theorem Proving}, private research manuscript, August 4, 2026.
+
+\bibitem{tennesonHalo}
+B. Tenneson, \emph{Certified Creativity Control for HaloProof}, private research note, 2026.
+
+\bibitem{tennesonDepths47}
+B. Tenneson, \emph{Depths of Induction, ML-Guided Proof Search, and Formalized Self-Awareness}, Version 47, private manuscript, August 1, 2026.
+
+\item[]\textbf{Reviewed external sources}
+
+\bibitem{fitting1996}
+M. Fitting, \emph{First-Order Logic and Automated Theorem Proving}, 2nd ed., Springer, 1996. DOI: \href{https://doi.org/10.1007/978-1-4612-2360-3}{10.1007/978-1-4612-2360-3}.
+
+\bibitem{harrison2009}
+J. Harrison, \emph{Handbook of Practical Logic and Automated Reasoning}, Cambridge University Press, 2009. DOI: \href{https://doi.org/10.1017/CBO9780511576430}{10.1017/CBO9780511576430}.
+
+\bibitem{cookreckhow1979}
+S. A. Cook and R. A. Reckhow, ``The relative efficiency of propositional proof systems,&#x27;&#x27; \emph{Journal of Symbolic Logic}, 44(1), 36--50, 1979. DOI: \href{https://doi.org/10.2307/2273702}{10.2307/2273702}.
+
+\bibitem{jakubuv2017}
+J. Jakub\r{u}v and J. Urban, ``ENIGMA: Efficient Learning-Based Inference Guiding Machine,&#x27;&#x27; in \emph{Intelligent Computer Mathematics (CICM 2017)}, pp. 292--302, 2017. DOI: \href{https://doi.org/10.1007/978-3-319-62075-6_20}{10.1007/978-3-319-62075-6\_20}; arXiv:1701.06532.
+
+\bibitem{alemi2016}
+A. A. Alemi, F. Chollet, N. E\&#x27;en, G. Irving, C. Szegedy, and J. Urban, ``DeepMath -- Deep Sequence Models for Premise Selection,&#x27;&#x27; arXiv:1606.04442, 2016.
+
+\bibitem{kaliszyk2014}
+C. Kaliszyk and J. Urban, ``Learning-Assisted Automated Reasoning with Flyspeck,&#x27;&#x27; \emph{Journal of Automated Reasoning}, 53, 173--213, 2014. DOI: \href{https://doi.org/10.1007/s10817-014-9303-3}{10.1007/s10817-014-9303-3}.
+
+\bibitem{kaliszyk2015}
+C. Kaliszyk and J. Urban, ``Learning-assisted theorem proving with millions of lemmas,&#x27;&#x27; \emph{Journal of Symbolic Computation}, 69, 109--128, 2015. DOI: \href{https://doi.org/10.1016/j.jsc.2014.09.032}{10.1016/j.jsc.2014.09.032}.
+
+\bibitem{bansal2019}
+K. Bansal, S. M. Loos, M. N. Rabe, C. Szegedy, and S. Wilcox, ``HOList: An Environment for Machine Learning of Higher-Order Theorem Proving,&#x27;&#x27; arXiv:1904.03241, 2019.
+
+\bibitem{polu2020}
+S. Polu and I. Sutskever, ``Generative Language Modeling for Automated Theorem Proving,&#x27;&#x27; arXiv:2009.03393, 2020.
+
+\bibitem{yang2023}
+K. Yang, A. Swope, A. Gu, R. Chalamala, P. Song, S. Yu, S. Godil, R. J. Prenger, and A. Anandkumar, ``LeanDojo: Theorem Proving with Retrieval-Augmented Language Models,&#x27;&#x27; \emph{Advances in Neural Information Processing Systems 36}, 2023.
+
+\bibitem{lehman2011}
+J. Lehman and K. O. Stanley, ``Abandoning objectives: Evolution through the search for novelty alone,&#x27;&#x27; \emph{Evolutionary Computation}, 19(2), 189--223, 2011. DOI: \href{https://doi.org/10.1162/EVCO_a_00025}{10.1162/EVCO\_a\_00025}.
+
+\bibitem{mouret2015}
+J.-B. Mouret and J. Clune, ``Illuminating search spaces by mapping elites,&#x27;&#x27; arXiv:1504.04909, 2015.
+
+\bibitem{pugh2016}
+J. K. Pugh, L. B. Soros, and K. O. Stanley, ``Quality Diversity: A New Frontier for Evolutionary Computation,&#x27;&#x27; \emph{Frontiers in Robotics and AI}, 3:40, 2016. DOI: \href{https://doi.org/10.3389/frobt.2016.00040}{10.3389/frobt.2016.00040}.
+
+\bibitem{sutton2018}
+R. S. Sutton and A. G. Barto, \emph{Reinforcement Learning: An Introduction}, 2nd ed., MIT Press, 2018. ISBN 978-0-262-03924-6.
+
+\bibitem{bergstra2011}
+J. Bergstra, R. Bardenet, Y. Bengio, and B. K\&#x27;egl, ``Algorithms for Hyper-Parameter Optimization,&#x27;&#x27; \emph{Advances in Neural Information Processing Systems 24}, 2011.
+
+\bibitem{snoek2012}
+J. Snoek, H. Larochelle, and R. P. Adams, ``Practical Bayesian Optimization of Machine Learning Algorithms,&#x27;&#x27; \emph{Advances in Neural Information Processing Systems 25}, 2012.
+
+\end{thebibliography}
+
+\section*{Draft Provenance}
+\addcontentsline{toc}{section}{Draft Provenance}
+This private working manuscript was synthesized from the author&#x27;s ATP-creativity manuscripts, Data-ATP research notes, current experimental observations, and a literature metadata review with assistance from OpenAI ChatGPT. Mathematical statements newly introduced here were separated into proved theorems when a complete proof was available under stated assumptions and into conjectures when empirical or architectural evidence is still required. All claims should undergo author review before any public release.
+
+\end{document}
+</pre></body></html>

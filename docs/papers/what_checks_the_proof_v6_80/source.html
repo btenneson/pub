@@ -1,4 +1,4 @@
-\documentclass[11pt,openany]{book}
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What Checks the Proof? A Textbook Introduction to Automated Mathematical Logic Deciders — source</title><link rel="canonical" href="https://btenneson.github.io/pub/papers/what_checks_the_proof_v6_80/source.html"><style>body{font:15px/1.5 system-ui;max-width:1100px;margin:auto;padding:24px}pre{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid #8885;border-radius:10px;padding:16px}a{font-weight:650}</style></head><body><p><a href="./">← Back to article</a></p><h1>LaTeX source</h1><pre>\documentclass[11pt,openany]{book}
 \usepackage[letterpaper,margin=1in,headheight=18pt]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -131,7 +131,7 @@ Controlled Creativity, and Formalized Self-Awareness\\[0.8em]
 \footnotesize
 \textbf{Elementary idea.} A computer can suggest useful mathematical steps, but a suggestion is not a proof. This book studies a system in which several search roles try different ways to settle a statement. Verified facts go into a shared \textbf{BANK}; imagined possibilities stay separate in a \textbf{FUTUREBANK}. A checker decides what is allowed to count as established mathematics. In short: \emph{imagine freely; verify rigidly}.
 
-Think of the BANK as a shared notebook containing the starting assumptions and results that have actually passed inspection. The FUTUREBANK is a scratchpad for ``what if?'' routes that may be worth exploring. One role tries to prove the target, another to refute it, another investigates independence, and another checks for contradiction. They may share verified discoveries, but guesses stay guesses until a certificate is checked. If no decisive certificate is found, the honest answer is \textsf{UNKNOWN}.\par
+Think of the BANK as a shared notebook containing the starting assumptions and results that have actually passed inspection. The FUTUREBANK is a scratchpad for ``what if?&#x27;&#x27; routes that may be worth exploring. One role tries to prove the target, another to refute it, another investigates independence, and another checks for contradiction. They may share verified discoveries, but guesses stay guesses until a certificate is checked. If no decisive certificate is found, the honest answer is \textsf{UNKNOWN}.\par
 \end{minipage}}
 \author{Brian Tenneson, M.A., M.S.\\[0.35em]
 \small M.A. Mathematics, San Francisco State University\\
@@ -165,14 +165,14 @@ This book asks a question that does not require any formal logic to understand:
 \begin{quote}
 \emph{When a machine says that it has proved something, what checks the proof?}
 \end{quote}
-A computer can be very good at proposing ideas without every proposal being correct. That is not a defect. Human mathematicians also work by trying examples, making guesses, exploring side paths, and asking ``what if?'' The important distinction is between \emph{searching for an answer} and \emph{certifying an answer}. This book studies an architecture that tries to make that distinction explicit. Search may be flexible and imaginative; verification is deliberately strict. The recurring slogan is \textbf{Imagine freely; verify rigidly.}
+A computer can be very good at proposing ideas without every proposal being correct. That is not a defect. Human mathematicians also work by trying examples, making guesses, exploring side paths, and asking ``what if?&#x27;&#x27; The important distinction is between \emph{searching for an answer} and \emph{certifying an answer}. This book studies an architecture that tries to make that distinction explicit. Search may be flexible and imaginative; verification is deliberately strict. The recurring slogan is \textbf{Imagine freely; verify rigidly.}
 
 \section*{The BANK and the FUTUREBANK}
 Imagine several careful mathematical explorers working around one shared notebook. Whenever one of them establishes a useful result and the result passes the required check, it can be written into the notebook for everybody to use. That shared notebook is the elementary picture behind the \textbf{BANK}.
 
-The BANK begins with the assumptions that the problem has declared in advance. The book usually calls this starting set $\Gamma$. At an elementary level, $\Gamma$ can simply be read as ``the rules and facts we agreed to start with.'' After that starting point is fixed, derived results are admitted only when the appropriate checker accepts their certificates. A useful idea does not enter merely because it is plausible, elegant, or produced by a sophisticated program.
+The BANK begins with the assumptions that the problem has declared in advance. The book usually calls this starting set $\Gamma$. At an elementary level, $\Gamma$ can simply be read as ``the rules and facts we agreed to start with.&#x27;&#x27; After that starting point is fixed, derived results are admitted only when the appropriate checker accepts their certificates. A useful idea does not enter merely because it is plausible, elegant, or produced by a sophisticated program.
 
-Now give the same explorers a scratchpad. On it they may write, ``Suppose this lemma were available,'' ``What happens if we pursue the negation?'' or ``This branch looks more promising than that one.'' Those notes can guide later work without being treated as established mathematics. The \textbf{FUTUREBANK} plays that role. It represents possible proof futures: deductions, hypothetical lemmas, or branch histories that may be worth exploring.
+Now give the same explorers a scratchpad. On it they may write, ``Suppose this lemma were available,&#x27;&#x27; ``What happens if we pursue the negation?&#x27;&#x27; or ``This branch looks more promising than that one.&#x27;&#x27; Those notes can guide later work without being treated as established mathematics. The \textbf{FUTUREBANK} plays that role. It represents possible proof futures: deductions, hypothetical lemmas, or branch histories that may be worth exploring.
 
 The distinction is simple but central. The BANK represents what has actually survived checking. The FUTUREBANK represents what might happen. A FUTUREBANK idea can eventually lead to a real BANK deposit, but only by crossing the verification boundary.
 
@@ -183,7 +183,7 @@ The prover $P$ tries to prove the target. The refuter $R$ tries to prove its neg
 
 These are search roles, not four separate owners of mathematics. If $R$ discovers a useful ordinary lemma while pursuing a refutation, that lemma may later help $P$. The shared BANK makes such reuse possible. Provenance records where a result came from, while the certificate says what the result actually establishes.
 
-A tiny example shows the pattern. Suppose the starting information contains $p$ and ``if $p$, then $q$.'' A prover proposes $q$ by modus ponens. If the checker confirms that the inference is valid in the declared environment, $q$ can enter the BANK as a derived result. The example is intentionally easy. It makes the architecture visible: there are admitted premises, a proposed step, a checker, and a verified deposit.
+A tiny example shows the pattern. Suppose the starting information contains $p$ and ``if $p$, then $q$.&#x27;&#x27; A prover proposes $q$ by modus ponens. If the checker confirms that the inference is valid in the declared environment, $q$ can enter the BANK as a derived result. The example is intentionally easy. It makes the architecture visible: there are admitted premises, a proposed step, a checker, and a verified deposit.
 
 \section*{The verifier and the honest answer UNKNOWN}
 The verifier is intentionally less adventurous than the search machinery. It does not need to decide which idea is beautiful or which path is creative. Given the formal environment and a proposed certificate, its job is to answer a narrower question: does this certificate satisfy the declared rules for acceptance?
@@ -197,7 +197,7 @@ The word \emph{imagination} can sound strange when applied to a proof system, bu
 
 The FUTUREBANK gives proof search a similar counterfactual workspace. A \textbf{COMPASS} can rank possible directions, while a controller decides how to distribute effort. The machine can learn from rejected attempts, notice unproductive regions, or temporarily explore what would follow from a hypothetical lemma. None of this makes the hypothetical lemma true. It only changes what the system chooses to investigate next.
 
-Later chapters also discuss formalized self-description. The elementary idea is modest: a machine can represent facts about its own search, such as which branch it is exploring, which role has recently succeeded, or whether fallback search is receiving attention. Such information can guide control. It still does not redefine proof. ``I have searched here for a long time'' may be useful information about the computation; it does not imply ``therefore the target is true.''
+Later chapters also discuss formalized self-description. The elementary idea is modest: a machine can represent facts about its own search, such as which branch it is exploring, which role has recently succeeded, or whether fallback search is receiving attention. Such information can guide control. It still does not redefine proof. ``I have searched here for a long time&#x27;&#x27; may be useful information about the computation; it does not imply ``therefore the target is true.&#x27;&#x27;
 
 \section*{The map for the rest of the book}
 The technical chapters turn these pictures into definitions, state spaces, theorems, pseudocode, worked examples, exercises, and research conjectures. The notation becomes more precise, but a reader who keeps five elementary ideas in mind already has the basic map:
@@ -224,7 +224,7 @@ The question is not merely philosophical. It is architectural. A program may be 
 
 The central object of the book is an \emph{Automated Mathematical Logic Decider}, abbreviated \AMLD. An \AMLD is a certificate-producing architecture designed to settle a mathematical statement relative to a declared formal environment. Its four principal search roles are a prover $P$, a refuter $R$, a prover of independence $I$, and a prover of contradiction $C$. They do not merely race in isolation. They share a typed, provenance-preserving verified memory called the \textbf{BANK}. A separate \textbf{FUTUREBANK} represents possible proof futures that may be useful for planning before they are fully certified. A \textbf{COMPASS} ranks directions through that imagined future. A controller allocates attention. A verifier $V$ is the fixed correctness boundary.
 
-A distinction used throughout this edition is easy to state and important to preserve: \emph{the role that discovers or submits a certificate is provenance; the semantic kind of the certificate says what it establishes}. A lemma discovered by $R$ does not become an intrinsically ``refuting'' lemma, and a proof of $c$ discovered while $I$ is exploring a model-theoretic route is still a proof of $c$. Search-role tags record who found or submitted an object. Certificate semantics determine what the verifier may conclude from it.
+A distinction used throughout this edition is easy to state and important to preserve: \emph{the role that discovers or submits a certificate is provenance; the semantic kind of the certificate says what it establishes}. A lemma discovered by $R$ does not become an intrinsically ``refuting&#x27;&#x27; lemma, and a proof of $c$ discovered while $I$ is exploring a model-theoretic route is still a proof of $c$. Search-role tags record who found or submitted an object. Certificate semantics determine what the verifier may conclude from it.
 
 The purpose of an \AMLD is therefore broader than ordinary one-sided theorem proving. Given a target $c$ relative to a background axiom or hypothesis set $\Gamma$, it may try to produce one of four kinds of positive evidence:
 \[
@@ -235,13 +235,13 @@ The purpose of an \AMLD is therefore broader than ordinary one-sided theorem pro
 \]
 The third outcome requires a genuine metamathematical certificate; failure to find proofs on the first two sides is not enough. The fourth outcome says that the admitted background has failed an integrity test. If no appropriate certificate is found within the available resources, the honest result is \textsf{UNKNOWN}.
 
-The architecture becomes concrete once the BANK and FUTUREBANK are treated as distinct mathematical objects. The BANK begins with $\Gamma$. It then accumulates only material that has survived the relevant verification rule. In this sense, the BANK is the machine's verified mathematical past. The FUTUREBANK is not a second theorem database. It is a representation of possible futures: what could happen if a particular deduction were tried, if a lemma were available, if the negation were pursued, or if attention were shifted from one role to another. This is no more ``pie in the sky'' than a chess engine considering hypothetical moves. The key is that a hypothetical move is not confused with a move that has actually been played, just as a hypothetical lemma is not confused with a theorem that has actually been verified.
+The architecture becomes concrete once the BANK and FUTUREBANK are treated as distinct mathematical objects. The BANK begins with $\Gamma$. It then accumulates only material that has survived the relevant verification rule. In this sense, the BANK is the machine&#x27;s verified mathematical past. The FUTUREBANK is not a second theorem database. It is a representation of possible futures: what could happen if a particular deduction were tried, if a lemma were available, if the negation were pursued, or if attention were shifted from one role to another. This is no more ``pie in the sky&#x27;&#x27; than a chess engine considering hypothetical moves. The key is that a hypothetical move is not confused with a move that has actually been played, just as a hypothetical lemma is not confused with a theorem that has actually been verified.
 
 This edition is deliberately written as a textbook rather than as a collection of research notes. The exposition proceeds deliberately. The opening chapter of each Part begins with a roadmap, and later substantial chapters use mini-roadmaps. Artificial examples are used before realistic ones. Exercises appear throughout, and solution sketches are collected before the research frontier. The conjectures are moved to the end so that the reader first learns what the architecture \emph{is} before being asked what it \emph{might} eventually accomplish.
 
-There is one additional intellectual influence worth naming carefully. Max Tegmark's 1998 paper on mathematical structures discusses ``self-aware substructures'' (SASs) and describes such a substructure as ``something capable of some form of logical thought'' \cite{Tegmark1998}. Later he writes that ``a substructure is self-aware if it thinks that it is self-aware'' \cite{Tegmark1998}. The formal self-awareness hierarchy used later in this book is \emph{not} Tegmark's hierarchy; Tegmark did not define Levels $0,1,2,\omega$ for theorem provers. The influence is narrower: it motivates treating self-reference and formally represented self-description as legitimate structural subjects of mathematics. Here that idea is specialized to proof-search machines and separated sharply from claims about subjective consciousness.
+There is one additional intellectual influence worth naming carefully. Max Tegmark&#x27;s 1998 paper on mathematical structures discusses ``self-aware substructures&#x27;&#x27; (SASs) and describes such a substructure as ``something capable of some form of logical thought&#x27;&#x27; \cite{Tegmark1998}. Later he writes that ``a substructure is self-aware if it thinks that it is self-aware&#x27;&#x27; \cite{Tegmark1998}. The formal self-awareness hierarchy used later in this book is \emph{not} Tegmark&#x27;s hierarchy; Tegmark did not define Levels $0,1,2,\omega$ for theorem provers. The influence is narrower: it motivates treating self-reference and formally represented self-description as legitimate structural subjects of mathematics. Here that idea is specialized to proof-search machines and separated sharply from claims about subjective consciousness.
 
-Two earlier program documents provide historical context for the present architecture: the August 2026 automated-logical-decider research supplement and the July 2026 \emph{Depths of a Simulation \& Formalized Self-Awareness} manuscript \cite{TennesonALD2026,TennesonDepths2026}. They are cited as prior program documents, not as substitutes for the independently cited logic, model-theory, automated-reasoning, security, and nonstandard-analysis literature.
+Two earlier program documents provide historical context for the present architecture: the August 2026 automated-logical-decider research supplement and the July 2026 \emph{Depths of a Simulation \&amp; Formalized Self-Awareness} manuscript \cite{TennesonALD2026,TennesonDepths2026}. They are cited as prior program documents, not as substitutes for the independently cited logic, model-theory, automated-reasoning, security, and nonstandard-analysis literature.
 
 The guiding sentence of the entire book is:
 \begin{quote}
@@ -292,10 +292,10 @@ For this book, the principal roles are
 \]
 Their intended terminal certificates are:
 \begin{align*}
-P &: \Gamma\vdash c,\\
-R &: \Gamma\vdash\neg c,\\
-I &: \text{a checked certificate that }\Gamma\nvdash c\text{ and }\Gamma\nvdash\neg c,\\
-C &: \Gamma\vdash\botc.
+P &amp;: \Gamma\vdash c,\\
+R &amp;: \Gamma\vdash\neg c,\\
+I &amp;: \text{a checked certificate that }\Gamma\nvdash c\text{ and }\Gamma\nvdash\neg c,\\
+C &amp;: \Gamma\vdash\botc.
 \end{align*}
 The letters name search roles, not truth values. $P$ is a prover of $c$. $R$ is a refuter of $c$, equivalently a prover of $\neg c$. $I$ is a prover of an appropriate independence claim. $C$ is a prover of contradiction.
 
@@ -340,7 +340,7 @@ In an explosive logic, contradiction is not just another symmetric victory.
 Assume the admitted logic validates explosion: from $\botc$ every formula is derivable. If $C$ supplies a verified certificate of $\Gamma\vdash\botc$, then proofs of $c$ and $\neg c$ cease to discriminate the intended status of $c$ relative to that inconsistent background.
 \end{theorem}
 \begin{proof}
-By explosion, $\Gamma\vdash\botc$ implies $\Gamma\vdash c$ and $\Gamma\vdash\neg c$. Therefore the labels ``proved'' and ``refuted'' can both be obtained and no longer separate the two possibilities. The integrity status of the background has become the logically prior fact.
+By explosion, $\Gamma\vdash\botc$ implies $\Gamma\vdash c$ and $\Gamma\vdash\neg c$. Therefore the labels ``proved&#x27;&#x27; and ``refuted&#x27;&#x27; can both be obtained and no longer separate the two possibilities. The integrity status of the background has become the logically prior fact.
 \end{proof}
 
 A sensible explosive-logic implementation therefore halts with \textsf{INCONSISTENT} once an accepted contradiction certificate appears. In a paraconsistent logic the rule must be reconsidered; this is one reason the logical environment must be explicit.
@@ -390,7 +390,7 @@ This chapter introduces the object that must exist before there can be a BANK: t
 \end{miniroadmap}
 
 \section{A certificate is never valid in a vacuum}
-To say that a proof is ``valid'' without saying relative to what is incomplete. We therefore fix a verification environment
+To say that a proof is ``valid&#x27;&#x27; without saying relative to what is incomplete. We therefore fix a verification environment
 \[
 \Env=(\Gamma,c,\mathcal L,\mathcal R,\mathcal C_{\mathrm{check}},\nu),
 \]
@@ -421,7 +421,7 @@ The BANK should distinguish \textsf{AXIOM/HYPOTHESIS} records from \textsf{DERIV
 \end{designbox}
 
 \section{Scope}
-Suppose a branch temporarily assumes $\lambda$ in order to investigate ``what follows if $\lambda$?'' A statement proved under that assumption has scope $\Gamma\cup\{\lambda\}$. It may not be deposited as though it were proved from $\Gamma$ alone.
+Suppose a branch temporarily assumes $\lambda$ in order to investigate ``what follows if $\lambda$?&#x27;&#x27; A statement proved under that assumption has scope $\Gamma\cup\{\lambda\}$. It may not be deposited as though it were proved from $\Gamma$ alone.
 
 A bank record should therefore include at least:
 \begin{center}
@@ -429,7 +429,7 @@ claim; certificate or admission tag; semantic kind; origin; scope; dependencies;
 \end{center}
 This small amount of bureaucracy prevents large logical errors later.
 
-Here \emph{origin} and \emph{semantic kind} are deliberately separate fields. Origin answers a historical question: ``which search role submitted this record?'' or ``was this premise admitted by the environment?''\par
+Here \emph{origin} and \emph{semantic kind} are deliberately separate fields. Origin answers a historical question: ``which search role submitted this record?&#x27;&#x27; or ``was this premise admitted by the environment?&#x27;&#x27;\par
 Semantic kind answers a logical question: is this an admitted hypothesis, an intermediate theorem, a target proof, a negated-target proof, an independence certificate, or a contradiction certificate?
 
 \section{A first walk through \texorpdfstring{$\Gamma$}{Gamma} and the BANK}
@@ -437,7 +437,7 @@ Return to $\Gamma=\{p,p\to q\}$ and $c=q$. The machine begins with
 \[
 \Bank_0=\{[p:\textsf{HYP}],\ [p\to q:\textsf{HYP}]\}.
 \]
-The prover reads both records, proposes the inference ``modus ponens yields $q$,'' and submits its certificate. If $V$ accepts it, the next state is
+The prover reads both records, proposes the inference ``modus ponens yields $q$,&#x27;&#x27; and submits its certificate. If $V$ accepts it, the next state is
 \[
 \Bank_1=\Bank_0\cup\{[q:\textsf{DERIVED}]\}.
 \]
@@ -529,7 +529,7 @@ An $I$-agent, while trying to build two models, discovers an ordinary object-lev
 \end{exercise}
 
 \section{The intrinsic verifier}
-Let $\Gamma_{\Env}(\Bank)$ mean the base environment together with the verified bank records admissible in the certificate's scope. The intrinsic checker acts on semantic certificate content, not on the submitting-role tag. Define
+Let $\Gamma_{\Env}(\Bank)$ mean the base environment together with the verified bank records admissible in the certificate&#x27;s scope. The intrinsic checker acts on semantic certificate content, not on the submitting-role tag. Define
 \[
 v_{\Env}:\BankSpace\times\Cert_{\mathrm{sem}}\longrightarrow\{0,1\}.
 \]
@@ -537,10 +537,10 @@ A software wrapper may receive the full proposal $k=(a,s)$, record $a$ as proven
 The value $1$ means that the submitted certificate is accepted. Real software may return richer diagnostics such as \texttt{REJECT}, \texttt{MALFORMED}, or \texttt{ERROR}; only acceptance authorizes a mathematical deposit.
 
 \begin{theorem}[Policy-neutral verification]\label{thm:neutral}
-Fix $\Env$, a verified bank state $\Bank$, and a semantic certificate $s\in\Cert_{\mathrm{sem}}$. If the intrinsic verifier is defined only from $(\Env,\Bank,s)$, then changing the FUTUREBANK, search history, compass, controller, novelty score, formal self-model, or submitting-role tag cannot change the truth value of ``$s$ is accepted in $\Bank$.''
+Fix $\Env$, a verified bank state $\Bank$, and a semantic certificate $s\in\Cert_{\mathrm{sem}}$. If the intrinsic verifier is defined only from $(\Env,\Bank,s)$, then changing the FUTUREBANK, search history, compass, controller, novelty score, formal self-model, or submitting-role tag cannot change the truth value of ``$s$ is accepted in $\Bank$.&#x27;&#x27;
 \end{theorem}
 \begin{proof}
-Those coordinates are not arguments of the acceptance predicate. They may change which semantic certificate is selected, or who submits it, but not the verifier's value on a fixed input triple.
+Those coordinates are not arguments of the acceptance predicate. They may change which semantic certificate is selected, or who submits it, but not the verifier&#x27;s value on a fixed input triple.
 \end{proof}
 
 This theorem is almost tautological. That is a feature. Good architecture often turns a difficult safety requirement into a simple type or interface fact.
@@ -571,7 +571,7 @@ Under the appropriate soundness theorem, the first model rules out $\Gamma\vdash
 The TPTP/SZS ecosystem contains a mature vocabulary for automated-reasoning outcomes, distinguishing statuses such as theoremhood, counter-satisfiability, satisfiability, and unsatisfiability, and it supports proof/model output conventions \cite{TPTPQuick,TPTPLanguage}. The AMLD model-pair pattern should therefore be understood as building on established proof- and model-producing reasoning practice, not as if model-based negative evidence had no precedent.
 
 \section{The verifier as a boundary, not an oracle}
-A useful verifier is strict and narrow. It does not answer ``is this statement really true in all possible senses?'' It answers a declared formal question: does this certificate satisfy the checker for this environment and these dependencies?
+A useful verifier is strict and narrow. It does not answer ``is this statement really true in all possible senses?&#x27;&#x27; It answers a declared formal question: does this certificate satisfy the checker for this environment and these dependencies?
 
 That is enough to support a strong internal epistemology:
 \begin{quote}
@@ -587,7 +587,7 @@ At step $m$, let the full state eventually have the form
 \[
 \State_m=(\Bank_m,\Future_m,\Hist_m,\Refl_m,\mathsf{Ctrl}_m).
 \]
-Let $\StateSpace$ denote the declared set of admissible tuples of this form---that is, tuples satisfying the architecture's typing, scope, environment, and state-invariant requirements---so $\State_m\in\StateSpace$. The individual coordinate spaces may vary by implementation; the notation $\StateSpace$ does not assume that every arbitrary tuple is admissible.
+Let $\StateSpace$ denote the declared set of admissible tuples of this form---that is, tuples satisfying the architecture&#x27;s typing, scope, environment, and state-invariant requirements---so $\State_m\in\StateSpace$. The individual coordinate spaces may vary by implementation; the notation $\StateSpace$ does not assume that every arbitrary tuple is admissible.
 
 For the moment ignore all but $\Bank_m$ and $\Hist_m$.
 
@@ -624,15 +624,15 @@ Now add a verified shared BANK. A lemma found while $R$ is pursuing $\neg c$ may
 The difference is not merely parallelism. It is \emph{cross-role accumulation}.
 
 \begin{center}
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.31\textwidth}>{\raggedright\arraybackslash}p{0.58\textwidth}}
+\begin{tabular}{&gt;{\raggedright\arraybackslash}p{0.31\textwidth}&gt;{\raggedright\arraybackslash}p{0.58\textwidth}}
 \toprule
-\textbf{Bare multiway settler} & \textbf{BANK-centered AMLD}\\
+\textbf{Bare multiway settler} &amp; \textbf{BANK-centered AMLD}\\
 \midrule
-Roles may search independently. & Roles read a common verified memory.\\
-Intermediate work may disappear with a branch. & Accepted lemmas persist with provenance.\\
-A role chiefly benefits itself. & A discovery by one role may help another.\\
-The state is mainly ``who is searching where?'' & The state includes an accumulating mathematical object.\\
-Search history and theorem memory may blur. & Verified BANK and verifier history are separated.\\
+Roles may search independently. &amp; Roles read a common verified memory.\\
+Intermediate work may disappear with a branch. &amp; Accepted lemmas persist with provenance.\\
+A role chiefly benefits itself. &amp; A discovery by one role may help another.\\
+The state is mainly ``who is searching where?&#x27;&#x27; &amp; The state includes an accumulating mathematical object.\\
+Search history and theorem memory may blur. &amp; Verified BANK and verifier history are separated.\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -645,7 +645,7 @@ The BANK is shared, but a metamathematical independence statement is not automat
 Hence the BANK is both shared and typed.
 
 \section{Origin views record provenance, not ownership}
-The BANK itself is best treated as one set of verified records. Agent-specific ``compartments'' are useful indexes or views, but they should not define the ontology of the BANK because the initial $\Gamma$ records were not discovered by any of $P,R,I,C$.
+The BANK itself is best treated as one set of verified records. Agent-specific ``compartments&#x27;&#x27; are useful indexes or views, but they should not define the ontology of the BANK because the initial $\Gamma$ records were not discovered by any of $P,R,I,C$.
 
 Let the origin-label set be
 \[
@@ -682,7 +682,7 @@ A state is one possible current bank. A state space is the collection of all ban
 \qquad
 \Bank_m\in\BankSpace,
 \]
-where the subset restriction enforces the environment's typing, scope, provenance, and verification invariants. Origin views and semantic-kind indexes can then be derived from the record set rather than built into the mathematical identity of the BANK.
+where the subset restriction enforces the environment&#x27;s typing, scope, provenance, and verification invariants. Origin views and semantic-kind indexes can then be derived from the record set rather than built into the mathematical identity of the BANK.
 
 This notation is worth keeping clean because the full AMLD later has several nested state spaces.
 
@@ -734,7 +734,7 @@ A branch assumes $h$ temporarily, derives $u$ from $\Gamma\cup\{h\}$, and then d
 
 \chapter{Verifier history is not the BANK}
 \begin{miniroadmap}
-Rejected candidates can be useful data. The danger is allowing ``useful'' to drift into ``proved.'' We therefore maintain a separate history $\Hist$ that search may learn from but deduction may not treat as theorem memory.
+Rejected candidates can be useful data. The danger is allowing ``useful&#x27;&#x27; to drift into ``proved.&#x27;&#x27; We therefore maintain a separate history $\Hist$ that search may learn from but deduction may not treat as theorem memory.
 \end{miniroadmap}
 
 Let $\Hist_m$ contain events such as:
@@ -795,13 +795,13 @@ Construct a toy example in which a lemma first derived by $R$ is later useful to
 
 \chapter{Why chess is the right analogy}
 \begin{roadmap}
-The word ``imagination'' can sound mystical when attached to a theorem prover. Chess removes the mystery. A chess engine considers moves that have not been played, follows their consequences, evaluates branches, and then chooses an action. We translate that idea into deductive search.
+The word ``imagination&#x27;&#x27; can sound mystical when attached to a theorem prover. Chess removes the mystery. A chess engine considers moves that have not been played, follows their consequences, evaluates branches, and then chooses an action. We translate that idea into deductive search.
 \end{roadmap}
 
 \section{Chess search is counterfactual search}
-A chess engine at position $x$ considers a legal move $a$, computes the successor $T(x,a)$, then considers replies from that position, and continues recursively. Claude Shannon's classic 1950 paper helped establish chess as a model problem for symbolic machine reasoning \cite{Shannon1950}.
+A chess engine at position $x$ considers a legal move $a$, computes the successor $T(x,a)$, then considers replies from that position, and continues recursively. Claude Shannon&#x27;s classic 1950 paper helped establish chess as a model problem for symbolic machine reasoning \cite{Shannon1950}.
 
-The engine's internal branch
+The engine&#x27;s internal branch
 \[
 x\to x_1\to x_2\to\cdots
 \]
@@ -827,7 +827,7 @@ The analogy is strong: a chess move changes a position; a deductive move changes
 \section{Where the analogy breaks}
 A chess engine can cheaply check whether many moves are legal. Mathematical proof search often contains a more expensive distinction. The system may want to explore
 \begin{quote}
-``If lemma $\lambda$ were available, would the target become easy?''
+``If lemma $\lambda$ were available, would the target become easy?&#x27;&#x27;
 \end{quote}
 before investing the full cost required to prove $\lambda$. Thus some proof-search branches are conditional plans rather than fully certified deduction sequences.
 
@@ -840,7 +840,7 @@ It is helpful to separate three verbs:
 \item \textbf{Attempt}: turn some imagined object into an actual certificate proposal.
 \item \textbf{Commit}: after verifier acceptance, deposit the resulting record in the BANK.
 \end{enumerate}
-A chess engine can imagine $Qh7+$ without playing it. An AMLD can imagine ``prove $\lambda$, then rewrite by $\lambda$'' without claiming $\lambda$ is a theorem.
+A chess engine can imagine $Qh7+$ without playing it. An AMLD can imagine ``prove $\lambda$, then rewrite by $\lambda$&#x27;&#x27; without claiming $\lambda$ is a theorem.
 
 \begin{exercise}[Chess-to-proof translation]\label{ex:chess}
 Give a chess-search concept and a proof-search analogue for each of the following: position, legal move, principal variation, transposition, evaluation function, and move actually played. Explain one place where the analogy is imperfect.
@@ -896,7 +896,7 @@ Speculative membership is not a deposit rule. Only verifier acceptance changes v
 
 \chapter{Planning, compass, and controlled creativity}
 \begin{miniroadmap}
-Imagination answers ``what could happen?'' Planning asks ``what should we try?'' The compass supplies ranking information, while a controller allocates finite attention. Creativity appears as controlled structural departure, not as permission to relax proof standards.
+Imagination answers ``what could happen?&#x27;&#x27; Planning asks ``what should we try?&#x27;&#x27; The compass supplies ranking information, while a controller allocates finite attention. Creativity appears as controlled structural departure, not as permission to relax proof standards.
 \end{miniroadmap}
 
 \section{First-order compass}
@@ -931,11 +931,11 @@ Suppose $K_1$ repeatedly favors one region, but certificates generated there rep
 Controlled creativity can therefore be understood as a policy that increases willingness to explore structurally different futures when some combination of stagnation, novelty opportunity, and compass/failure tension crosses a threshold.
 
 \begin{designbox}
-Creativity belongs in IMAGINE, COMPASS, SELECT, and controller state. It does not belong inside the verifier's acceptance rule.
+Creativity belongs in IMAGINE, COMPASS, SELECT, and controller state. It does not belong inside the verifier&#x27;s acceptance rule.
 \end{designbox}
 
 \section{Why imagination is not mystical}
-The phrase ``the machine imagines a proof'' should be read operationally:
+The phrase ``the machine imagines a proof&#x27;&#x27; should be read operationally:
 \begin{quote}
 It recursively constructs and evaluates counterfactual deductive histories without confusing those histories with verified mathematics.
 \end{quote}
@@ -956,7 +956,7 @@ The FUTUREBANK may represent this branch even when $\lambda_1$ and $\lambda_2$ a
 Let a speculative branch depend on a finite acyclic set of hypothetical lemmas $D$. Suppose there exists an order $\lambda_1,\ldots,\lambda_n$ of $D$ such that each $\lambda_j$ has a verifier-acceptable certificate from $\Gamma$ together with earlier promoted dependencies $\lambda_1,\ldots,\lambda_{j-1}$. Then the hypothetical dependencies can be promoted one by one to the BANK, after which the branch no longer depends on those hypotheses.
 \end{proposition}
 \begin{proof}
-Induct on the dependency order. The first certificate is valid from the admitted bank. After it is accepted and deposited, the second's prerequisites are available, and so on. Acyclicity ensures that the process has a topological order.
+Induct on the dependency order. The first certificate is valid from the admitted bank. After it is accepted and deposited, the second&#x27;s prerequisites are available, and so on. Acyclicity ensures that the process has a topological order.
 \end{proof}
 
 This proposition does not say that every promising imagined branch can be backfilled, nor does it claim that its stated dependency order is the only possible route. It gives a clean sufficient condition under which a speculative finite dependency DAG can be promoted into verified mathematics.
@@ -967,13 +967,13 @@ A speculative route to $c$ requires lemmas $\lambda$ and $\mu$, where $\mu$ can 
 
 \part{Reflection and Formal Self-Description}
 
-\chapter{Tegmark's SAS idea and what this book borrows}
+\chapter{Tegmark&#x27;s SAS idea and what this book borrows}
 \begin{roadmap}
-This Part adds formal self-description without confusing it with imagination. We begin with Tegmark's notion of self-aware substructures as an intellectual influence, then define a checked architectural scale for AMLD self-description and explain why iterated provability is not an adequate level counter. Finally we show that self-description may steer search while leaving proof semantics unchanged.
+This Part adds formal self-description without confusing it with imagination. We begin with Tegmark&#x27;s notion of self-aware substructures as an intellectual influence, then define a checked architectural scale for AMLD self-description and explain why iterated provability is not an adequate level counter. Finally we show that self-description may steer search while leaving proof semantics unchanged.
 \end{roadmap}
 
 \section{The Tegmark connection}
-In \emph{Is ``the theory of everything'' merely the ultimate ensemble theory?}, Tegmark discusses mathematical structures complex enough to contain ``self-aware substructures'' and explicitly associates them with logical thought \cite{Tegmark1998}. His project is cosmological and philosophical, not a design manual for automated theorem proving.
+In \emph{Is ``the theory of everything&#x27;&#x27; merely the ultimate ensemble theory?}, Tegmark discusses mathematical structures complex enough to contain ``self-aware substructures&#x27;&#x27; and explicitly associates them with logical thought \cite{Tegmark1998}. His project is cosmological and philosophical, not a design manual for automated theorem proving.
 
 The relevance here is structural. A formal machine may contain a representation of itself and may reason about that representation. Once this possibility is admitted, one can ask precise questions: Which self-descriptions can it check? Which formal provability claims can it establish in a declared theory? Which facts about its own current search state can it safely use as controller input?
 
@@ -993,7 +993,7 @@ Suppose the declared metatheory $T$ is recursively axiomatized strongly enough t
 \[
 R_{n+1}(\mathsf A)=\Prov_T(\ulcorner R_n(\mathsf A)\urcorner).
 \]
-That notation is useful in provability logic, but it is a poor measure of increasing architectural self-description. For standard arithmetized provability predicates satisfying the usual derivability conditions, if $T$ proves a sentence $A$, then $T$ also proves the corresponding assertion $\Prov_T(\ulcorner A\urcorner)$. Repeating the operator can therefore add syntactic layers without adding a genuinely new self-model. Reflection principles also interact with G\"odelian and L\"obian limitations and require the object theory, metatheory, coding, and provability predicate to be specified with care \cite{SEPProvability}. This edition therefore does \emph{not} identify ``one more provability box'' with ``one more level of self-awareness.''
+That notation is useful in provability logic, but it is a poor measure of increasing architectural self-description. For standard arithmetized provability predicates satisfying the usual derivability conditions, if $T$ proves a sentence $A$, then $T$ also proves the corresponding assertion $\Prov_T(\ulcorner A\urcorner)$. Repeating the operator can therefore add syntactic layers without adding a genuinely new self-model. Reflection principles also interact with G\&quot;odelian and L\&quot;obian limitations and require the object theory, metatheory, coding, and provability predicate to be specified with care \cite{SEPProvability}. This edition therefore does \emph{not} identify ``one more provability box&#x27;&#x27; with ``one more level of self-awareness.&#x27;&#x27;
 
 \section{A checked self-description scale}
 Fix a metatheory $T$ capable of coding $\mathsf A$, the current search state $\State_m$, and the receipts produced by a declared family of self-description checkers. A self-description counts at any level only when its checker verifies the claimed relationship between the descriptor and the actual coded machine/state. The following scale is an architectural convention for this book, not a universal hierarchy of minds.
@@ -1005,7 +1005,7 @@ Relative to a declared architecture and self-description checker family:
 \item \textbf{Level 1}: checked \emph{static} self-description is available: for example, the machine can identify its own code or version, the roles it implements, and the verifier environment it is using.
 \item \textbf{Level 2}: Level 1 is available and checked \emph{dynamic} self-state facts can also be represented and used by the controller, such as the current BANK identifier, selected FUTUREBANK dependencies, verifier-history summaries, resource counters, or whether complete fallback has received its reserved steps.
 \item \textbf{Level $n$} for finite $n\ge3$: an implementation-specific extension adds a further bounded layer of checked metacontrol description, such as representing and evaluating how a lower-level controller or self-model would change under candidate search actions. The exact schema must be declared; the symbol $n$ alone does not determine one.
-\item \textbf{Level $\omega$}: every declared finite level schema can in principle be instantiated and checked. This means ``all finite levels are supported,'' not that the machine stores a completed infinite object or performs infinitely many operations in a finite run.
+\item \textbf{Level $\omega$}: every declared finite level schema can in principle be instantiated and checked. This means ``all finite levels are supported,&#x27;&#x27; not that the machine stores a completed infinite object or performs infinitely many operations in a finite run.
 \end{itemize}
 \end{definition}
 
@@ -1023,18 +1023,18 @@ Consider any class of computational search systems containing both (i) a system 
 System (i) is a counterexample to the first implication, and system (ii) is a counterexample to the converse. The claim is therefore a separation result about the two architectural properties, not a claim that either example has rich mathematical intelligence.
 \end{proof}
 
-The useful question is therefore not ``does self-awareness create imagination?'' It does not. The useful question is whether verified self-knowledge can improve the controller's use of imagination.
+The useful question is therefore not ``does self-awareness create imagination?&#x27;&#x27; It does not. The useful question is whether verified self-knowledge can improve the controller&#x27;s use of imagination.
 
 \section{FUTUREBANK-reflective AMLDs}
 Call an AMLD \emph{FUTUREBANK-reflective} relative to an architecture description if its formal language can name selected search components and it can obtain checker-accepted statements about some of them, such as:
 \begin{itemize}
-\item ``my current verified bank is $\Bank_m$;''
-\item ``branch $f$ depends on speculative lemma $\lambda$;''
-\item ``my controller has spent $N$ verifier calls in this quotient region;''
-\item ``these recent candidates were rejected;''
-\item ``complete fallback has not received its scheduled share of steps.''
+\item ``my current verified bank is $\Bank_m$;&#x27;&#x27;
+\item ``branch $f$ depends on speculative lemma $\lambda$;&#x27;&#x27;
+\item ``my controller has spent $N$ verifier calls in this quotient region;&#x27;&#x27;
+\item ``these recent candidates were rejected;&#x27;&#x27;
+\item ``complete fallback has not received its scheduled share of steps.&#x27;&#x27;
 \end{itemize}
-These are examples of Level-2-style dynamic self-description. They are architecture-relative facts, and they should not be confused with unrestricted claims about the machine's own soundness or truth.
+These are examples of Level-2-style dynamic self-description. They are architecture-relative facts, and they should not be confused with unrestricted claims about the machine&#x27;s own soundness or truth.
 
 \chapter{Reflection can guide search but cannot redefine proof}
 \begin{miniroadmap}
@@ -1068,7 +1068,7 @@ Formal self-description may tell the machine something about how it is searching
 \end{quote}
 
 \begin{exercise}[Two axes]\label{ex:axes}
-Give four hypothetical systems occupying the four cells of a $2\times2$ table: low/high FUTUREBANK capability crossed with low/high formal self-description. Explain why this table is more informative than a single ``intelligence level.''
+Give four hypothetical systems occupying the four cells of a $2\times2$ table: low/high FUTUREBANK capability crossed with low/high formal self-description. Explain why this table is more informative than a single ``intelligence level.&#x27;&#x27;
 \end{exercise}
 
 \chapter{Safety, liveness, and fair fallback}
@@ -1125,7 +1125,7 @@ T_H
 =
 \operatorname{ElDiag}(\N)
 \cup
-\{\,H>c_n:n\in\N\,\}.
+\{\,H&gt;c_n:n\in\N\,\}.
 \]
 
 \begin{theorem}[Compactness existence of an unlimited nonstandard natural]\label{thm:compactness-unlimited}
@@ -1134,9 +1134,9 @@ The theory \(T_H\) has a model. Consequently there is a proper elementary extens
 \begin{proof}
 Take any finite subset \(T_0\subseteq T_H\). Only finitely many inequalities involving \(H\) occur in \(T_0\), say
 \[
-H>c_{n_1},\ldots,H>c_{n_k}.
+H&gt;c_{n_1},\ldots,H&gt;c_{n_k}.
 \]
-If no such inequality occurs, choose any ordinary interpretation for \(H\). Otherwise interpret every \(c_a\) by the corresponding standard natural \(a\) and choose an ordinary natural \(m>\max\{n_1,\ldots,n_k\}\) to interpret \(H\). Every elementary-diagram sentence in \(T_0\) is true by definition, and the finitely many displayed inequalities are true by the choice of \(m\). Thus every finite subset of \(T_H\) has a model.
+If no such inequality occurs, choose any ordinary interpretation for \(H\). Otherwise interpret every \(c_a\) by the corresponding standard natural \(a\) and choose an ordinary natural \(m&gt;\max\{n_1,\ldots,n_k\}\) to interpret \(H\). Every elementary-diagram sentence in \(T_0\) is true by definition, and the finitely many displayed inequalities are true by the choice of \(m\). Thus every finite subset of \(T_H\) has a model.
 
 By Compactness, \(T_H\) has a model \(M_H\). Since \(M_H\models\operatorname{ElDiag}(\N)\), the map
 \[
@@ -1144,25 +1144,25 @@ a\longmapsto c_a^{M_H}
 \]
 is an elementary embedding of \(\N\) into the arithmetic reduct of \(M_H\). Identify \(\N\) with its image and write \(M\) for the resulting elementary extension. The interpretation of \(H\) satisfies
 \[
-H>n\qquad\text{for every standard }n\in\N.
+H&gt;n\qquad\text{for every standard }n\in\N.
 \]
 Therefore \(H\) is outside the embedded standard copy, the extension is proper, and \(H\) is an unlimited nonstandard natural.
 \end{proof}
 
 \begin{remark}[Existence is not execution]\label{rem:compactness-not-computation}
-The theorem is an existence result in first-order model theory. It does not provide a standard natural number that can stand in for \(H\), a canonical computable presentation of \(M\), or an ordinary finite procedure that reaches stage \(H\). Compactness constructs no ``fantastically large ordinary integer.''
+The theorem is an existence result in first-order model theory. It does not provide a standard natural number that can stand in for \(H\), a canonical computable presentation of \(M\), or an ordinary finite procedure that reaches stage \(H\). Compactness constructs no ``fantastically large ordinary integer.&#x27;&#x27;
 \end{remark}
 
 \begin{remark}[Why the elementary diagram is used]\label{rem:eldiag}
-If one added \(H>\overline n\) for every standard numeral merely to the complete theory \(\operatorname{Th}(\N)\), Compactness would give a nonstandard model elementarily equivalent to \(\N\). The present chapter wants the more specific relation \(\N\preccurlyeq M\). Naming every standard element and including the full elementary diagram ensures that the canonical map from the named standard copy into the compactness model is elementary. Marker gives the elementary-diagram machinery in Section~2.3 \cite{MarkerModelTheory}.
+If one added \(H&gt;\overline n\) for every standard numeral merely to the complete theory \(\operatorname{Th}(\N)\), Compactness would give a nonstandard model elementarily equivalent to \(\N\). The present chapter wants the more specific relation \(\N\preccurlyeq M\). Naming every standard element and including the full elementary diagram ensures that the canonical map from the named standard copy into the compactness model is elementary. Marker gives the elementary-diagram machinery in Section~2.3 \cite{MarkerModelTheory}.
 \end{remark}
 
 \begin{warningbox}
-The use of \(\operatorname{ElDiag}(\N)\) is a strong semantic hypothesis, not harmless notation. It packages the full first-order truth of the standard structure with named standard parameters. In particular, the resulting arithmetic extension satisfies \(M\models\operatorname{Th}(\N)\), not merely \(M\models\mathrm{PA}\). Compactness then proves that a suitable elementary extension exists, but it does not give an effective procedure for listing all of \(\operatorname{ElDiag}(\N)\), computing a presentation of \(M\), or deciding its satisfaction relation. The exact classification results later in the chapter rely on this elementarity; they are not consequences of ``being a nonstandard model of PA'' alone.
+The use of \(\operatorname{ElDiag}(\N)\) is a strong semantic hypothesis, not harmless notation. It packages the full first-order truth of the standard structure with named standard parameters. In particular, the resulting arithmetic extension satisfies \(M\models\operatorname{Th}(\N)\), not merely \(M\models\mathrm{PA}\). Compactness then proves that a suitable elementary extension exists, but it does not give an effective procedure for listing all of \(\operatorname{ElDiag}(\N)\), computing a presentation of \(M\), or deciding its satisfaction relation. The exact classification results later in the chapter rely on this elementarity; they are not consequences of ``being a nonstandard model of PA&#x27;&#x27; alone.
 \end{warningbox}
 
 \begin{remark}[Terminology: nonstandard natural versus hypernatural]\label{rem:hypernatural-terminology}
-The compactness theorem above produces an elementary extension \(M\) of arithmetic. Its new elements are unambiguously \emph{nonstandard natural numbers}. In a full nonstandard-analysis framework equipped with a star map or enlargement, elements of \({}^*\N\) are conventionally called \emph{hypernaturals}. This chapter retains ``hypernatural'' in its title because that is the intended AMLD idealization, but the proofs of the arithmetic results need only \(M\). If a full NSA universe is later chosen, its natural-number sort may play the role of \(M\). Goldblatt gives a standard treatment of transfer, internal and external sets, hyperfinite sets, and nonstandard frameworks, while Keisler provides a complementary infinitesimal-calculus treatment \cite{GoldblattHyperreals,KeislerFoundations}.
+The compactness theorem above produces an elementary extension \(M\) of arithmetic. Its new elements are unambiguously \emph{nonstandard natural numbers}. In a full nonstandard-analysis framework equipped with a star map or enlargement, elements of \({}^*\N\) are conventionally called \emph{hypernaturals}. This chapter retains ``hypernatural&#x27;&#x27; in its title because that is the intended AMLD idealization, but the proofs of the arithmetic results need only \(M\). If a full NSA universe is later chosen, its natural-number sort may play the role of \(M\). Goldblatt gives a standard treatment of transfer, internal and external sets, hyperfinite sets, and nonstandard frameworks, while Keisler provides a complementary infinitesimal-calculus treatment \cite{GoldblattHyperreals,KeislerFoundations}.
 \end{remark}
 
 We now fix one such elementary extension
@@ -1171,9 +1171,9 @@ We now fix one such elementary extension
 \]
 and one \(H\in M\) satisfying
 \[
-H>n\qquad\text{for every standard }n\in\N.
+H&gt;n\qquad\text{for every standard }n\in\N.
 \]
-We call such an \(H\) \emph{unlimited}. In the arithmetic framework, ``unlimited'' is a metatheoretic condition referring to the embedded standard copy; it is not a single first-order predicate of the language of arithmetic. In a full nonstandard-analysis enlargement, the collection of unlimited hypernaturals is external rather than internal. See Goldblatt's chapters on internal/external and hyperfinite entities \cite{GoldblattHyperreals}.
+We call such an \(H\) \emph{unlimited}. In the arithmetic framework, ``unlimited&#x27;&#x27; is a metatheoretic condition referring to the embedded standard copy; it is not a single first-order predicate of the language of arithmetic. In a full nonstandard-analysis enlargement, the collection of unlimited hypernaturals is external rather than internal. See Goldblatt&#x27;s chapters on internal/external and hyperfinite entities \cite{GoldblattHyperreals}.
 
 \begin{checkpoint}
 The logical dependency is: \textbf{Compactness gives existence}; \textbf{the elementary diagram gives the elementary embedding}; \textbf{elementarity transfers first-order statements with standard parameters}; and \textbf{unlimitedness gives coverage of every standard finite proof code}. Elementarity supplies standard correctness; unlimitedness supplies the bound. Neither may be silently substituted for the other, and none of these steps gives a standard computer an executable value of \(H\).
@@ -1188,7 +1188,7 @@ There are two legitimate readings of the discussion, but they support different 
 The second framework is useful for the AMLD picture, but it is stronger infrastructure than the arithmetic compactness theorem itself supplies. No theorem below depends on silently moving from the first framework to the second.
 
 \subsection{The bounded proof-existence condition}
-Fix a standard G\"odel coding of PA formulas and proofs. For a standard PA sentence \(\varphi\), let
+Fix a standard G\&quot;odel coding of PA formulas and proofs. For a standard PA sentence \(\varphi\), let
 \[
 \Prf_{\mathrm{PA}}(p,\ulcorner\varphi\urcorner)
 \]
@@ -1229,7 +1229,7 @@ B_H^M(\varphi).
 The same equivalence holds with \(\neg\varphi\) in place of \(\varphi\), and with \(\bot\) in place of \(\varphi\).
 \end{theorem}
 \begin{proof}
-Suppose first that \(\mathrm{PA}\vdash\varphi\). Some ordinary finite PA proof of \(\varphi\) has a standard G\"odel code \(n\in\N\). Since \(H\) is unlimited, \(n<H\). The elementary embedding preserves the standard proof predicate on the standard parameter \(\ulcorner\varphi\urcorner\), so the same standard code witnesses \(B_H^M(\varphi)\).
+Suppose first that \(\mathrm{PA}\vdash\varphi\). Some ordinary finite PA proof of \(\varphi\) has a standard G\&quot;odel code \(n\in\N\). Since \(H\) is unlimited, \(n&lt;H\). The elementary embedding preserves the standard proof predicate on the standard parameter \(\ulcorner\varphi\urcorner\), so the same standard code witnesses \(B_H^M(\varphi)\).
 
 Conversely, suppose \(B_H^M(\varphi)\). Then in particular
 \[
@@ -1257,9 +1257,9 @@ Assume for this section that PA is consistent. For each standard PA sentence \(\
 \[
 D_H^M(\varphi)=
 \begin{cases}
-P,&\text{if }B_H^M(\varphi),\\
-R,&\text{if }B_H^M(\neg\varphi),\\
-I,&\text{if neither bounded condition holds.}
+P,&amp;\text{if }B_H^M(\varphi),\\
+R,&amp;\text{if }B_H^M(\neg\varphi),\\
+I,&amp;\text{if neither bounded condition holds.}
 \end{cases}
 \]
 Here \(I\) means exactly
@@ -1268,7 +1268,7 @@ Here \(I\) means exactly
 \quad\text{and}\quad
 \mathrm{PA}\nvdash\neg\varphi.
 \]
-This is the derivability-based meaning of ``independent of PA'' used in this chapter. If consistency is not assumed, a \(C\)-condition for \(B_H^M(\bot)\) should receive the contradiction-dominance priority described in Theorem~\ref{thm:contradiction}.
+This is the derivability-based meaning of ``independent of PA&#x27;&#x27; used in this chapter. If consistency is not assumed, a \(C\)-condition for \(B_H^M(\bot)\) should receive the contradiction-dominance priority described in Theorem~\ref{thm:contradiction}.
 
 \begin{theorem}[Unlimited-bound trichotomy for standard PA sentences]\label{thm:hypertrichotomy}
 Let PA be consistent, let \(H\in M\) be unlimited, and let \(\varphi\) be a standard PA sentence. Exactly one of the following holds:
@@ -1321,7 +1321,7 @@ There are only finitely many natural numbers \(p\le N\), hence only finitely man
 Failure to find a proof below one fixed standard finite cutoff \(N\) cannot, by itself, establish nonderivability for arbitrary PA targets. No standard \(N\) has the cofinal coverage property of an unlimited \(H\).
 \end{corollary}
 
-This theorem makes precise why ``replace \(H\) by a gigantic ordinary integer'' does not preserve the argument. However large the ordinary integer is, some ordinary finite PA proofs lie beyond it.
+This theorem makes precise why ``replace \(H\) by a gigantic ordinary integer&#x27;&#x27; does not preserve the argument. However large the ordinary integer is, some ordinary finite PA proofs lie beyond it.
 
 \section{The direct-standardization barrier}
 \begin{proposition}[Direct-cutoff standardization barrier]\label{prop:standardbarrier}
@@ -1336,11 +1336,11 @@ M\models(\forall p\le H)\,\neg\Prf_{\mathrm{PA}}(p,\ulcorner\varphi\urcorner)
 cannot be turned into an equally exhaustive ordinary finite-search record merely by substituting a standard cutoff.
 \end{proposition}
 \begin{proof}
-If a standard \(N\) dominated every standard natural, then the standard natural \(N+1\) would satisfy \(N+1>N\), a contradiction. Replacing \(H\) by any standard \(N\) therefore discards standard proof codes larger than \(N\).
+If a standard \(N\) dominated every standard natural, then the standard natural \(N+1\) would satisfy \(N+1&gt;N\), a contradiction. Replacing \(H\) by any standard \(N\) therefore discards standard proof codes larger than \(N\).
 \end{proof}
 
 \begin{warningbox}
-No ``standard-part'' operation repairs this problem. In a full hyperreal framework, standard part is defined for finite hyperreals, not as a natural-valued operation sending an unlimited hypernatural to an ordinary cutoff with the same cofinal property; see Goldblatt \cite{GoldblattHyperreals}. In the \(P\), \(R\), and \(C\) cases, Theorem~\ref{thm:hyperproofequiv} gives existence of an ordinary finite proof witness. In the \(I\) case, bounded nonfinding together with unlimitedness gives the external nonderivability conclusion, but it does not automatically produce a finite certificate in the AMLD's declared \(\mathcal K_I\) format.
+No ``standard-part&#x27;&#x27; operation repairs this problem. In a full hyperreal framework, standard part is defined for finite hyperreals, not as a natural-valued operation sending an unlimited hypernatural to an ordinary cutoff with the same cofinal property; see Goldblatt \cite{GoldblattHyperreals}. In the \(P\), \(R\), and \(C\) cases, Theorem~\ref{thm:hyperproofequiv} gives existence of an ordinary finite proof witness. In the \(I\) case, bounded nonfinding together with unlimitedness gives the external nonderivability conclusion, but it does not automatically produce a finite certificate in the AMLD&#x27;s declared \(\mathcal K_I\) format.
 \end{warningbox}
 
 No conservativity or proof-translation theorem for a particular formalization of nonstandard analysis is assumed here. If some chosen formal NSA system is separately known to be conservative over, or interpretable in, an appropriate standard metatheory, that is an additional theorem about those formal systems. It should not be confused with replacing the particular nonstandard cutoff \(H\) by a standard finite cutoff.
@@ -1361,19 +1361,19 @@ Corollary~\ref{cor:unknowncomputational} and Theorem~\ref{thm:hypertrichotomy} a
 \begin{exercise}[Building the unlimited horizon by compactness]\label{ex:compactness-unlimited}
 Let \(\mathcal L(\N,H)\) be the language of arithmetic expanded by constants \(c_a\) for each \(a\in\N\) and one additional constant \(H\). Let
 \[
-T_H=\operatorname{ElDiag}(\N)\cup\{H>c_n:n\in\N\}.
+T_H=\operatorname{ElDiag}(\N)\cup\{H&gt;c_n:n\in\N\}.
 \]
 \begin{enumerate}[label=(\alph*)]
 \item Explain why every finite subset of \(T_H\) is satisfiable in the standard natural numbers after choosing a sufficiently large ordinary interpretation for \(H\).
 \item Apply Compactness to conclude that \(T_H\) has a model.
 \item Explain why the named copy of \(\N\) embeds elementarily into that model and why the interpretation of \(H\) is outside the standard copy.
-\item Explain why the definition of ``\(H\) is larger than every standard natural'' refers to the externally designated standard copy and is presented here as an infinite family of inequalities, not as an extra predicate added to PA.
+\item Explain why the definition of ``\(H\) is larger than every standard natural&#x27;&#x27; refers to the externally designated standard copy and is presented here as an infinite family of inequalities, not as an extra predicate added to PA.
 \item Explain why the existence proof gives no ordinary finite algorithm that counts to \(H\).
 \end{enumerate}
 \end{exercise}
 
 \begin{exercise}[Arithmetic core versus full NSA]\label{ex:twoframeworks}
-Which parts of the chapter require only an elementary extension of arithmetic, and which phrases require the richer full nonstandard-analysis framework? In particular, classify each phrase: (a) \(B_H^M(\varphi)\); (b) ``internal hyperfinite interval''; (c) ``elementarity transfers the proof-existence statement''; (d) ``hyperfinite BANK history.''
+Which parts of the chapter require only an elementary extension of arithmetic, and which phrases require the richer full nonstandard-analysis framework? In particular, classify each phrase: (a) \(B_H^M(\varphi)\); (b) ``internal hyperfinite interval&#x27;&#x27;; (c) ``elementarity transfers the proof-existence statement&#x27;&#x27;; (d) ``hyperfinite BANK history.&#x27;&#x27;
 \end{exercise}
 
 \begin{exercise}[Why an arbitrary nonstandard PA model is not enough]\label{ex:arbitrary-pa-model}
@@ -1394,13 +1394,13 @@ Let \(H\in M\) be unlimited and let \(N\in\N\) be an extremely large standard in
 
 \chapter{Authentication as one worked special case}
 \begin{roadmap}
-This chapter is an application, not the destination of the theory. Passwords and authentication are used because they sharply separate \emph{search}, \emph{verification}, \emph{available information}, and \emph{system design}. We will model a password verifier, define ``flood control'' as a hard or effective bound on online attempts, prove several finite-attempt theorems, distinguish online from offline verification, and show why a more plausible defensive use of AMLD-style reasoning is often to settle formal claims about an authentication system rather than to ``guess the password.'' The same AMLD architecture is intended for much broader application classes, including ordinary mathematical settlement, software and protocol verification, engineering safety, and formalized scientific reasoning. The discussion here is about authorized analysis, defensive design, and formal modeling.
+This chapter is an application, not the destination of the theory. Passwords and authentication are used because they sharply separate \emph{search}, \emph{verification}, \emph{available information}, and \emph{system design}. We will model a password verifier, define ``flood control&#x27;&#x27; as a hard or effective bound on online attempts, prove several finite-attempt theorems, distinguish online from offline verification, and show why a more plausible defensive use of AMLD-style reasoning is often to settle formal claims about an authentication system rather than to ``guess the password.&#x27;&#x27; The same AMLD architecture is intended for much broader application classes, including ordinary mathematical settlement, software and protocol verification, engineering safety, and formalized scientific reasoning. The discussion here is about authorized analysis, defensive design, and formal modeling.
 \end{roadmap}
 
 \section{Why passwords belong in this book}
 A password system looks superficially like proof search. A candidate string is proposed; a verifier returns an answer; a search policy decides what to try next. That resemblance is real, but it must not be exaggerated.
 
-A mathematical verifier answers a question such as ``is this certificate a valid proof in environment $\Env$?'' A live authentication verifier is usually \emph{stateful}: it may count failures, insert delays, require an additional factor, reject an otherwise correct credential after a lockout, or stop accepting attempts altogether. For that reason, password authentication is best treated as a \emph{special case of guarded search with verification}, not as literal mathematical theorem proving.
+A mathematical verifier answers a question such as ``is this certificate a valid proof in environment $\Env$?&#x27;&#x27; A live authentication verifier is usually \emph{stateful}: it may count failures, insert delays, require an additional factor, reject an otherwise correct credential after a lockout, or stop accepting attempts altogether. For that reason, password authentication is best treated as a \emph{special case of guarded search with verification}, not as literal mathematical theorem proving.
 
 This chapter also illustrates a broader policy point. Powerful search machinery should be developed together with narrow correctness boundaries and explicit use constraints. In the companion essay \emph{Fund the Proof Machines---Guard the Capabilities That Can Become Weapons}, Tenneson argues that automated theorem proving differs from human-mimicking AI because its distinctive power is the search for independently checkable chains of reasoning. The essay treats passwords as only one dual-use example alongside mathematical discovery, software verification, protocol analysis, engineering safety, cryptographic analysis, and other formally stated targets \cite{TennesonProofMachines2026}. That is also the role passwords play here: they are a revealing example, not the organizing purpose of AMLD.
 
@@ -1413,7 +1413,7 @@ Let $S$ be a finite set of candidate secrets and let the actual secret be a rand
 \[
 \pi_z(w)=\Pr(W=w\mid Z=z).
 \]
-When $z$ is fixed, abbreviate $\pi_z$ by $\pi$. This is the search prior for the modeled episode. A secret generated uniformly and independently of $Z$ makes $\pi$ uniform on the generator's support. Human choice, reuse, policy constraints, previously disclosed information, or implementation artifacts may instead make $\pi$ highly nonuniform.
+When $z$ is fixed, abbreviate $\pi_z$ by $\pi$. This is the search prior for the modeled episode. A secret generated uniformly and independently of $Z$ makes $\pi$ uniform on the generator&#x27;s support. Human choice, reuse, policy constraints, previously disclosed information, or implementation artifacts may instead make $\pi$ highly nonuniform.
 
 For a live system, let
 \[
@@ -1503,7 +1503,7 @@ The top-$N$ theorem turns password quality into a distributional statement.
 \item Password blocklists remove especially high-probability choices from the admissible set. NIST explicitly connects blocklists to the fact that online attempts are rate-limited \cite{NIST80063B4}.
 \item Password managers can generate and store long, unique secrets, reducing the human incentive to reuse memorable strings.
 \end{itemize}
-Thus ``strong password'' should not be reduced to a composition-rule slogan. In the finite-attempt model, the central operational quantity is $G_N(\pi)$ or a bound on it.
+Thus ``strong password&#x27;&#x27; should not be reduced to a composition-rule slogan. In the finite-attempt model, the central operational quantity is $G_N(\pi)$ or a bound on it.
 
 \section{Online and offline verification are different worlds}
 Flood control belongs to the \emph{live verifier}. It may be decisive online and irrelevant offline.
@@ -1512,7 +1512,7 @@ Flood control belongs to the \emph{live verifier}. It may be decisive online and
 Suppose an online service enforces an attempt budget $N$, but a compromise exposes data sufficient to test password guesses locally without querying that service. Then the online attempt cap does not bound the number of local verification trials. The defensive cost per offline trial and the password distribution become separate controlling factors.
 \end{proposition}
 \begin{proof}
-The online cap is enforced by the live service state. A local verifier that does not consult that state does not consume the service's retry counter. Therefore the online bound does not apply to those local evaluations.
+The online cap is enforced by the live service state. A local verifier that does not consult that state does not consume the service&#x27;s retry counter. Therefore the online bound does not apply to those local evaluations.
 \end{proof}
 
 This is why password storage matters. OWASP recommends one-way password hashing rather than reversible encryption, unique salts, and deliberately expensive password-hashing functions so that each offline candidate test has nontrivial cost \cite{OWASPPasswordStorage}.
@@ -1527,7 +1527,7 @@ The table records outputs only for inputs whose first coordinate is $s_1$. An of
 The proposition is intentionally modest. It does not claim that salting makes weak passwords safe or prevents per-account guessing. It states the narrower reason unique salts defeat direct cross-account reuse of a single one-salt password-to-hash lookup table.
 
 \section{Multi-factor authentication changes the target predicate}
-A modern authentication decision may not be ``password correct?'' It may be
+A modern authentication decision may not be ``password correct?&#x27;&#x27; It may be
 \[
 \textsf{PasswordOK}\wedge\textsf{SecondFactorOK}\wedge\textsf{AccountEligible}\wedge\textsf{PolicyAllows}.
 \]
@@ -1552,7 +1552,7 @@ This says: every event the implementation accepts is an event the security speci
 \[
 \forall z\,[\mathsf{Impl}(z)\leftrightarrow \mathsf{Req}(z)],
 \]
-and failures of that reverse direction represent false rejection, availability, or completeness defects rather than unintended acceptance. The one-sided target is used below because it isolates the safety property relevant to an unauthorized-acceptance witness. The mnemonic predicate names $\mathsf{Req}$ and $\mathsf{Impl}$ also avoid reusing the book's bare one-letter role symbols.
+and failures of that reverse direction represent false rejection, availability, or completeness defects rather than unintended acceptance. The one-sided target is used below because it isolates the safety property relevant to an unauthorized-acceptance witness. The mnemonic predicate names $\mathsf{Req}$ and $\mathsf{Impl}$ also avoid reusing the book&#x27;s bare one-letter role symbols.
 
 \begin{theorem}[Authentication-defect certificate]\label{thm:defectcert}
 Assume that, for a concrete event $z^*$, the declared audit checker can verify both $\mathsf{Impl}(z^*)=\textsf{true}$ and $\mathsf{Req}(z^*)=\textsf{false}$ from finite representations. Then $z^*$ together with those checker receipts is a finite refutation certificate for
@@ -1567,20 +1567,20 @@ The verified witness $z^*$ is a counterexample to the universal implication $\fo
 This is the sense in which AMLD-like reasoning may be more useful for passwords: not as a machine that guesses secrets, but as a machine that searches for \emph{certifiable flaws in the modeled authentication system}. Examples of defensively relevant specification surfaces include retry policies, recovery flows, inconsistent enforcement of second factors, account-state transitions, password-storage configuration, overly informative error behavior, parser/normalization consistency, and mismatches between documented policy and implemented policy. OWASP specifically warns that authentication error behavior can disclose account-existence information and recommends generic responses \cite{OWASPAuth}.
 
 \begin{warningbox}
-A defect witness is not a recovered password. The two are different mathematical objects. The useful security question is often ``does the implementation admit any event forbidden by the specification?'' rather than ``what is the secret?''
+A defect witness is not a recovered password. The two are different mathematical objects. The useful security question is often ``does the implementation admit any event forbidden by the specification?&#x27;&#x27; rather than ``what is the secret?&#x27;&#x27;
 \end{warningbox}
 
 \section{A four-role AMLD audit of an authentication system}
 This one-sided conformance target gives the four AMLD roles concrete defensive meanings.
 \begin{align*}
-P &: \text{prove }c_{\mathrm{auth}}\text{ for the modeled state space};\\
-R &: \text{produce a checked counterexample event }z^*;\\
-I &: \text{certify, in the declared metatheory, that }c_{\mathrm{auth}}\text{ is independent of the admitted audit theory};\\
-C &: \text{derive an inconsistency in the declared security specification or model assumptions.}
+P &amp;: \text{prove }c_{\mathrm{auth}}\text{ for the modeled state space};\\
+R &amp;: \text{produce a checked counterexample event }z^*;\\
+I &amp;: \text{certify, in the declared metatheory, that }c_{\mathrm{auth}}\text{ is independent of the admitted audit theory};\\
+C &amp;: \text{derive an inconsistency in the declared security specification or model assumptions.}
 \end{align*}
 The BANK begins with the formal authentication specification, the modeled implementation semantics, and explicitly admitted environmental assumptions. Verified invariants and checked test lemmas can be deposited as the audit proceeds. The FUTUREBANK may hold possible counterexample traces or repair hypotheses, but none becomes an established defect or theorem without a checker-accepted certificate.
 
-This is a much better fit to the book's architecture than pretending that a hidden password is a theorem waiting to be divined.
+This is a much better fit to the book&#x27;s architecture than pretending that a hidden password is a theorem waiting to be divined.
 
 \section{Recovery routes and the weakest-route upper bound}
 Authentication rarely has only one route. There may be password login, password reset, account recovery, delegated identity, support-assisted recovery, remembered sessions, or hardware-backed authentication.
@@ -1598,7 +1598,7 @@ An actor may choose the least-cost sufficient route. Therefore system-level cost
 The theorem is deliberately an upper bound, not a complete security metric. Its lesson is architectural: strengthening the password path while leaving a weaker recovery path unchanged may not strengthen the whole account by the same amount.
 
 \section{Flood control can itself create a control problem}
-A hard lockout reduces online guessing but may also make availability vulnerable if arbitrary outsiders can consume the failure budget of someone else's account. OWASP explicitly notes this denial-of-service tradeoff and discusses alternatives such as delays and graduated controls \cite{OWASPAuth}.
+A hard lockout reduces online guessing but may also make availability vulnerable if arbitrary outsiders can consume the failure budget of someone else&#x27;s account. OWASP explicitly notes this denial-of-service tradeoff and discusses alternatives such as delays and graduated controls \cite{OWASPAuth}.
 
 This creates an AMLD-style multiobjective control problem. The controller is not optimizing only
 \[
@@ -1607,8 +1607,8 @@ This creates an AMLD-style multiobjective control problem. The controller is not
 It is balancing at least
 \[
 \begin{aligned}
-&\text{unauthorized acceptance risk}, &&\text{legitimate-user lockout risk},\\
-&\text{latency}, &&\text{recovery burden}, &&\text{operational cost}.
+&amp;\text{unauthorized acceptance risk}, &amp;&amp;\text{legitimate-user lockout risk},\\
+&amp;\text{latency}, &amp;&amp;\text{recovery burden}, &amp;&amp;\text{operational cost}.
 \end{aligned}
 \]
 There is no universal theorem that one fixed $N$ is optimal for every system. The correct $N$, delay schedule, and recovery policy depend on the threat model and operational environment.
@@ -1647,7 +1647,7 @@ Suppose a password is uniformly random over a set $S$ with $|S|=2^{80}$ possibil
 \]
 No clever ordering changes this because all candidates have equal prior probability. A COMPASS may be computationally impressive and still be informationally irrelevant.
 
-Now change only the prior. If human behavior or leaked side information concentrates, say, $5\%$ of the conditional probability mass into the first 100 candidates, then $G_{100}(\pi)=0.05$ and the same flood-control value $N=100$ no longer gives the same protection. The difference is not ``more imagination.'' It is a different information model.
+Now change only the prior. If human behavior or leaked side information concentrates, say, $5\%$ of the conditional probability mass into the first 100 candidates, then $G_{100}(\pi)=0.05$ and the same flood-control value $N=100$ no longer gives the same protection. The difference is not ``more imagination.&#x27;&#x27; It is a different information model.
 
 \section{Exercises}
 \begin{exercise}[Top-$N$ exposure]\label{ex:passwordtopn}
@@ -1667,7 +1667,7 @@ Write a conformance statement $c$ for a toy authentication system in which accep
 \end{exercise}
 
 \begin{exercise}[Flood-control tradeoff]\label{ex:passworddos}
-Give a toy example in which lowering the maximum failure count decreases online guessing opportunity but increases the possibility that a legitimate user is denied service. Explain why this is a control-design problem rather than a theorem that ``smaller $N$ is always better.''
+Give a toy example in which lowering the maximum failure count decreases online guessing opportunity but increases the possibility that a legitimate user is denied service. Explain why this is a control-design problem rather than a theorem that ``smaller $N$ is always better.&#x27;&#x27;
 \end{exercise}
 
 
@@ -1718,8 +1718,8 @@ record Proposal:
 
 record LogicalBank:
     records_by_id
-    origin_index         # ENV, IMPORT, P, R, I, C -> record IDs
-    semantic_kind_index  # semantic kind -> record IDs
+    origin_index         # ENV, IMPORT, P, R, I, C -&gt; record IDs
+    semantic_kind_index  # semantic kind -&gt; record IDs
     dependency_graph
 
 record FutureNode:
@@ -1760,7 +1760,7 @@ function SEED_BANK(env):
             scope = premise.scope or env.base_scope,
             certificate = premise.admission_record,
             dependency_ids = {},
-            verifier_receipt = "ADMITTED-BY-ENVIRONMENT",
+            verifier_receipt = &quot;ADMITTED-BY-ENVIRONMENT&quot;,
             source_proposal_id = NONE,
             source_future_node_id = NONE,
             deposited_at = 0,
@@ -1835,7 +1835,7 @@ function TERMINAL_STATUS(env, bank, accepted_record):
     return NONE
 \end{lstlisting}
 
-The pseudocode assumes explosive logic and gives an already verified contradiction certificate priority over other terminal evidence. This is an operational precedence rule, not clairvoyance: if a proof of $c$ is accepted and the run halts before any contradiction is discovered, the machine cannot retroactively know that a future $C$-search would have succeeded. In a different logic, terminal precedence belongs in the verification environment. The classifier deliberately does not test the record's origin. If $R$ submits an accepted target-proof certificate, the provenance remains $R$ while the semantic status is \textsf{PROVED}. Also, first-certificate reporting should not be confused with a proof that the four evidence conditions are globally exclusive; Corollary~\ref{cor:overlap} and Theorem~\ref{thm:statuspartition} state the relevant distinction.
+The pseudocode assumes explosive logic and gives an already verified contradiction certificate priority over other terminal evidence. This is an operational precedence rule, not clairvoyance: if a proof of $c$ is accepted and the run halts before any contradiction is discovered, the machine cannot retroactively know that a future $C$-search would have succeeded. In a different logic, terminal precedence belongs in the verification environment. The classifier deliberately does not test the record&#x27;s origin. If $R$ submits an accepted target-proof certificate, the provenance remains $R$ while the semantic status is \textsf{PROVED}. Also, first-certificate reporting should not be confused with a proof that the four evidence conditions are globally exclusive; Corollary~\ref{cor:overlap} and Theorem~\ref{thm:statuspartition} state the relevant distinction.
 
 \chapter{Imagination, compass, and selection}
 \begin{miniroadmap}
@@ -1847,16 +1847,16 @@ function IMAGINE(state, depth_budget, branch_budget):
     frontier = choose_future_frontier(state.futurebank)
     created = 0
 
-    while not frontier.is_empty() and created < branch_budget:
+    while not frontier.is_empty() and created &lt; branch_budget:
         node = frontier.pop()
-        if node.depth >= depth_budget:
+        if node.depth &gt;= depth_budget:
             continue
 
         # Each generated action carries the role that generated it.
         actions = GENERATE_DEDUCTIVE_ACTIONS(state, node)
 
         for action in actions:
-            if created >= branch_budget:
+            if created &gt;= branch_budget:
                 break
 
             child = APPLY_COUNTERFACTUALLY(node, action)
@@ -1895,17 +1895,17 @@ function COMPASS(state):
     return argmax(actions, key=lambda a: K2(state, a))
 
 function SELECT(state, controller_action, fallback=None):
-    if controller_action.kind == "TRY_FUTURE_NODE":
+    if controller_action.kind == &quot;TRY_FUTURE_NODE&quot;:
         node = controller_action.node
         node.attempted = true
         proposal = materialize_certificate_proposal(node)
         proposal.source_future_node_id = node.id
         return proposal
-    if controller_action.kind == "BACKFILL":
+    if controller_action.kind == &quot;BACKFILL&quot;:
         return make_subgoal_proposal(controller_action.missing_dependency)
-    if controller_action.kind == "SWITCH_ROLE":
+    if controller_action.kind == &quot;SWITCH_ROLE&quot;:
         return next_agent_proposal(controller_action.role, state)
-    if controller_action.kind == "FALLBACK" and fallback is not NONE:
+    if controller_action.kind == &quot;FALLBACK&quot; and fallback is not NONE:
         return fallback.next_proposal(state.bank)
     return NONE
 \end{lstlisting}
@@ -2005,7 +2005,7 @@ A descriptor $Q$ is \emph{future-sufficient} for a declared task if
 \[
 Q(h_1)=Q(h_2)
 \]
-implies equality of all continuation information relevant to the task's future search, verification, scope, and required counting/provenance semantics.
+implies equality of all continuation information relevant to the task&#x27;s future search, verification, scope, and required counting/provenance semantics.
 \end{definition}
 
 \begin{proposition}[Safe FUTUREBANK quotient principle]\label{prop:safequotient}
@@ -2112,7 +2112,7 @@ v_+(p)=\textsf{true},\qquad v_-(p)=\textsf{false}.
 \]
 A small model checker verifies that $v_+$ satisfies $\Gamma\cup\{p\}$ and $v_-$ satisfies $\Gamma\cup\{\neg p\}$. Using the declared soundness rule, the metacertificate concludes that neither side follows from $\Gamma$.
 
-This example demonstrates why $I$ is not simply ``wait for $P$ and $R$ to fail.'' It supplies a positive object.
+This example demonstrates why $I$ is not simply ``wait for $P$ and $R$ to fail.&#x27;&#x27; It supplies a positive object.
 
 \section{\texorpdfstring{$C$ detects a broken foundation}{C detects a broken foundation}}
 Environment:
@@ -2150,10 +2150,10 @@ The AMLD will settle the original formula by producing a checked proof of its ne
 \section{The relevant slice of \texorpdfstring{$\Gamma=\mathrm{PA}$}{Gamma = PA}}
 The actual seed BANK contains the declared PA environment, not merely four formulas. For this proof, however, only a small slice is needed. Fix a standard presentation of PA (or a definitionally equivalent presentation) in which the following formulas are available as axioms or already verified derived laws, together with ordinary equality rules:
 \begin{align*}
-A_1&:\quad x+0=x,\\
-A_2&:\quad x+S(y)=S(x+y),\\
-A_3&:\quad Sx\neq0,\\
-A_4&:\quad Sx=Sy\rightarrow x=y.
+A_1&amp;:\quad x+0=x,\\
+A_2&amp;:\quad x+S(y)=S(x+y),\\
+A_3&amp;:\quad Sx\neq0,\\
+A_4&amp;:\quad Sx=Sy\rightarrow x=y.
 \end{align*}
 The environment also supplies universal instantiation/substitution, equality symmetry, transitivity and congruence, and classical logical rules. Induction is not needed for this particular target.
 
@@ -2223,7 +2223,7 @@ and a model of
 \]
 At this moment the role may place a plan of that form into the speculative FUTUREBANK:
 \[
-f_I:\quad \text{``seek an admissible model-pair certificate for }c\text{.''}
+f_I:\quad \text{``seek an admissible model-pair certificate for }c\text{.&#x27;&#x27;}
 \]
 No such terminal certificate has been verified, so the BANK does not change:
 \[
@@ -2250,10 +2250,10 @@ Again the role did not achieve its own terminal objective, yet its verified work
 \section{The FUTUREBANK just before the winning turn}
 At this point a small imagined search structure might contain branches such as
 \begin{align*}
-f_P&:\quad \text{continue searching for a proof of }c,\\
-f_I&:\quad \text{seek a model pair for independence},\\
-f_C&:\quad \text{continue testing the PA background for contradiction},\\
-f_R&:\quad \text{use }L_1\text{ to reduce the target to }SS0=SSSSS0\text{ and strip successors}.
+f_P&amp;:\quad \text{continue searching for a proof of }c,\\
+f_I&amp;:\quad \text{seek a model pair for independence},\\
+f_C&amp;:\quad \text{continue testing the PA background for contradiction},\\
+f_R&amp;:\quad \text{use }L_1\text{ to reduce the target to }SS0=SSSSS0\text{ and strip successors}.
 \end{align*}
 A COMPASS is permitted to rank $f_R$ highly because it now has verified dependencies $L_1$ and $L_2$. That ranking does not itself prove anything. It merely helps choose the next attempt.
 
@@ -2267,18 +2267,18 @@ The following natural-deduction presentation makes the certificate readable line
 \begin{center}
 \begin{tabularx}{0.94\textwidth}{@{}rXl@{}}
 \toprule
-\textbf{Line} & \textbf{Formula} & \textbf{Justification}\\
+\textbf{Line} &amp; \textbf{Formula} &amp; \textbf{Justification}\\
 \midrule
-1 & $S0+S0=SSSSS0$ & temporary assumption $c$\\
-2 & $S0+S0=SS0$ & BANK lemma $L_1$\\
-3 & $SS0=S0+S0$ & symmetry of line 2\\
-4 & $SS0=SSSSS0$ & transitivity, lines 3 and 1\\
-5 & $S0=SSSS0$ & successor injectivity $A_4$, line 4\\
-6 & $0=SSS0$ & successor injectivity $A_4$, line 5\\
-7 & $SSS0=0$ & symmetry of line 6\\
-8 & $SSS0\neq0$ & BANK lemma $L_2$\\
-9 & $\bot$ & lines 7 and 8\\
-10 & $\neg(S0+S0=SSSSS0)$ & discharge line 1\\
+1 &amp; $S0+S0=SSSSS0$ &amp; temporary assumption $c$\\
+2 &amp; $S0+S0=SS0$ &amp; BANK lemma $L_1$\\
+3 &amp; $SS0=S0+S0$ &amp; symmetry of line 2\\
+4 &amp; $SS0=SSSSS0$ &amp; transitivity, lines 3 and 1\\
+5 &amp; $S0=SSSS0$ &amp; successor injectivity $A_4$, line 4\\
+6 &amp; $0=SSS0$ &amp; successor injectivity $A_4$, line 5\\
+7 &amp; $SSS0=0$ &amp; symmetry of line 6\\
+8 &amp; $SSS0\neq0$ &amp; BANK lemma $L_2$\\
+9 &amp; $\bot$ &amp; lines 7 and 8\\
+10 &amp; $\neg(S0+S0=SSSSS0)$ &amp; discharge line 1\\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -2295,25 +2295,25 @@ and the decider returns
 \[
 \boxed{D(c)=\textsf{REFUTED}\qquad(\text{designated settlement role }R).}
 \]
-The run halts. $I$'s speculative model-pair branch never becomes theorem memory, and $C$ never claimed that PA itself was inconsistent.
+The run halts. $I$&#x27;s speculative model-pair branch never becomes theorem memory, and $C$ never claimed that PA itself was inconsistent.
 
 \section{The BANK ledger for the whole run}
 The logical growth can be summarized compactly:
 \begin{center}
 \begin{tabularx}{0.96\textwidth}{@{}cXll@{}}
 \toprule
-\textbf{State} & \textbf{New verified content} & \textbf{Origin} & \textbf{Semantic kind}\\
+\textbf{State} &amp; \textbf{New verified content} &amp; \textbf{Origin} &amp; \textbf{Semantic kind}\\
 \midrule
-$\Bank_0$ & PA seed records, including the displayed relevant axioms & \textsf{ENV} & \textsf{AXIOM/HYPOTHESIS}\\
-$\Bank_1$ & $L_1:S0+S0=SS0$ & $P$ & \textsf{INTERMEDIATE\_THEOREM}\\
-$\Bank_2$ & no new verified record & --- & ---\\
-$\Bank_3$ & $L_2:SSS0\neq0$ & $C$ & \textsf{INTERMEDIATE\_THEOREM}\\
-$\Bank_4$ & $\neg(S0+S0=SSSSS0)$ & $R$ & \textsf{NEGATED\_TARGET\_PROOF}\\
+$\Bank_0$ &amp; PA seed records, including the displayed relevant axioms &amp; \textsf{ENV} &amp; \textsf{AXIOM/HYPOTHESIS}\\
+$\Bank_1$ &amp; $L_1:S0+S0=SS0$ &amp; $P$ &amp; \textsf{INTERMEDIATE\_THEOREM}\\
+$\Bank_2$ &amp; no new verified record &amp; --- &amp; ---\\
+$\Bank_3$ &amp; $L_2:SSS0\neq0$ &amp; $C$ &amp; \textsf{INTERMEDIATE\_THEOREM}\\
+$\Bank_4$ &amp; $\neg(S0+S0=SSSSS0)$ &amp; $R$ &amp; \textsf{NEGATED\_TARGET\_PROOF}\\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-The corresponding verifier/search history $\Hist$ additionally records the accepted receipts for $L_1,L_2$, the terminal $R$-certificate, and $I$'s unsuccessful or merely speculative work. This is exactly why $\Hist$ is not the BANK.
+The corresponding verifier/search history $\Hist$ additionally records the accepted receipts for $L_1,L_2$, the terminal $R$-certificate, and $I$&#x27;s unsuccessful or merely speculative work. This is exactly why $\Hist$ is not the BANK.
 
 \section{What the example teaches}
 \begin{enumerate}
@@ -2325,7 +2325,7 @@ The corresponding verifier/search history $\Hist$ additionally records the accep
 \end{enumerate}
 
 \begin{corollary}[Cross-role terminal assembly]\label{cor:crossroleassembly}
-Under origin-neutral admissibility, an accepted terminal certificate may depend on verified BANK records originating from the environment and from any mixture of the roles $P,R,I,C$. If the dependencies are semantically admissible and the terminal certificate verifies, the terminal settlement meaning is determined by the certificate's semantic kind, not by the origin labels on its dependency DAG.
+Under origin-neutral admissibility, an accepted terminal certificate may depend on verified BANK records originating from the environment and from any mixture of the roles $P,R,I,C$. If the dependencies are semantically admissible and the terminal certificate verifies, the terminal settlement meaning is determined by the certificate&#x27;s semantic kind, not by the origin labels on its dependency DAG.
 \end{corollary}
 \begin{proof}
 Corollary~\ref{cor:crossreuse} makes admissible verified records reusable across roles, while Corollary~\ref{cor:discoveryirrelevance} makes terminal semantics independent of the discovering role. Combining the two facts gives the result.
@@ -2356,7 +2356,7 @@ The BANK lemma $L_1$ supplies the normalization $t=u$; the rest of the $R$-certi
 \begin{exercise}[Replay the PA refutation]\label{ex:pa115}
 Repeat the run with target
 \[
-c':\quad SS0=SSSSS0
+c&#x27;:\quad SS0=SSSSS0
 \]
 so that no addition-normalization lemma is needed. Give the shortest readable $R$-certificate you can using successor injectivity and the axiom that no successor equals zero. Then explain which architectural features disappear from the example when $L_1$ is no longer needed.
 \end{exercise}
@@ -2392,7 +2392,7 @@ These exercises are not research conjectures. They test whether the architecture
 \end{miniroadmap}
 
 \begin{exercise}[Axiom versus theorem]\label{ex:axthm}
-Why should a seed record for $\gamma\in\Gamma$ not be labeled simply ``proved''? Give a data schema that distinguishes an admitted premise from a derived theorem while allowing both to be used as premises when appropriate.
+Why should a seed record for $\gamma\in\Gamma$ not be labeled simply ``proved&#x27;&#x27;? Give a data schema that distinguishes an admitted premise from a derived theorem while allowing both to be used as premises when appropriate.
 \end{exercise}
 
 \begin{exercise}[Independence certificate]\label{ex:indcert}
@@ -2400,7 +2400,7 @@ In classical propositional logic with $\Gamma=\{p\lor q\}$ and target $p$, give 
 \end{exercise}
 
 \begin{exercise}[FUTUREBANK contamination]\label{ex:contam}
-A speculative node contains the statement $L$ because the controller asked ``what if $L$ were true?'' A programmer inserts $L$ into the BANK to make downstream search faster and adds a flag \texttt{speculative=true}. Is this safe if ordinary deduction routines can still read $L$? Explain.
+A speculative node contains the statement $L$ because the controller asked ``what if $L$ were true?&#x27;&#x27; A programmer inserts $L$ into the BANK to make downstream search faster and adds a flag \texttt{speculative=true}. Is this safe if ordinary deduction routines can still read $L$? Explain.
 \end{exercise}
 
 \begin{exercise}[Fairness]\label{ex:fair}
@@ -2457,7 +2457,7 @@ For $p\lor q$, choose $v_1(p)=T,q=F$ and $v_2(p)=F,q=T$. Both satisfy $\Gamma$; 
 It is unsafe if ordinary deduction can consume the flagged record as a premise. A flag is not quarantine unless admissibility routines enforce it. Keep the item in $\Spec$ or require a type system that makes speculative records unusable by verified deduction.
 
 \paragraph{Exercise~\ref{ex:fair}.}
-Yes. The powers-of-two schedule gives infinitely many fallback steps, so it is fair in the theorem's weak sense. Its asymptotic density is zero; positive density is not required by Theorem~\ref{thm:fallback}, though performance may be poor.
+Yes. The powers-of-two schedule gives infinitely many fallback steps, so it is fair in the theorem&#x27;s weak sense. Its asymptotic density is zero; positive density is not required by Theorem~\ref{thm:fallback}, though performance may be poor.
 
 \paragraph{Exercise~\ref{ex:unsafeq}.}
 One history may end at goal $g$ under scope $\Gamma$ and another at the same displayed $g$ under $\Gamma\cup\{h\}$. A safer descriptor includes active assumptions, admissible dependency set, role/metatheory context, and other continuation-relevant state.
@@ -2483,16 +2483,16 @@ For example, a system that permanently locks an account after one failed attempt
 Starting from $SS0=SSSSS0$, successor injectivity gives $S0=SSSS0$, then $0=SSS0$. Symmetry gives $SSS0=0$, contradicting the PA axiom instance $SSS0\neq0$. Discharging the initial assumption yields $\neg(SS0=SSSSS0)$. Because the target is already normalized, the example no longer needs the $P$-origin lemma $L_1$ or the normalization-refutation step; it therefore shows less cross-role BANK cooperation than the $1+1=5$ version.
 
 \paragraph{Exercise~\ref{ex:compactness-unlimited}.}
-(a) A finite subset mentions only finitely many inequalities $H>c_{n_i}$, so the standard model satisfies that subset when $H$ is interpreted by any ordinary $m$ larger than all listed $n_i$. (b) Compactness gives a model of the whole theory. (c) A model of $\operatorname{ElDiag}(\N)$ yields an elementary embedding of the named standard structure; the added inequalities force $H$ to lie above every named standard natural and hence outside that embedded copy. (d) ``standard'' refers to the externally designated embedded copy of $\N$; the construction expresses unlimitedness by the external scheme $H>c_n$ for each standard $n$, without adding a special ``standardness'' predicate to PA. (e) Model existence is not an effective presentation of the model or a finite runtime bound.
+(a) A finite subset mentions only finitely many inequalities $H&gt;c_{n_i}$, so the standard model satisfies that subset when $H$ is interpreted by any ordinary $m$ larger than all listed $n_i$. (b) Compactness gives a model of the whole theory. (c) A model of $\operatorname{ElDiag}(\N)$ yields an elementary embedding of the named standard structure; the added inequalities force $H$ to lie above every named standard natural and hence outside that embedded copy. (d) ``standard&#x27;&#x27; refers to the externally designated embedded copy of $\N$; the construction expresses unlimitedness by the external scheme $H&gt;c_n$ for each standard $n$, without adding a special ``standardness&#x27;&#x27; predicate to PA. (e) Model existence is not an effective presentation of the model or a finite runtime bound.
 
 \paragraph{Exercise~\ref{ex:twoframeworks}.}
-(a) $B_H^M(\varphi)$ uses only the arithmetic elementary-extension framework. (b) ``Internal hyperfinite interval'' belongs to the richer full-NSA framework. (c) Elementarity of the arithmetic extension is enough. (d) A literal internal hyperfinite BANK history again requires a full nonstandard enlargement carrying the relevant state objects, not merely a nonstandard model of arithmetic.
+(a) $B_H^M(\varphi)$ uses only the arithmetic elementary-extension framework. (b) ``Internal hyperfinite interval&#x27;&#x27; belongs to the richer full-NSA framework. (c) Elementarity of the arithmetic extension is enough. (d) A literal internal hyperfinite BANK history again requires a full nonstandard enlargement carrying the relevant state objects, not merely a nonstandard model of arithmetic.
 
 \paragraph{Exercise~\ref{ex:arbitrary-pa-model}.}
 By the second incompleteness theorem, consistent PA does not prove its own usual consistency sentence. Therefore $\mathrm{PA}+\neg\operatorname{Con}(\mathrm{PA})$ is consistent and has a model $A$. In $A$, $\neg\operatorname{Con}(\mathrm{PA})$ says that some $p$ satisfies the arithmetized PA proof predicate for contradiction. Externally no standard $p$ can do so, hence the witness is nonstandard. The failed step is the appeal from $A\models\exists p\,\Prf_{\mathrm{PA}}(p,\ulcorner\bot\urcorner)$ back to the standard structure $\N$: $\N$ is not assumed elementary in this arbitrary model. Unlimitedness of the witness does not repair that failure.
 
 \paragraph{Exercise~\ref{ex:hyperbudget}.}
-(a) $M$ contains the embedded standard naturals as well as nonstandard elements, so membership $H\in M$ alone says nothing about whether $H$ dominates every standard natural. (b) Any ordinary PA proof has a standard finite code $n$, and unlimited $H$ satisfies $n<H$, so that same code witnesses $B_H^M(\varphi)$. (c) No standard $N$ dominates all standard naturals; in particular $N+1>N$. Theorem~\ref{thm:finitecutoff} sharpens this by showing that some standard PA theorem has no proof code below any prescribed finite cutoff. (d) A positive bounded proof witness implies by elementarity that an ordinary finite proof exists. In the $I$ case, failure of both bounded proof-existence conditions yields an external nonderivability classification, not automatically a finite independence certificate. (e) $D_H^M$ is a metatheoretically defined classification using a nonstandard bound, not a standard algorithm with a standard finite runtime.
+(a) $M$ contains the embedded standard naturals as well as nonstandard elements, so membership $H\in M$ alone says nothing about whether $H$ dominates every standard natural. (b) Any ordinary PA proof has a standard finite code $n$, and unlimited $H$ satisfies $n&lt;H$, so that same code witnesses $B_H^M(\varphi)$. (c) No standard $N$ dominates all standard naturals; in particular $N+1&gt;N$. Theorem~\ref{thm:finitecutoff} sharpens this by showing that some standard PA theorem has no proof code below any prescribed finite cutoff. (d) A positive bounded proof witness implies by elementarity that an ordinary finite proof exists. In the $I$ case, failure of both bounded proof-existence conditions yields an external nonderivability classification, not automatically a finite independence certificate. (e) $D_H^M$ is a metatheoretically defined classification using a nonstandard bound, not a standard algorithm with a standard finite runtime.
 
 \part{Research Frontier}
 
@@ -2521,7 +2521,7 @@ On some theorem families with expensive auxiliary lemmas, conditional exploratio
 For at least some finite-resource AMLD architectures, an intermediate degree of formal self-description can yield better search efficiency than either no reflection or substantially more expensive reflection, because useful controller information is obtained before metareasoning overhead dominates.
 \end{conjecture}
 
-The last conjecture is intentionally weaker than the slogan ``Level 2 is always optimal.'' No theorem in this book establishes a universal creativity optimum at Level 2. Any such universal claim would be easy to attack by changing the cost model or constructing a problem on which reflection is irrelevant.
+The last conjecture is intentionally weaker than the slogan ``Level 2 is always optimal.&#x27;&#x27; No theorem in this book establishes a universal creativity optimum at Level 2. Any such universal claim would be easy to attack by changing the cost model or constructing a problem on which reflection is irrelevant.
 
 
 
@@ -2552,17 +2552,17 @@ The following are not retained as conjectures because simple counterexamples und
 \item \textbf{Same endpoint means safe merge.} False when scope or other path-dependent continuation information differs.
 \item \textbf{A sufficiently good compass makes verification unnecessary.} False as an architectural claim: ranking confidence and certificate validity are different predicates.
 \item \textbf{Long joint failure of $P$ and $R$ establishes independence.} False: search failure is not a nonderivability certificate.
-\item \textbf{A certificate is valid because it came from the ``right'' agent.} False: under the narrow interface, agent identity is provenance; validity is determined by semantic certificate content, scope, dependencies, environment, and checker.
+\item \textbf{A certificate is valid because it came from the ``right&#x27;&#x27; agent.} False: under the narrow interface, agent identity is provenance; validity is determined by semantic certificate content, scope, dependencies, environment, and checker.
 \item \textbf{Higher formal self-awareness necessarily improves imagination.} False by Proposition~\ref{prop:independentaxes}; the capabilities are logically distinct.
 \end{itemize}
 
 \chapter{LAB: How to try to refute the conjectures}
 \begin{roadmap}
-This Lab is adversarial by design. The reader's job is not to make the conjectures look good. It is to give them a fair chance to fail. We first explain the general experimental protocol, then give a refutation roadmap for every conjecture above.
+This Lab is adversarial by design. The reader&#x27;s job is not to make the conjectures look good. It is to give them a fair chance to fail. We first explain the general experimental protocol, then give a refutation roadmap for every conjecture above.
 \end{roadmap}
 
 \section{First lesson: a vague existential conjecture is hard to refute experimentally}
-Statements such as ``there exist some problem families on which method A helps'' are mathematically weak and scientifically slippery. Failure on one benchmark does not refute the existence of another benchmark where A helps.
+Statements such as ``there exist some problem families on which method A helps&#x27;&#x27; are mathematically weak and scientifically slippery. Failure on one benchmark does not refute the existence of another benchmark where A helps.
 
 Therefore the Lab converts each broad research conjecture into a preregistered benchmark-level hypothesis. Fix:
 \begin{itemize}
@@ -2573,7 +2573,7 @@ Therefore the Lab converts each broad research conjecture into a preregistered b
 \item fixed random seed protocol;
 \item a primary metric, such as solved fraction, verifier calls to settlement, wall-clock time, or area under a solved-versus-budget curve;
 \item a minimum practically meaningful effect size $\delta$;
-\item a statistical decision rule that distinguishes ``insufficient evidence'' from evidence that a prespecified effect is smaller than $\delta$.
+\item a statistical decision rule that distinguishes ``insufficient evidence&#x27;&#x27; from evidence that a prespecified effect is smaller than $\delta$.
 \end{itemize}
 Then ask a finite question. For example:
 \begin{quote}
@@ -2589,7 +2589,7 @@ For every conjecture:
 \item \textbf{Pair runs.} Run both conditions on the same problems and, where stochasticity exists, matched random seeds.
 \item \textbf{Record the whole trace.} Keep BANK growth, verifier calls, FUTUREBANK node counts, rejected proposals, role allocations, fallback steps, and terminal status.
 \item \textbf{Use a resource curve.} A method that wins only because it received more computation has not established the intended advantage.
-\item \textbf{Attempt counterexample construction.} In addition to random benchmarks, design adversarial instances specifically meant to exploit the proposed mechanism's overhead.
+\item \textbf{Attempt counterexample construction.} In addition to random benchmarks, design adversarial instances specifically meant to exploit the proposed mechanism&#x27;s overhead.
 \item \textbf{Publish negative results.} A clean refutation is scientific progress.
 \end{enumerate}
 
@@ -2624,7 +2624,7 @@ For every conjecture:
 \section{Lab E: Moderate reflection optimum}
 \textbf{Ablation.} Implement at least three reflection budgets: none, moderate, and high. If using the Level terminology, implement the declared self-description schemas explicitly and charge their construction/checking cost rather than treating a level label as free metadata.
 
-\textbf{Refutation target.} Refute a benchmark-specific ``middle is best'' claim under the preregistered decision rule by establishing monotone improvement with more reflection, monotone degradation, or equivalence within the declared practical margin. To attack the stronger slogan ``Level 2 is universally optimal,'' a single well-specified architecture and benchmark in which another declared level strictly wins is enough.
+\textbf{Refutation target.} Refute a benchmark-specific ``middle is best&#x27;&#x27; claim under the preregistered decision rule by establishing monotone improvement with more reflection, monotone degradation, or equivalence within the declared practical margin. To attack the stronger slogan ``Level 2 is universally optimal,&#x27;&#x27; a single well-specified architecture and benchmark in which another declared level strictly wins is enough.
 
 
 
@@ -2654,7 +2654,7 @@ There are two very different standards:
 \item A \textbf{mathematical universal claim} can be refuted by one valid counterexample satisfying its hypotheses.
 \item An \textbf{empirical benchmark claim} is refuted according to its preregistered finite decision rule.
 \end{enumerate}
-Do not pretend that a failed experiment disproves an existential mathematical statement over all possible problem families. Instead, write benchmark-level hypotheses strongly enough that the data are allowed to say ``no.''
+Do not pretend that a failed experiment disproves an existential mathematical statement over all possible problem families. Instead, write benchmark-level hypotheses strongly enough that the data are allowed to say ``no.&#x27;&#x27;
 
 \section{Minimal experiment pseudocode}
 \begin{lstlisting}[style=pseudo,caption={Paired ablation harness for any Lab conjecture}]
@@ -2671,11 +2671,11 @@ function RUN_ABLATION(benchmark, system_A, system_B, budgets, seeds):
                 assert trace_A.problem_environment == trace_B.problem_environment
 
                 results.append({
-                    "problem": problem.id,
-                    "seed": seed,
-                    "budget": budget,
-                    "A": summarize(trace_A),
-                    "B": summarize(trace_B)
+                    &quot;problem&quot;: problem.id,
+                    &quot;seed&quot;: seed,
+                    &quot;budget&quot;: budget,
+                    &quot;A&quot;: summarize(trace_A),
+                    &quot;B&quot;: summarize(trace_B)
                 })
 
     return paired_analysis(results, preregistered_primary_metric)
@@ -2696,7 +2696,7 @@ The architecture can now be remembered in nine sentences.
 \item A deductive move changes a proof-search state; imagination recursively explores such moves, while planning and the compass decide which imagined route deserves real computation.
 \item Formal self-description may improve control, but it is a separate axis from imagination and may never redefine the verifier.
 \item AMLD is a general architecture whose applications may include mathematical settlement, software and protocol verification, engineering safety, formalized scientific reasoning, and many other certificate-bearing domains; authentication and passwords are only one worked special case showing how domain-specific information and external controls can bound search.
-\item The verifier is the fixed gate between ``this might work'' and ``this is now an accepted formal conclusion in the declared environment.''
+\item The verifier is the fixed gate between ``this might work&#x27;&#x27; and ``this is now an accepted formal conclusion in the declared environment.&#x27;&#x27;
 \end{enumerate}
 
 \backmatter
@@ -2706,43 +2706,43 @@ The architecture can now be remembered in nine sentences.
 
 \bibitem{Tegmark1998}
 Max Tegmark,
-``Is `the theory of everything' merely the ultimate ensemble theory?,''
+``Is `the theory of everything&#x27; merely the ultimate ensemble theory?,&#x27;&#x27;
 \emph{Annals of Physics} 270 (1998), 1--51.
 ArXiv: \href{https://arxiv.org/abs/gr-qc/9704009}{https://arxiv.org/abs/gr-qc/9704009}.\\
 DOI: \href{https://doi.org/10.1006/aphy.1998.5855}{https://doi.org/10.1006/aphy.1998.5855}.
 
 \bibitem{Shannon1950}
 Claude E. Shannon,
-``Programming a Computer for Playing Chess,''
+``Programming a Computer for Playing Chess,&#x27;&#x27;
 \emph{The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science}, Series 7, 41(314) (1950), 256--275.
 DOI: \href{https://doi.org/10.1080/14786445008521796}{https://doi.org/10.1080/14786445008521796}.\\
 Computer History Museum copy: \href{https://www.computerhistory.org/chess/doc-431614f453dde/}{https://www.computerhistory.org/chess/doc-431614f453dde/}.
 
 \bibitem{Metamath2p2e4}
 Metamath Proof Explorer,
-Theorem \texttt{2p2e4}, ``Two plus two equals four.''
+Theorem \texttt{2p2e4}, ``Two plus two equals four.&#x27;&#x27;
 \href{https://us.metamath.org/mpeuni/2p2e4.html}{https://us.metamath.org/mpeuni/2p2e4.html}.\\
 Metamath Proof Explorer home page:
 \href{https://us.metamath.org/mpeuni/mmset.html}{https://us.metamath.org/mpeuni/mmset.html}.
 
 \bibitem{TPTPQuick}
 Geoff Sutcliffe and the TPTP project,
-``TPTP and TSTP Quick Guide.''
+``TPTP and TSTP Quick Guide.&#x27;&#x27;
 \href{https://tptp.org/UserDocs/QuickGuide/}{https://tptp.org/UserDocs/QuickGuide/}.
 
 \bibitem{TPTPLanguage}
 TPTP project,
-``The TPTP Language'' and SZS status documentation.
+``The TPTP Language&#x27;&#x27; and SZS status documentation.
 \href{https://tptp.org/UserDocs/TPTPLanguage/TPTPLanguage.shtml}{https://tptp.org/UserDocs/TPTPLanguage/TPTPLanguage.shtml}.
 
 \bibitem{Wisniewski2014}
 Max Wisniewski,
-\emph{Agent-based Blackboard Architecture for a Higher-Order Theorem Prover}, Master's thesis, Freie Universit\"at Berlin, 2014.
+\emph{Agent-based Blackboard Architecture for a Higher-Order Theorem Prover}, Master&#x27;s thesis, Freie Universit\&quot;at Berlin, 2014.
 Public PDF: \href{https://www.mi.fu-berlin.de/inf/groups/ag-ki/Theses/Completed-theses/Master_Diploma-theses/2014/Wisniewski/Master-Wisniewski1.pdf}{live PDF}.
 
 \bibitem{ENIGMA2017}
 Jan Jakub\r{u}v and Josef Urban,
-``ENIGMA: Efficient Learning-based Inference Guiding Machine,'' 2017.
+``ENIGMA: Efficient Learning-based Inference Guiding Machine,&#x27;&#x27; 2017.
 ArXiv: \href{https://arxiv.org/abs/1701.06532}{https://arxiv.org/abs/1701.06532}.
 
 \bibitem{TennesonALD2026}
@@ -2751,7 +2751,7 @@ Brian Tenneson,
 Snapshot repository: \href{https://github.com/btenneson/Automatic-Logical-Deciding-Snapshot-August-2-2026-}{https://github.com/btenneson/Automatic-Logical-Deciding-Snapshot-August-2-2026-/}.\ \href{https://btenneson.github.io/pub/papers/ald_certificate_halting_shared_lemma_pools/}{Live article}.
 \bibitem{TennesonDepths2026}
 Brian Tenneson,
-\emph{Depths of a Simulation \& Formalized Self-Awareness}, merged edition, July 2026. Author manuscript. Public repository landing page: \href{https://github.com/btenneson/Depths-of-a-Simulation}{https://github.com/btenneson/Depths-of-a-Simulation}.
+\emph{Depths of a Simulation \&amp; Formalized Self-Awareness}, merged edition, July 2026. Author manuscript. Public repository landing page: \href{https://github.com/btenneson/Depths-of-a-Simulation}{https://github.com/btenneson/Depths-of-a-Simulation}.
 
 
 
@@ -2768,12 +2768,12 @@ DOI: \href{https://doi.org/10.6028/NIST.SP.800-63B-4}{https://doi.org/10.6028/NI
 
 \bibitem{OWASPAuth}
 OWASP Cheat Sheet Series,
-``Authentication Cheat Sheet.''
+``Authentication Cheat Sheet.&#x27;&#x27;
 Live guide: \href{https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html}{OWASP Authentication Cheat Sheet}.
 
 \bibitem{OWASPPasswordStorage}
 OWASP Cheat Sheet Series,
-``Password Storage Cheat Sheet.''
+``Password Storage Cheat Sheet.&#x27;&#x27;
 Live guide: \href{https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html}{OWASP Password Storage Cheat Sheet}.
 
 
@@ -2805,7 +2805,7 @@ DOI: \href{https://doi.org/10.1007/978-1-4612-0615-6}{https://doi.org/10.1007/97
 
 \bibitem{SEPProvability}
 Rineke Verbrugge,
-``Provability Logic,'' \emph{The Stanford Encyclopedia of Philosophy}, substantive revision 2024.
+``Provability Logic,&#x27;&#x27; \emph{The Stanford Encyclopedia of Philosophy}, substantive revision 2024.
 Live entry: \href{https://plato.stanford.edu/entries/logic-provability/}{https://plato.stanford.edu/entries/logic-provability/}.
 
 \end{thebibliography}
@@ -2813,6 +2813,7 @@ Live entry: \href{https://plato.stanford.edu/entries/logic-provability/}{https:/
 \chapter*{Editorial provenance note}
 \markboth{Editorial provenance note}{Editorial provenance note}
 \addcontentsline{toc}{chapter}{Editorial provenance note}
-The AMLD roles, shared BANK, provenance emphasis, FUTUREBANK, compass/control architecture, verifier separation, and formalized self-description program are developed from Brian Tenneson's prior manuscripts and research discussions. Versions 1.01--1.03 introduced and progressively qualified the compactness-based nonstandard discussion. Version 1.04 performs a stabilization audit of the entire nonstandard-analysis chapter: it makes the arithmetic elementary-extension framework primary, quarantines literal internal/hyperfinite language to a separately identified full-NSA framework, replaces process-like claims about an externally observable completed search with a bounded truth condition, proves model-and-cutoff invariance on standard targets, qualifies standard-part language, adds Goldblatt as a dedicated NSA reference, and supplies solution sketches for the new NSA exercises. Version 1.05 makes the framework separation syntactic as well as verbal: the compactness-built arithmetic extension is denoted $M$, the star notation ${}^*\N$ is reserved for an optional full NSA enlargement, and the bounded condition/classifier are written $B_H^M$ and $D_H^M$. This removes the last systematic ambiguity between model-theoretic nonstandard arithmetic and full internal/hyperfinite NSA. Version 1.06 makes explicit the strongest hidden hypothesis: the reverse implication from a nonstandard proof witness to an ordinary proof depends on $\N\preccurlyeq M$, not merely $M\models\mathrm{PA}$. A G\"odel-II counterexample shows why arbitrary nonstandard PA models are insufficient, and the text now states that the full elementary diagram is a non-effective semantic resource rather than a computational recipe. Version 1.07 makes explicit that the compactness-built extension satisfies $M\models\operatorname{Th}(\N)$, not merely PA, and repairs the last dropped ambient-model superscript in the bounded-condition notation. Version 1.08 defines the elementary-extension notation at first use, makes the ambient membership $H\in M$ explicit in the trichotomy theorem, and spells out the initial-segment fact used in the G\"odel-II counterexample. Version 1.09 is the solution-sketch fixed-point pass: it removes the last residual ${}^*\N$ notation from the arithmetic-only answer to Exercise 17.19(a), replacing it by the ambient elementary extension $M$. The chapter's fixed correctness claims are now stated entirely in terms of standard PA syntax, elementary extensions, unlimited bounds, and metatheoretic classification; no theorem depends on treating a nonstandard bound as an executable finite resource. The book was substantially reorganized, expanded, formalized, technically audited, and edited with AI assistance across the v1.0--v1.09 development. Version 1.49 is the first post-NSA stable-release audit: Chapter~17 and its NSA solution sketches are held fixed, while the remaining text is checked for mathematical, architectural, statistical, notation, pseudocode, cross-reference, citation, and presentation defects. Version 1.89 is the second stable audit, resolving remaining global notation collisions, defining the full AMLD state space explicitly, sharpening the finite-attempt authentication model, aligning the illustrative pseudocode with the mathematical interfaces, and tightening empirical-refutation language. Version 2.29 repairs the remaining role/status conflation in the worked PA run and corrects a residual quotation defect, while continuing to hold the nonstandard-analysis material fixed. Version 2.69 repairs the executable interface contract by making proposal claims and scopes explicit checker inputs, binding accepted receipts to those checked fields, adding the FUTUREBANK node identifier used by the pseudocode, and requiring fallback to return the same typed proposal object as every other search path. Version 3.09 removes two residual overstatements: it distinguishes environment-admitted seed assumptions from verifier-gated derived deposits, states backfill as a sufficient rather than necessary promotion condition, and sharpens the benchmark-refutation testing language. Version 3.49 distinguishes the authentication chapter's one-sided unauthorized-acceptance safety property from full extensional implementation/specification conformance, preventing a rejecting-all implementation from being described as fully conformant. Version 3.89 resolves a FUTUREBANK representation mismatch: transition scores and generating actions are now attached to single-parent history nodes in the core pseudocode, while DAG-style computation sharing is deferred to the separately proved safe-quotient layer. Version 4.29 repairs FUTUREBANK initialization and root handling: the full AMLD loop now seeds an explicit root history node from the initial BANK/proof state, and first-order transition scoring excludes that parentless root. Version 4.69 completes the pseudocode identity and budgeting contract: BANK records and proposals receive stable IDs, newly imagined history nodes receive their ID/parent/action/role/depth metadata explicitly, and IMAGINE now visibly enforces both depth and branch limits rather than referring to an unconsumed abstract budget. Version 5.09 repairs provenance identity across namespaces: derived BANK records now retain their source proposal ID, FUTUREBANK-materialized proposals retain their source node ID, rejected-proposal invariants test that actual link, and accepted promotion is recorded against the exact source future node. Version 5.49 fixes the remaining record-identity ambiguity by separating immutable BANK ledger records from formula-level retrieval deduplication, so repeated proofs can share lookup structure without erasing accepted receipts or provenance. Version 5.89 repairs the FUTUREBANK promotion invariant: accepted BANK records now retain the source FUTUREBANK node ID, SELECT explicitly marks and links attempted future nodes, and the executable test follows that provenance chain instead of comparing unlike FutureNode and BankRecord objects. Version 6.29 removes remaining cross-chapter notation collisions in the authentication example, aligns the worked PA run with the nonempty root-history definition of FUTUREBANK, and makes the seed exercise's two-deposit/three-state request internally consistent. Version 6.30 is a document fixed-point pass: it adds the author credentials, contact information, copyright notice, explicit page-number footer, and running-head apparatus; audits citation keys against bibliography entries; verifies the principal live reference targets; makes the previously uncited program-context and Keisler references explicit in the text; and rechecks LaTeX compilation, cross-references, bibliography resolution, and rendered-page layout until a subsequent audit pass produces no further source changes. Version 6.40 adds a plain-language elementary description to the title page so that the core distinction between imaginative search and verified mathematical acceptance is visible before any technical terminology is assumed. Version 6.80 expands that title-page description to a longer elementary blurb and adds a separate elementary foreword designed to give a non-specialist reader a two-to-three-page conceptual bridge into the BANK, FUTUREBANK, four settlement roles, verifier boundary, UNKNOWN output, COMPASS-guided search, provenance, and formalized self-description before the technical foreword begins. Because the scope and prose have changed considerably from earlier preview drafts, attribution percentages stated in those earlier drafts should not be assumed to apply unchanged to this edition.
+The AMLD roles, shared BANK, provenance emphasis, FUTUREBANK, compass/control architecture, verifier separation, and formalized self-description program are developed from Brian Tenneson&#x27;s prior manuscripts and research discussions. Versions 1.01--1.03 introduced and progressively qualified the compactness-based nonstandard discussion. Version 1.04 performs a stabilization audit of the entire nonstandard-analysis chapter: it makes the arithmetic elementary-extension framework primary, quarantines literal internal/hyperfinite language to a separately identified full-NSA framework, replaces process-like claims about an externally observable completed search with a bounded truth condition, proves model-and-cutoff invariance on standard targets, qualifies standard-part language, adds Goldblatt as a dedicated NSA reference, and supplies solution sketches for the new NSA exercises. Version 1.05 makes the framework separation syntactic as well as verbal: the compactness-built arithmetic extension is denoted $M$, the star notation ${}^*\N$ is reserved for an optional full NSA enlargement, and the bounded condition/classifier are written $B_H^M$ and $D_H^M$. This removes the last systematic ambiguity between model-theoretic nonstandard arithmetic and full internal/hyperfinite NSA. Version 1.06 makes explicit the strongest hidden hypothesis: the reverse implication from a nonstandard proof witness to an ordinary proof depends on $\N\preccurlyeq M$, not merely $M\models\mathrm{PA}$. A G\&quot;odel-II counterexample shows why arbitrary nonstandard PA models are insufficient, and the text now states that the full elementary diagram is a non-effective semantic resource rather than a computational recipe. Version 1.07 makes explicit that the compactness-built extension satisfies $M\models\operatorname{Th}(\N)$, not merely PA, and repairs the last dropped ambient-model superscript in the bounded-condition notation. Version 1.08 defines the elementary-extension notation at first use, makes the ambient membership $H\in M$ explicit in the trichotomy theorem, and spells out the initial-segment fact used in the G\&quot;odel-II counterexample. Version 1.09 is the solution-sketch fixed-point pass: it removes the last residual ${}^*\N$ notation from the arithmetic-only answer to Exercise 17.19(a), replacing it by the ambient elementary extension $M$. The chapter&#x27;s fixed correctness claims are now stated entirely in terms of standard PA syntax, elementary extensions, unlimited bounds, and metatheoretic classification; no theorem depends on treating a nonstandard bound as an executable finite resource. The book was substantially reorganized, expanded, formalized, technically audited, and edited with AI assistance across the v1.0--v1.09 development. Version 1.49 is the first post-NSA stable-release audit: Chapter~17 and its NSA solution sketches are held fixed, while the remaining text is checked for mathematical, architectural, statistical, notation, pseudocode, cross-reference, citation, and presentation defects. Version 1.89 is the second stable audit, resolving remaining global notation collisions, defining the full AMLD state space explicitly, sharpening the finite-attempt authentication model, aligning the illustrative pseudocode with the mathematical interfaces, and tightening empirical-refutation language. Version 2.29 repairs the remaining role/status conflation in the worked PA run and corrects a residual quotation defect, while continuing to hold the nonstandard-analysis material fixed. Version 2.69 repairs the executable interface contract by making proposal claims and scopes explicit checker inputs, binding accepted receipts to those checked fields, adding the FUTUREBANK node identifier used by the pseudocode, and requiring fallback to return the same typed proposal object as every other search path. Version 3.09 removes two residual overstatements: it distinguishes environment-admitted seed assumptions from verifier-gated derived deposits, states backfill as a sufficient rather than necessary promotion condition, and sharpens the benchmark-refutation testing language. Version 3.49 distinguishes the authentication chapter&#x27;s one-sided unauthorized-acceptance safety property from full extensional implementation/specification conformance, preventing a rejecting-all implementation from being described as fully conformant. Version 3.89 resolves a FUTUREBANK representation mismatch: transition scores and generating actions are now attached to single-parent history nodes in the core pseudocode, while DAG-style computation sharing is deferred to the separately proved safe-quotient layer. Version 4.29 repairs FUTUREBANK initialization and root handling: the full AMLD loop now seeds an explicit root history node from the initial BANK/proof state, and first-order transition scoring excludes that parentless root. Version 4.69 completes the pseudocode identity and budgeting contract: BANK records and proposals receive stable IDs, newly imagined history nodes receive their ID/parent/action/role/depth metadata explicitly, and IMAGINE now visibly enforces both depth and branch limits rather than referring to an unconsumed abstract budget. Version 5.09 repairs provenance identity across namespaces: derived BANK records now retain their source proposal ID, FUTUREBANK-materialized proposals retain their source node ID, rejected-proposal invariants test that actual link, and accepted promotion is recorded against the exact source future node. Version 5.49 fixes the remaining record-identity ambiguity by separating immutable BANK ledger records from formula-level retrieval deduplication, so repeated proofs can share lookup structure without erasing accepted receipts or provenance. Version 5.89 repairs the FUTUREBANK promotion invariant: accepted BANK records now retain the source FUTUREBANK node ID, SELECT explicitly marks and links attempted future nodes, and the executable test follows that provenance chain instead of comparing unlike FutureNode and BankRecord objects. Version 6.29 removes remaining cross-chapter notation collisions in the authentication example, aligns the worked PA run with the nonempty root-history definition of FUTUREBANK, and makes the seed exercise&#x27;s two-deposit/three-state request internally consistent. Version 6.30 is a document fixed-point pass: it adds the author credentials, contact information, copyright notice, explicit page-number footer, and running-head apparatus; audits citation keys against bibliography entries; verifies the principal live reference targets; makes the previously uncited program-context and Keisler references explicit in the text; and rechecks LaTeX compilation, cross-references, bibliography resolution, and rendered-page layout until a subsequent audit pass produces no further source changes. Version 6.40 adds a plain-language elementary description to the title page so that the core distinction between imaginative search and verified mathematical acceptance is visible before any technical terminology is assumed. Version 6.80 expands that title-page description to a longer elementary blurb and adds a separate elementary foreword designed to give a non-specialist reader a two-to-three-page conceptual bridge into the BANK, FUTUREBANK, four settlement roles, verifier boundary, UNKNOWN output, COMPASS-guided search, provenance, and formalized self-description before the technical foreword begins. Because the scope and prose have changed considerably from earlier preview drafts, attribution percentages stated in those earlier drafts should not be assumed to apply unchanged to this edition.
 
 \end{document}
+</pre></body></html>
