@@ -22,6 +22,7 @@ EXCLUDED = {
 }
 
 MANUAL_OVERRIDES = {
+    "papers/automated_logical_deciders_brochure/": "program stop ≠ search exhaustion ≠ logical settlement.",
     "papers/ald_implementation_policies/": "The immediate engineering goal is to implement an Automatic Logic Decider (ALD) that receives a formal environment A and a conjecture C, runs distinct Prover, Refuter, and Independence searches over a shared verifier-certified mathematical memory, and returns a settlement only when it possesses an appropriate certificate.",
     "papers/thinking_ahead_halo_34/": "The point of the experiment is not: \"Can software replay a proof it was handed?\" The point is: \"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\"",
     "pub.experimental/Halo_34_Experiment_Guide_Publish.pdf": "The point of the experiment is not: \"Can software replay a proof it was handed?\" The point is: \"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\"",
