@@ -35,9 +35,11 @@ spec.loader.exec_module(v2)
 # Overall editorial order, strongest first. Keep this private to the builder:
 # the generated site deliberately does not expose rank numbers or scores.
 # The experimental BRAINSTORMING note is intentionally first while it is the
-# active working item; this still leaves it visibly labeled Experimental.
+# active working item. The existing creativity treatise is the guaranteed
+# fallback at #1 until that experimental note has been imported.
 RANKED_HREFS = (
     BRAINSTORMING_HREF,
+    "papers/data_atp_creativity_treatise_v0_1/",
     "papers/what_checks_the_proof_v6_80/",
     "papers/verified_settlement_search_v1_4/",
     "papers/shortest_settlement_optimal_control_v1_0/",
@@ -51,7 +53,6 @@ RANKED_HREFS = (
     "papers/depth_density_objective_atp_measurement/",
     "papers/conjecture_settling_ii/",
     "papers/automatic_logic_deciders_framework/",
-    "papers/data_atp_creativity_treatise_v0_1/",
     "papers/data_2_0_1_proof_horizon_architecture/",
     "papers/hilbert_space_filling_curve_theorem_search/",
     "papers/multi_dose_concentration_derivation_v6_1/",
