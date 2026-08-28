@@ -5,12 +5,14 @@ The ranking is intentionally silent on the public site: no scores, rank numbers,
 or badges are emitted. The order itself is the only signal. Search, A-Z, and
 subject sorting remain available to visitors.
 
-Core-paper and ADS extraction stays in build_library_homepage_v2.py. This layer
-also indexes the deliberately less-formal pub.experimental wing directly from
-its repository contents.
+Core-paper and ADS extraction stays in build_library_homepage_v2.py. Files kept
+under pub.experimental are indexed into the same public catalogue without being
+relocated. Exact binary copies of already-catalogued works are absorbed into the
+existing card instead of appearing as duplicate publications.
 """
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import re
@@ -92,12 +94,18 @@ def experimental_title(path: Path) -> str:
     return stem or path.name
 
 
+def experimental_path_key(path: Path) -> tuple:
+    """Prefer a clean filename to a browser/download-style '(1)' copy."""
+    copied = bool(re.search(r" \(\d+\)$", path.stem))
+    return (copied, path.as_posix().casefold())
+
+
 def extract_experimental() -> list[dict]:
     """Index actual files in pub.experimental without imposing authorship metadata."""
     if not EXPERIMENTAL_DIR.exists():
         return []
     items: list[dict] = []
-    for path in sorted(EXPERIMENTAL_DIR.rglob("*"), key=lambda p: p.as_posix().casefold()):
+    for path in sorted(EXPERIMENTAL_DIR.rglob("*"), key=experimental_path_key):
         if not path.is_file():
             continue
         rel_inside = path.relative_to(EXPERIMENTAL_DIR)
@@ -110,18 +118,68 @@ def extract_experimental() -> list[dict]:
         href = EXPERIMENTAL_GITHUB + encoded
         ext = path.suffix.lower().lstrip(".") or "file"
         title = experimental_title(path)
+        category = v2.category_for(title, rel)
         items.append({
             "title": title,
             "kind": "Experimental",
-            "category": "Experimental research & working notes",
+            "category": category,
             "tags": ["experimental", ext],
             "href": href,
             "pdf": (EXPERIMENTAL_RAW + encoded) if ext == "pdf" else "",
             "source": href if ext in {"tex", "md", "txt", "py"} else "",
             "archive_path": rel,
-            "search": " ".join([title, "Experimental pub.experimental working note", rel, ext]),
+            "search": " ".join([title, category, "experimental pub.experimental", rel, ext]),
         })
     return items
+
+
+def digest_for(item: dict) -> str | None:
+    """Return the exact-content digest for a repository-local archived file."""
+    rel = str(item.get("archive_path") or "").strip()
+    if not rel:
+        return None
+    path = ROOT / rel
+    if not path.is_file():
+        return None
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def absorb_experimental(base_items: list[dict], experimental_items: list[dict]) -> list[dict]:
+    """Merge experimental storage copies into one public publication catalogue.
+
+    Existing core/ADS cards are never collapsed against one another. Only a
+    pub.experimental item is absorbed when its bytes exactly match an item
+    already in the catalogue. Experimental-only material remains a normal card.
+    """
+    out = list(base_items)
+    by_digest: dict[str, dict] = {}
+    for item in out:
+        digest = digest_for(item)
+        if digest and digest not in by_digest:
+            by_digest[digest] = item
+
+    for item in experimental_items:
+        digest = digest_for(item)
+        canonical = by_digest.get(digest) if digest else None
+        if canonical is not None:
+            rel = str(item.get("archive_path") or "")
+            paths = canonical.setdefault("experimental_paths", [])
+            if rel and rel not in paths:
+                paths.append(rel)
+            canonical["search"] = " ".join(
+                [str(canonical.get("search") or ""), "pub.experimental", rel]
+            ).strip()
+            continue
+
+        out.append(item)
+        if digest:
+            by_digest[digest] = item
+
+    return out
 
 
 def order_key(item: dict) -> tuple:
@@ -139,7 +197,10 @@ def order_key(item: dict) -> tuple:
 
 
 def main() -> None:
-    items = v2.extract_core() + extract_experimental() + v2.extract_ads()
+    # pub.experimental is a storage namespace inside one catalogue, not a
+    # second public library. Preserve its files; absorb exact duplicates.
+    base_items = v2.extract_core() + v2.extract_ads()
+    items = absorb_experimental(base_items, extract_experimental())
     items.sort(key=order_key)
 
     payload = {"schema_version": 1, "count": len(items), "items": items}
@@ -154,29 +215,27 @@ def main() -> None:
         raise RuntimeError("Expected default-sort code was not found in v2 output")
     page = page.replace(old, new, 1)
 
-    # Preserve the guided-reading wing and expose the experimental wing.
+    # Keep guided reading navigation. Experimental storage is searchable from
+    # the main catalogue and therefore does not need a competing wing link.
     nav = '<nav class="toplinks">'
-    links = (
-        '<a href="AMLD_Reading_Wing/">AMLD guided reading wing</a>'
-        '<a href="https://github.com/btenneson/pub/tree/main/pub.experimental">Experimental wing</a>'
-    )
+    links = '<a href="AMLD_Reading_Wing/">AMLD guided reading wing</a>'
     if nav not in page:
         raise RuntimeError("Homepage navigation block not found")
     page = page.replace(nav, nav + links, 1)
 
     page = page.replace(
         "A searchable index of the core research-paper library and the Applied Data Science wing.",
-        "A searchable index of the core research-paper library, the pub.experimental working wing, and the Applied Data Science wing.",
+        "A searchable index of the publication library and Applied Data Science material. Files stored under pub.experimental are included here without being relocated.",
         1,
     )
     page = page.replace(
         "Index generated from <code>docs/papers</code> and <code>docs/ADS/manifest.json</code>.",
-        "Index generated from <code>docs/papers</code>, <code>pub.experimental</code>, and <code>docs/ADS/manifest.json</code>.",
+        "Index generated from <code>docs/papers</code>, <code>pub.experimental</code>, and <code>docs/ADS/manifest.json</code>; exact storage duplicates are shown once.",
         1,
     )
 
     v2.OUT_HTML.write_text(page, encoding="utf-8")
-    print(f"wrote {len(items)} searchable items in curated overall order")
+    print(f"wrote {len(items)} searchable items in one integrated catalogue")
 
 
 if __name__ == "__main__":
