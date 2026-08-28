@@ -48,7 +48,6 @@ jobs:
           def clean_raw(t):
               t=t.replace('\ufeff',' ').replace('\u00ad','')
               t=t.replace('ﬁ','fi').replace('ﬂ','fl')
-              # Repair ordinary end-of-line word hyphenation from PDF extraction.
               t=re.sub(r'([A-Za-z])-[ \t]*\n[ \t]*([a-z])',r'\1\2',t)
               return t
 
@@ -93,7 +92,6 @@ jobs:
           }
 
           def split_sentences(p):
-              # Most source prose has conventional sentence endings; keep abbreviations conservative.
               return [x.strip(' \t\n“”\"') for x in re.split(r'(?<=[.!?])\s+(?=[A-Z“\"(])',p) if x.strip()]
 
           def usable(s):
@@ -105,7 +103,6 @@ jobs:
               if sum(c.isalpha() for c in s)<max(45,int(len(s)*0.60)): return False
               if s.count('|')>1 or s.count('=')>3 or sum(c in '{}[]' for c in s)>8: return False
               if re.search(r'\.{3,}|_{2,}|\\begin|\\end|\$\$|\bfigure\s+\d|\btable\s+\d',low): return False
-              # Avoid sentences contaminated by page/header material.
               if re.search(r'\b(?:version|august|july|june|may|april|march|february|january)\s+\d{1,2}\b',low): return False
               return True
 
@@ -119,7 +116,6 @@ jobs:
                   if pl in {'abstract','executive summary','summary','research objective','core proposal','purpose','overview','introduction'}:
                       section_boost={'abstract':18,'executive summary':17,'summary':14,'research objective':16,'core proposal':16,'purpose':14,'overview':12,'introduction':10}[pl]
                       continue
-                  # Let a heading boost decay over the next several paragraphs.
                   local_boost=max(0,section_boost)
                   if section_boost: section_boost=max(0,section_boost-3)
                   for si,s in enumerate(split_sentences(p)):
@@ -139,7 +135,6 @@ jobs:
               if candidates:
                   candidates.sort(reverse=True)
                   return candidates[0][-1]
-              # Conservative fallback: first clean prose paragraph trimmed to one sentence-length block.
               for p in ps:
                   if 80<=len(p)<=320 and usable(p): return p
               for p in ps:
@@ -160,7 +155,7 @@ jobs:
           for item in idx['items']:
               href=item.get('href','')
               if href in excluded or item.get('quote'): continue
-              ap=unquote(item.get('archive_path') or '')
+              ap=unquote(item.get('archive_path') or item.get('href') or '')
               path=root/ap if ap else Path('/nonexistent')
               text=extract(path)
               q=choose(text,item.get('title',''))
