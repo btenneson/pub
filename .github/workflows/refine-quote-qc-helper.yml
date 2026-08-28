@@ -1,0 +1,59 @@
+name: Refine quotation QC helper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refine-quote-qc-helper.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Tighten extraction cleanup and curated duplicate selections
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/_quote_rollout_temp.py')
+          s=p.read_text(encoding='utf-8')
+
+          old='''EXCLUDED = {\n    "papers/external_theorem_proving_survey_2404_09939v3/",\n    "pub.experimental/Ternary_Logic_and_Logic_with_Independence.pdf",\n}\n'''
+          new=old+'''\nMANUAL_OVERRIDES = {\n    "papers/ald_implementation_policies/": "The immediate engineering goal is to implement an Automatic Logic Decider (ALD) that receives a formal environment A and a conjecture C, runs distinct Prover, Refuter, and Independence searches over a shared verifier-certified mathematical memory, and returns a settlement only when it possesses an appropriate certificate.",\n    "papers/thinking_ahead_halo_34/": "The point of the experiment is not: \\"Can software replay a proof it was handed?\\" The point is: \\"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\\"",\n    "pub.experimental/Halo_34_Experiment_Guide_Publish.pdf": "The point of the experiment is not: \\"Can software replay a proof it was handed?\\" The point is: \\"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\\"",\n    "pub.experimental/Halo_34_Experiment_Guide_Publish_Final.pdf": "The point of the experiment is not: \\"Can software replay a proof it was handed?\\" The point is: \\"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\\"",\n    "pub.experimental/03_what_checks_the_proof_v6_80.pdf": "The machine may be uncertain about what to try next while being exact about what it has already certified.",\n    "pub.experimental/03_what_checks_the_proof_v6_80%20%281%29.pdf": "The machine may be uncertain about what to try next while being exact about what it has already certified.",\n}\n'''
+          if 'MANUAL_OVERRIDES = {' not in s:
+              if old not in s: raise SystemExit('EXCLUDED block marker missing')
+              s=s.replace(old,new,1)
+
+          old_clean='''    text = text.replace("ﬁ", "fi").replace("ﬂ", "fl").replace("\\x15", "-")\n    text = re.sub(r"([A-Za-z])-[ \\t]*\\n[ \\t]*([a-z])", r"\\1\\2", text)\n'''
+          new_clean='''    text = text.replace("ﬁ", "fi").replace("ﬂ", "fl").replace("\\x15", "-")\n    text = re.sub(r"[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]", " ", text)\n    text = re.sub(r"([A-Za-z])-[ \\t]*\\n[ \\t]*([a-z])", r"\\1\\2", text)\n'''
+          if 'r"[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]"' not in s:
+              if old_clean not in s: raise SystemExit('clean_text marker missing')
+              s=s.replace(old_clean,new_clean,1)
+
+          lower_marker='''    if sum(c.isalpha() for c in s) < max(48, int(len(s) * 0.60)):\n        return False\n'''
+          lower_new=lower_marker+'''    first_alpha = next((c for c in s if c.isalpha()), "")\n    if first_alpha and first_alpha.islower():\n        return False\n'''
+          if 'first_alpha = next' not in s:
+              if lower_marker not in s: raise SystemExit('usable lowercase marker missing')
+              s=s.replace(lower_marker,lower_new,1)
+
+          ret_marker='''    if failures:\n        raise SystemExit("NO_CLEAN_QUOTE " + repr(failures))\n    return extra\n'''
+          ret_new='''    if failures:\n        raise SystemExit("NO_CLEAN_QUOTE " + repr(failures))\n    for href, quote in MANUAL_OVERRIDES.items():\n        if href in extra:\n            extra[href]["quote"] = quote\n    return extra\n'''
+          if 'for href, quote in MANUAL_OVERRIDES.items()' not in s:
+              if ret_marker not in s: raise SystemExit('override application marker missing')
+              s=s.replace(ret_marker,ret_new,1)
+
+          p.write_text(s,encoding='utf-8')
+          PY
+          python -m py_compile scripts/_quote_rollout_temp.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/_quote_rollout_temp.py
+          git commit -m 'Refine authored quotation QC selection'
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
