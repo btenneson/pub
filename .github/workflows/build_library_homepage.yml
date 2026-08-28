@@ -89,7 +89,7 @@ jobs:
           git add docs/index.html docs/search-index.json docs/pub.experimental
           if ! git diff --cached --quiet; then
             git commit -m 'Rebuild searchable publication library homepage'
-            git pull --rebase origin main
+            git pull --rebase --autostash origin main
             git push origin HEAD:main
           fi
 
