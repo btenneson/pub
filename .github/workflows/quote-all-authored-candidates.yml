@@ -1,4 +1,5 @@
 name: Build authored quote candidates
+# Trigger revision 1
 
 on:
   push:
@@ -80,11 +81,9 @@ jobs:
           }
 
           def candidate(text):
-              # Normalize page breaks and line wrapping, but keep paragraph boundaries.
               t = text.replace('\f','\n\n')
               t = re.sub(r'(?<!\n)\n(?!\n)', ' ', t)
               t = re.sub(r'\s+', ' ', t)
-              # Split conservatively into prose sentences.
               sents = re.split(r'(?<=[.!?])\s+(?=[A-Z“\"(])', t)
               scored=[]
               for pos,s in enumerate(sents):
@@ -110,12 +109,9 @@ jobs:
                       score += 4
                   if any(x in low for x in ['therefore','thus','however','rather than','not merely','precisely','exactly','in other words','the point is']):
                       score += 2
-                  # Prefer front-matter/abstract insight, but not the very first metadata-heavy sentences.
                   score += max(0, 4 - pos/30)
-                  # Avoid generic organization language.
                   if any(x in low for x in ['section 1','section 2','section 3','organized as follows','the remainder of','in the next section']):
                       score -= 6
-                  # Prefer quotable human prose over citation-heavy sentences.
                   score -= 1.5 * len(re.findall(r'\[[0-9,\- ]+\]', s))
                   scored.append((score, -abs(len(s)-190), s))
               if not scored:
