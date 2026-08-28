@@ -71,19 +71,20 @@ jobs:
           assert all(not str(x.get('pdf') or '').startswith('https://raw.githubusercontent.com/') for x in experimental)
           hrefs=[x['href'] for x in d['items']]
           brain='pub.experimental/BRAINSTORMING-the_creativity_knobs_limits_natures_for_an_ATP.pdf'
+          creativity='papers/data_atp_creativity_treatise_v0_1/'
+          what_checks='papers/what_checks_the_proof_v6_80/'
           if brain in hrefs:
               assert hrefs[0] == brain
-              if 'papers/what_checks_the_proof_v6_80/' in hrefs:
-                  assert hrefs[1] == 'papers/what_checks_the_proof_v6_80/'
-          elif 'papers/what_checks_the_proof_v6_80/' in hrefs:
-              assert hrefs[0] == 'papers/what_checks_the_proof_v6_80/'
-              assert hrefs[1] == 'papers/verified_settlement_search_v1_4/'
-              assert hrefs[2] == 'papers/shortest_settlement_optimal_control_v1_0/'
+              assert hrefs[1] == creativity
+              if what_checks in hrefs:
+                  assert hrefs[2] == what_checks
           else:
-              assert hrefs[0] == 'papers/verified_settlement_search_v1_4/'
-              assert hrefs[1] == 'papers/shortest_settlement_optimal_control_v1_0/'
+              assert hrefs[0] == creativity
+              if what_checks in hrefs:
+                  assert hrefs[1] == what_checks
           print('searchable items:', d['count'])
           print('experimental items:', len(experimental))
+          print('first item:', hrefs[0])
           PY
 
       - name: Commit generated and imported files if changed
