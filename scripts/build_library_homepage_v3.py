@@ -7,12 +7,11 @@ subject sorting remain available to visitors.
 
 Core-paper and ADS extraction stays in build_library_homepage_v2.py. Files kept
 under pub.experimental are indexed into the same public catalogue without being
-relocated. Exact binary copies of already-catalogued works are absorbed into the
-existing card instead of appearing as duplicate publications.
+relocated. Every eligible file remains its own catalogue entry, even when its
+bytes also occur elsewhere in the repository.
 """
 from __future__ import annotations
 
-import hashlib
 import importlib.util
 import json
 import re
@@ -95,13 +94,13 @@ def experimental_title(path: Path) -> str:
 
 
 def experimental_path_key(path: Path) -> tuple:
-    """Prefer a clean filename to a browser/download-style '(1)' copy."""
+    """Prefer a clean filename before browser/download-style '(1)' copies."""
     copied = bool(re.search(r" \(\d+\)$", path.stem))
     return (copied, path.as_posix().casefold())
 
 
 def extract_experimental() -> list[dict]:
-    """Index actual files in pub.experimental without imposing authorship metadata."""
+    """Index every eligible file in pub.experimental as its own catalogue item."""
     if not EXPERIMENTAL_DIR.exists():
         return []
     items: list[dict] = []
@@ -133,55 +132,6 @@ def extract_experimental() -> list[dict]:
     return items
 
 
-def digest_for(item: dict) -> str | None:
-    """Return the exact-content digest for a repository-local archived file."""
-    rel = str(item.get("archive_path") or "").strip()
-    if not rel:
-        return None
-    path = ROOT / rel
-    if not path.is_file():
-        return None
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-def absorb_experimental(base_items: list[dict], experimental_items: list[dict]) -> list[dict]:
-    """Merge experimental storage copies into one public publication catalogue.
-
-    Existing core/ADS cards are never collapsed against one another. Only a
-    pub.experimental item is absorbed when its bytes exactly match an item
-    already in the catalogue. Experimental-only material remains a normal card.
-    """
-    out = list(base_items)
-    by_digest: dict[str, dict] = {}
-    for item in out:
-        digest = digest_for(item)
-        if digest and digest not in by_digest:
-            by_digest[digest] = item
-
-    for item in experimental_items:
-        digest = digest_for(item)
-        canonical = by_digest.get(digest) if digest else None
-        if canonical is not None:
-            rel = str(item.get("archive_path") or "")
-            paths = canonical.setdefault("experimental_paths", [])
-            if rel and rel not in paths:
-                paths.append(rel)
-            canonical["search"] = " ".join(
-                [str(canonical.get("search") or ""), "pub.experimental", rel]
-            ).strip()
-            continue
-
-        out.append(item)
-        if digest:
-            by_digest[digest] = item
-
-    return out
-
-
 def order_key(item: dict) -> tuple:
     href = str(item.get("href") or "")
     if href in RANK:
@@ -197,10 +147,9 @@ def order_key(item: dict) -> tuple:
 
 
 def main() -> None:
-    # pub.experimental is a storage namespace inside one catalogue, not a
-    # second public library. Preserve its files; absorb exact duplicates.
-    base_items = v2.extract_core() + v2.extract_ads()
-    items = absorb_experimental(base_items, extract_experimental())
+    # pub.experimental is a separate storage namespace inside one public
+    # catalogue. Do not relocate or collapse its files: each stays visible.
+    items = v2.extract_core() + extract_experimental() + v2.extract_ads()
     items.sort(key=order_key)
 
     payload = {"schema_version": 1, "count": len(items), "items": items}
@@ -230,7 +179,7 @@ def main() -> None:
     )
     page = page.replace(
         "Index generated from <code>docs/papers</code> and <code>docs/ADS/manifest.json</code>.",
-        "Index generated from <code>docs/papers</code>, <code>pub.experimental</code>, and <code>docs/ADS/manifest.json</code>; exact storage duplicates are shown once.",
+        "Index generated from <code>docs/papers</code>, <code>pub.experimental</code>, and <code>docs/ADS/manifest.json</code>; every eligible experimental file remains separately indexed.",
         1,
     )
 
