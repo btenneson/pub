@@ -1,0 +1,32 @@
+name: Temporary quote QC PDF extract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/quote-qc-pdf-extract-main.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Universal Proof-Horizon passages
+        shell: bash
+        run: |
+          PDF='cs.LO_Logic_in_Computer_Science/The_Universal_Proof-Horizon_Operator_by_Brian_Tenneson.pdf'
+          echo '===== UNIVERSAL PROOF-HORIZON OPENING ====='
+          pdftotext -layout "$PDF" - | sed -n '1,340p'
+          echo '===== UNIVERSAL PROOF-HORIZON KEY PASSAGES ====='
+          pdftotext -layout "$PDF" - | grep -i -B 3 -A 6 -E 'horizon|universal|certificate|verify|settle|halting|nonstandard|standard theorem|proof search' | head -n 600 || true
+      - name: Depths v47 passages
+        shell: bash
+        run: |
+          PDF='cs.LO_Logic_in_Computer_Science/Depths_of_Induction_ML_Guided_Proof_Search_and_Formalized_Self_Awareness_Version_47.pdf'
+          echo '===== DEPTHS V47 OPENING ====='
+          pdftotext -layout "$PDF" - | sed -n '1,400p'
+          echo '===== DEPTHS V47 KEY PASSAGES ====='
+          pdftotext -layout "$PDF" - | grep -i -B 3 -A 6 -E 'self-awareness|self-aware|reflection|level|automated theorem prover|semi-ideal|verification|search|certificate' | head -n 750 || true
