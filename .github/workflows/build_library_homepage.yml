@@ -7,6 +7,7 @@ on:
     paths:
       - 'docs/papers/**'
       - 'docs/ADS/manifest.json'
+      - 'pub.experimental/**'
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
       - '.github/workflows/build_library_homepage.yml'
@@ -47,18 +48,23 @@ jobs:
           assert d['count'] == len(d['items'])
           assert any(x['kind'] == 'Core paper' for x in d['items'])
           assert any(x['kind'] == 'Applied Data Science' for x in d['items'])
+          assert any(x['kind'] == 'Experimental' for x in d['items'])
           # Canonical core readers must expose their archive PDF path.
           missing=[x['title'] for x in d['items'] if x['kind']=='Core paper' and not x.get('archive_path')]
           if missing:
               raise SystemExit('Core readers missing archive PDF metadata: '+repr(missing))
-          # The public default must begin with the silent editorial ranking.
+          # The public default begins with the active BRAINSTORMING note whenever present.
           hrefs=[x['href'] for x in d['items']]
-          if 'papers/what_checks_the_proof_v6_80/' in hrefs:
+          brain='https://github.com/btenneson/pub/blob/main/pub.experimental/BRAINSTORMING-the_creativity_knobs_limits_natures_for_an_ATP.pdf'
+          if brain in hrefs:
+              assert hrefs[0] == brain
+              if 'papers/what_checks_the_proof_v6_80/' in hrefs:
+                  assert hrefs[1] == 'papers/what_checks_the_proof_v6_80/'
+          elif 'papers/what_checks_the_proof_v6_80/' in hrefs:
               assert hrefs[0] == 'papers/what_checks_the_proof_v6_80/'
               assert hrefs[1] == 'papers/verified_settlement_search_v1_4/'
               assert hrefs[2] == 'papers/shortest_settlement_optimal_control_v1_0/'
           else:
-              # Transitional state before the canonical v6.80 reader is committed.
               assert hrefs[0] == 'papers/verified_settlement_search_v1_4/'
               assert hrefs[1] == 'papers/shortest_settlement_optimal_control_v1_0/'
           print('searchable items:', d['count'])
@@ -68,7 +74,7 @@ jobs:
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.email '4189826+github-actions[bot]@users.noreply.github.com'
           git add docs/index.html docs/search-index.json
           if ! git diff --cached --quiet; then
             git commit -m 'Rebuild searchable publication library homepage'
