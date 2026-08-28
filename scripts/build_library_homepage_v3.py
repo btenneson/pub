@@ -126,6 +126,12 @@ FEATURE_QUOTES = {
 }
 
 
+# Additional curated quotations for the authored publication library.
+FEATURE_QUOTES_FILE = HERE / "feature_quotes_full.json"
+if FEATURE_QUOTES_FILE.exists():
+    FEATURE_QUOTES.update(json.loads(FEATURE_QUOTES_FILE.read_text(encoding="utf-8")))
+
+
 def experimental_title(path: Path) -> str:
     if path.name == BRAINSTORMING_NAME:
         return "BRAINSTORMING — the creativity knob(s)/limits/natures for an ATP"
@@ -177,7 +183,10 @@ def extract_experimental() -> list[dict]:
 def add_feature_quotes(items: list[dict]) -> None:
     """Attach curated quotations to matching catalogue records."""
     for item in items:
-        feature = FEATURE_QUOTES.get(str(item.get("href") or ""))
+        href = str(item.get("href") or "")
+        feature = FEATURE_QUOTES.get(href)
+        if feature is None and href.startswith(EXPERIMENTAL_GITHUB):
+            feature = FEATURE_QUOTES.get(href[len(EXPERIMENTAL_GITHUB):])
         if feature:
             item.update(feature)
             item["search"] = " ".join(
