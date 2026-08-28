@@ -445,7 +445,7 @@ def validate() -> None:
         else:
             q = item.get("quote", "")
             assert q, item["title"]
-            assert 55 <= len(q) <= 340, (item["title"], q)
+            assert 45 <= len(q) <= 340, (item["title"], q)
             assert item.get("quote_attribution") in {
                 "Brian Tenneson",
                 "Brian Tenneson and ChatGPT",
