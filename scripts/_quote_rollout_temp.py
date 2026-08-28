@@ -21,6 +21,15 @@ EXCLUDED = {
     "pub.experimental/Ternary_Logic_and_Logic_with_Independence.pdf",
 }
 
+MANUAL_OVERRIDES = {
+    "papers/ald_implementation_policies/": "The immediate engineering goal is to implement an Automatic Logic Decider (ALD) that receives a formal environment A and a conjecture C, runs distinct Prover, Refuter, and Independence searches over a shared verifier-certified mathematical memory, and returns a settlement only when it possesses an appropriate certificate.",
+    "papers/thinking_ahead_halo_34/": "The point of the experiment is not: \"Can software replay a proof it was handed?\" The point is: \"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\"",
+    "pub.experimental/Halo_34_Experiment_Guide_Publish.pdf": "The point of the experiment is not: \"Can software replay a proof it was handed?\" The point is: \"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\"",
+    "pub.experimental/Halo_34_Experiment_Guide_Publish_Final.pdf": "The point of the experiment is not: \"Can software replay a proof it was handed?\" The point is: \"Can a formally constrained search system discover a verifier-acceptable route while the known target proof is withheld?\"",
+    "pub.experimental/03_what_checks_the_proof_v6_80.pdf": "The machine may be uncertain about what to try next while being exact about what it has already certified.",
+    "pub.experimental/03_what_checks_the_proof_v6_80%20%281%29.pdf": "The machine may be uncertain about what to try next while being exact about what it has already certified.",
+}
+
 HEADING_BOOST = {
     "abstract": 24,
     "executive summary": 22,
@@ -155,6 +164,7 @@ def extract(path: Path) -> str:
 def clean_text(text: str) -> str:
     text = text.replace("\ufeff", " ").replace("\u00ad", "")
     text = text.replace("ﬁ", "fi").replace("ﬂ", "fl").replace("\x15", "-")
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", " ", text)
     text = re.sub(r"([A-Za-z])-[ \t]*\n[ \t]*([a-z])", r"\1\2", text)
     return text
 
@@ -252,6 +262,9 @@ def usable(s: str, title: str) -> bool:
     if s.count("=") > 2 or sum(c in "{}[]" for c in s) > 6:
         return False
     if sum(c.isalpha() for c in s) < max(48, int(len(s) * 0.60)):
+        return False
+    first_alpha = next((c for c in s if c.isalpha()), "")
+    if first_alpha and first_alpha.islower():
         return False
     ratio = SequenceMatcher(
         None,
@@ -396,6 +409,9 @@ def build_quotes() -> dict[str, dict[str, str]]:
         }
     if failures:
         raise SystemExit("NO_CLEAN_QUOTE " + repr(failures))
+    for href, quote in MANUAL_OVERRIDES.items():
+        if href in extra:
+            extra[href]["quote"] = quote
     return extra
 
 
