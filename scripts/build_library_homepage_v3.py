@@ -83,8 +83,7 @@ RANKED_HREFS = (
 )
 RANK = {href: i for i, href in enumerate(RANKED_HREFS)}
 
-# Prototype: one short, representative quotation on each of the current top
-# three cards. The manuscript files themselves are not modified. Keeping this
+# Curated short, representative quotations on the current first nine cards. The manuscript files themselves are not modified. Keeping this
 # as catalogue metadata makes it straightforward to extend the same treatment
 # to the rest of the library if the prototype reads well.
 FEATURE_QUOTES = {
@@ -98,6 +97,30 @@ FEATURE_QUOTES = {
     },
     "papers/verified_settlement_search_v1_4/": {
         "quote": "The final sections convert these results into a staged experimental program whose primary endpoint is not prediction accuracy but independently verified settlement of withheld and eventually genuinely difficult conjectures.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/shortest_settlement_optimal_control_v1_0/": {
+        "quote": "Once verification is held fixed, the difficult operational question is not merely whether the machine can eventually reach a certificate. It is which legal move should be made now if the goal is to arrive at a certificate in the least remaining cost.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/search_dynamics_abel_v0_4/": {
+        "quote": "Bellman distance says how much expected discovery cost remains; the negative value A* is a coordinate in which an optimal transition advances by exactly the cost spent. With unit transaction cost, optimal expected motion is translation by one.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/proof_compass_theory/": {
+        "quote": "The compass need not delete any mathematical objects. Its weakest use is to reorder the frontier. Its stronger use is to prune branches that are certified irrelevant. Its most useful robust form combines aggressive guidance with a complete fallback search.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/universal_proof_horizon_operator/": {
+        "quote": "Every theorem of a fixed effective theory has an algorithmically recoverable shortest proof. But ‘shortest’ is relative to the fixed presentation and proper cost measure, and ‘recoverable’ means partial computability rather than practical feasibility.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/reflective_compass_control_v0_2/": {
+        "quote": "The verifier remains sovereign: reflective, learned, or federated control may change search order, but it may not manufacture object-level theoremhood.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/depths_of_induction_v47/": {
+        "quote": "ML changes search allocation, not theoremhood or the set of formally legal proofs.",
         "quote_attribution": "Brian Tenneson and ChatGPT",
     },
 }
