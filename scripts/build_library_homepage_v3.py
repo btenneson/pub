@@ -2,20 +2,29 @@
 """Build the publication homepage in a curated overall order.
 
 The ranking is intentionally silent on the public site: no scores, rank numbers,
-or badges are emitted.  The order itself is the only signal.  Search, A-Z, and
+or badges are emitted. The order itself is the only signal. Search, A-Z, and
 subject sorting remain available to visitors.
 
-All extraction/parsing logic stays in build_library_homepage_v2.py so this file
-only adds a stable editorial ordering layer.
+Core-paper and ADS extraction stays in build_library_homepage_v2.py. This layer
+also indexes the deliberately less-formal pub.experimental wing directly from
+its repository contents.
 """
 from __future__ import annotations
 
 import importlib.util
 import json
+import re
 from pathlib import Path
+from urllib.parse import quote, unquote
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent
 V2_PATH = HERE / "build_library_homepage_v2.py"
+EXPERIMENTAL_DIR = ROOT / "pub.experimental"
+EXPERIMENTAL_GITHUB = "https://github.com/btenneson/pub/blob/main/"
+EXPERIMENTAL_RAW = "https://raw.githubusercontent.com/btenneson/pub/main/"
+BRAINSTORMING_NAME = "BRAINSTORMING-the_creativity_knobs_limits_natures_for_an_ATP.pdf"
+BRAINSTORMING_HREF = EXPERIMENTAL_GITHUB + "pub.experimental/" + BRAINSTORMING_NAME
 
 spec = importlib.util.spec_from_file_location("publication_builder_v2", V2_PATH)
 if spec is None or spec.loader is None:
@@ -23,9 +32,12 @@ if spec is None or spec.loader is None:
 v2 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(v2)
 
-# Overall editorial order, strongest first.  Keep this private to the builder:
+# Overall editorial order, strongest first. Keep this private to the builder:
 # the generated site deliberately does not expose rank numbers or scores.
+# The experimental BRAINSTORMING note is intentionally first while it is the
+# active working item; this still leaves it visibly labeled Experimental.
 RANKED_HREFS = (
+    BRAINSTORMING_HREF,
     "papers/what_checks_the_proof_v6_80/",
     "papers/verified_settlement_search_v1_4/",
     "papers/shortest_settlement_optimal_control_v1_0/",
@@ -70,21 +82,63 @@ RANKED_HREFS = (
 RANK = {href: i for i, href in enumerate(RANKED_HREFS)}
 
 
+def experimental_title(path: Path) -> str:
+    if path.name == BRAINSTORMING_NAME:
+        return "BRAINSTORMING — the creativity knob(s)/limits/natures for an ATP"
+    stem = unquote(path.stem)
+    stem = re.sub(r"[_]+", " ", stem)
+    stem = re.sub(r"\s+", " ", stem).strip()
+    return stem or path.name
+
+
+def extract_experimental() -> list[dict]:
+    """Index actual files in pub.experimental without imposing authorship metadata."""
+    if not EXPERIMENTAL_DIR.exists():
+        return []
+    items: list[dict] = []
+    for path in sorted(EXPERIMENTAL_DIR.rglob("*"), key=lambda p: p.as_posix().casefold()):
+        if not path.is_file():
+            continue
+        rel_inside = path.relative_to(EXPERIMENTAL_DIR)
+        if any(part.startswith(".") or part.startswith("_") for part in rel_inside.parts):
+            continue
+        if path.name in {"README.md", "MANIFEST.json"}:
+            continue
+        rel = path.relative_to(ROOT).as_posix()
+        encoded = quote(rel, safe="/")
+        href = EXPERIMENTAL_GITHUB + encoded
+        ext = path.suffix.lower().lstrip(".") or "file"
+        title = experimental_title(path)
+        items.append({
+            "title": title,
+            "kind": "Experimental",
+            "category": "Experimental research & working notes",
+            "tags": ["experimental", ext],
+            "href": href,
+            "pdf": (EXPERIMENTAL_RAW + encoded) if ext == "pdf" else "",
+            "source": href if ext in {"tex", "md", "txt", "py"} else "",
+            "archive_path": rel,
+            "search": " ".join([title, "Experimental pub.experimental working note", rel, ext]),
+        })
+    return items
+
+
 def order_key(item: dict) -> tuple:
     href = str(item.get("href") or "")
     if href in RANK:
         return (0, RANK[href])
     # New unranked material is still deterministic until it is curated.
+    kind_order = {"Core paper": 0, "Experimental": 1, "Applied Data Science": 2}
     return (
         1,
-        0 if item.get("kind") == "Core paper" else 1,
+        kind_order.get(str(item.get("kind") or ""), 9),
         str(item.get("title") or "").casefold(),
         href.casefold(),
     )
 
 
 def main() -> None:
-    items = v2.extract_core() + v2.extract_ads()
+    items = v2.extract_core() + extract_experimental() + v2.extract_ads()
     items.sort(key=order_key)
 
     payload = {"schema_version": 1, "count": len(items), "items": items}
@@ -99,13 +153,26 @@ def main() -> None:
         raise RuntimeError("Expected default-sort code was not found in v2 output")
     page = page.replace(old, new, 1)
 
-    # Preserve the special AMLD guided-reading wing across all future rebuilds.
-    wing_link = '<a href="AMLD_Reading_Wing/">AMLD guided reading wing</a>'
+    # Preserve the guided-reading wing and expose the experimental wing.
     nav = '<nav class="toplinks">'
-    if wing_link not in page:
-        if nav not in page:
-            raise RuntimeError("Homepage navigation block not found")
-        page = page.replace(nav, nav + wing_link, 1)
+    links = (
+        '<a href="AMLD_Reading_Wing/">AMLD guided reading wing</a>'
+        '<a href="https://github.com/btenneson/pub/tree/main/pub.experimental">Experimental wing</a>'
+    )
+    if nav not in page:
+        raise RuntimeError("Homepage navigation block not found")
+    page = page.replace(nav, nav + links, 1)
+
+    page = page.replace(
+        "A searchable index of the core research-paper library and the Applied Data Science wing.",
+        "A searchable index of the core research-paper library, the pub.experimental working wing, and the Applied Data Science wing.",
+        1,
+    )
+    page = page.replace(
+        "Index generated from <code>docs/papers</code> and <code>docs/ADS/manifest.json</code>.",
+        "Index generated from <code>docs/papers</code>, <code>pub.experimental</code>, and <code>docs/ADS/manifest.json</code>.",
+        1,
+    )
 
     v2.OUT_HTML.write_text(page, encoding="utf-8")
     print(f"wrote {len(items)} searchable items in curated overall order")
