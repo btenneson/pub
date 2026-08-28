@@ -1,0 +1,32 @@
+name: Quote QC PDF extract
+
+on:
+  push:
+    branches: [quote-qc-pdf-extract]
+    paths:
+      - '.github/workflows/quote-qc-pdf-extract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract Universal Proof-Horizon text
+        shell: bash
+        run: |
+          PDF='cs.LO_Logic_in_Computer_Science/The_Universal_Proof-Horizon_Operator_by_Brian_Tenneson.pdf'
+          echo '===== UNIVERSAL PROOF-HORIZON: OPENING ====='
+          pdftotext -layout "$PDF" - | sed -n '1,320p'
+          echo '===== UNIVERSAL PROOF-HORIZON: KEY PASSAGES ====='
+          pdftotext -layout "$PDF" - | grep -i -B 3 -A 5 -E 'horizon|universal|certificate|verify|settle|halting|nonstandard|standard theorem' | head -n 500 || true
+      - name: Extract Depths v47 text
+        shell: bash
+        run: |
+          PDF='cs.LO_Logic_in_Computer_Science/Depths_of_Induction_ML_Guided_Proof_Search_and_Formalized_Self_Awareness_Version_47.pdf'
+          echo '===== DEPTHS V47: OPENING ====='
+          pdftotext -layout "$PDF" - | sed -n '1,360p'
+          echo '===== DEPTHS V47: KEY PASSAGES ====='
+          pdftotext -layout "$PDF" - | grep -i -B 3 -A 5 -E 'self-awareness|self-aware|reflection|level|automated theorem prover|semi-ideal|verification|search|certificate' | head -n 650 || true
