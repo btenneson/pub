@@ -1,0 +1,170 @@
+name: Build authored quote candidates
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/quote-all-authored-candidates.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  candidates:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Install PDF text utility
+        run: sudo apt-get update -qq && sudo apt-get install -y poppler-utils
+      - name: Classify authorship and build candidate quotations
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, re, subprocess
+          from pathlib import Path
+
+          root = Path('.')
+          data = json.loads(Path('docs/search-index.json').read_text(encoding='utf-8'))
+
+          def clean_text(text):
+              text = text.replace('\u00ad','').replace('\ufeff',' ')
+              text = re.sub(r'\r', '\n', text)
+              text = re.sub(r'[ \t]+', ' ', text)
+              text = re.sub(r'\n{3,}', '\n\n', text)
+              return text.strip()
+
+          def extract(path):
+              if not path.exists() or not path.is_file():
+                  return ''
+              if path.suffix.lower() == '.pdf':
+                  try:
+                      p = subprocess.run(['pdftotext','-f','1','-l','10','-layout',str(path),'-'], capture_output=True, text=True, timeout=45)
+                      return clean_text(p.stdout)
+                  except Exception:
+                      return ''
+              try:
+                  return clean_text(path.read_text(encoding='utf-8', errors='ignore'))
+              except Exception:
+                  return ''
+
+          def authored_by_brian(text, path):
+              head = text[:10000].casefold()
+              name_patterns = [
+                  r'\bbrian\s+tenneson\b',
+                  r'\btenneson\s*,\s*brian\b',
+                  r'\bb\.?\s+tenneson\b',
+              ]
+              if any(re.search(p, head, re.I) for p in name_patterns):
+                  return True, 'author-page name'
+              fn = path.name.casefold()
+              if 'tenneson' in fn:
+                  return True, 'filename attribution'
+              return False, 'no Brian Tenneson attribution found near front matter'
+
+          bad_starts = (
+              'copyright', 'version ', 'august ', 'july ', 'june ', 'may ', 'april ', 'march ', 'february ', 'january ',
+              'keywords:', 'keyword:', 'table ', 'figure ', 'definition ', 'theorem ', 'lemma ', 'proposition ', 'corollary ',
+              'proof.', 'references', 'contents', 'abstract ', 'author ', 'email ', 'doi ', 'arxiv', 'submitted ',
+              'bay path university', 'currently unaffiliated', 'suggested citation', 'contact.'
+          )
+          positive = {
+              'proof':5,'theorem':4,'search':5,'verif':5,'machine':4,'model':3,'system':3,'settle':5,'creative':4,
+              'learning':3,'data':2,'result':3,'analysis':2,'control':3,'algorithm':4,'distance':3,'simulation':3,
+              'conjecture':4,'certificate':5,'formal':3,'prediction':2,'performance':2,'clinical':2,'patient':1,
+              'sport':1,'game':1,'player':1,'dose':2,'concentration':2,'statistics':2,'regression':2,'network':2,
+              'classification':2,'cluster':2,'risk':2,'objective':2,'discovery':4,'induction':3,'self-aware':4,
+              'logic':3,'mathemat':3,'experiment':3,'evidence':2,'policy':3,'structure':3,'optimal':3,'framework':3
+          }
+
+          def candidate(text):
+              # Normalize page breaks and line wrapping, but keep paragraph boundaries.
+              t = text.replace('\f','\n\n')
+              t = re.sub(r'(?<!\n)\n(?!\n)', ' ', t)
+              t = re.sub(r'\s+', ' ', t)
+              # Split conservatively into prose sentences.
+              sents = re.split(r'(?<=[.!?])\s+(?=[A-Z“\"(])', t)
+              scored=[]
+              for pos,s in enumerate(sents):
+                  s=s.strip(' \t\n"“”')
+                  if len(s) < 70 or len(s) > 340:
+                      continue
+                  low=s.casefold()
+                  if low.startswith(bad_starts):
+                      continue
+                  if 'http://' in low or 'https://' in low or '@' in s:
+                      continue
+                  if re.search(r'\.{3,}|_{2,}|\\begin|\\end|\$\$|\bfig\.?\s*\d', low):
+                      continue
+                  if sum(ch in '{}[]' for ch in s) > 8:
+                      continue
+                  alpha=sum(c.isalpha() for c in s)
+                  if alpha < max(45, int(len(s)*0.58)):
+                      continue
+                  score=0.0
+                  for k,w in positive.items():
+                      if k in low: score += w
+                  if any(x in low for x in ['we show','we prove','this paper','this work','the result','the central','the key','the goal','the purpose','the practical','the machine','the model','the analysis','the experiment']):
+                      score += 4
+                  if any(x in low for x in ['therefore','thus','however','rather than','not merely','precisely','exactly','in other words','the point is']):
+                      score += 2
+                  # Prefer front-matter/abstract insight, but not the very first metadata-heavy sentences.
+                  score += max(0, 4 - pos/30)
+                  # Avoid generic organization language.
+                  if any(x in low for x in ['section 1','section 2','section 3','organized as follows','the remainder of','in the next section']):
+                      score -= 6
+                  # Prefer quotable human prose over citation-heavy sentences.
+                  score -= 1.5 * len(re.findall(r'\[[0-9,\- ]+\]', s))
+                  scored.append((score, -abs(len(s)-190), s))
+              if not scored:
+                  return ''
+              scored.sort(reverse=True)
+              return scored[0][2]
+
+          out=[]
+          for i,item in enumerate(data['items'], start=1):
+              if item.get('quote'):
+                  continue
+              ap = item.get('archive_path') or ''
+              path = root / ap if ap else Path('/nonexistent')
+              text = extract(path)
+              auth, why = authored_by_brian(text, path)
+              out.append({
+                  'index': i,
+                  'title': item.get('title',''),
+                  'kind': item.get('kind',''),
+                  'href': item.get('href',''),
+                  'archive_path': ap,
+                  'authored_by_brian': auth,
+                  'authorship_reason': why,
+                  'candidate_quote': candidate(text) if auth else '',
+                  'front_excerpt': re.sub(r'\s+',' ',text[:700]).strip(),
+              })
+
+          summary={
+              'catalog_count': data['count'],
+              'already_quoted': sum(1 for x in data['items'] if x.get('quote')),
+              'remaining_examined': len(out),
+              'remaining_authored': sum(1 for x in out if x['authored_by_brian']),
+              'remaining_excluded': sum(1 for x in out if not x['authored_by_brian']),
+              'items': out,
+          }
+          Path('.quote-all-authored-candidates.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+          print('catalog',summary['catalog_count'])
+          print('already quoted',summary['already_quoted'])
+          print('remaining authored',summary['remaining_authored'])
+          print('remaining excluded',summary['remaining_excluded'])
+          for x in out:
+              print(f"{x['index']:02d} {'AUTH' if x['authored_by_brian'] else 'SKIP'} | {x['title']} | {x['authorship_reason']}")
+          PY
+      - name: Commit temporary candidate audit
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .quote-all-authored-candidates.json
+          git commit -m 'Temporary authored quote candidate audit'
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
