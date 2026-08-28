@@ -83,6 +83,25 @@ RANKED_HREFS = (
 )
 RANK = {href: i for i, href in enumerate(RANKED_HREFS)}
 
+# Prototype: one short, representative quotation on each of the current top
+# three cards. The manuscript files themselves are not modified. Keeping this
+# as catalogue metadata makes it straightforward to extend the same treatment
+# to the rest of the library if the prototype reads well.
+FEATURE_QUOTES = {
+    "papers/data_atp_creativity_treatise_v0_1/": {
+        "quote": "Verification determines correctness; search determines attention.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/what_checks_the_proof_v6_80/": {
+        "quote": "The machine may be uncertain about what to try next while being exact about what it has already certified.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/verified_settlement_search_v1_4/": {
+        "quote": "The final sections convert these results into a staged experimental program whose primary endpoint is not prediction accuracy but independently verified settlement of withheld and eventually genuinely difficult conjectures.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+}
+
 
 def experimental_title(path: Path) -> str:
     if path.name == BRAINSTORMING_NAME:
@@ -132,6 +151,21 @@ def extract_experimental() -> list[dict]:
     return items
 
 
+def add_feature_quotes(items: list[dict]) -> None:
+    """Attach curated quotations to matching catalogue records."""
+    for item in items:
+        feature = FEATURE_QUOTES.get(str(item.get("href") or ""))
+        if feature:
+            item.update(feature)
+            item["search"] = " ".join(
+                [
+                    str(item.get("search") or ""),
+                    str(feature["quote"]),
+                    str(feature["quote_attribution"]),
+                ]
+            ).strip()
+
+
 def order_key(item: dict) -> tuple:
     href = str(item.get("href") or "")
     if href in RANK:
@@ -150,6 +184,7 @@ def main() -> None:
     # pub.experimental is a separate storage namespace inside one public
     # catalogue. Do not relocate or collapse its files: each stays visible.
     items = v2.extract_core() + extract_experimental() + v2.extract_ads()
+    add_feature_quotes(items)
     items.sort(key=order_key)
 
     payload = {"schema_version": 1, "count": len(items), "items": items}
@@ -163,6 +198,20 @@ def main() -> None:
     if old not in page:
         raise RuntimeError("Expected default-sort code was not found in v2 output")
     page = page.replace(old, new, 1)
+
+    # Render optional catalogue quotations without changing the underlying
+    # manuscript readers. This renderer is intentionally generic so the same
+    # metadata can later be added to more cards without another layout change.
+    old_card = "function card(x){const tags=(x.tags||[]).map(t=>`<span class=\"tag\">${esc(t)}</span>`).join('');const pdf=x.pdf?`<a href=\"${esc(x.pdf)}\">PDF</a>`:'';const src=x.source?`<a href=\"${esc(x.source)}\">Source</a>`:'';return `<article class=\"card\"><h2>${esc(x.title)}</h2><div class=\"meta\">${esc(x.kind)} · ${esc(x.category)}</div>${tags?`<div class=\"tags\">${tags}</div>`:''}<div class=\"links\"><a href=\"${esc(x.href)}\">${x.kind==='Core paper'?'Read':'Open'}</a>${pdf}${src}</div></article>`}"
+    new_card = "function card(x){const tags=(x.tags||[]).map(t=>`<span class=\"tag\">${esc(t)}</span>`).join('');const pdf=x.pdf?`<a href=\"${esc(x.pdf)}\">PDF</a>`:'';const src=x.source?`<a href=\"${esc(x.source)}\">Source</a>`:'';const featured=x.quote?`<blockquote class=\"featured-quote\"><p>&ldquo;${esc(x.quote)}&rdquo;</p>${x.quote_attribution?`<cite>— ${esc(x.quote_attribution)}</cite>`:''}</blockquote>`:'';return `<article class=\"card\"><h2>${esc(x.title)}</h2><div class=\"meta\">${esc(x.kind)} · ${esc(x.category)}</div>${tags?`<div class=\"tags\">${tags}</div>`:''}${featured}<div class=\"links\"><a href=\"${esc(x.href)}\">${x.kind==='Core paper'?'Read':'Open'}</a>${pdf}${src}</div></article>`}"
+    if old_card not in page:
+        raise RuntimeError("Expected card renderer was not found in v2 output")
+    page = page.replace(old_card, new_card, 1)
+
+    quote_style = ".featured-quote{margin:4px 0 14px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--accent2);border-radius:0 9px 9px 0;font-size:.91rem;line-height:1.45}.featured-quote p{margin:0 0 7px}.featured-quote cite{display:block;color:var(--muted);font-size:.78rem;font-style:normal}"
+    if "</style>" not in page:
+        raise RuntimeError("Homepage style block not found")
+    page = page.replace("</style>", quote_style + "</style>", 1)
 
     # Keep guided reading navigation. Experimental storage is searchable from
     # the main catalogue and therefore does not need a competing wing link.
