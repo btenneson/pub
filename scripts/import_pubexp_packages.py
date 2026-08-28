@@ -6,9 +6,9 @@ Accepted transports under .build/pubexp_import/packages/:
   * package.tar.xz.b64.part000of003, part001of003, ...
 
 Incomplete split transports are ignored until all declared parts exist. Each
-decoded tar.xz must contain MANIFEST.json with ``files`` entries carrying
-``path``, ``size`` and ``sha256``. Every output byte is verified before write.
-Successful transport files are removed after import.
+decoded tar.xz must contain MANIFEST.json with ``files`` entries carrying a
+``name`` (or ``path``), ``size`` and ``sha256``. Every output byte is verified
+before write. Successful transport files are removed after import.
 """
 from __future__ import annotations
 
@@ -74,7 +74,10 @@ def load_package(name: str, raw: bytes) -> list[tuple[PurePosixPath, bytes]]:
             raise ValueError(f"{name}: manifest has no files")
         output: list[tuple[PurePosixPath, bytes]] = []
         for spec in specs:
-            rel = safe_relative(str(spec.get("path") or ""))
+            if not isinstance(spec, dict):
+                raise ValueError(f"{name}: invalid manifest entry")
+            rel_name = str(spec.get("path") or spec.get("name") or spec.get("filename") or "")
+            rel = safe_relative(rel_name)
             try:
                 member = tf.getmember(rel.as_posix())
             except KeyError as exc:
@@ -89,7 +92,10 @@ def load_package(name: str, raw: bytes) -> list[tuple[PurePosixPath, bytes]]:
             expected_hash = str(spec["sha256"]).lower()
             actual_hash = hashlib.sha256(data).hexdigest()
             if len(data) != expected_size or actual_hash != expected_hash:
-                raise ValueError(f"{name}: verification failed for {rel}")
+                raise ValueError(
+                    f"{name}: verification failed for {rel}: "
+                    f"size {len(data)}/{expected_size}, sha256 {actual_hash}/{expected_hash}"
+                )
             output.append((rel, data))
         return output
 
