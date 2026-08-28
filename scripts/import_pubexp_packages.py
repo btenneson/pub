@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-"""Import verified compressed packages into pub.experimental.
+"""Import hash-verified compressed packages into pub.experimental.
 
-Packages are tar.xz archives placed in .build/pubexp_import/packages/. Each
-archive must contain a MANIFEST.json with a ``files`` list whose entries have
-``path``, ``size``, and ``sha256``. Only files named in that manifest are
-written, and every file is verified before anything is committed by CI.
+Accepted transports under .build/pubexp_import/packages/:
+  * package.tar.xz
+  * package.tar.xz.b64.part000, part001, ...
 
-This is a transport mechanism only: extracted bytes must exactly match the
-manifest. Successful package archives are deleted after import so they do not
-remain as publication artifacts.
+Each decoded tar.xz must contain MANIFEST.json with ``files`` entries carrying
+``path``, ``size`` and ``sha256``. Every output byte is verified before write.
+Successful transport files are removed after import.
 """
 from __future__ import annotations
 
+import base64
 import hashlib
+import io
 import json
+import re
 import tarfile
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / ".build" / "pubexp_import" / "packages"
 DEST = ROOT / "pub.experimental"
+PART_RE = re.compile(r"^(?P<base>.+\.tar\.xz)\.b64\.part(?P<num>\d+)$")
 
 
 def safe_relative(name: str) -> PurePosixPath:
@@ -31,76 +34,81 @@ def safe_relative(name: str) -> PurePosixPath:
     return p
 
 
-def load_package(package: Path) -> tuple[list[tuple[PurePosixPath, bytes]], int]:
-    with tarfile.open(package, mode="r:xz") as tf:
-        try:
-            manifest_member = tf.getmember("MANIFEST.json")
-        except KeyError as exc:
-            raise ValueError(f"{package.name}: missing MANIFEST.json") from exc
-        f = tf.extractfile(manifest_member)
-        if f is None:
-            raise ValueError(f"{package.name}: unreadable MANIFEST.json")
-        manifest = json.loads(f.read().decode("utf-8"))
-        specs = manifest.get("files")
-        if not isinstance(specs, list) or not specs:
-            raise ValueError(f"{package.name}: manifest has no files")
+def read_transports() -> list[tuple[str, bytes, list[Path]]]:
+    out: list[tuple[str, bytes, list[Path]]] = []
+    for p in sorted(PACKAGES.glob("*.tar.xz"), key=lambda x: x.name.casefold()):
+        out.append((p.name, p.read_bytes(), [p]))
 
+    groups: dict[str, list[tuple[int, Path]]] = {}
+    for p in PACKAGES.glob("*.tar.xz.b64.part*"):
+        m = PART_RE.match(p.name)
+        if m:
+            groups.setdefault(m.group("base"), []).append((int(m.group("num")), p))
+    for base, parts in sorted(groups.items()):
+        parts.sort()
+        nums = [n for n, _ in parts]
+        if nums != list(range(len(nums))):
+            raise ValueError(f"{base}: non-contiguous Base64 parts {nums}")
+        text = "".join(p.read_text(encoding="ascii").strip() for _, p in parts)
+        try:
+            raw = base64.b64decode(text, validate=True)
+        except Exception as exc:
+            raise ValueError(f"{base}: invalid Base64 transport") from exc
+        out.append((base, raw, [p for _, p in parts]))
+    return out
+
+
+def load_package(name: str, raw: bytes) -> list[tuple[PurePosixPath, bytes]]:
+    with tarfile.open(fileobj=io.BytesIO(raw), mode="r:xz") as tf:
+        try:
+            mf = tf.extractfile(tf.getmember("MANIFEST.json"))
+        except KeyError as exc:
+            raise ValueError(f"{name}: missing MANIFEST.json") from exc
+        if mf is None:
+            raise ValueError(f"{name}: unreadable MANIFEST.json")
+        specs = json.loads(mf.read().decode("utf-8")).get("files")
+        if not isinstance(specs, list) or not specs:
+            raise ValueError(f"{name}: manifest has no files")
         output: list[tuple[PurePosixPath, bytes]] = []
         for spec in specs:
-            if not isinstance(spec, dict):
-                raise ValueError(f"{package.name}: invalid manifest entry")
             rel = safe_relative(str(spec.get("path") or ""))
-            expected_size = int(spec["size"])
-            expected_sha256 = str(spec["sha256"]).lower()
-            try:
-                member = tf.getmember(rel.as_posix())
-            except KeyError as exc:
-                raise ValueError(f"{package.name}: missing {rel}") from exc
-            if not member.isfile():
-                raise ValueError(f"{package.name}: {rel} is not a regular file")
-            src = tf.extractfile(member)
+            src = tf.extractfile(tf.getmember(rel.as_posix()))
             if src is None:
-                raise ValueError(f"{package.name}: cannot read {rel}")
+                raise ValueError(f"{name}: cannot read {rel}")
             data = src.read()
-            actual_sha256 = hashlib.sha256(data).hexdigest()
-            if len(data) != expected_size or actual_sha256 != expected_sha256:
-                raise ValueError(
-                    f"{package.name}: verification failed for {rel}: "
-                    f"size {len(data)}/{expected_size}, sha256 {actual_sha256}/{expected_sha256}"
-                )
+            expected_size = int(spec["size"])
+            expected_hash = str(spec["sha256"]).lower()
+            actual_hash = hashlib.sha256(data).hexdigest()
+            if len(data) != expected_size or actual_hash != expected_hash:
+                raise ValueError(f"{name}: verification failed for {rel}")
             output.append((rel, data))
-        return output, len(specs)
+        return output
 
 
 def main() -> None:
     if not PACKAGES.exists():
         print("no pub.experimental import packages")
         return
-
-    DEST.mkdir(parents=True, exist_ok=True)
-    packages = sorted(PACKAGES.glob("*.tar.xz"), key=lambda p: p.name.casefold())
-    if not packages:
+    transports = read_transports()
+    if not transports:
         print("no pub.experimental import packages")
         return
 
-    # Verify every package first. If one is bad, write nothing.
-    verified: list[tuple[Path, list[tuple[PurePosixPath, bytes]], int]] = []
-    for package in packages:
-        files, count = load_package(package)
-        verified.append((package, files, count))
-
+    # Verify all packages before writing any output.
+    verified = [(name, load_package(name, raw), sources) for name, raw, sources in transports]
+    DEST.mkdir(parents=True, exist_ok=True)
     written = 0
-    for package, files, _ in verified:
+    for name, files, sources in verified:
         for rel, data in files:
             target = DEST.joinpath(*rel.parts)
             target.parent.mkdir(parents=True, exist_ok=True)
-            if target.exists() and target.read_bytes() == data:
-                continue
-            target.write_bytes(data)
-            written += 1
-        package.unlink()
-
-    print(f"verified {len(verified)} package(s); imported/updated {written} experimental file(s)")
+            if not target.exists() or target.read_bytes() != data:
+                target.write_bytes(data)
+                written += 1
+        for source in sources:
+            source.unlink()
+        print(f"verified {name}: {len(files)} file(s)")
+    print(f"imported/updated {written} experimental file(s)")
 
 
 if __name__ == "__main__":
