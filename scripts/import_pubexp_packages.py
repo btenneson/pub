@@ -3,9 +3,10 @@
 
 Accepted transports under .build/pubexp_import/packages/:
   * package.tar.xz
-  * package.tar.xz.b64.part000, part001, ...
+  * package.tar.xz.b64.part000of003, part001of003, ...
 
-Each decoded tar.xz must contain MANIFEST.json with ``files`` entries carrying
+Incomplete split transports are ignored until all declared parts exist. Each
+decoded tar.xz must contain MANIFEST.json with ``files`` entries carrying
 ``path``, ``size`` and ``sha256``. Every output byte is verified before write.
 Successful transport files are removed after import.
 """
@@ -22,7 +23,7 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = ROOT / ".build" / "pubexp_import" / "packages"
 DEST = ROOT / "pub.experimental"
-PART_RE = re.compile(r"^(?P<base>.+\.tar\.xz)\.b64\.part(?P<num>\d+)$")
+PART_RE = re.compile(r"^(?P<base>.+\.tar\.xz)\.b64\.part(?P<num>\d+)of(?P<total>\d+)$")
 
 
 def safe_relative(name: str) -> PurePosixPath:
@@ -39,16 +40,18 @@ def read_transports() -> list[tuple[str, bytes, list[Path]]]:
     for p in sorted(PACKAGES.glob("*.tar.xz"), key=lambda x: x.name.casefold()):
         out.append((p.name, p.read_bytes(), [p]))
 
-    groups: dict[str, list[tuple[int, Path]]] = {}
-    for p in PACKAGES.glob("*.tar.xz.b64.part*"):
+    groups: dict[tuple[str, int], list[tuple[int, Path]]] = {}
+    for p in PACKAGES.glob("*.tar.xz.b64.part*of*"):
         m = PART_RE.match(p.name)
         if m:
-            groups.setdefault(m.group("base"), []).append((int(m.group("num")), p))
-    for base, parts in sorted(groups.items()):
+            key = (m.group("base"), int(m.group("total")))
+            groups.setdefault(key, []).append((int(m.group("num")), p))
+    for (base, total), parts in sorted(groups.items()):
         parts.sort()
         nums = [n for n, _ in parts]
-        if nums != list(range(len(nums))):
-            raise ValueError(f"{base}: non-contiguous Base64 parts {nums}")
+        if len(parts) != total or nums != list(range(total)):
+            print(f"waiting for complete transport {base}: have {nums}, need 0..{total-1}")
+            continue
         text = "".join(p.read_text(encoding="ascii").strip() for _, p in parts)
         try:
             raw = base64.b64decode(text, validate=True)
@@ -72,7 +75,13 @@ def load_package(name: str, raw: bytes) -> list[tuple[PurePosixPath, bytes]]:
         output: list[tuple[PurePosixPath, bytes]] = []
         for spec in specs:
             rel = safe_relative(str(spec.get("path") or ""))
-            src = tf.extractfile(tf.getmember(rel.as_posix()))
+            try:
+                member = tf.getmember(rel.as_posix())
+            except KeyError as exc:
+                raise ValueError(f"{name}: missing {rel}") from exc
+            if not member.isfile():
+                raise ValueError(f"{name}: {rel} is not a regular file")
+            src = tf.extractfile(member)
             if src is None:
                 raise ValueError(f"{name}: cannot read {rel}")
             data = src.read()
@@ -91,10 +100,10 @@ def main() -> None:
         return
     transports = read_transports()
     if not transports:
-        print("no pub.experimental import packages")
+        print("no complete pub.experimental import packages")
         return
 
-    # Verify all packages before writing any output.
+    # Verify all complete packages before writing any output.
     verified = [(name, load_package(name, raw), sources) for name, raw, sources in transports]
     DEST.mkdir(parents=True, exist_ok=True)
     written = 0
