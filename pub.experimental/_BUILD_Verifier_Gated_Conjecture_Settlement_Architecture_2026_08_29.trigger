@@ -1,1 +1,1 @@
-Build complete. Rebuild the searchable publication index now that the source and PDF are present.
+Rebuild requested August 29, 2026: apply revised authorship credit and refresh source/PDF mirrors.
