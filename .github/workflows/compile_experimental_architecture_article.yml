@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
-      - 'pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.part*.b64'
+      - 'pub.experimental/_BUILD_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.trigger'
   workflow_dispatch:
 
 permissions:
@@ -26,14 +26,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up source from payload when needed
+      - name: Set up source from staged payload
         shell: bash
         run: |
           set -euo pipefail
           SRC='pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
           shopt -s nullglob
-          PARTS=(pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.part*.b64)
+          PARTS=(.build/article_payload/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.part*.b64)
           if [ "${#PARTS[@]}" -gt 0 ]; then
+            test "${#PARTS[@]}" -eq 4
             cat "${PARTS[@]}" | base64 -d | gzip -dc > "$SRC"
           fi
           test -s "$SRC"
