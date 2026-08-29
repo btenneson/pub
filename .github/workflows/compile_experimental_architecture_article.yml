@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
+      - 'pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex.gz.b64'
   workflow_dispatch:
 
 permissions:
@@ -16,6 +17,7 @@ concurrency:
 
 jobs:
   compile:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -23,6 +25,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Set up source from payload when needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC='pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
+          PAYLOAD='pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex.gz.b64'
+          if [ -f "$PAYLOAD" ]; then
+            base64 -d "$PAYLOAD" | gzip -dc > "$SRC"
+          fi
+          test -s "$SRC"
 
       - name: Install LaTeX dependencies
         shell: bash
@@ -46,15 +59,17 @@ jobs:
              'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
           test -s 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
 
-      - name: Commit compiled PDF
+      - name: Commit source and compiled PDF
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
+          git add \
+            'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex' \
+            'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
           if ! git diff --cached --quiet; then
-            git commit -m 'Compile verifier-gated architecture article PDF'
+            git commit -m 'Publish verifier-gated architecture article source and PDF'
             git pull --rebase --autostash origin main
             git push origin HEAD:main
           fi
