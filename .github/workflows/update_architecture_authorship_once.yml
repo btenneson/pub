@@ -1,0 +1,80 @@
+name: Update architecture article authorship once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update_architecture_authorship_once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update authorship wording
+        shell: python
+        run: |
+          from pathlib import Path
+
+          src = Path('pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex')
+          text = src.read_text(encoding='utf-8')
+          text = text.replace(
+              'pdfauthor={Prepared through interaction with Brian Tenneson; Research assistant: Brian Tenneson}',
+              'pdfauthor={Brian Tenneson; Assisted by GPT-5; independently reviewed and accepted by the human author.}'
+          )
+          text = text.replace(
+              r'''\author{\textit{Prepared through interaction with Brian Tenneson}\\[0.5em]
+\normalsize Research assistant: Brian Tenneson\\''',
+              r'''\author{Brian Tenneson\\[0.3em]
+\normalsize \textit{Assisted by GPT-5; independently reviewed and accepted by the human author.}\\[0.5em]'''
+          )
+          src.write_text(text, encoding='utf-8')
+
+          mirror = Path('docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex')
+          mirror.write_text(text, encoding='utf-8')
+
+      - name: Install LaTeX dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-pictures texlive-fonts-recommended lmodern
+
+      - name: Compile and mirror PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC='pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
+          OUTDIR=/tmp/architecture_pdf
+          mkdir -p "$OUTDIR"
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory="$OUTDIR" "$SRC"
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory="$OUTDIR" "$SRC"
+          PDF="$OUTDIR/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf"
+          cp "$PDF" 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
+          cp "$PDF" 'docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
+
+      - name: Commit updated source and PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex' \
+            'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf' \
+            'docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex' \
+            'docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Revise architecture article authorship credit'
+            git pull --rebase --autostash origin main
+            git push origin HEAD:main
+          fi
