@@ -39,6 +39,25 @@ jobs:
           fi
           test -s "$SRC"
 
+      - name: Update authorship credit
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace(
+              'pdfauthor={Prepared through interaction with Brian Tenneson; Research assistant: Brian Tenneson}',
+              'pdfauthor={Brian Tenneson; Assisted by GPT-5; independently reviewed and accepted by the human author.}'
+          )
+          old = "\\author{\\textit{Prepared through interaction with Brian Tenneson}\\\\[0.5em]\n\\normalsize Research assistant: Brian Tenneson\\\\"
+          new = "\\author{Brian Tenneson\\\\[0.3em]\n\\normalsize \\textit{Assisted by GPT-5; independently reviewed and accepted by the human author.}\\\\[0.5em]"
+          if old not in s and 'Assisted by GPT-5; independently reviewed and accepted by the human author.' not in s:
+              raise SystemExit('Expected authorship block not found')
+          s = s.replace(old, new)
+          p.write_text(s, encoding='utf-8')
+          PY
+
       - name: Install LaTeX dependencies
         shell: bash
         run: |
@@ -60,6 +79,10 @@ jobs:
           cp "$OUTDIR/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf" \
              'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
           test -s 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
+          mkdir -p docs/pub.experimental
+          cp "$SRC" 'docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
+          cp 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf' \
+             'docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
 
       - name: Commit source and compiled PDF
         shell: bash
@@ -69,9 +92,11 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
             'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex' \
-            'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
+            'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf' \
+            'docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex' \
+            'docs/pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.pdf'
           if ! git diff --cached --quiet; then
-            git commit -m 'Publish verifier-gated architecture article source and PDF'
+            git commit -m 'Publish revised architecture article authorship credit'
             git pull --rebase --autostash origin main
             git push origin HEAD:main
           fi
