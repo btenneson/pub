@@ -1,1 +1,1 @@
-Build the staged verifier-gated conjecture settlement architecture article source and PDF.
+Build complete. Rebuild the searchable publication index now that the source and PDF are present.
