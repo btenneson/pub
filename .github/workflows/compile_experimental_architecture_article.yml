@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
-      - 'pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex.gz.b64'
+      - 'pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.part*.b64'
   workflow_dispatch:
 
 permissions:
@@ -31,9 +31,10 @@ jobs:
         run: |
           set -euo pipefail
           SRC='pub.experimental/Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex'
-          PAYLOAD='pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.tex.gz.b64'
-          if [ -f "$PAYLOAD" ]; then
-            base64 -d "$PAYLOAD" | gzip -dc > "$SRC"
+          shopt -s nullglob
+          PARTS=(pub.experimental/_Verifier_Gated_Conjecture_Settlement_Architecture_2026_08_29.part*.b64)
+          if [ "${#PARTS[@]}" -gt 0 ]; then
+            cat "${PARTS[@]}" | base64 -d | gzip -dc > "$SRC"
           fi
           test -s "$SRC"
 
