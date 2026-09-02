@@ -1,0 +1,440 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\hypersetup{hidelinks,pdftitle={AMLD Security 3},pdfauthor={Brian Tenneson}}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{AMLD Security 3}
+\fancyhead[R]{September 2026}
+\fancyfoot[C]{\thepage}
+
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\FB}{\mathsf{FUTUREBANK}}
+\newcommand{\COMPASS}{\mathsf{COMPASS}}
+\newcommand{\OCEAN}{\mathcal O}
+\newcommand{\Req}{\operatorname{Req}}
+\newcommand{\Impl}{\operatorname{Impl}}
+\newcommand{\Reach}{\operatorname{Reach}}
+\newcommand{\Acc}{\operatorname{Acc}}
+\newcommand{\Ver}{\operatorname{Ver}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Risk}{\operatorname{Risk}}
+\newcommand{\Dep}{\operatorname{Dep}}
+\newcommand{\UNKNOWN}{\mathsf{UNKNOWN}}
+\newcommand{\Pset}{\mathcal P}
+\newcommand{\Rset}{\mathcal R}
+\newcommand{\Iset}{\mathcal I}
+\newcommand{\Cset}{\mathcal C}
+
+\title{\textbf{AMLD Security 3}\\
+\large Plausible Applications of Verified Settlement, Safe Quotienting, and Search Guidance}
+\author{Brian Tenneson}
+\date{September 2, 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Sources}
+\begin{itemize}[leftmargin=*]
+\item \emph{Security by Separation, Verification, and Settlement --- AMLD Security Treatise v0.1}.
+\item \emph{What Checks the Proof? --- Version 6.80}.
+\end{itemize}
+
+On when the ``targets'' of automated target provers, automated theorem provers, or automated
+metalogical deciders are passwords and, more generally, security and vulnerabilities, this document
+considers how AMLD-style reasoning could plausibly be used defensively. The central idea is not that
+a search system should be trusted because it is powerful, but that powerful search should be separated
+from the mechanism that certifies what may enter trusted state.
+
+The discussion below preserves the application categories from the working document. Under each
+\emph{Plausible application} heading, the informal prose has been replaced by explicit LaTeX-ready
+mathematical formulations.
+
+\section{Cryptography}
+Discovering unexpected mathematical structure in a supposedly hard problem could undermine an
+encryption scheme. The dramatic case would be a new efficient attack on assumptions behind widely
+deployed public-key cryptography. This would not imply that ``all encryption is broken''; distinct
+constructions rest on distinct assumptions.
+
+\subsection*{Plausible application}
+Let a cryptographic search process generate histories \(h\in\mathcal H\), with continuation operator
+\(\mathcal T(h,a)\) for action \(a\in A(h)\). A quotient candidate
+\[
+Q:\mathcal H\to\mathcal S
+\]
+is \emph{future-sufficient} only if
+\[
+Q(h_1)=Q(h_2)\Longrightarrow
+\Bigl(\mathsf{Future}(h_1)\equiv_{\Ver}\mathsf{Future}(h_2)\Bigr),
+\]
+where \(\equiv_{\Ver}\) means equivalence with respect to every fact required by later search,
+scope, provenance, and certificate verification. Thus a safe speedup is not ``try keys faster'' but
+a proved reduction
+\[
+\mathcal H/\!\sim_Q,\qquad
+h_1\sim_Q h_2 \iff Q(h_1)=Q(h_2),
+\]
+such that certified solutions lift:
+\[
+\Ver(\pi,[h]_Q)=1\Longrightarrow
+\exists h'\in[h]_Q\;\Ver(\pi,h')=1.
+\]
+A \(\COMPASS\)-type policy may rank candidate transformations by
+\[
+S(a\mid h)=
+w_1\,\mathrm{sim}(a,h)+w_2\,\rho_Q(a,h)+w_3\,d(a,h)
+-w_4\,\widehat{\Cost}(a\mid h),
+\]
+but \(S\) is a policy score, not a truth predicate. The soundness boundary remains
+\[
+\text{promotion to }\BANK
+\iff
+\Ver(\pi,\text{claim},\Gamma)=1.
+\]
+Hence a cryptographically significant shortcut would require a certificate that the quotient or
+invariant preserves the target problem. No such formalism alone establishes an attack on AES, RSA,
+ECC, or post-quantum schemes.
+
+\section{Cybersecurity and Vulnerability Research}
+A strong reasoning system could search for overlooked weaknesses, but the defensive use is to turn
+vulnerability discovery into a certificate-producing audit problem and to separate speculative traces
+from verified defects.
+
+\subsection*{Plausible application}
+Let \(Z\) be the set of complete execution traces. Define
+\[
+\Impl(z)\in\{0,1\},\qquad \Req(z)\in\{0,1\},
+\]
+and the acceptance-soundness property
+\[
+\Phi_{\mathrm{safe}}
+:=
+\forall z\in Z\,[\Impl(z)\Rightarrow \Req(z)].
+\]
+A single checked witness \(z^\star\) satisfying
+\[
+\Impl(z^\star)=1,\qquad \Req(z^\star)=0
+\]
+is a finite refutation certificate:
+\[
+z^\star\in\Rset(\Phi_{\mathrm{safe}}).
+\]
+An AMLD settlement may therefore be modeled as
+\[
+\Sigma(\Phi)\in
+\{\Pset,\Rset,\Iset,\Cset,\UNKNOWN\},
+\]
+where \(P\) searches for a proof of \(\Phi\), \(R\) for a checked counterexample,
+\(I\) for independence relative to a declared metatheory, and \(C\) for inconsistency of the admitted
+specification. Candidate traces \(u\) may enter \(\FB_t\), but trusted state evolves only by
+\[
+\BANK_{t+1}
+=
+\BANK_t\cup
+\{u\in\FB_t:\Ver(u,\Gamma_t)=1\}.
+\]
+For candidate analysis machinery \(M\), define an Ocean gate
+\[
+M\leadsto\BANK
+\quad\text{only if}\quad
+\forall o\in\OCEAN,\;\Acc(M,o)=1.
+\]
+Failures discovered during this gate become persistent regression obligations rather than discarded
+search debris.
+
+\section{Critical Infrastructure}
+Hospitals, power systems, water utilities, transportation networks, and communications systems require
+containment because a cyber failure can become a physical failure. Here the natural object is a
+compromise graph rather than a single ``secure/insecure'' bit.
+
+\subsection*{Plausible application}
+Model an infrastructure as a directed graph
+\[
+G=(V,E),\qquad
+\Reach_G(c)=\{v\in V:c\leadsto_G v\}.
+\]
+The blast radius of compromise at \(c\) is
+\[
+B_G(c):=\Reach_G(c).
+\]
+If segmentation produces \(G'=(V,E')\) with \(E'\subseteq E\), then monotonicity of reachability gives
+\[
+B_{G'}(c)\subseteq B_G(c),
+\qquad
+|B_{G'}(c)|\le |B_G(c)|.
+\]
+A defensive controller should therefore optimize a vector, not one scalar:
+\[
+\mathbf J(D)=
+\bigl(
+p_{\mathrm{comp}}(D),
+\max_c |B_{G_D}(c)|,
+A_{\mathrm{loss}}(D),
+C_{\mathrm{verify}}(D),
+C_{\mathrm{repair}}(D)
+\bigr).
+\]
+A design \(D_2\) dominates \(D_1\) for vulnerability class \(X\) only relative to declared
+non-regression constraints:
+\[
+D_2\succ_X D_1
+\iff
+m_X(D_2)<m_X(D_1)
+\;\land\;
+\bigwedge_{j\in J_{\mathrm{protected}}}
+m_j(D_2)\le m_j(D_1).
+\]
+This lets an AMLD compare segmentation strategies by certificate-checked reachability bounds while
+penalizing defenses whose availability cost is unacceptable. In a hospital or utility, a defense that
+reduces attack reach but prevents legitimate operation is not automatically Pareto-superior.
+
+\section{Military and Intelligence Systems}
+Secure communications, cryptanalysis, compartmentation, logistics, and autonomous-system verification
+all require strong separation between speculative reasoning and trusted authority.
+
+\subsection*{Plausible application}
+Let the system be partitioned into security domains
+\[
+V=\bigsqcup_{i=1}^{k}V_i
+\]
+with boundary-crossing transitions
+\[
+e=(x,y)\in E,\qquad x\in V_i,\;y\in V_j,\;i\neq j.
+\]
+Associate to each crossing a policy predicate \(P_e(s,\alpha)\), where \(s\) is system state and
+\(\alpha\) the asserted authority. An admissible transition system satisfies
+\[
+\forall e\in E_{\mathrm{cross}}\;\forall(s,\alpha),
+\quad
+\mathsf{Fire}(e,s,\alpha)\Rightarrow P_e(s,\alpha).
+\]
+The corresponding security target is a universal invariant
+\[
+\Phi_{\mathrm{sep}}
+=
+\Box\Bigl(
+\mathsf{Cross}(s,s')
+\Rightarrow
+\mathsf{Authorized}(s,s')
+\Bigr).
+\]
+AMLD may settle \(\Phi_{\mathrm{sep}}\) by a proof certificate, a checked violating trace, a declared
+independence certificate, or an inconsistency certificate:
+\[
+\Sigma(\Phi_{\mathrm{sep}})
+\in
+\{P,R,I,C,\UNKNOWN\}.
+\]
+Crucially, \(\UNKNOWN\) is not evidence of safety. Search authority and operational authority are
+separated by requiring
+\[
+\Ver(\pi,\Phi,\Gamma)=1
+\quad\text{before}\quad
+\Phi\in\BANK.
+\]
+This formalizes compartmentation as a reachability-and-authorization problem without granting a
+creative reasoning component direct authority to change trusted operational state.
+
+\section{Software Correctness}
+Safety-critical software can be treated as a transition system whose invariants are proved or refuted by
+machine-checkable certificates.
+
+\subsection*{Plausible application}
+Let
+\[
+\mathcal M=(S,S_0,\to)
+\]
+be a transition system and \(I:S\to\{0,1\}\) a safety invariant. Inductiveness requires
+\[
+\forall s\in S_0,\;I(s)=1,
+\qquad
+\forall s,s'\in S,\;
+\bigl(I(s)\land s\to s'\bigr)\Rightarrow I(s').
+\]
+Then
+\[
+\forall s\in\Reach_{\mathcal M}(S_0),\;I(s)=1.
+\]
+Role \(P\) searches for a proof of the base and step obligations, while \(R\) searches for a finite
+trace
+\[
+s_0\to s_1\to\cdots\to s_n
+\]
+with \(s_0\in S_0\) and \(I(s_n)=0\). The AMLD architecture itself can be subject to executable
+invariants, for example
+\[
+u\in\BANK_{t+1}\setminus\BANK_t
+\Longrightarrow
+\exists r\;\Ver(r,u)=1,
+\]
+\[
+\Ver(r,u)=0\Longrightarrow u\notin\BANK_{t+1},
+\]
+and, for dependency set \(\Dep(u)\),
+\[
+u\in\BANK_t\Longrightarrow \Dep(u)\subseteq\BANK_t.
+\]
+These conditions make verifier-gated promotion, dependency closure, and rejection persistence software
+properties that can be regression-tested. Learned guidance may choose proof obligations, but only the
+checker determines whether the invariant has been established.
+
+\section{Scientific Discovery}
+The Quotient Hunter idea is especially relevant when a small invariant can replace an enormous search
+space by an equivalent quotient.
+
+\subsection*{Plausible application}
+Let a scientific model generate histories \(h\in\mathcal H\) and observables
+\[
+Y_h(\tau),\qquad \tau\ge 0.
+\]
+A descriptor \(Q:\mathcal H\to\mathcal S\) is future-sufficient for observable family \(\mathcal F\)
+when
+\[
+Q(h_1)=Q(h_2)
+\Longrightarrow
+\forall f\in\mathcal F\;\forall\tau\ge0,\quad
+f(Y_{h_1}(\tau))=f(Y_{h_2}(\tau)),
+\]
+or, in stochastic settings, equality is replaced by equality of the relevant conditional law:
+\[
+\mathcal L(Y_{\mathrm{future}}\mid h)
+=
+\mathcal L(Y_{\mathrm{future}}\mid Q(h)).
+\]
+Then inference may be performed on the quotient state space
+\[
+\mathcal S\simeq\mathcal H/\!\sim_Q
+\]
+rather than on every history separately. \(\FB\) can retain conjectural \(Q\)'s and candidate invariants,
+while a ranking policy allocates compute by an estimated information/compression objective such as
+\[
+U(Q)=
+\widehat I(Q;Y_{\mathrm{future}})
+-\lambda\,\log |\operatorname{im}Q|
+-\mu\,\widehat{\Cost}(Q).
+\]
+However, \(U(Q)\) only prioritizes candidates. Promotion requires a proof, verified empirical
+certificate, or other domain-appropriate checker establishing the preservation claim. The scientific
+payoff is therefore a certified reduction of effective state dimension, not merely a correlation found
+by a heuristic.
+
+\section{Engineering Optimization}
+Circuit design, scheduling, placement, routing, materials design, and supply-chain optimization all
+contain large combinatorial spaces where safe state merging could reduce repeated downstream search.
+
+\subsection*{Plausible application}
+Let an engineering problem be
+\[
+\min_{x\in X} f(x)
+\quad\text{subject to}\quad
+g_i(x)\le0,\;i=1,\dots,m,
+\qquad
+h_j(x)=0,\;j=1,\dots,r.
+\]
+For a partial design history \(h\), define its continuation set
+\[
+\mathcal C(h)=
+\{x\in X:x\text{ extends }h\text{ and satisfies all inherited constraints}\}.
+\]
+A safe quotient \(Q\) must preserve downstream feasibility and objective information:
+\[
+Q(h_1)=Q(h_2)
+\Longrightarrow
+\Bigl(
+\inf_{x\in\mathcal C(h_1)}f(x)
+=
+\inf_{x\in\mathcal C(h_2)}f(x)
+\Bigr)
+\]
+together with an explicit correspondence between feasible completions. A \(\COMPASS\)-like scheduler
+may rank expansions by
+\[
+S(a\mid h)=
+\alpha\,\Delta_{\mathrm{goal}}
++\beta\,\rho_Q
++\gamma\,\mathrm{reuse}
+-\delta\,\widehat{\Cost}
+-\eta\,\widehat{\Risk},
+\]
+while feasibility remains checker-defined:
+\[
+\mathsf{Accept}(x)
+\iff
+\bigwedge_i g_i(x)\le0
+\land
+\bigwedge_j h_j(x)=0
+\land
+\Ver(x)=1.
+\]
+Thus learned search can decide \emph{where} to spend computation, while verified constraints decide
+\emph{what counts} as an admissible design. Safe quotienting is useful only when future constraints are
+provably preserved.
+
+\section{AI Safety Itself}
+A shortcut-generating system is materially safer when creative search is separated from the authority to
+declare a result valid or promote it into trusted state.
+
+\subsection*{Plausible application}
+Let \(G_\theta\) be a mutable generator/search policy and \(V\) a fixed or separately governed verifier.
+For candidate claim \(c\) with certificate \(\pi\), define
+\[
+\mathsf{Promote}(c,\pi)
+\iff
+V(c,\pi,\Gamma)=1.
+\]
+Policy-neutral verification requires
+\[
+\forall\theta_1,\theta_2,\;c,\pi,\Gamma,\qquad
+V_{\theta_1}(c,\pi,\Gamma)=V_{\theta_2}(c,\pi,\Gamma)=V(c,\pi,\Gamma),
+\]
+so changing the search policy does not silently change truth conditions. Speculative self-modifications
+\(\theta'\) remain outside trusted state:
+\[
+\theta'\in\FB_t
+\quad\not\Rightarrow\quad
+\theta'\in\BANK_t.
+\]
+Instead, candidate versions are evaluated against an Ocean regression set
+\[
+\OCEAN_t=\{o_1,\dots,o_n\},
+\qquad
+R(\theta')=\frac1n\sum_{i=1}^n
+\mathbf 1\!\left[\Acc(G_{\theta'},o_i)=1\right],
+\]
+plus hard invariants \(H_j(\theta')\). Promotion can require
+\[
+R(\theta')\ge\tau
+\quad\land\quad
+\bigwedge_j H_j(\theta')=1
+\quad\land\quad
+V(\pi_{\theta'},\theta',\Gamma)=1.
+\]
+This architecture does not prove that a powerful reasoning system is globally safe. It does provide a
+precise technical separation between generation, testing, verification, and authority, while retaining
+failed proposals as future regression evidence.
+
+\section*{Research Boundary}
+These constructions are research hypotheses and formal design patterns. They describe how AMLD-style
+settlement, safe quotienting, \(\BANK/\FB\) separation, Ocean regression gates, and policy-neutral
+verification could be used to structure defensive reasoning. They do not constitute evidence that any
+particular cryptographic primitive, deployed infrastructure, or software system is vulnerable.
+
+\section*{Source anchors}
+The mathematical motifs above are based on the working sources cited in the original document:
+\emph{What Checks the Proof?} v6.80, especially its discussions of policy-neutral verification,
+\(\FB\), \(\COMPASS\), software invariants, and safe quotienting; and
+\emph{Security by Separation, Verification, and Settlement}, especially its discussions of
+separation, blast radius, security conformance, P/R/I/C settlement, the Ocean gate, and
+multi-objective security.
+
+\end{document}
