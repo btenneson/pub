@@ -1,1 +1,1053 @@
-% Publication placeholder removed. The complete AMLD_Security_Treatise_v0_1 source should be committed here when binary/source upload support is available.
+\documentclass[11pt,oneside]{book}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{enumitem}
+
+\hypersetup{hidelinks,pdfauthor={advisor: Brian Tenneson},pdftitle={Security by Separation, Verification, and Settlement}}
+\setlength{\headheight}{14pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65em}
+\setstretch{1.04}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Security by Separation, Verification, and Settlement}
+\fancyhead[R]{Working draft v0.1}
+\fancyfoot[C]{\thepage}
+\setcounter{tocdepth}{2}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{boundary}[theorem]{Boundary note}
+
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\FB}{\mathsf{FUTUREBANK}}
+\newcommand{\OCEAN}{\mathcal O}
+\newcommand{\ACCEPT}{\mathsf{ACCEPT}}
+\newcommand{\REJECT}{\mathsf{REJECT}}
+\newcommand{\DELAY}{\mathsf{DELAY}}
+\newcommand{\BLOCKED}{\mathsf{BLOCKED}}
+\newcommand{\UNKNOWN}{\mathsf{UNKNOWN}}
+\newcommand{\Impl}{\operatorname{Impl}}
+\newcommand{\Req}{\operatorname{Req}}
+\newcommand{\Prb}{\operatorname{Pr}}
+\newcommand{\Risk}{\operatorname{Risk}}
+\newcommand{\Reach}{\operatorname{Reach}}
+
+\begin{document}
+
+\frontmatter
+\begin{titlepage}
+\centering
+\vspace*{1.2in}
+{\Huge\bfseries Security by Separation, Verification, and Settlement\par}
+\vspace{0.3in}
+{\Large An AMLD-Oriented Mathematical Treatise\par}
+\vspace{0.7in}
+{\large Brian Tenneson\par}
+\vspace{0.25in}
+{\large Working research manuscript v0.1\par}
+\vspace{0.1in}
+{\large August 30, 2026\par}
+\vfill
+\begin{minipage}{0.82\textwidth}
+\small
+This first draft is intentionally broader and more elementary than the password-domain material in \emph{What Checks the Proof?} v6.80. It begins with information, secrecy, separation, identity, threat models, and containment, then introduces formal verification and finally AMLD machinery when the security problem motivates it. The manuscript follows a defensive theorem policy: almost all formal results are meant to show how a construction reduces, contains, detects, or repairs a stated vulnerability class under explicit assumptions. The draft is for review; citations, source anchors, and implementation references should be frozen to a specific GitHub commit before publication.
+\end{minipage}
+\end{titlepage}
+
+\chapter*{Reader's Guide}
+\addcontentsline{toc}{chapter}{Reader's Guide}
+This book is organized so that a reader does not need to know AMLD in advance. The first half can be read as a compact mathematical introduction to security architecture. AMLD appears only after the reader has encountered several recurring needs: keeping trusted and speculative information separate, distinguishing several kinds of formal settlement, remembering verified successes and failures, and testing new reasoning systems behind a gate before allowing them to affect trusted state.
+
+The writing rule is simple: \emph{motivation first, formalism immediately after}. ``Immediately'' describes the order, not the length. Each section should explain the security problem in ordinary language, introduce only the notation needed to represent it, state a defensive result where one is justified, prove it, and then say what the result does not establish.
+
+\section*{Defensive theorem policy}
+The preferred form of a result is
+\[
+\text{defense }D\text{ reduces or contains vulnerability class }X
+\]
+under a declared model and assumptions. A second preferred form compares two defensive designs,
+\[
+D_2 \succ_X D_1,
+\]
+meaning that, for the metric specified in the theorem, $D_2$ offers strictly stronger protection against $X$ than $D_1$. Results about finding defects are included when they support auditing or repair, but the manuscript is not organized as a manual for discovering or exploiting vulnerabilities.
+
+\section*{Three recurring boundaries}
+First, no finite benchmark proves universal security. Second, a verifier is only as meaningful as the specification and environment it checks. Third, a result that improves confidentiality, integrity, or compromise containment can still worsen availability, usability, cost, or another security coordinate. Security is therefore treated as a vector of properties rather than a single adjective.
+
+\tableofcontents
+
+\mainmatter
+\part{Foundations of Security}
+
+\chapter{Information}
+\label{ch:information}
+\section{Bits, symbols, strings, and states}
+Security begins with distinctions among possible states. A bit distinguishes two states; a finite string distinguishes among finitely many strings; a database record, session object, or machine configuration distinguishes among a larger collection of structured states. The mathematics does not require every security object to be represented literally as a bit string, but finite encodings are useful because they make observation and uncertainty explicit.
+
+Let $S$ be a state space and let $X$ be an $S$-valued random variable. An observer does not necessarily see $X$ directly. Instead the observer sees another variable $Z$ whose value is produced by the system, the environment, or prior knowledge. Security questions often ask how much $Z$ permits the observer to infer about $X$.
+
+\section{Information available to an observer}
+\label{sec:observer-info}
+The phrase ``available information'' should always be relative to an observer and a model. A server process may see a secret key that a web client does not; an administrator may see account state that an unauthenticated requester does not; an offline auditor may possess a system snapshot that a live user does not. There is no observer-independent list of ``the information.''
+
+If $Z$ is the information available to an observer, every security statement about inference from $Z$ should be read as conditional on the declared model that determines $Z$. Additional legitimate side information is represented by enlarging $Z$, not by silently changing the probability distribution later.
+
+\section{Probability and uncertainty}
+For an event $E$, $\Prb(E)$ denotes its probability. For random variables $X$ and $Z$, the conditional probability
+\[
+\Prb(X=x\mid Z=z)
+\]
+models the observer's uncertainty about $X$ after learning $Z=z$. In a security model, the conditional distribution is often more important than a nominal keyspace or password alphabet. A space may be huge while the actual distribution is concentrated on a small number of likely values.
+
+\section{Entropy and concentration}
+Entropy is one way to summarize uncertainty, but it is not the only one and it is not always the quantity that controls a security decision. For bounded guessing, the largest probabilities and the mass of the most likely candidates can matter more directly. We will use Shannon entropy when average information is relevant, min-entropy when maximum point probability is relevant, and top-$N$ mass when a verifier processes only a bounded number of candidates.
+
+\section{Side information and post-processing}
+\label{sec:data-processing-guess}
+Suppose $Y=f(Z)$ is a deterministic summary of information $Z$. Whatever an observer can do after seeing $Y$ could also have been done after seeing the richer value $Z$ by first computing $f(Z)$. This elementary observation gives a useful defensive principle.
+
+\begin{proposition}[Coarsening cannot improve optimal one-shot guessing]
+Let $X,Z$ be finite random variables and let $Y=f(Z)$. Let
+\[
+p^*(X\mid Z)=\sum_z \Prb(Z=z)\max_x \Prb(X=x\mid Z=z)
+\]
+be the optimal one-shot guessing probability after observing $Z$, and define $p^*(X\mid Y)$ analogously. Then
+\[
+p^*(X\mid Y)\le p^*(X\mid Z).
+\]
+\end{proposition}
+
+\begin{proof}
+Any decision rule $g(Y)$ is also a decision rule based on $Z$, namely $g(f(Z))$. The class of strategies available after observing $Y$ is therefore a subset of the class available after observing $Z$. Maximizing over the larger class cannot give a smaller success probability.
+\end{proof}
+
+\paragraph{Security interpretation.} If a system can expose a coarser view without breaking legitimate functionality, the coarser view cannot by itself make optimal inference about a protected variable easier than the richer view it replaces. This is not a claim that every redaction is sufficient; it says only that removing observable distinctions cannot increase the information available through that channel.
+
+\section{Information cannot arise from nowhere}
+A search procedure can reorder, combine, and test hypotheses, but it cannot create statistical dependence between an unknown secret and observations that are independent of that secret. This simple fact will later limit what an ATP, AMLD controller, or any other search system can do in a password or hidden-state problem. Imagination can propose structure; it cannot manufacture secret bits that are absent from the observations and model.
+
+\chapter{Secrets}
+\label{ch:secrets}
+\section{What is a secret?}
+A secret is not merely a string marked ``secret.'' It is a value whose disclosure is restricted relative to some observer or class of observers. Formally, let $W$ be a random variable taking values in a finite or countable set $\mathcal S$. The security model declares which observations $Z$ are available to an observer and which events count as unauthorized recovery or use of $W$.
+
+\section{Secret spaces and distributions}
+The set $\mathcal S$ describes what values are possible. The distribution $\pi(w)=\Prb(W=w)$ describes how those values are selected. These are different objects. A large set with a sharply concentrated distribution may provide less practical resistance to guessing than a smaller set with a nearly uniform distribution.
+
+\section{Guessing probability}
+Order the secret probabilities as
+\[
+\pi_{(1)}\ge \pi_{(2)}\ge \cdots.
+\]
+The best one-shot guessing probability is $\pi_{(1)}$. With at most $N$ distinct guesses and no additional information from failures, the best achievable success probability is the top-$N$ mass
+\[
+G_N(\pi)=\sum_{i=1}^{N}\pi_{(i)},
+\]
+capped at $1$ if the support has fewer than $N$ elements.
+
+\section{Random and human-selected secrets}
+A cryptographically suitable generator can make a secret distribution close to uniform over a declared support. Human choice often introduces concentration, reuse, and correlation with other information. The mathematical point is not that one population behaves in a single way; it is that a security theorem should use the actual modeled distribution rather than infer strength from formatting rules alone.
+
+\section{Independence and correlation}
+\label{sec:secret-independence}
+Suppose two domains use secrets $W_A$ and $W_B$. If compromise of $W_A$ reveals information about $W_B$, the second domain inherits some of the first domain's failure. Independent generation is one way to block that propagation channel.
+
+\begin{proposition}[Independent-secret containment]
+If $W_A$ and $W_B$ are independent and an event $C_A$ depends only on $W_A$ and variables independent of $W_B$, then
+\[
+\Prb(W_B=w\mid C_A)=\Prb(W_B=w)
+\]
+whenever the conditional probability is defined.
+\end{proposition}
+
+\begin{proof}
+By the stated independence, $C_A$ is independent of $W_B$. Conditioning on an independent event leaves the distribution of $W_B$ unchanged.
+\end{proof}
+
+\paragraph{Security interpretation.} Independent credentials do not make domain $B$ invulnerable. They remove one specific propagation route: learning or compromising an $A$-only secret does not, by that fact alone, update the distribution of $B$'s independent secret.
+
+\section{Reuse, compromise, and replacement}
+Reuse intentionally destroys some independence. When the same credential authorizes several systems, compromise of that credential may expand the blast radius across every system that accepts it. Rotation or replacement helps only if the replacement is generated safely and the old credential is actually revoked wherever it had authority.
+
+\chapter{What Security Means}
+\label{ch:security-means}
+\section{Assets and undesirable events}
+A security model should identify assets and events that matter. An asset may be data, computational authority, money, availability, reputation, a signing key, a physical process, or the correctness of a formal knowledge base. An undesirable event may be disclosure, unauthorized modification, denial of service, impersonation, or propagation of a local compromise.
+
+\section{Confidentiality}
+Confidentiality limits what unauthorized observers can learn. It is therefore naturally connected to the information model of Chapter~\ref{ch:information}. A confidentiality result should identify the protected variable, the observer, the allowed observations, and the inference or disclosure event being bounded.
+
+\section{Integrity}
+Integrity concerns unauthorized or unintended changes. It can be stated as an invariant over states, a restriction on transitions, or a conformance relation between implemented behavior and required behavior. Later chapters will treat integrity as one of the clearest places where verification and AMLD-style settlement can contribute.
+
+\section{Availability}
+Availability asks whether legitimate users or components can obtain service when required. A control that decreases unauthorized acceptance can still reduce availability. Hard account lockout is the canonical example: fewer online guesses may be processed, but an outsider may also be able to consume another user's failure budget if the policy is badly designed.
+
+\section{Authenticity, privacy, and accountability}
+Authenticity concerns whether an object, message, or action can be tied to its claimed source under the model. Privacy is broader than secrecy and may include limiting linkability, inference, or collection. Accountability concerns whether actions can be attributed and reviewed. These properties can support one another, but they are not synonyms.
+
+\section{Security as a vector}
+\label{sec:security-vector}
+Let a design $D$ have a security-and-cost vector
+\[
+S(D)=(C,I,A,P,B,K,\ldots),
+\]
+where coordinates may represent confidentiality, integrity, availability, privacy, blast radius, operational cost, or other declared quantities. The exact coordinates depend on the model. A claim that $D_2$ is ``more secure'' than $D_1$ is incomplete unless the comparison relation on these vectors is specified.
+
+\section{Tradeoffs and Pareto improvement}
+A particularly clean result is a Pareto improvement: one design improves at least one declared coordinate without worsening any others. Many real defenses are not Pareto improvements; they trade availability, cost, latency, or usability for reduced compromise probability. The book will report those tradeoffs rather than hide them behind a single score.
+
+\chapter{Separation and Isolation}
+\label{ch:separation}
+\section{Security domains}
+\label{sec:security-domains}
+A security domain is a collection of state and authority intended to be governed by a common policy boundary. Separation asks which information, credentials, permissions, and failure consequences should remain local to one domain instead of being shared by default.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{separation_domains.png}{\includegraphics[width=0.98\textwidth]{separation_domains.png}}{\fbox{\parbox{0.9\textwidth}{Figure asset not present in this source-only copy. See the compiled PDF or the source bundle.}}}
+\caption{A motivating schematic with parallel $A$ and $B$ database, user, and critic structures. The drawing is not itself a security architecture; it illustrates the question that motivates one: which identities, data, and authorities should remain separate, and which bridges are actually necessary?}
+\label{fig:separation-domains}
+\end{figure}
+
+Figure~\ref{fig:separation-domains} is deliberately ordinary. The security issue appears as soon as two sides that perform related work are represented separately. If one side is compromised, should the other side automatically become readable, writable, or administratively controllable? If the answer is no, the architecture needs a boundary that makes ``no'' true in implementation, not merely in documentation.
+
+\section{Separation of data}
+Let $D_A$ and $D_B$ be two data resources. A minimal separation goal is that authority to read or write one does not automatically imply authority over the other. The implication
+\[
+\operatorname{Read}_A(u)\Rightarrow \operatorname{Read}_B(u)
+\]
+should fail unless the policy explicitly requires it. The same applies to write authority.
+
+\section{Separation of credentials}
+A credential that proves authority in domain $A$ should not silently function as a universal credential for $B$. This does not forbid federation or single sign-on; it requires any authority transfer to be explicit, scoped, and governed by a bridge whose behavior can be reviewed.
+
+\section{Separation of authority}
+Data can be stored in separate databases while applications still run under one highly privileged account. In that case physical or logical data separation may provide less containment than expected. Let $\mathcal A_A$ and $\mathcal A_B$ denote the actions authorized in the two domains. Stronger separation restricts the intersection and the conversion paths between these authority sets.
+
+\section{Least privilege}
+Least privilege gives a component only the authority needed for its assigned function and duration. The principle is defensive because it reduces the set of actions available after the component itself is compromised. It is a statement about consequence containment, not a guarantee that compromise will not happen.
+
+\section{Blast radius}
+\label{sec:blast-radius}
+Let a directed graph $G=(V,E)$ represent possible compromise propagation under the declared threat model. For a component $c\in V$, define the blast radius
+\[
+B_G(c)=\Reach_G(c),
+\]
+the set of protected vertices reachable from $c$ along permitted or exploitable propagation edges represented in the model.
+
+\begin{theorem}[Edge-removal containment]
+Let $G'=(V,E')$ with $E'\subseteq E$. Then for every $c\in V$,
+\[
+B_{G'}(c)\subseteq B_G(c).
+\]
+If at least one vertex reachable from $c$ in $G$ becomes unreachable in $G'$, then the inclusion is strict.
+\end{theorem}
+
+\begin{proof}
+Every path in $G'$ uses only edges in $E'$, hence only edges in $E$, and is therefore also a path in $G$. Removing edges cannot create a new path. Strictness follows when a previously reachable vertex has no remaining path.
+\end{proof}
+
+\paragraph{Security interpretation.} A correctly implemented isolation boundary can improve security even if it does not reduce the probability that $c$ is compromised. It can reduce what follows from that compromise.
+
+\section{Narrow bridges between domains}
+Absolute isolation is often incompatible with useful systems. The defensive goal is therefore not ``no bridge'' but ``the smallest bridge that supports the legitimate function.'' If an object $x$ crosses from domain $A$ to domain $B$, let $P(x)$ be the predicate stating that $x$ satisfies the boundary policy. Later we will require every state-changing crossing to pass a gate that establishes $P(x)$ before protected state is modified.
+
+\chapter{Identity, Authentication, and Authorization}
+\label{ch:iaa}
+\section{Identity}
+Identity is the entity or account to which claims and permissions are attached. A username may name an identity, but a name alone does not authenticate the claimant.
+
+\section{Claims about identity}
+A claimant presents evidence associated with an identity. The evidence may be a password, cryptographic response, device-bound credential, biometric comparison, recovery artifact, or another approved mechanism. The system must distinguish the claim from the evidence supporting it.
+
+\section{Authentication}
+Authentication is the process that evaluates whether presented evidence satisfies the system's authentication policy. It establishes a claim to the degree and scope specified by that policy; it does not by itself answer what actions should be permitted afterward.
+
+\section{Authorization}
+Authorization maps authenticated or otherwise established context to permitted actions. Formally, if $x$ is system state and $a$ an action, a policy may define
+\[
+\operatorname{Allowed}(u,a,x)\in\{0,1\}.
+\]
+Security requires the implementation's authorization decision to conform to the required policy over the relevant state space.
+
+\section{Sessions}
+A session carries authentication state forward in time. Session security therefore becomes a problem of protecting a capability-like object: creation, binding, storage, expiration, renewal, and revocation all affect whether past authentication continues to justify present authority.
+
+\section{Revocation and continuing authorization}
+A credential or session that was once valid may cease to be valid. State transitions such as account disablement, role change, key rotation, or recovery should therefore be included in the authorization model rather than treated as administrative details outside the proof.
+
+\chapter{Credentials and Factors}
+\label{ch:factors}
+\section{Knowledge factors}
+Knowledge factors rely on information the claimant is expected to know. Their security depends on the distribution of the secret, protection of verifier data, rate controls where applicable, and the absence of alternate routes that bypass the intended requirement.
+
+\section{Possession factors}
+Possession factors rely on control of a device, key, token, or other object. The relevant threat model concerns theft, copying, remote use, enrollment, and recovery. ``Possession'' is therefore a policy claim about control, not a metaphysical property of the object.
+
+\section{Biometric factors}
+Biometric systems compare measured features with stored or derived templates. They differ from ordinary secrets because a person cannot rotate a fingerprint or face in the same way a password can be changed. Error rates, spoof resistance, privacy of templates, and fallback routes all belong in the model.
+
+\section{Recovery credentials}
+Recovery exists because primary credentials can be lost. That makes recovery a security route, not merely a support function. If recovery is sufficient to regain the same authority as the primary route, the whole account cannot be modeled accurately by analyzing the primary route alone.
+
+\section{Multiple factors}
+A simple conjunction model accepts only when several predicates hold:
+\[
+\operatorname{Accept}(z)=\operatorname{Pwd}(z)\land\operatorname{Factor}(z)\land\operatorname{Eligible}(z)\land\operatorname{Policy}(z).
+\]
+The actual implementation may be more stateful, but the conjunction is useful for one basic containment fact.
+
+\begin{proposition}[Conjunctive-factor containment]
+If acceptance requires predicates $P_1,\ldots,P_k$ all to hold, then the accepted event set is a subset of the event set satisfying any individual factor $P_i$.
+\end{proposition}
+
+\begin{proof}
+Every event satisfying $P_1\land\cdots\land P_k$ satisfies each conjunct $P_i$.
+\end{proof}
+
+\section{Independence between factors}
+Two factors provide less separation if the same compromise mechanism yields both. Factor independence is therefore a property of the threat model, not merely of labels such as ``something you know'' and ``something you have.''
+
+\section{Combining factors safely}
+A multi-factor design can be weakened by enrollment, recovery, remembered sessions, fallback logic, or inconsistent enforcement. A defensive proof must therefore refer to the complete acceptance predicate and state machine rather than assume that the presence of two factor names establishes two-factor security.
+
+\chapter{Threat Models}
+\label{ch:threat-models}
+\section{What is being protected?}
+A threat model starts with assets and security properties. Without a protected object and an undesirable event, it is impossible to say what a defense is supposed to reduce.
+
+\section{What does the adversary know?}
+Knowledge is modeled as side information $Z$. Public documentation, disclosed identifiers, prior breaches, observable errors, and legitimate protocol messages may all contribute. The model should not grant secret information silently, and it should not deny information that the environment necessarily exposes.
+
+\section{What can the adversary observe?}
+Observation includes outputs, timing, state changes visible through interfaces, and any other declared channel. Defensive design often reduces unnecessary distinctions in these observations.
+
+\section{What can the adversary modify?}
+Modification authority can include requests, local files, network messages, configuration inputs, or physical access depending on the model. A theorem that assumes read-only observation does not automatically survive a model that permits state modification.
+
+\section{Resource bounds}
+Security claims may depend on time, number of queries, memory, cost, or computational assumptions. The relevant bound should appear in the statement rather than be left as an implicit word such as ``practical.''
+
+\section{Trusted components}
+Every proof has a trusted base: hardware, operating system, parser, compiler, cryptographic primitive, verifier, policy specification, or some subset of these. Formal work improves clarity by naming that base rather than pretending it is empty.
+
+\section{Security claims are relative to a model}
+\begin{boundary}
+A proof of security property $P$ in model $M$ establishes $P$ in $M$. It does not, by syntax alone, establish $P$ in a stronger threat model $M'$ with additional adversary capabilities or different environmental assumptions.
+\end{boundary}
+This is not a weakness of proof. It is the reason assumptions must be explicit.
+
+\part{Authentication and Guarded Verification}
+
+\chapter{The Security Verifier}
+\label{ch:verifier}
+\section{Inputs and decisions}
+A verifier maps an input and relevant state to an outcome. For a guarded authentication process, a useful abstract form is
+\[
+\operatorname{Auth}_t(g,x_t)\in\{\ACCEPT,\REJECT,\DELAY,\BLOCKED\}.
+\]
+Here $g$ is the submitted candidate or credential bundle and $x_t$ is system state at time $t$.
+
+\section{Stateless verification}
+A stateless verifier's answer depends only on the current input and a fixed environment. Mathematical proof checking is often modeled this way: once a certificate is valid relative to a fixed environment version, the history of previous failed search attempts does not make the certificate invalid.
+
+\section{Stateful verification}
+Live security verifiers are commonly stateful. A correct credential can be refused because an account is disabled, a factor is pending, a risk policy blocks the request, or a retry budget has been exhausted. Security formalization therefore needs transition semantics as well as a credential predicate.
+
+\section{Retry counters and timers}
+Let $n_t$ be a failure counter and $\tau_t$ a timer or delay state. A transition rule updates these values after each outcome. A claimed attempt bound $N$ is meaningful only if the modeled transition system actually prevents more than $N$ processed attempts within the declared episode or horizon.
+
+\section{Risk and account state}
+Risk scores and account status can change the acceptance predicate. Adaptive policies can improve some tradeoffs but also complicate verification because the verifier's behavior must now be analyzed over a larger state space.
+
+\section{ACCEPT, REJECT, DELAY, and BLOCKED}
+The four outcomes separate semantic rejection from temporary delay and policy blocking. This avoids pretending that every non-acceptance is the same event. Availability analysis especially depends on the distinction.
+
+\section{Verifying the verifier}
+\label{sec:verify-verifier}
+The deeper target is not to guess what the verifier will do but to prove that what it does conforms to an intended specification. Let $\Impl(z)$ denote implemented acceptance for a complete event $z$ and $\Req(z)$ the required acceptance predicate. The one-sided safety claim is
+\[
+c_{\mathrm{auth}}:\quad \forall z\,[\Impl(z)\Rightarrow\Req(z)].
+\]
+A counterexample $z^*$ with $\Impl(z^*)$ true and $\Req(z^*)$ false is a certificate of an unintended acceptance defect in the modeled system.
+
+\chapter{Routes and Attack Surfaces}
+\label{ch:routes}
+\section{Primary routes}
+A system may have a primary login flow, but overall security depends on every sufficient route to the protected authority. Modeling only the most visible route can overstate the effect of strengthening it.
+
+\section{Recovery routes}
+Recovery may restore credentials, issue a session, or otherwise regain access. If it can reach the same protected state, it belongs in the same end-to-end security analysis.
+
+\section{Enrollment and reset}
+Enrollment creates authority; reset reassigns or replaces it. These transitions can be more consequential than ordinary login because they change which credentials will be accepted in the future.
+
+\section{Remembered sessions}
+A remembered session can act as an alternate route that bypasses fresh primary authentication. Its theft, expiration, revocation, and binding conditions therefore affect system-level security.
+
+\section{Alternate interfaces}
+Web, mobile, API, administrative, and legacy interfaces may enforce different controls. A policy theorem about one interface does not automatically cover another.
+
+\section{Route interaction}
+Defects can arise only when individually reasonable routes interact: a recovery flow may fail to invalidate sessions, or a role change may not propagate to a separate service. Shared state and transitions should therefore be explicit in the model.
+
+\section{The weakest sufficient route}
+\label{sec:weakest-route}
+Let routes $R_1,\ldots,R_k$ each be sufficient to obtain protected authority, and let $C_i$ denote a modeled cost of successfully traversing route $R_i$. An actor able to choose the least-cost sufficient route faces system-level cost at most
+\[
+C_{\mathrm{system}}\le \min_i C_i.
+\]
+This is an upper bound, not a complete metric. Its defensive lesson is that strengthening one route while leaving a cheaper sufficient route unchanged cannot force the overall minimum above that unchanged route.
+
+\chapter{Online and Offline Security}
+\label{ch:online-offline}
+\section{Interactive verification}
+An online attempt is mediated by a live system that can update state, rate-limit, delay, block, or require additional factors. The number and timing of processed attempts are therefore part of the security mechanism.
+
+\section{Attempt budgets}
+If an episode permits at most $N$ processed guesses and failed guesses reveal no additional secret-dependent information beyond rejection, the direct guessing success probability is bounded by the top-$N$ mass $G_N(\pi)$.
+
+\section{Rate limiting}
+Rate limiting reduces how quickly attempts can be processed. It may create an effective attempt budget over a finite horizon even when no permanent lockout occurs.
+
+\section{Delay and lockout}
+Delay and lockout can reduce online guessing opportunity, but aggressive policies may also reduce legitimate availability. The correct comparison is therefore multi-objective.
+
+\section{Offline verification}
+If an attacker or auditor possesses data sufficient to test candidates locally, the live server's retry counter no longer directly limits those local checks. The relevant defense becomes the cost and structure of the offline verifier data and the underlying secret distribution, together with the broader threat model.
+
+\section{Salts and instance separation}
+Unique salts separate precomputation across verifier instances. A table computed for one salt does not directly provide outputs for a different salt unless additional computation or information supplies those outputs. Salting does not make weak secrets strong; it blocks a particular reuse of precomputed work.
+
+\section{Why defenses do not transfer automatically}
+A defense theorem should name the verification setting. Online throttling, offline password hashing cost, factor requirements, and hardware-backed key protection address different mechanisms. ``Secure against guessing'' is too broad unless the mode of verification is declared.
+
+\chapter{Probability of Compromise}
+\label{ch:prob-compromise}
+\section{Security distributions}
+Let $\pi$ be the conditional distribution of a protected secret or event given the side information available in the modeled episode. All probability statements in this chapter are relative to that conditioning.
+
+\section{Candidate ordering}
+An optimal bounded guessing strategy tries candidates in nonincreasing probability order when guesses are independent tests and failure yields no additional information. This converts the distribution into an ordered list $\pi_{(1)},\pi_{(2)},\ldots$.
+
+\section{Top-$N$ probability mass}
+\label{sec:top-n}
+Define
+\[
+G_N(\pi)=\sum_{i=1}^{N}\pi_{(i)}.
+\]
+It measures how much probability mass is exposed to the best $N$ guesses under the stated model.
+
+\begin{theorem}[Finite-attempt bound]
+If at most $N$ distinct candidates can be tested, each test only reports whether that candidate is correct, and the prior distribution remains the relevant model, then no strategy can exceed success probability $G_N(\pi)$.
+\end{theorem}
+
+\begin{proof}
+Any set of at most $N$ tested candidates has total prior mass no greater than the sum of the $N$ largest point probabilities. Testing those $N$ largest candidates attains the bound.
+\end{proof}
+
+\section{Min-entropy}
+If the conditional min-entropy is
+\[
+H_\infty(W\mid Z=z)=-\log_2\max_w\Prb(W=w\mid Z=z),
+\]
+then every point probability is at most $2^{-H_\infty}$. Consequently,
+\[
+G_N(\pi)\le \min\{1,N2^{-H_\infty}\}.
+\]
+
+\section{Conditional information}
+The distribution should already incorporate legitimate side information. Adding side information can concentrate or sometimes redistribute the conditional probabilities. Security comparisons must therefore hold the information model fixed or state exactly how it changes.
+
+\section{Compromise bounds}
+A defense can reduce modeled compromise probability in several different ways: reduce the number $N$ of opportunities, flatten the relevant distribution, require independent additional predicates, or contain what authority follows from success.
+
+\section{Comparing defenses quantitatively}
+When two defenses affect different mechanisms, a scalar comparison may be misleading. One may lower online success probability but increase denial risk; another may leave primary compromise probability unchanged while sharply reducing blast radius. Chapter~\ref{ch:security-means} therefore treats security improvement as vector-valued.
+
+\part{Containment and Defensive Architecture}
+
+\chapter{Containment}
+\label{ch:containment}
+\section{Prevention versus containment}
+Prevention reduces the probability that an undesirable event begins. Containment reduces the consequences after it begins. Mature security usually requires both because no realistic system can assume every preventive control will succeed forever.
+
+\section{Local failure versus system failure}
+A local component failure should not automatically become a system-wide failure. This is the architectural form of the separation principle: the system should preserve important invariants outside the failed domain whenever the required function permits it.
+
+\section{Compromise propagation}
+Propagation can be modeled by reachability, capabilities, shared credentials, shared storage, or state-transition dependencies. The appropriate model depends on what ``compromise'' means in the system under study.
+
+\section{Privilege boundaries}
+A privilege boundary is useful only if it changes the actions available after crossing or failing to cross it. Labels, process names, or separate databases do not provide containment unless the implementation enforces different authority.
+
+\section{Damage bounds}
+Let $L(v)$ denote loss associated with compromise of protected vertex $v$ and $B(c)$ the blast radius from $c$. A simple modeled worst-case loss is
+\[
+L_{\max}(c)=\sum_{v\in B(c)}L(v).
+\]
+Reducing $B(c)$ can reduce this upper bound even when the probability of compromising $c$ is unchanged.
+
+\section{Recovery after containment}
+Containment should support recovery: revoke compromised credentials, reconstruct trusted state, verify repaired configurations, and restore service without silently reintroducing the same propagation path.
+
+\chapter{Controlled Interfaces}
+\label{ch:interfaces}
+\section{Why systems need bridges}
+Useful systems communicate. The goal of isolation is therefore controlled interaction, not universal disconnection. Every bridge should justify the data and authority it carries.
+
+\section{Minimal interfaces}
+A minimal interface exposes only operations and data needed for the legitimate function. Fewer operations can reduce the set of states reachable from untrusted input, although minimality alone does not prove correctness.
+
+\section{Typed inputs and outputs}
+Types, schemas, and protocol grammars constrain what a receiver is expected to process. They are useful as formal boundaries when the parser and implementation are included in the trusted model.
+
+\section{Input validation}
+Validation checks whether an input satisfies the preconditions for a transition. Defensive modeling treats validation as a predicate with defined semantics, not as a vague instruction to ``sanitize input.''
+
+\section{Authority carried across an interface}
+Some messages are pure data; others carry authority. A signed request, session token, capability, or administrative command can change what the receiver is permitted to do. Interfaces should make such authority explicit and scope it narrowly.
+
+\section{Interface invariants}
+Let $I(k)$ be an invariant of protected state $k$, and let $P(x)$ be the gate predicate for an incoming object. A safe transition rule $T$ should satisfy
+\[
+I(k)\land P(x)\Rightarrow I(T(k,x)).
+\]
+
+\section{Verified boundary transitions}
+\label{sec:gate-preservation}
+\begin{theorem}[Gate-preservation principle]
+Suppose protected state begins in $k_0$ with $I(k_0)$. Every state-changing external input $x_t$ is admitted only when a gate establishes $P(x_t)$, and every admitted transition preserves $I$ as above. Then every protected state reachable through the modeled interface satisfies $I$.
+\end{theorem}
+
+\begin{proof}
+Induct on the number of admitted transitions. The base state satisfies $I$. If $I(k_t)$ holds and the gate admits $x_t$, then $P(x_t)$ holds; preservation gives $I(k_{t+1})$. Rejected inputs cause no modeled state-changing transition.
+\end{proof}
+
+\begin{boundary}
+The theorem depends on the claim that every relevant state-changing path goes through the modeled gate. A hidden administrative channel, shared memory path, or unmodeled privilege can invalidate the premise.
+\end{boundary}
+
+\chapter{The Ocean as a Security Moat}
+\label{ch:ocean}
+\section{The Ocean benchmark as an adversarial environment}
+The Ocean in this manuscript is the ATP test environment, repurposed as a defensive admission test. A candidate ATP, controller, memory update, or architectural revision is exercised on a deliberately varied suite before it is trusted with deployment authority. The Ocean is not itself proof of security; it is a place where failures can be exposed without granting the candidate direct control over the protected core.
+
+\section{Candidate systems outside the trusted perimeter}
+A candidate version should be treated as untrusted until it passes the required gate. This is ordinary separation applied to the development process: experimental capability and trusted operational authority are different domains.
+
+\section{Security invariants tested in the Ocean}
+Relevant invariants may include: only verifier-accepted mathematical objects enter the trusted BANK; speculative states cannot overwrite trusted memory; UNKNOWN is not silently converted to success; provenance is preserved; resource limits are respected; and a failed verifier cannot be bypassed by another component.
+
+\section{Verifier-gated admission}
+Let $A$ be a candidate system and let $\mathcal O_t=\{o_1,\ldots,o_n\}$ be the required Ocean suite at time $t$. Let $V_I(A,o)$ be an independent check that candidate $A$ preserved security invariant set $I$ during trial $o$. Define
+\[
+\operatorname{Pass}_{\mathcal O_t}(A)=1
+\quad\Longleftrightarrow\quad
+V_I(A,o)=1\text{ for every required }o\in\mathcal O_t.
+\]
+Deployment policy may require this predicate without claiming it is sufficient for universal security.
+
+\section{Failure becomes a permanent regression case}
+\label{sec:ocean-regression}
+When a verified failure case $r_t$ is accepted as a useful regression test, update
+\[
+\mathcal O_{t+1}=\mathcal O_t\cup\{r_t\}.
+\]
+The intended moat therefore accumulates evidence from history instead of forgetting failures after they are repaired.
+
+\begin{proposition}[Tested-violation exclusion]
+Suppose deployment requires $\operatorname{Pass}_{\mathcal O_t}(A)=1$. Then no candidate that exhibits a verifier-recognized violation of $I$ on any required Ocean case in $\mathcal O_t$ is admitted by that policy.
+\end{proposition}
+
+\begin{proof}
+Such a violation makes $V_I(A,o)=0$ for at least one required $o$, hence $\operatorname{Pass}_{\mathcal O_t}(A)=0$ by definition.
+\end{proof}
+
+\section{Holdouts and unseen Ocean cases}
+If every test becomes visible during development, a candidate can overfit the known suite. Holdout families, newly generated cases, and versioned test partitions are therefore useful for estimating generalization. They still do not prove universal security.
+
+\section{What passing the Ocean does and does not prove}
+An Ocean pass proves only what the gate and suite are specified to establish. It can exclude candidates with known tested failures; it cannot establish behavior on every future environment, every implementation bug, or every threat model. The moat is strongest when it is combined with independent verification, separation of authority, and a permanent regression history.
+
+\part{Formal Security}
+
+\chapter{Specifications and Invariants}
+\label{ch:specifications}
+\section{Intended behavior}
+A specification states what behavior is required, permitted, or forbidden. It may be partial: a safety specification can forbid unauthorized acceptance without defining every user-interface detail.
+
+\section{Implemented behavior}
+The implementation induces its own transition and acceptance semantics. Formal assurance compares these semantics with the specification rather than assuming the implementation inherits the specification by intention.
+
+\section{Safety properties}
+A safety property says, informally, that a bad event does not occur. Many security properties take this form: no unauthorized write, no acceptance without required factors, no unverified BANK deposit.
+
+\section{Invariants}
+An invariant $I$ is a property intended to hold in every reachable state of the modeled system. Inductive invariants are especially useful because they can be proved from an initial condition and transition-preservation rule.
+
+\section{Counterexamples}
+A counterexample is a concrete object or trace showing that a universal claim fails. In a defensive workflow, a checked counterexample is valuable because it identifies a specification-conformance defect that can be repaired and later added to regression testing.
+
+\section{Partial and complete specifications}
+No specification is automatically complete. A proof may establish conformance to a stated policy while the policy itself omits an important security requirement. The book will therefore distinguish implementation conformance from adequacy of the specification.
+
+\chapter{Security as Conformance}
+\label{ch:conformance}
+\section{Required acceptance}
+Let $\Req(z)$ be the predicate stating that complete event $z$ is intended to be accepted under the security policy.
+
+\section{Implemented acceptance}
+Let $\Impl(z)$ state that the modeled implementation accepts $z$. The two predicates may differ because of software defects, inconsistent state handling, incomplete policy enforcement, or a deliberately partial model.
+
+\section{Acceptance-soundness}
+\label{sec:acceptance-soundness}
+The one-sided security claim
+\[
+\forall z\,[\Impl(z)\Rightarrow\Req(z)]
+\]
+states that every implemented acceptance is authorized by the specification. It does not require the implementation to accept every event that the specification permits.
+
+\begin{proposition}[Counterexample sufficiency]
+If there exists $z^*$ such that $\Impl(z^*)$ and $\neg\Req(z^*)$, then acceptance-soundness is false.
+\end{proposition}
+
+\begin{proof}
+The witness $z^*$ falsifies the universal implication.
+\end{proof}
+
+\section{False acceptance}
+A false acceptance is an event accepted by the implementation but forbidden by the specification. It is a safety defect relative to the declared model.
+
+\section{False rejection}
+A false rejection satisfies $\Req(z)$ but not $\Impl(z)$. It may represent availability, completeness, or usability failure rather than unauthorized acceptance. The distinction matters because a repair that eliminates false acceptance by rejecting everything is not a useful overall security design.
+
+\section{Full conformance}
+Full extensional conformance requires
+\[
+\forall z\,[\Impl(z)\leftrightarrow\Req(z)].
+\]
+It combines acceptance-soundness with completeness. Many security investigations begin with the one-sided safety direction because it isolates unauthorized acceptance.
+
+\chapter{Defensive Theorems}
+\label{ch:defensive-theorems}
+\section{Hardening theorems}
+A hardening theorem states that a design change reduces the probability, reachability, or consequence of a named undesirable event under a fixed model.
+
+\section{Isolation theorems}
+Isolation theorems compare reachable authority or blast radius before and after a boundary is imposed. Theorem 4.1 is the simplest graph-theoretic example.
+
+\section{Containment theorems}
+Containment theorems may leave the probability of initial compromise unchanged while proving a smaller consequence set or loss bound.
+
+\section{Rate-control theorems}
+Rate-control theorems bound online opportunity over a declared horizon. They must not be exported to an offline verification model without additional premises.
+
+\section{Factor-composition theorems}
+Factor results formalize how conjunction, independence, fallback, and recovery affect the accepted event set. They should analyze the complete route structure rather than only the advertised primary factors.
+
+\section{Recovery-route theorems}
+A recovery theorem can show that strengthening primary authentication is insufficient when an unchanged recovery route remains sufficient and weaker under the same cost model.
+
+\section{Repair-preservation theorems}
+\label{sec:defense-dominance}
+For vulnerability class $X$ and metric $m_X$, define
+\[
+D_2\succ_X D_1
+\]
+when $m_X(D_2)<m_X(D_1)$ and the theorem's declared non-regression constraints are satisfied. This notation is intentionally local to a metric and model; it is not a universal total order on security designs.
+
+\part{AMLD Security}
+
+\chapter{Security as a Settlement Problem}
+\label{ch:settlement}
+\section{Why binary prove-or-fail is too crude}
+Once security claims are formal, an investigation can end in several mathematically different ways. A claim may be proved, refuted by a checked witness, shown independent of the admitted theory in a declared metatheory, or rendered uninformative because the admitted assumptions are inconsistent. Failure to find any such certificate is a separate operational outcome: UNKNOWN.
+
+\section{P: proving the security property}
+Let $c$ be the target security proposition. Role $P$ searches for a certificate in a proof-certificate language $\mathcal C_P(c)$ that an independent verifier accepts as a proof of $c$ in the declared environment.
+
+\section{R: producing a verified counterexample}
+Role $R$ searches for a certificate of $\neg c$. For a universal conformance claim this may be a concrete event or trace $z^*$ together with checker receipts establishing the predicates needed to show that $z^*$ is a counterexample.
+
+\section{I: independence}
+Role $I$ addresses a different question: whether $c$ is independent of the admitted theory, in a specified metatheory capable of certifying that claim. Merely failing to prove or refute $c$ is not independence.
+
+\section{C: inconsistency}
+Role $C$ searches for a certificate that the admitted assumptions or security specification are inconsistent. In an inconsistent theory, ordinary derivability can become uninformative, so detecting inconsistency is a distinct settlement outcome.
+
+\section{UNKNOWN}
+\label{sec:unknown}
+If no accepted P, R, I, or C certificate is found within the declared resources, the operational result is $\UNKNOWN$. UNKNOWN means ``not settled under these conditions,'' not ``independent,'' ``safe,'' or ``false.''
+
+\section{Independent verification}
+Agent identity is provenance, not validity. Every settlement certificate must be accepted because its semantic content, dependencies, scope, and environment satisfy the independent checker, not because it came from the ``right'' role.
+
+\chapter{BANK and FUTUREBANK}
+\label{ch:bank}
+\section{The security problem that motivates two stores}
+A reasoning system investigating security must consider unverified possibilities: suspected defects, candidate repairs, possible traces, tentative invariants, and alternative policies. Those objects are useful for planning but dangerous if they are silently treated as established facts. The architecture therefore needs an epistemic separation boundary before it needs AMLD terminology.
+
+\section{The BANK}
+\label{sec:bank-definition}
+At time $t$, let
+\[
+B_t=\{\text{objects accepted by the declared verifier and retained as trusted reasoning state}\}.
+\]
+The BANK is shared verified memory. Provenance should record how each object entered, but provenance does not replace verification.
+
+\section{The FUTUREBANK}
+\label{sec:futurebank-definition}
+Let
+\[
+F_t=\{\text{unverified hypotheses, imagined traces, conditional consequences, and candidate repairs}\}.
+\]
+The FUTUREBANK permits planning without contaminating $B_t$.
+
+\section{Quarantine before verification}
+An object may be useful in $F_t$ even when it would be unsafe to assert in $B_t$. Search and simulation can condition on ``suppose $h$'' without asserting $h$ as a verified premise.
+
+\section{Promotion into the BANK}
+Let $A_t$ be the set of candidate deposits proposed during a round and let $V(A_t)$ be the subset accepted by the verifier. The trusted update is
+\[
+B_{t+1}=B_t\cup V(A_t).
+\]
+The FUTUREBANK may evolve by search-specific rules, but those rules do not redefine the BANK gate.
+
+\section{Preventing speculative contamination}
+\begin{theorem}[Verifier-gated noncontamination]
+Suppose the only operation that adds a new semantic assertion to $B_t$ is $B_{t+1}=B_t\cup V(A_t)$, and $V$ returns only checker-accepted assertions. Then no assertion rejected or never examined by $V$ enters the BANK through the modeled update rule.
+\end{theorem}
+
+\begin{proof}
+Every new element of $B_{t+1}\setminus B_t$ lies in $V(A_t)$ by definition of the update, hence is checker-accepted.
+\end{proof}
+
+\section{Why BANK/FUTUREBANK precedes P/R/I/C conceptually}
+The distinction between trusted and speculative information is a general security need. P/R/I/C are specialized search roles that become useful once the system asks which kinds of certificates can settle a formal security claim. The architecture is therefore motivated in the order: separation of epistemic status, verifier gate, then specialized settlement roles.
+
+\chapter{Security Memory}
+\label{ch:security-memory}
+\section{Remembering successful defenses}
+Verified repairs and invariants should remain available so future reasoning does not repeatedly rediscover the same protection.
+
+\section{Remembering failed defenses}
+A failed repair is also information. It should not enter the BANK as a successful theorem, but its failure record can be retained as provenance-bearing search memory.
+
+\section{Rejected defect hypotheses}
+A rejected hypothesis may become useful negative evidence about a class of explanations. Retention must preserve its rejected status so later retrieval does not convert it into an established defect.
+
+\section{Negative knowledge}
+Negative knowledge includes tested approaches that failed, candidates rejected by the verifier, and repairs that violated another constraint. It can reduce repeated search cost without weakening the verifier boundary.
+
+\section{Regression memory}
+Every verified failure suitable for future testing can become a regression case. Ocean memory and reasoning memory therefore reinforce one another: one remembers how search failed; the other remembers an external test that future versions must survive.
+
+\section{Cross-system transfer}
+Transfer is useful only when provenance and applicability conditions are preserved. A repair that worked under one threat model should not be asserted under another merely because its surface form is similar.
+
+\section{Append-only security history}
+\label{sec:append-memory}
+A simple memory law is
+\[
+M_{t+1}=M_t\cup E_{t+1},
+\]
+where $E_{t+1}$ contains newly recorded evidence with outcome labels, provenance, environment, and verification status. ``Append-only'' protects history from silent erasure; it does not mean every old item remains equally relevant.
+
+\chapter{AMLD Control and Repair}
+\label{ch:control-repair}
+\section{Security objectives}
+Control requires an objective vector: compromise probability, blast radius, availability, verification cost, latency, memory, and other constraints. A controller cannot optimize ``security'' until these quantities and priorities are stated.
+
+\section{Independent control variables}
+Policy thresholds, resource allocations, isolation choices, retry budgets, search novelty, and verification schedules can be modeled as control variables when the system is authorized to change them.
+
+\section{Dissatisfaction with a defense}
+A controller needs evidence that the current strategy is inadequate. Sustained verifier rejection, poor progress, repeated regression failure, or a dominated security vector can all serve as signals depending on the model.
+
+\section{Ordinary optimization}
+When a strategy appears productive, local refinement may be preferable to structural change. This is the security analogue of continuing to improve a defense whose measured objective is moving in the intended direction.
+
+\section{Structural revision}
+When local refinement repeatedly fails, the controller may consider a qualitatively different architecture: greater isolation, a different recovery rule, a new gate, or a revised factor composition. Such revision remains speculative until verified.
+
+\section{Comparing candidate repairs}
+Candidate repairs should be evaluated against both the target vulnerability and non-regression constraints. A repair that closes one acceptance path by denying all legitimate users is not automatically superior.
+
+\section{Verifier-gated deployment}
+The repair pipeline mirrors the BANK boundary:
+\[
+\text{candidate repair}\rightarrow\text{analysis/Ocean}\rightarrow\text{independent checks}\rightarrow\text{deployment}.
+\]
+Planning may be creative; deployment authority remains narrow.
+
+\part{Experiments and Research Frontier}
+
+\chapter{Security Experiments}
+\label{ch:experiments}
+\section{What constitutes an experiment?}
+An experiment should name the system version, threat model, target property, data or problem family, resource budget, outcome criteria, and verifier. Without these, a success or failure is difficult to interpret or reproduce.
+
+\section{Threat-model declaration}
+Every experimental result is conditional on a model. The experiment should record which observations and actions are allowed and which components are trusted.
+
+\section{LAB, paired, holdout, and target cases}
+LAB cases support development. Paired cases compare controlled variants. Holdouts estimate generalization. Target cases are the questions ultimately of interest. Mixing these roles can produce optimistic estimates.
+
+\section{Security baselines}
+A new AMLD or Ocean mechanism should be compared with matched baselines: same verifier, same target, same resource accounting, and clearly stated differences in memory or control.
+
+\section{Ablations}
+Ablations remove one mechanism at a time: persistent failure memory, FUTUREBANK depth, cross-route BANK sharing, Ocean gating, or another feature. They help distinguish architectural contribution from incidental complexity.
+
+\section{Preregistration}
+For high-value claims, the threat model, metric, test split, stopping rule, and analysis should be specified before the final target results are inspected.
+
+\section{Reproducibility and certificates}
+Raw logs are useful but not sufficient. Security experiments should preserve code version, configuration, environment, verifier output, and where possible independently checkable certificates for formal claims.
+
+\chapter{Measuring Defensive Improvement}
+\label{ch:measurement}
+\section{Compromise probability}
+Probability of unauthorized success is one metric, but only when the underlying distribution and episode are specified.
+
+\section{Blast radius}
+Blast radius measures consequence rather than initial probability. It can be represented as a reachable set, weighted loss, or another domain-specific damage quantity.
+
+\section{Availability cost}
+Controls can create denial or latency. Availability cost should therefore appear beside security gain when the defense trades one for the other.
+
+\section{Verification cost}
+Formal assurance consumes computation, engineering effort, and sometimes runtime latency. The verifier should remain independent of search, but its cost belongs in system evaluation.
+
+\section{Repair cost}
+A security design that is theoretically strong but operationally impossible to repair may perform poorly over time. Repair and recovery cost are therefore legitimate coordinates.
+
+\section{Multi-objective security}
+Let
+\[
+\Delta S=(\Delta p_{\mathrm{comp}},\Delta |B|,\Delta A,\Delta C_V,\Delta C_R,\ldots).
+\]
+The sign convention should be stated so that improvement is unambiguous. The vector makes visible when a defense helps one objective and harms another.
+
+\section{Pareto frontiers}
+A design is Pareto-dominated if another design is no worse on all declared coordinates and strictly better on at least one. This is often a more honest comparison than forcing every objective into a single weighted sum.
+
+\chapter{AMLD Security Conjectures}
+\label{ch:conjectures}
+This chapter states research conjectures, not established theorems. Each should eventually be paired with a preregistered experimental design and an explicit class of systems for which it is claimed.
+
+\section{Audit-over-secret advantage}
+\begin{conjecture}
+For some realistic, well-rate-limited authentication classes with low top-$N$ exposure, allocating AMLD-style search primarily to specification conformance, recovery routes, and control-policy auditing yields greater defensive value per unit computation than allocating the same resources primarily to direct secret-candidate ranking.
+\end{conjecture}
+
+\section{Cross-route shared-BANK advantage}
+\begin{conjecture}
+For systems with several sufficient routes, a provenance-preserving shared BANK of verified invariants and counterexample lemmas can reduce expected audit cost relative to matched isolated route audits, especially for interaction defects.
+\end{conjecture}
+
+\section{Adaptive flood-control frontier}
+\begin{conjecture}
+For some threat and usability distributions, an adaptive rate-control policy using verified account and risk state achieves a strictly better compromise-versus-denial tradeoff than every fixed hard-lockout policy in a declared comparison class.
+\end{conjecture}
+
+\section{Verifier-history repair advantage}
+\begin{conjecture}
+Retaining rejected defect hypotheses and failed repair attempts outside the verified BANK but inside provenance-preserving search history can improve future repair selection without increasing false certification.
+\end{conjecture}
+
+\section{Ocean-regression-moat advantage}
+\begin{conjecture}
+For some evolving ATP or AMLD systems, an accumulating Ocean suite that permanently retains verified regression cases reduces the rate of reintroduced verifier-boundary failures relative to a matched development process that discards historical failure cases.
+\end{conjecture}
+
+\section{Separation-aware AMLD control}
+\begin{conjecture}
+A controller that explicitly includes blast radius and authority-boundary structure in its repair objective can find defenses with better containment properties than a matched controller optimizing only direct acceptance or proof-search success.
+\end{conjecture}
+
+\section{Persistent-failure-memory advantage}
+\begin{conjecture}
+On some repeated security-audit distributions, append-only, outcome-labeled failure memory reduces expected repeated search cost while preserving verifier-gated correctness, relative to matched systems that retain only successes.
+\end{conjecture}
+
+\chapter{Claims We Should Not Make}
+\label{ch:limits}
+\section{No finite test proves universal security}
+A finite Ocean suite can exclude tested failures and estimate behavior on holdouts. It cannot quantify over every future program state, threat model, hardware defect, or environment unless a separate formal argument provides that quantification.
+
+\section{More searching is not necessarily safer}
+Additional search can consume resources, increase complexity, or generate more speculative state. Search helps only when the architecture preserves the verifier boundary and uses the additional work productively.
+
+\section{More reflection is not necessarily safer}
+Self-description and metareasoning can improve control in some systems and waste resources in others. No universal optimum follows from the architecture alone.
+
+\section{More isolation is not automatically better}
+Isolation can improve containment while harming availability, operability, or required communication. The goal is justified separation with narrow verified bridges, not maximum disconnection regardless of function.
+
+\section{Verification is only as meaningful as its specification}
+A perfectly correct checker can certify conformance to an inadequate or inconsistent specification. Specification review and contradiction detection therefore remain first-class tasks.
+
+\section{A secure component does not imply a secure composition}
+Interactions, shared state, recovery paths, and authority transfer can create system-level failures absent from component-local proofs.
+
+\section{UNKNOWN is not failure}
+UNKNOWN is an epistemic and operational status. It reports that no accepted settlement certificate was obtained under the declared conditions. Treating UNKNOWN as either proof of safety or proof of vulnerability would erase the distinction that motivated P/R/I/C in the first place.
+
+\appendix
+\part{Back Matter}
+
+\chapter{Glossary of Terms}
+\label{app:term-glossary}
+\begin{description}[style=nextline,leftmargin=2.4em]
+\item[Acceptance-soundness] The one-sided conformance property $\forall z[\Impl(z)\Rightarrow\Req(z)]$.
+\item[AMLD] In this manuscript, the verifier-gated multi-role logical-decider architecture built around settlement roles, shared verified memory, speculative planning, and explicit verification boundaries.
+\item[Attack surface] The set of externally or internally reachable interfaces and transitions relevant to the declared threat model. The term is descriptive; the manuscript focuses on reducing and controlling the surface rather than cataloging exploitation procedures.
+\item[Authorization] The policy decision that determines whether an established identity or context may perform an action in a state.
+\item[Authentication] The process by which presented evidence is evaluated against an authentication policy.
+\item[BANK] Shared memory containing assertions admitted only through the declared verification gate.
+\item[Blast radius] The set or weighted consequence of protected resources reachable after a modeled component compromise.
+\item[Certificate] A finite object whose validity for a declared claim can be checked by an independent verifier.
+\item[Compromise] A modeled loss of a declared security property, such as unauthorized authority or disclosure. The exact meaning must be stated per theorem.
+\item[Containment] Reduction of consequences after an undesirable event occurs.
+\item[Credential] Evidence or an object used by a policy to establish authority or identity claims.
+\item[FUTUREBANK] Quarantined speculative state containing hypotheses, imagined traces, conditional consequences, and candidate repairs not yet admitted to the BANK.
+\item[Invariant] A property intended to hold in every reachable state of a model.
+\item[Least privilege] The design principle of granting only authority required for the declared function and duration.
+\item[Ocean] In this treatise, the ATP test environment used as a verifier-gated regression moat for candidate reasoning-system versions.
+\item[Refutation] A checked certificate that a target proposition is false in the declared environment.
+\item[Regression moat] An accumulating suite of verified historical failure cases that a future candidate must survive before admission.
+\item[Security domain] A collection of state and authority governed by a common policy boundary.
+\item[Threat model] The declared assets, adversary observations and actions, resources, trusted components, and environmental assumptions under which a security claim is evaluated.
+\item[Verifier] The independent checker that determines whether a proposed certificate, boundary transition, or other formally specified object satisfies the declared acceptance rule.
+\item[UNKNOWN] The result returned when no accepted P/R/I/C settlement certificate is obtained under the declared search conditions.
+\end{description}
+
+\chapter{Glossary of Symbols and Notation}
+\label{app:symbol-glossary}
+The ``classical reference'' column points to a standard book in which the underlying notation or mathematical object is developed. It does not imply that book-specific AMLD notation appears in that source. The ``GitHub/source reference'' column gives a stable LaTeX label in this draft. Before publication, these labels should be paired with a frozen repository path and commit hash; line-number links should be generated only after the source is committed because line numbers move during editing.
+
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth} >{\raggedright\arraybackslash}p{0.22\textwidth} >{\raggedright\arraybackslash}p{0.28\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth}@{}}
+\toprule
+\textbf{Symbol} & \textbf{Meaning here} & \textbf{Classical book} & \textbf{GitHub/source reference}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Symbol} & \textbf{Meaning here} & \textbf{Classical book} & \textbf{GitHub/source reference}\\
+\midrule
+\endhead
+$\in$ & Membership: $x\in A$ means $x$ is an element of $A$. & Enderton, \emph{Elements of Set Theory}. & Draft source; set notation used throughout; see label \path{ch:separation}.\\
+$\notin$ & Non-membership. & Enderton, \emph{Elements of Set Theory}. & Same source; standard notation.\\
+$\subseteq$ & Subset or inclusion. & Enderton, \emph{Elements of Set Theory}. & Label \path{sec:blast-radius}; Theorem 4.1.\\
+$\nsubseteq$ & Not a subset: inclusion fails. & Enderton, \emph{Elements of Set Theory}. & Same source; glossary definition.\\
+$\subsetneq$ & Proper subset. & Enderton, \emph{Elements of Set Theory}. & Label \path{sec:blast-radius}; strict containment discussion.\\
+$\cup$ & Set union. & Enderton, \emph{Elements of Set Theory}. & Labels \path{sec:ocean-regression}, \path{sec:append-memory}.\\
+$\cap$ & Set intersection. & Enderton, \emph{Elements of Set Theory}. & Used in domain and authority separation discussions.\\
+$\setminus$ & Set difference. & Enderton, \emph{Elements of Set Theory}. & Used in proofs involving newly added BANK elements.\\
+$\varnothing$ & Empty set. & Enderton, \emph{Elements of Set Theory}. & Standard notation; available for later revisions.\\
+$\neg P$ & Logical negation. & Enderton, \emph{A Mathematical Introduction to Logic}. & Label \path{sec:acceptance-soundness}.\\
+$P\land Q$ & Logical conjunction. & Enderton, \emph{A Mathematical Introduction to Logic}. & Chapter \path{ch:factors}.\\
+$P\lor Q$ & Logical disjunction. & Enderton, \emph{A Mathematical Introduction to Logic}. & Standard notation; used as needed in specifications.\\
+$P\Rightarrow Q$ & Material implication in the formal claims of this book. & Enderton, \emph{A Mathematical Introduction to Logic}. & Labels \path{sec:verify-verifier}, \path{sec:acceptance-soundness}.\\
+$P\leftrightarrow Q$ & Biconditional. & Enderton, \emph{A Mathematical Introduction to Logic}. & Chapter \path{ch:conformance}, full conformance.\\
+$\forall x$ & Universal quantifier. & Enderton, \emph{A Mathematical Introduction to Logic}. & Label \path{sec:acceptance-soundness}.\\
+$\exists x$ & Existential quantifier. & Enderton, \emph{A Mathematical Introduction to Logic}. & Counterexample discussions in Chapters \path{ch:specifications} and \path{ch:conformance}.\\
+$\Prb(E)$ & Probability of event $E$. & Feller, \emph{An Introduction to Probability Theory and Its Applications}, Vol. I. & Chapter \path{ch:information}.\\
+$\Prb(X=x\mid Z=z)$ & Conditional probability after side information. & Feller, \emph{An Introduction to Probability Theory and Its Applications}, Vol. I. & Label \path{sec:observer-info}; Chapter \path{ch:secrets}.\\
+$H(X)$ & Shannon entropy when used. & Cover and Thomas, \emph{Elements of Information Theory}. & Chapter \path{ch:information}.\\
+$H_\infty$ & Min-entropy. & Cover and Thomas for information-theory background; modern cryptography texts for min-entropy use. & Chapter \path{ch:prob-compromise}.\\
+$G=(V,E)$ & Directed or undirected graph with vertices and edges, as declared. & Diestel, \emph{Graph Theory}. & Label \path{sec:blast-radius}.\\
+$\Reach_G(c)$ & Vertices reachable from $c$ in graph $G$. & Diestel, \emph{Graph Theory} for reachability background. & Label \path{sec:blast-radius}; defined in this treatise.\\
+$B_G(c)$ & Blast radius of component $c$ in graph $G$. & Book-specific notation; graph background in Diestel. & Label \path{sec:blast-radius}; defined here.\\
+$G_N(\pi)$ & Top-$N$ probability mass. & Book-specific notation; probability background in Feller. & Label \path{sec:top-n}; defined here.\\
+$\Impl(z)$ & Implemented acceptance predicate. & Book-specific notation; logic background in Enderton. & Labels \path{sec:verify-verifier}, \path{sec:acceptance-soundness}.\\
+$\Req(z)$ & Required or intended acceptance predicate. & Book-specific notation; logic background in Enderton. & Labels \path{sec:verify-verifier}, \path{sec:acceptance-soundness}.\\
+$P,R,I,C$ & Prover, Refuter, Independence, and Contradiction settlement roles. & AMLD-specific notation defined in this treatise. & Chapter \path{ch:settlement}.\\
+$B_t$ & Verified BANK contents at time $t$. & AMLD-specific notation defined here; set background in Enderton. & Label \path{sec:bank-definition}.\\
+$F_t$ & FUTUREBANK speculative contents at time $t$. & AMLD-specific notation defined here; set background in Enderton. & Label \path{sec:futurebank-definition}.\\
+$M_t$ & Provenance-bearing security/search memory at time $t$. & Book-specific notation. & Label \path{sec:append-memory}.\\
+$\mathcal O_t$ & Ocean regression-test collection at time $t$. & Book-specific notation. & Labels \path{ch:ocean}, \path{sec:ocean-regression}.\\
+$D_2\succ_X D_1$ & Defense $D_2$ strictly improves the declared metric for vulnerability class $X$ subject to stated non-regression constraints. & Book-specific notation; order-relation background in standard set/order texts. & Label \path{sec:defense-dominance}.\\
+$\UNKNOWN$ & No accepted P/R/I/C settlement certificate was obtained under declared conditions. & AMLD-specific notation. & Label \path{sec:unknown}.\\
+\bottomrule
+\end{longtable}
+
+\chapter{Draft Source and GitHub Reference Map}
+\label{app:source-map}
+This draft has not yet been committed to a repository. To avoid inventing live links, the manuscript uses source-file and LaTeX-label references rather than URLs that might not exist. A publication commit should freeze the following mapping:
+
+\begin{itemize}
+\item Source file: \path{AMLD_Security_Treatise_v0_1.tex}.
+\item Suggested repository-relative path: \path{manuscripts/security/AMLD_Security_Treatise_v0_1.tex}.
+\item Each symbol-glossary entry points to a LaTeX label such as \path{sec:blast-radius} or \path{sec:bank-definition}.
+\item After commit, replace or supplement these with a permanent GitHub URL containing the repository, commit hash, file path, and line range. A commit hash is preferable to a link to \texttt{main} because the reference should continue to identify the exact edition read by the user.
+\end{itemize}
+
+\chapter{References}
+\label{app:references}
+\begin{thebibliography}{99}
+\bibitem{anderson}
+Ross Anderson. \emph{Security Engineering: A Guide to Building Dependable Distributed Systems}. 3rd ed. Wiley, 2020.
+
+\bibitem{bishop}
+Matt Bishop. \emph{Computer Security: Art and Science}. 2nd ed. Addison-Wesley, 2018.
+
+\bibitem{cover-thomas}
+Thomas M. Cover and Joy A. Thomas. \emph{Elements of Information Theory}. 2nd ed. Wiley, 2006.
+
+\bibitem{diestel}
+Reinhard Diestel. \emph{Graph Theory}. Springer. Edition to be fixed in the publication bibliography.
+
+\bibitem{enderton-set}
+Herbert B. Enderton. \emph{Elements of Set Theory}. Academic Press, 1977.
+
+\bibitem{enderton-logic}
+Herbert B. Enderton. \emph{A Mathematical Introduction to Logic}. 2nd ed. Academic Press, 2001.
+
+\bibitem{feller}
+William Feller. \emph{An Introduction to Probability Theory and Its Applications}, Vol. I. Wiley. Edition details to be fixed in the publication bibliography.
+
+\bibitem{nist}
+National Institute of Standards and Technology. \emph{Digital Identity Guidelines}, Special Publication 800-63 series. Exact edition and retrieval date to be verified before publication.
+
+\bibitem{owasp}
+OWASP Foundation. Authentication and application-security guidance. Exact pages, versions, and retrieval dates to be verified before publication.
+
+\bibitem{saltzer-schroeder}
+Jerome H. Saltzer and Michael D. Schroeder. ``The Protection of Information in Computer Systems.'' \emph{Proceedings of the IEEE} 63(9), 1975, 1278--1308.
+
+\bibitem{wctp680}
+Brian Tenneson. \emph{What Checks the Proof?} AMLD Textbook v6.80. Working research manuscript, August 22, 2026. Internal program reference for the earlier authentication application and research-conjecture lineage.
+\end{thebibliography}
+
+\backmatter
+\chapter*{Draft Status}
+\addcontentsline{toc}{chapter}{Draft Status}
+This is a structural first draft. The chapter sequence, defensive theorem policy, Ocean regression-moat concept, motivation for BANK/FUTUREBANK, motivation for P/R/I/C, glossary architecture, and source-reference architecture are intended for review. Several chapters deliberately state modest propositions rather than ambitious claims. External reference metadata, GitHub commit links, and any theorem whose assumptions are strengthened in later drafts should be rechecked before release.
+
+\end{document}

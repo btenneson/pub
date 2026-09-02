@@ -42,6 +42,7 @@ RANKED_HREFS = (
     BRAINSTORMING_HREF,
     "papers/data_atp_creativity_treatise_v0_1/",
     "papers/what_checks_the_proof_v6_80/",
+    "papers/amld_security_treatise_v0_1/",
     "papers/verified_settlement_search_v1_4/",
     "papers/shortest_settlement_optimal_control_v1_0/",
     "papers/search_dynamics_abel_v0_4/",
