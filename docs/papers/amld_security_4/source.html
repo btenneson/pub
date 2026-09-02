@@ -1,0 +1,1398 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMLD Security 4 — source</title><link rel="canonical" href="https://btenneson.github.io/pub/papers/amld_security_4/source.html"><style>body{font:15px/1.5 system-ui;max-width:1100px;margin:auto;padding:24px}pre{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid #8885;border-radius:10px;padding:16px}a{font-weight:650}</style></head><body><p><a href="./">← Back to article</a></p><h1>LaTeX source</h1><pre>\documentclass[11pt,oneside]{book}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{xcolor}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue!55!black,
+  pdfauthor={Brian Tenneson},
+  pdftitle={AMLD Security 4: Federated Verified Memory Across Eight Application Domains}
+}
+\setlength{\headheight}{14pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.62em}
+\setstretch{1.035}
+\raggedbottom
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{AMLD Security 4}
+\fancyhead[R]{DATA-MIND 2.10 companion edition}
+\fancyfoot[C]{\thepage}
+\setcounter{tocdepth}{2}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{boundary}[theorem]{Boundary note}
+
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\FB}{\mathsf{FUTUREBANK}}
+\newcommand{\COMPASS}{\mathsf{COMPASS}}
+\newcommand{\OCEAN}{\mathcal O}
+\newcommand{\Req}{\operatorname{Req}}
+\newcommand{\Impl}{\operatorname{Impl}}
+\newcommand{\Reach}{\operatorname{Reach}}
+\newcommand{\Acc}{\operatorname{Acc}}
+\newcommand{\Ver}{\operatorname{Ver}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Risk}{\operatorname{Risk}}
+\newcommand{\Dep}{\operatorname{Dep}}
+\newcommand{\Future}{\operatorname{Future}}
+\newcommand{\UNKNOWN}{\mathsf{UNKNOWN}}
+\newcommand{\settle}{\mathsf{Settle}}
+\newcommand{\Promote}{\mathsf{Promote}}
+\newcommand{\Fire}{\mathsf{Fire}}
+\newcommand{\CORE}{\mathsf{CORE}}
+\newcommand{\LOCAL}{\mathsf{LOCAL}}
+\newcommand{\COUPLED}{\mathsf{COUPLED}}
+\newcommand{\QUAR}{\mathsf{QUARANTINE}}
+\newcommand{\View}{\operatorname{View}}
+
+\begin{document}
+
+\frontmatter
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\centering
+\vspace*{1.05in}
+{\Huge\bfseries AMLD Security 4\par}
+\vspace{0.25in}
+{\Large Federated Verified Memory Across\par}
+\vspace{0.08in}
+{\Large Eight Application Domains\par}
+\vspace{0.45in}
+{\large A DATA-MIND 2.10 successor to\par}
+\vspace{0.08in}
+{\large\itshape AMLD Security 3\par}
+\vspace{0.65in}
+{\large Brian Tenneson\par}
+\vspace{0.22in}
+{\large Companion research manuscript v1.0\par}
+\vspace{0.08in}
+{\large September 2, 2026\par}
+\vfill
+\begin{minipage}{0.84\textwidth}
+\small
+The foundational treatise develops separation, containment, verification, and the Ocean gate.
+\emph{AMLD Security 3} carries those ideas into eight application domains. This successor asks what
+changes when DATA-MIND 2.10 replaces a single shared-memory topology with a verifier-gated
+federation: one logically shared core, department-local BANK nodes, explicitly coupled neighbors,
+and local, coupled, core, or broadcast propagation. The verifier, FUTUREBANK, Sentinel, and
+Quarantine remain separate. The new mathematics concerns topology-safe truth, selective reuse,
+dependency closure, compartment-aware visibility, and experiments that can distinguish federation
+from mere duplication. No chapter claims that federation has already improved theorem-settlement
+performance or solved a deployed security problem.
+\end{minipage}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+
+\chapter*{Companion Statement}
+\addcontentsline{toc}{chapter}{Companion Statement}
+This manuscript is complementary in a precise sense. The foundational older sibling,
+\emph{Security by Separation, Verification, and Settlement} \cite{TennesonSecurity}, moves from
+elementary security concepts toward AMLD. \emph{AMLD Security 3} \cite{TennesonSecurity3} then moves outward from AMLD
+toward eight application domains. The present successor preserves those domains and asks how their
+formal obligations change under DATA-MIND 2.10's federated verified-memory topology
+\cite{DataMind210ADR}.
+
+\begin{center}
+\begin{tabularx}{0.95\textwidth}{&gt;{\raggedright\arraybackslash}p{0.18\textwidth}X X X}
+\toprule
+ &amp; Foundational treatise &amp; Security 3 &amp; Security 4 \\
+\midrule
+Primary question &amp; What defensive architecture should exist? &amp; What could verified settlement do
+in eight domains? &amp; What changes when trusted memory is federated? \\
+Direction &amp; Security $\rightarrow$ AMLD &amp; AMLD $\rightarrow$ applications &amp; Federation
+$\rightarrow$ selective application memory \\
+Main result type &amp; Defensive theorem &amp; Conditional application sketch &amp; Topology invariant,
+visibility obligation, or experiment \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The shared writing rule remains \emph{motivation first, formalism immediately after}. The shared
+security policy remains defensive: the mathematics is organized around auditing, containment,
+certification, repair, and controlled deployment, not around operational exploitation.
+
+\paragraph{Implementation status.}
+DATA-MIND 2.10 is represented by an accepted-for-integration-testing architecture decision, a public
+architecture marker, executable federation primitives, P/R/I/C coordinator wiring, unit tests, and a
+successful federation CI run \cite{DataMind210Code,DataMind210Run}. Named endpoints for Quotient
+Hunter, Professor, Proof Compass, Child, Presentation Manager, Learner, Sentinel, and Verifier are
+present in the topology; their full reasoning implementations are not thereby complete. Accordingly,
+this manuscript distinguishes implemented memory semantics from proposed application behavior.
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+An automated target prover, theorem prover, or metalogical decider becomes security-relevant when
+its target is a vulnerability, an invariant, a compressed state representation, or a certificate about
+a protected system. The central problem is not merely computational power. It is how to separate
+creative search from the authority to promote claims into trusted state. DATA-MIND 2.10 adds a
+second question: which verified departments should physically retain or logically see each accepted
+item? This manuscript gives a common verifier-gated federated formalism and applies it to eight domains: cryptography, vulnerability
+research, critical infrastructure, military and intelligence compartmentation, software correctness,
+scientific discovery, engineering optimization, and AI safety. Across the applications, four motifs
+recur: certificate-level settlement by the $P/R/I/C$ roles; separation of verified \(\BANK\),
+speculative \(\FB\), and security-quarantined state; topology-independent verifier soundness;
+future-sufficient quotienting; and Ocean-style regression gates for candidate machinery. We prove
+that verifier-gated federation preserves truth status independently of item location and state a
+dependency-visibility condition needed for sound reuse. We then derive domain-specific coupling
+patterns and a frozen-cohort experiment comparing core, broadcast, local, and coupled propagation.
+The results remain conditional: integration tests establish memory semantics, not a performance
+advantage, a practical cryptanalytic attack, a universal vulnerability finder, or global AI safety.
+
+\tableofcontents
+
+\mainmatter
+\part{The Shared Formal Spine}
+
+\chapter{From Intelligent Target Seeking to Verified Settlement}
+\label{ch:spine}
+
+\section{Targets, certificates, and environments}
+Let a target instance be
+\[
+\mathfrak I=(c,\Gamma,\mathcal E,V,\mathcal B),
+\]
+where \(c\) is a claim or goal, \(\Gamma\) is the admitted theory or specification,
+\(\mathcal E\) is the declared environment, \(V\) is an independent verifier, and
+\(\mathcal B\) is a resource budget. Search may be learned, reflective, randomized, federated, or
+otherwise adaptive. Validity is narrower:
+\[
+\operatorname{Accept}(\pi,c\mid\Gamma,\mathcal E)
+\iff V(\pi,c,\Gamma,\mathcal E)=1.
+\]
+Changing a search policy may change which certificate is found and how quickly it is found; it must
+not silently change the acceptance relation.
+
+\section{Five operational outcomes}
+For a formal target \(c\), an AMLD-style process distinguishes
+\[
+\settle(c)\in\{P,R,I,C,\UNKNOWN\}.
+\]
+Here \(P\) supplies a verified certificate for \(c\), \(R\) supplies one for \(\neg c\), \(I\)
+supplies an independence certificate in a declared metatheory, and \(C\) supplies an inconsistency
+certificate for the admitted assumptions. The fifth outcome records resource-bounded nonsettlement.
+It is crucial that
+\[
+\UNKNOWN\not\Rightarrow c,
+\qquad
+\UNKNOWN\not\Rightarrow\neg c,
+\qquad
+\UNKNOWN\not\Rightarrow I(c).
+\]
+
+\section{Epistemic separation}
+Let \(B_t\) be verified shared state and \(F_t\) speculative state at time \(t\). Candidate objects
+may be generated freely into \(F_t\), but promotion is restricted:
+\[
+B_{t+1}=B_t\cup V_t(A_t),
+\qquad
+V_t(A_t):=\{a\in A_t:V(a,\Gamma_t,\mathcal E_t)=1\}.
+\]
+This is the mathematical core of \(\BANK/\FB\) separation. Provenance is retained, but provenance
+does not substitute for verification.
+
+\begin{proposition}[Verifier-gated noncontamination]
+\label{prop:noncontamination}
+Suppose the displayed update is the only rule that adds semantic assertions to \(B_t\). Then every
+new assertion in \(B_{t+1}\setminus B_t\) has been accepted by \(V_t\).
+\end{proposition}
+
+\begin{proof}
+By the update rule, \(B_{t+1}\setminus B_t\subseteq V_t(A_t)\). Membership in \(V_t(A_t)\)
+is defined by verifier acceptance.
+\end{proof}
+
+\section{Future-sufficient quotienting}
+Let \(\mathcal H\) be a set of search histories and \(Q:\mathcal H\to\mathcal S\) a descriptor.
+The equivalence relation \(h_1\sim_Q h_2\) iff \(Q(h_1)=Q(h_2)\) is computationally useful only
+if it preserves the future facts relevant to the target. One strong form is
+\[
+Q(h_1)=Q(h_2)
+\Longrightarrow
+\Future(h_1)\equiv_V\Future(h_2),
+\]
+where \(\equiv_V\) means equality of verifier-relevant continuations, dependency obligations,
+scope, and certificate-lifting behavior.
+
+\begin{proposition}[Sound quotient reuse]
+\label{prop:quotient-reuse}
+Assume each quotient certificate \(\bar\pi\) accepted at state \(Q(h)\) has a refinement map
+\(L_h\) with
+\[
+\bar V(\bar\pi,Q(h))=1\Longrightarrow V(L_h\bar\pi,h)=1.
+\]
+Then reusing accepted quotient computation cannot introduce a false promoted claim in the original
+state space.
+\end{proposition}
+
+\begin{proof}
+Every promotion from a quotient state is refined by \(L_h\) and checked by \(V\). Soundness is
+therefore inherited from the stated lifting condition, not from the quotient heuristic itself.
+\end{proof}
+
+\section{Guidance and the Ocean gate}
+A \(\COMPASS\)-type score may prioritize actions,
+\[
+S(a\mid h)=w^{\mathsf T}\phi(a,h)-\lambda\widehat{\Cost}(a\mid h)
+-\mu\widehat{\Risk}(a\mid h),
+\]
+but \(S\) is not a truth predicate. Candidate search machinery \(M\) can itself be tested against a
+versioned Ocean suite \(\OCEAN_t\). If \(I_1,\ldots,I_k\) are hard invariants, a conservative gate is
+\[
+\Acc(M,\OCEAN_t)=1
+\iff
+\bigwedge_{o\in\OCEAN_t}\bigwedge_{j=1}^{k}I_j(M,o)=1.
+\]
+A verified failure \(r_t\) may then be retained by \(\OCEAN_{t+1}=\OCEAN_t\cup\{r_t\}\).
+Passing a finite gate excludes tested failures; it does not prove universal safety.
+
+\chapter{DATA-MIND 2.10: Federated Verified Memory}
+\label{ch:federation}
+
+DATA-MIND 2.10 changes where verified information is retained and who sees it by default. It does
+not change what makes an assertion true. Let \(\mathcal D\) be the finite set of reasoning
+departments and let \(G_{\rm B}=(\mathcal D,E_{\rm B})\) be a directed coupling graph. Write
+\(B_t^0\) for the logically shared verified core and \(B_t^d\) for department \(d\)'s local BANK.
+The implemented read-only view has the abstract form
+\[
+\View_t(d)=B_t^0\cup B_t^d\cup
+\bigcup_{(d,e)\in E_{\rm B}}B_t^e.
+\]
+Thus two departments may share every core item while seeing different local and coupled contexts.
+The coupling graph is configuration and an experimental variable; it is not itself a mathematical
+theorem or a security proof.
+
+\section{Four propagation modes}
+For a verified proposal generated at department \(d\), define the physical destination family
+\[
+\Delta_m(d)=
+\begin{cases}
+\{d\}, &amp; m=\mathsf{local},\\
+\{d\}\cup N^+_{G_{\rm B}}(d), &amp; m=\mathsf{coupled},\\
+\{0\}, &amp; m=\mathsf{core},\\
+\{0\}\cup\mathcal D, &amp; m=\mathsf{broadcast}.
+\end{cases}
+\]
+Here destination \(0\) denotes the shared core. Core is the conservative implementation default:
+one physical trusted copy becomes logically visible to every department. Broadcast additionally
+materializes a copy at every local node. Local and coupled modes restrict both storage and ordinary
+visibility, allowing specialized results to remain near their consumers.
+
+\begin{center}
+\begin{tabularx}{0.94\textwidth}{&gt;{\raggedright\arraybackslash}p{0.16\textwidth}X X}
+\toprule
+Mode &amp; Physical storage &amp; Principal research use \\
+\midrule
+local &amp; source node only &amp; isolate specialized results and measure the value of narrow context \\
+coupled &amp; source plus declared neighbors &amp; share interface results along a preregistered topology \\
+core &amp; one shared-core copy &amp; retain global reuse without physical duplication \\
+broadcast &amp; core plus every local node &amp; reproduce all-copied BANK experiments and stress copying cost \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+If \(n=|\mathcal D|\) and \(d^+(d)=|N^+(d)|\), the nominal new-copy counts before deduplication
+are respectively \(1\), \(1+d^+(d)\), \(1\), and \(1+n\). This is a storage statement, not yet a
+runtime theorem. A single core copy may still be scanned by many departments, whereas a useful local
+topology may reduce irrelevant logical visibility.
+
+\section{Truth is invariant under location}
+Let \(\nu_t(x)=1\) mean that the independent verifier accepts semantic item \(x\) in the declared
+theory and environment. If an accepted axiom or rule is converted to an alternate presentation by a
+trading callback, assume a certified one-step closure \(\operatorname{Tr}(x)\) satisfying
+\[
+\nu_t(x)=1\Longrightarrow
+\forall y\in\operatorname{Tr}(x),\quad \nu_t^\star(y)=1,
+\]
+where \(\nu_t^\star\) checks either the new object directly or a certificate of consequence-closure
+equivalence. The federated update is then
+\[
+B_{t+1}^{j}=B_t^j\cup
+\bigcup_{(x,d,m)\in A_t:\;j\in\Delta_m(d),\;\nu_t(x)=1}
+\bigl(\{x\}\cup\operatorname{Tr}(x)\bigr),
+\qquad j\in\{0\}\cup\mathcal D.
+\]
+
+\begin{theorem}[Topology-independent BANK soundness]
+\label{thm:federated-soundness}
+Assume every initial BANK item is verifier-accepted or connected to one by a sound certified trade,
+and the displayed update is the only way semantic items enter any federated BANK node. Then every
+item visible in every \(\View_t(d)\) has the same accepted truth status regardless of whether it was
+propagated locally, to coupled nodes, to the core, or by broadcast.
+\end{theorem}
+
+\begin{proof}
+Induct on \(t\). Existing items satisfy the claim by the induction hypothesis. Each new item is either
+an accepted proposal \(x\) or an element of its certified trade closure. The propagation mode changes
+only the destination set \(\Delta_m(d)\), not \(\nu_t\) or \(\nu_t^\star\). A view is a union of such
+BANK nodes, so it contains no item with a new truth status.
+\end{proof}
+
+The theorem is deliberately narrow. It proves noncontamination of truth status under the stated
+transition. It does not prove that every department sees every useful dependency, that the coupling
+graph is efficient, or that a visible item is authorized for external use.
+
+\section{Dependency-visible reuse}
+Let \(\Dep(x)\) be the immutable dependency set recorded for item \(x\). A department can safely
+reuse a non-self-contained receipt only when
+\[
+x\in\View_t(d)Longrightarrow \Dep(x)\subseteq\View_t(d),
+\tag{DV}
+\]
+or when the verifier can resolve the dependencies from a separately authenticated content-addressed
+store. Condition (DV) is stronger than truth of \(x\): it is an availability condition for replay.
+
+\begin{proposition}[Local replay under dependency visibility]
+Suppose every checker invocation for \(x\) is deterministic in \((x,\Dep(x),\Gamma,\mathcal E)\),
+all dependency identifiers are immutable, and (DV) holds for department \(d\). Then a receipt valid
+when \(x\) was deposited remains locally replayable from \(\View_t(d)\), provided \(\Gamma\) and
+\(\mathcal E\) have not changed.
+\end{proposition}
+
+\begin{proof}
+Condition (DV) supplies every authenticated dependency to the same deterministic checker. Fixing the
+item, dependencies, theory, and environment fixes the checker input and therefore its result.
+\end{proof}
+
+The current 2.10 primitive carries general metadata but does not, by itself, prove (DV) for every
+application adapter. Dependency closure should therefore be tested as an integration invariant rather
+than inferred from a successful unit test of propagation.
+
+\section{Three stores and two gates}
+Federation applies only to trusted BANK. Speculative \(\FB\) and Sentinel's \(\QUAR\) remain
+separate append-only stores. For a candidate \(x\), mathematical promotion and operational release
+are distinct:
+\[
+\operatorname{Trusted}(x)\iff \nu(x)=1,
+\]
+\[
+\operatorname{Operational}(x,d)
+\iff \operatorname{Trusted}(x)\land
+\operatorname{Visible}(x,d)\land
+\operatorname{SecurityApproved}(x,d)\land
+\operatorname{HumanApproved}(x,d)
+\]
+when policy requires human approval. A mathematically valid result may remain quarantined from
+execution; an unverified result may be preserved in FUTUREBANK or Quarantine without becoming
+trusted. This orthogonality is inherited from DATA-MIND 2.9 Sentinel and retained by 2.10
+\cite{DataMind29ADR}.
+
+\section{Visibility is not yet confidentiality}
+The 2.10 view function implements topological visibility, not a full mandatory-access-control lattice.
+In particular, every core item is logically visible to every registered department. If application
+security requires labels, let \(\lambda(x)\) be an item label and \(\kappa(d)\) a department clearance.
+The application-level view must refine the implementation view:
+\[
+\View_t^{\rm sec}(d)=
+\{x\in\View_t(d):\lambda(x)\preceq\kappa(d)\land
+\operatorname{PurposeAllowed}(x,d)\}.
+\]
+This filtered view is a research obligation for compartmented deployments, not a feature silently
+attributed to the present code.
+
+\chapter{Application Map}
+
+\begin{longtable}{&gt;{\raggedright\arraybackslash}p{0.15\textwidth}&gt;{\raggedright\arraybackslash}p{0.22\textwidth}&gt;{\raggedright\arraybackslash}p{0.25\textwidth}&gt;{\raggedright\arraybackslash}p{0.25\textwidth}}
+\toprule
+Domain &amp; Formal target &amp; Useful certificate &amp; Central preservation obligation \\
+\midrule
+\endfirsthead
+\toprule
+Domain &amp; Formal target &amp; Useful certificate &amp; Central preservation obligation \\
+\midrule
+\endhead
+Cryptography &amp; Hardness-relevant invariant or quotient &amp; Proof that a reduction or lifting map preserves the target problem &amp; Do not merge histories with different verifier-relevant futures \\
+Vulnerability research &amp; Conformance of implementation to policy &amp; Checked violating trace or inductive proof &amp; Model the complete sufficient routes and system state \\
+Critical infrastructure &amp; Bounded compromise propagation &amp; Reachability certificate and non-regression record &amp; Containment must not destroy required availability \\
+Secure domains &amp; Authorized boundary crossing and noninterference &amp; Invariant proof or violating trace &amp; Preserve labels, authority, provenance, and declassification rules \\
+Software correctness &amp; Safety invariant over reachable states &amp; Inductive proof or finite counterexample &amp; Checker and dependency closure remain fixed \\
+Scientific discovery &amp; Predictively sufficient low-dimensional state &amp; Theorem, checked derivation, or preregistered empirical certificate &amp; Preserve the declared observable family, not merely training fit \\
+Engineering optimization &amp; Feasible and objective-preserving state merge &amp; Correspondence between feasible continuations &amp; Preserve downstream constraints and optimum values \\
+AI safety &amp; Separation of generation, verification, testing, and authority &amp; Gate receipts and invariant certificates &amp; Policy revision must not revise its own truth conditions silently \\
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{&gt;{\raggedright\arraybackslash}p{0.19\textwidth}&gt;{\raggedright\arraybackslash}p{0.35\textwidth}&gt;{\raggedright\arraybackslash}p{0.34\textwidth}}
+\toprule
+Domain &amp; Natural 2.10 placement pattern &amp; New federation-specific risk \\
+\midrule
+\endfirsthead
+\toprule
+Domain &amp; Natural 2.10 placement pattern &amp; New federation-specific risk \\
+\midrule
+\endhead
+Cryptography &amp; quotient results local to QH/P/R, reusable certificates in core &amp; cross-scheme reuse without scope metadata \\
+Vulnerability research &amp; product-local traces; checker and policy interfaces coupled &amp; target or version contamination \\
+Critical infrastructure &amp; subsystem-local models; safety interfaces coupled &amp; coupling topology mistaken for network segmentation \\
+Secure domains &amp; compartment-local BANKs plus label-filtered interface nodes &amp; shared core bypasses required clearance \\
+Software correctness &amp; module-local lemmas; interface contracts coupled; global invariants in core &amp; visible theorem with unavailable dependencies \\
+Scientific discovery &amp; discipline-local hypotheses; replicated findings in core &amp; siloing, duplicated rediscovery, or premature broadcast \\
+Engineering optimization &amp; design-team local states; shared constraints coupled or core &amp; local optimum propagated beyond its validity region \\
+AI safety &amp; specialized audit nodes around verifier and Sentinel boundaries &amp; truth, visibility, and operational authorization conflated \\
+\bottomrule
+\end{longtable}
+
+The table is not evidence that all eight applications are equally mature. It identifies the object
+that would need to be certified before speculative target seeking could be treated as defensive
+knowledge.
+
+\part{Eight Plausible Applications}
+
+\chapter{Cryptography}
+\label{ch:crypto}
+
+Discovering unexpected structure in a problem believed to be hard could matter to cryptography.
+The defensible research question is not whether AMLD can simply try keys faster. It is whether a
+small, independently checkable invariant or quotient can replace a much larger search without
+changing the cryptographic problem being solved.
+
+\section{Plausible application}
+Let \(X_\kappa\) be an instance family at security parameter \(\kappa\), let \(\mathcal H_\kappa\)
+be legal search histories, and let \(T(h,a)\) be continuation by action \(a\). A quotient candidate
+\(Q_\kappa:\mathcal H_\kappa\to\mathcal S_\kappa\) induces
+\[
+h_1\sim_Qh_2\iff Q_\kappa(h_1)=Q_\kappa(h_2).
+\]
+For defensive significance, equality of quotient states must imply more than similar local features.
+It should preserve terminal status, admissible continuations, certificate dependencies, and success
+probability under the declared model. A strong deterministic obligation is a verifier-respecting
+bisimulation:
+\[
+h_1\sim_Qh_2\Longrightarrow
+\left\{
+\begin{array}{l}
+V_{\rm term}(h_1)=V_{\rm term}(h_2),\\
+\forall a_1\in A(h_1)\;\exists a_2\in A(h_2):T(h_1,a_1)\sim_QT(h_2,a_2),\\
+\forall a_2\in A(h_2)\;\exists a_1\in A(h_1):T(h_1,a_1)\sim_QT(h_2,a_2).
+\end{array}\right.
+\]
+If the search is stochastic, the corresponding condition is equality of the pushed-forward
+transition kernels on \(\mathcal S_\kappa\). A \(\COMPASS\)-like policy may search over candidate
+descriptors by a score
+\[
+J(Q)=\widehat{\operatorname{reuse}}(Q)-\lambda\log|\operatorname{im}Q|
+-\mu\widehat{\Cost}(Q)-\nu\widehat{\operatorname{collision\ risk}}(Q),
+\]
+but promotion requires a certificate for the preservation obligation. Under that certificate, dynamic
+programming or lemma reuse may occur once per quotient class rather than once per history. The
+scientific object is therefore a proved structural compression of an admitted problem, not an
+unverified claim that a named encryption scheme is weak.
+
+\begin{conjecture}[Certified quotient advantage]
+For some structured cryptographic audit families, there exists a future-sufficient \(Q\) for which
+verified quotient search uses asymptotically fewer distinct continuation states than history-level
+search while returning only liftable certificates.
+\end{conjecture}
+
+\begin{boundary}
+No argument in this chapter establishes an efficient attack on AES, RSA, elliptic-curve cryptography,
+or a post-quantum construction. Hardness is scheme-, model-, and parameter-specific.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+Federation lets QH retain a verified scheme-specific quotient near the P/R and COMPASS departments
+that can use it, without forcing that object into every local BANK. Let the immutable scope record be
+\[
+\sigma(x)=(\text{scheme},\text{version},\kappa,\Gamma,\mathcal E,
+\operatorname{hash}\Dep(x)).
+\]
+A conservative propagation policy is
+\[
+m(x)=
+\begin{cases}
+\mathsf{coupled}, &amp; x\text{ is verified but specific to one declared audit family},\\
+\mathsf{core}, &amp; x\text{ carries a checked scope-preserving reduction or lifting theorem},\\
+\mathsf{broadcast}, &amp; \text{only in a preregistered all-copied comparison}.
+\end{cases}
+\]
+Reuse by department \(d\) additionally requires \(\sigma(x)\preceq\sigma(\mathfrak I_d)\), where
+the relation means exact agreement on security-relevant scope or a verified translation between
+scopes. Theorem~\ref{thm:federated-soundness} says that copying does not alter truth status; it does
+not say that a theorem about one scheme or parameter remains applicable to another. Operationally
+sensitive but mathematically valid findings may pass the verifier while Sentinel still places export
+or execution behind Quarantine and human authorization. Thus 2.10 can reduce irrelevant sharing and
+make reuse paths auditable without weakening the boundary between structural cryptographic research
+and authorization to act on a target.
+
+\paragraph{Source anchors.} Safe quotienting and \(\COMPASS\) are developed in
+\emph{What Checks the Proof?} v6.80, pp. 28--29 and 68 \cite{TennesonChecks}; security as a
+settlement problem appears in the older security treatise, pp. 42--43 \cite{TennesonSecurity}.
+
+\chapter{Cybersecurity and Vulnerability Research}
+\label{ch:vulnerability}
+
+A target-seeking system could generate many suspected traces. Defensively, the important move is to
+replace the vague target ``find a vulnerability'' by a model-relative conformance claim and a
+machine-checkable defect certificate. Speculation remains useful, but it remains quarantined.
+
+\section{Plausible application}
+Let \(\mathcal M=(S,S_0,A,\to)\) be a labeled transition system and let \(Z\) be its complete finite
+or infinite traces. A policy defines \(\Req(z)\in\{0,1\}\); the implementation semantics defines
+\(\Impl(z)\in\{0,1\}\). One-sided acceptance soundness is
+\[
+\Phi_{\rm safe}:=\forall z\in Z\,[\Impl(z)\Rightarrow\Req(z)].
+\]
+If a finite trace \(z^\star=(s_0,a_0,\ldots,s_n)\) carries receipts proving
+\[
+s_0\in S_0,\quad s_i\xrightarrow{a_i}s_{i+1},\quad
+\Impl(z^\star)=1,\quad \Req(z^\star)=0,
+\]
+then \(z^\star\) is a finite \(R\)-certificate. Conversely, a \(P\)-certificate may consist of an
+inductive invariant \(I\) satisfying
+\[
+S_0\subseteq I,\qquad
+(s\in I\land s\to s')\Rightarrow s'\in I,
+\qquad
+s\in I\Rightarrow\neg\mathsf{Bad}(s).
+\]
+The \(I\)-role asks a different question: whether \(\Phi_{\rm safe}\) is independent of the admitted
+audit theory in a declared metatheory. The \(C\)-role searches for inconsistent policy obligations.
+Candidate traces, invariants, and repairs reside in \(F_t\); only checker-accepted objects enter \(B_t\).
+For an evolving analyzer \(M_t\), Ocean admission can require preservation of four architectural
+invariants: rejected candidates never enter \(B_t\); every derived record has a receipt; dependencies
+are closed; and resource limits are enforced. This converts vulnerability research into an
+evidence-producing audit process in which the reasoning system proposes and prioritizes, while a
+separate checker determines what has actually been established.
+
+\begin{proposition}[Counterexample sufficiency]
+If the displayed receipts for \(z^\star\) verify, then \(\Phi_{\rm safe}\) is false in the declared
+transition model and policy.
+\end{proposition}
+
+\begin{proof}
+The verified trace instantiates the universal quantifier with an implemented acceptance that is not
+required, falsifying the implication.
+\end{proof}
+
+\begin{boundary}
+A checked defect is relative to a model and specification. An incomplete model can miss real behavior;
+an inadequate policy can be implemented perfectly and still protect the wrong property.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+The natural federation unit is an audit scope rather than the word ``vulnerability.'' For a checked
+trace or invariant \(x\), record
+\[
+\tau(x)=(\text{product},\text{build},\text{configuration},
+\operatorname{hash}(\Req),\operatorname{hash}(\Impl),\operatorname{hash}(\mathcal M)).
+\]
+Product-local P/R nodes can retain scope-specific traces, while a coupled verifier/policy node checks
+their receipts. Generic checker invariants may enter the core; target-specific evidence normally stays
+local or coupled. Cross-scope reuse requires either \(\tau(x)=\tau(y)\) or a verified simulation
+\(f:\mathcal M_y\to\mathcal M_x\) satisfying
+\[
+s\to_y s'\Longrightarrow f(s)\to_x f(s'),
+\qquad
+\mathsf{Bad}_x(f(s))\Longrightarrow\mathsf{Bad}_y(s)
+\]
+in the direction needed by the claimed transfer. This prevents a true finding for one build from
+becoming a falsely scoped finding for another. Federation also sharpens the separation between
+mathematical evidence and operational capability: a counterexample trace may be verifier-accepted
+into a restricted BANK node while Sentinel blocks reproduction against a third-party target or
+quarantines an action requiring risky capabilities. The 2.10 implementation supplies the memory
+topology; application adapters must still enforce target scope, dependency visibility, authorization,
+and responsible disclosure.
+
+\paragraph{Source anchors.} The authentication-defect certificate and four-role audit appear in
+\emph{What Checks the Proof?} v6.80, pp. 54--55 \cite{TennesonChecks}; the Ocean moat appears in
+the older treatise, pp. 32--33 \cite{TennesonSecurity}.
+
+\chapter{Critical Infrastructure}
+\label{ch:infrastructure}
+
+For hospitals, power systems, water utilities, transportation, and communications, an initial cyber
+failure can become a physical or availability failure. The natural defensive object is therefore not
+one secure/insecure bit but a graph of propagation, authority, service, and recovery.
+
+\section{Plausible application}
+Model the system as a directed labeled graph \(G=(V,E,\ell,w)\), where \(\ell(e)\) records the type
+of transition and \(w(v)\ge0\) is a declared consequence weight. For a compromised component
+\(c\), define
+\[
+B_G(c)=\Reach_G(c),
+\qquad
+L_G(c)=\sum_{v\in B_G(c)}w(v).
+\]
+A segmentation design \(D\) produces \(G_D=(V,E_D)\) together with a set \(R_D\) of service
+paths that must remain available. If \(E_{D_2}\subseteq E_{D_1}\), reachability monotonicity gives
+\[
+B_{G_{D_2}}(c)\subseteq B_{G_{D_1}}(c),
+\qquad
+L_{G_{D_2}}(c)\le L_{G_{D_1}}(c).
+\]
+But removal of every edge is not a useful defense. Let
+\[
+\mathbf J(D)=\left(
+p_{\rm comp}(D),
+\max_cL_{G_D}(c),
+A_{\rm loss}(D),
+C_{\rm verify}(D),
+C_{\rm repair}(D)
+\right).
+\]
+A candidate dominates another only under a declared partial order and hard service constraints,
+for example
+\[
+D_2\succ_XD_1
+\iff
+m_X(D_2)&lt;m_X(D_1)
+\land
+\forall j\in J_{\rm protected},\;m_j(D_2)\le m_j(D_1)
+\land R_{D_2}\models\Psi_{\rm service}.
+\]
+An AMLD controller can let \(P\) prove containment and service obligations, \(R\) find checked
+violating paths, \(I\) test whether the obligations are independent of the model, and \(C\) detect
+incompatible requirements. The useful output is a certificate-bearing Pareto comparison, not a
+single heuristic security score.
+
+\begin{proposition}[Edge-removal containment]
+If \(E'\subseteq E\), then for every \(c\in V\), \(\Reach_{(V,E')}(c)\subseteq\Reach_{(V,E)}(c)\).
+\end{proposition}
+
+\begin{proof}
+Every path using only edges in \(E'\) is also a path using edges in \(E\).
+\end{proof}
+
+\begin{boundary}
+The proposition proves containment in the graph model only. It does not validate the graph, estimate
+compromise probability, or show that required services survive segmentation.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+Federation introduces a second graph that must not be confused with the infrastructure graph.
+\(G_D=(V,E_D)\) models physical, cyber, and service propagation; \(G_{\rm B}=(\mathcal D,E_{\rm B})\)
+models which reasoning departments see which local BANKs. A narrow bridge in \(G_{\rm B}\) is an
+information-flow decision, not automatically a firewall or safety barrier in \(G_D\).
+
+Subsystem departments may retain detailed local models, couple only verified interface assumptions
+to neighboring subsystems, and place organization-wide safety requirements in the core. A topology
+experiment can optimize
+\[
+\mathbf J(D,E_{\rm B})=
+\bigl(p_{\rm comp}(D),\max_cL_{G_D}(c),A_{\rm loss}(D),
+C_{\rm scan}(E_{\rm B}),C_{\rm copy}(E_{\rm B}),R_{\rm miss}(E_{\rm B})\bigr),
+\]
+where \(R_{\rm miss}\) counts requested reuse events blocked by absent interface facts or dependencies.
+Hard constraints should include service availability, BANK dependency closure, and Sentinel policy.
+The attractive hypothesis is that local/coupled retention lowers irrelevant scanning while core items
+preserve universal reuse. The danger is that a poorly chosen coupling hides a safety-critical interface
+fact. Therefore the coupling graph, topology version, and missed-dependency events must be logged as
+experimental data, while deployment segmentation remains governed by the separate infrastructure
+model and operational authorities.
+
+\paragraph{Source anchors.} Blast radius and narrow bridges are treated in the older security
+treatise, pp. 10--11; multi-objective security and separation-aware control appear on pp. 53--56
+\cite{TennesonSecurity}.
+
+\chapter{Military and Intelligence Compartmentation}
+\label{ch:compartmentation}
+
+Compartmentation gives a mathematically clean example of the book's security philosophy: separate
+domains, restrict crossings, preserve provenance, and never grant speculative reasoning direct
+operational authority. The formulation below is about defensive authorization and noninterference,
+not operational attack planning.
+
+\section{Plausible application}
+Let \((L,\preceq)\) be a security-label lattice and let each state component \(x\) carry label
+\(\lambda(x)\in L\). Partition the state space into domains
+\[
+V=\bigsqcup_{i=1}^{k}V_i.
+\]
+For every cross-domain transition \(e=(x,y)\), define a boundary predicate
+\(P_e(s,\alpha,\rho)\), where \(s\) is current state, \(\alpha\) is asserted authority, and \(\rho\)
+is provenance. The safety target is
+\[
+\Phi_{\rm cross}:=
+\Box\left(
+\Fire(e,s,\alpha,\rho)
+\Rightarrow P_e(s,\alpha,\rho)
+\right).
+\]
+For confidentiality, let \(s\equiv_\ell s'\) mean that states agree on observations visible at low
+label \(\ell\). A possibilistic noninterference target is
+\[
+s_0\equiv_\ell s'_0
+\Longrightarrow
+\operatorname{Obs}_\ell(\operatorname{Run}(s_0,u))
+=\operatorname{Obs}_\ell(\operatorname{Run}(s'_0,u))
+\]
+for every admitted low action sequence \(u\), except at explicitly modeled declassification gates.
+Role \(P\) may prove these invariants compositionally; \(R\) may supply a checked boundary-crossing
+or observational counterexample; \(I\) and \(C\) retain their metatheoretic meanings. Search output
+does not become trusted merely because a designated role produced it:
+\[
+c\in B_{t+1}\setminus B_t
+\Longrightarrow
+\exists\pi\;V(\pi,c,\Gamma,\mathcal E)=1.
+\]
+Thus compartmentation is represented simultaneously as a graph boundary, an authorization
+predicate, and an observational equivalence, with the verifier mediating any promotion into trusted
+state.
+
+\begin{conjecture}[Cross-domain shared-certificate advantage]
+For some compartmented systems, a provenance-preserving shared \(\BANK\) of verified interface
+lemmas reduces total audit cost relative to isolated audits without weakening domain-local acceptance.
+\end{conjecture}
+
+\begin{boundary}
+Noninterference depends on the observation model, declassification rules, scheduler, and environment.
+The displayed formula is not a universal characterization of national-security systems.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+This domain most clearly exposes the difference between federation and compartmentation. In the
+implemented 2.10 topology, every registered department sees the shared core. Therefore a coupling
+configuration alone is not a clearance mechanism. Define
+\[
+\operatorname{Allowed}(d,x)
+\iff x\in\View_t(d)\land \lambda(x)\preceq\kappa(d)
+\land\operatorname{PurposeAllowed}(d,x).
+\]
+A safe propagation adapter must satisfy
+\[
+j\in\Delta_{m(x)}(d)\Longrightarrow
+\lambda(x)\preceq\kappa(j),
+\tag{AC}
+\]
+unless the destination stores only an independently approved redaction or encrypted reference.
+Because \(\mathsf{core}\) is visible to all departments, (AC) implies that a labeled item may enter
+the ordinary core only when every core reader is authorized. Otherwise it remains local, propagates
+to an authorized coupled subgraph, or is represented by a lower-label interface theorem produced at
+a declassification gate.
+
+Truth and authority are orthogonal coordinates:
+\[
+(\nu(x),\operatorname{Allowed}(d,x))\in\{0,1\}^2.
+\]
+A true item can be unauthorized; an authorized channel cannot make an unverified item true.
+Theorem~\ref{thm:federated-soundness} protects the first coordinate, while a label-aware adapter and
+Sentinel must protect the second. Consequently 2.10 is a useful substrate for compartmented audit
+research, but the present code should not be described as implementing national-security access
+control or proving noninterference.
+
+\paragraph{Source anchors.} Separation, least privilege, and narrow bridges are treated in the older
+security treatise, pp. 9--11; $P/R/I/C$ security settlement appears on pp. 42--43
+\cite{TennesonSecurity}.
+
+\chapter{Software Correctness}
+\label{ch:software}
+
+Software correctness is the most direct beneficial application because both proof and refutation can
+often be represented by finite machine-checkable objects. Learned guidance may choose what to try;
+it need not be trusted to decide what counts as a valid proof.
+
+\section{Plausible application}
+Let \(\mathcal M=(S,S_0,\to)\) be a transition system and let \(I:S\to\{0,1\}\) be a safety
+invariant. An inductive certificate proves
+\[
+\forall s\in S_0\;I(s),
+\qquad
+\forall s,s'\in S\;[I(s)\land s\to s']\Rightarrow I(s').
+\]
+It follows that \(I\) holds throughout \(\Reach_{\mathcal M}(S_0)\). Role \(P\) searches for such an
+invariant, auxiliary lemmas, and checker receipts. Role \(R\) searches for a finite trace
+\[
+s_0\to s_1\to\cdots\to s_n,
+\qquad s_0\in S_0,
+\qquad \neg I(s_n).
+\]
+The reasoning architecture is also software and should satisfy its own executable invariants:
+\[
+u\in B_{t+1}\setminus B_t
+\Rightarrow\exists r\;V(r,u)=1,
+\]
+\[
+V(r,u)=0\Rightarrow u\notin B_{t+1},
+\qquad
+u\in B_t\Rightarrow\Dep(u)\subseteq B_t.
+\]
+If verifier receipts are content-addressed and dependencies are immutable, replay can check that
+the accepted object still means what it meant at promotion time. Candidate proofs and candidate
+program repairs remain in \(F_t\) until checking succeeds. An Ocean suite then includes historical
+counterexamples, malformed certificates, resource-limit tests, and dependency-closure cases. This
+creates two mutually reinforcing proof obligations: the application program must preserve its safety
+invariant, and the settlement machinery must preserve the epistemic boundary by which that claim is
+accepted.
+
+\begin{proposition}[Inductive reachability safety]
+If the base and step obligations above hold, then every reachable state satisfies \(I\).
+\end{proposition}
+
+\begin{proof}
+Induct on the length of a path from \(S_0\). The base case uses \(S_0\subseteq I\); the step uses
+transition preservation.
+\end{proof}
+
+\begin{boundary}
+The theorem establishes only the invariant encoded by \(I\) in the modeled semantics. It does not
+prove that the model matches compiled code, hardware, operators, or every environmental condition.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+For modular software, a department can correspond to a component or proof specialty. Component
+invariants remain local; verified interface contracts propagate to coupled consumers; global safety
+theorems enter the core. If component \(i\) has assumption \(A_i\) and guarantee \(G_i\), a
+federated assume--guarantee obligation is
+\[
+\bigwedge_i\left(A_i\Rightarrow G_i\right)
+\land
+\bigwedge_i\left(\bigwedge_{j\in N_i}G_j\Rightarrow A_i\right)
+\Longrightarrow \Phi_{\rm system}.
+\]
+The neighborhood \(N_i\) is a semantic dependency set and need not equal the BANK coupling
+neighborhood. The application adapter should choose \(E_{\rm B}\) so that every contract needed to
+replay component \(i\)'s proof is visible, or else resolve immutable dependencies through the core.
+This is precisely condition (DV).
+
+The four propagation modes create a controlled comparison: local measures isolated modular proof;
+coupled measures interface-directed reuse; core measures logically global reuse with one copy; and
+broadcast measures all-copied memory. Correctness is held fixed by the same independent checker in
+all four conditions. Performance claims require measuring visible BANK size, cache hits, checker
+replays, missing-dependency faults, proof size, and wall time. A successful federation unit test proves
+that items flow according to configuration; it does not yet establish that the configured flow is
+complete for a real compiler, proof assistant, or deployed program.
+
+\paragraph{Source anchors.} Policy-neutral verification and executable architecture invariants appear
+in \emph{What Checks the Proof?} v6.80, pp. 10 and 69--70 \cite{TennesonChecks}.
+
+\chapter{Scientific Discovery}
+\label{ch:science}
+
+The Quotient Hunter idea is scientifically interesting when many apparent histories can be replaced
+by a smaller state that preserves everything relevant to future prediction or verification. Invariant
+discovery then becomes a search for sufficient representation, not merely a search for correlation.
+
+\section{Plausible application}
+Let \(H_t\) denote an observed history and \(Y_{t:\infty}\) a declared family of future observables.
+A descriptor \(Q(H_t)\) is predictively sufficient when
+\[
+\mathcal L(Y_{t:\infty}\mid H_t)
+=\mathcal L(Y_{t:\infty}\mid Q(H_t)).
+\]
+Equivalently, under regularity conditions,
+\[
+Y_{t:\infty}\perp H_t\mid Q(H_t).
+\]
+For deterministic models and observable family \(\mathcal F\), the obligation may instead be
+\[
+Q(h_1)=Q(h_2)
+\Rightarrow
+\forall f\in\mathcal F\;\forall\tau\ge0,
+\quad f(Y_{h_1}(\tau))=f(Y_{h_2}(\tau)).
+\]
+Candidate descriptors can be ranked by an information-compression objective
+\[
+U(Q)=\widehat I(Q(H_t);Y_{t:\infty})
+-\lambda I(Q(H_t);H_t)
+-\mu\widehat{\Cost}(Q),
+\]
+or by an exact symbolic compression metric when a formal model is available. Yet \(U(Q)\) is only
+a search score. A descriptor enters verified state only after a domain-appropriate certificate: a
+proof in a formal model, an exact algebraic derivation, or a preregistered empirical test with a clearly
+limited conclusion. \(\FB\) may retain failed invariants and conditional ``what if'' models without
+asserting them. If a descriptor passes the preservation gate, downstream inference may reuse the same
+reasoning for every history in a quotient class. The payoff is a certified reduction of effective state
+dimension and an explicit statement of which observables survive the reduction.
+
+\begin{conjecture}[Verifier-history discovery advantage]
+On some repeated scientific-model families, retaining rejected quotient hypotheses with provenance
+reduces expected rediscovery cost without increasing false certification, relative to retaining only
+accepted descriptors.
+\end{conjecture}
+
+\begin{boundary}
+Predictive sufficiency is relative to the chosen observables and data-generating assumptions. Good
+holdout prediction alone is not a theorem that the quotient is universally correct.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+Scientific departments may represent disciplines, model families, or measurement modalities. A
+verified algebraic quotient can remain local to QH and the relevant model department; a checked
+translation theorem can couple it to another discipline; a genuinely scope-independent result may
+enter the core. Failed or merely suggestive hypotheses remain in FUTUREBANK rather than becoming
+local ``facts.'' Federation changes the audience of accepted objects, not the evidentiary standard by
+which an empirical or formal object was accepted.
+
+Let \(r_{de}\ge0\) estimate the preregistered reuse value to department \(d\) of items generated by
+department \(e\), and let \(c_{de}\) measure visibility or scanning cost. A candidate coupling graph
+may be scored by
+\[
+U(E_{\rm B})=
+\sum_{(d,e)\in E_{\rm B}}(r_{de}-\lambda c_{de})
+-\mu R_{\rm miss}(E_{\rm B})-\eta R_{\rm leak}(E_{\rm B}),
+\]
+subject to dependency visibility and fixed verification rules. This objective can guide a topology
+experiment, but learned \(r_{de}\) values do not certify scientific relevance. Broadcast also carries
+a special epistemic danger: a model-relative result can appear universal because it is everywhere.
+Every item should therefore retain observable family, data split, model version, acceptance type,
+provenance, and dependency hashes. The experimental question is whether selective verified sharing
+reduces rediscovery cost without raising mis-scoped reuse, not whether federation turns tentative
+science into theoremhood.
+
+\paragraph{Source anchors.} \(\FB\), planning, and \(\COMPASS\) appear in
+\emph{What Checks the Proof?} v6.80, pp. 27--30; future-sufficient quotienting appears on p. 68
+\cite{TennesonChecks}.
+
+\chapter{Engineering Optimization}
+\label{ch:engineering}
+
+Scheduling, placement, routing, circuit design, materials design, and configuration all contain large
+combinatorial spaces. Safe state merging can reduce repeated work only when it preserves future
+constraints and objective values.
+
+\section{Plausible application}
+Consider
+\[
+\min_{x\in X} f(x)
+\quad\text{subject to}\quad
+g_i(x)\le0\;(i=1,\ldots,m),
+\qquad h_j(x)=0\;(j=1,\ldots,r).
+\]
+For a partial design history \(h\), let
+\[
+\mathcal C(h)=\{x\in X:x\text{ extends }h\text{ and satisfies inherited constraints}\}.
+\]
+A strong exact equivalence is
+\[
+h_1\sim h_2
+\iff
+\exists\varphi:\mathcal C(h_1)\to\mathcal C(h_2)\text{ bijective such that }
+f(x)=f(\varphi(x))
+\]
+and all checker-relevant labels are preserved. A weaker quotient may preserve only feasibility and an
+optimal value:
+\[
+Q(h_1)=Q(h_2)
+\Rightarrow
+\left[
+\mathcal C(h_1)=\varnothing\iff\mathcal C(h_2)=\varnothing
+\right]
+\land
+\inf_{x\in\mathcal C(h_1)}f(x)=\inf_{x\in\mathcal C(h_2)}f(x).
+\]
+Under either certified obligation, dynamic programming may cache downstream value and feasibility
+by quotient state. A \(\COMPASS\)-like scheduler may prioritize
+\[
+S(a\mid h)=
+\alpha\Delta_{\rm goal}+\beta\rho_Q+\gamma\operatorname{reuse}
+-\delta\widehat{\Cost}-\eta\widehat{\Risk},
+\]
+while feasibility remains checker-defined:
+\[
+\operatorname{Feas}(x)
+\iff
+\bigwedge_i g_i(x)\le0
+\land\bigwedge_j h_j(x)=0
+\land V(x,\Gamma)=1.
+\]
+Learned guidance therefore decides where to spend computation; it does not redefine admissibility.
+The research question is whether certified equivalence classes can be discovered cheaply enough that
+their reuse benefit exceeds the cost of proving them.
+
+\begin{proposition}[Optimal-value reuse]
+If \(Q\) satisfies the displayed optimal-value preservation obligation, then an exact cached value at
+\(Q(h)\) is valid for every history in that quotient class.
+\end{proposition}
+
+\begin{proof}
+The obligation states equality of the infimum for any two representatives of the same class.
+\end{proof}
+
+\begin{boundary}
+Preserving an optimum value does not necessarily preserve an optimizer, robustness margin, or
+implementation cost. Those quantities must be added to the equivalence obligation when relevant.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+Federated BANK supports a modular optimization pattern: design teams retain local feasibility lemmas,
+couple verified interface constraints to dependent teams, and place system-wide safety envelopes in
+the core. For item \(x\), let \(\Omega(x)\subseteq X\) be the certified validity region. Reuse in a
+partial design state \(h\) requires
+\[
+\mathcal C(h)\subseteq\Omega(x),
+\qquad \Dep(x)\subseteq\View_t(d),
+\qquad \nu(x)=1.
+\]
+Without the first condition, a true local optimality lemma may be propagated beyond the region in
+which it is true. Without the second, the receiving department may be unable to replay its receipt.
+
+The BANK topology can itself become a secondary design variable. If \(E_{\rm B}\) determines reuse
+and copying cost, one may compare
+\[
+\min_{D,E_{\rm B}}
+\left(f(D),C_{\rm solve}(D,E_{\rm B}),C_{\rm copy}(E_{\rm B}),
+R_{\rm miss}(E_{\rm B})\right)
+\]
+subject to the original engineering constraints and topology-independent verification. This does not
+license changing the coupling graph mid-run until a favorable result appears: topology, adaptation
+rule, and budget must be frozen or fully logged. Core and broadcast provide reuse-heavy baselines;
+local and coupled modes test whether selective context improves resource use while preserving the same
+certified feasible set and objective values.
+
+\paragraph{Source anchors.} \(\COMPASS\) and safe quotienting appear in
+\emph{What Checks the Proof?} v6.80, pp. 28--29 and 68 \cite{TennesonChecks}.
+
+\chapter{AI Safety Itself}
+\label{ch:ai}
+
+A shortcut-generating system is materially different from a shortcut-generating system that is also
+allowed to declare its own outputs valid. The application here is architectural: separate generation,
+testing, verification, memory promotion, and operational authority.
+
+\section{Plausible application}
+Let \(G_\theta\) be a mutable generator or search policy and \(V_\omega\) a separately governed
+verifier. For a claim \(c\), certificate \(\pi\), theory \(\Gamma\), and environment \(\mathcal E\),
+define
+\[
+\Promote(c,\pi)
+\iff V_\omega(c,\pi,\Gamma,\mathcal E)=1.
+\]
+Policy-neutral verification requires generator changes not to alter acceptance:
+\[
+\forall\theta_1,\theta_2,c,\pi,
+\quad
+V_\omega(c,\pi,\Gamma,\mathcal E)
+\text{ is independent of whether }G_{\theta_1}\text{ or }G_{\theta_2}\text{ proposed }(c,\pi).
+\]
+Candidate self-modifications \(\theta'\) remain speculative,
+\[
+\theta'\in F_t\not\Rightarrow\theta'\in B_t,
+\]
+and must pass hard invariants \(H_1,\ldots,H_k\) plus an Ocean regression suite:
+\[
+\operatorname{Gate}(\theta')=1
+\iff
+\left(\bigwedge_{o\in\OCEAN_t}\bigwedge_{j=1}^{k}H_j(G_{\theta'},o)=1\right)
+\land V_\omega(\pi_{\theta'},\theta',\Gamma_{\rm deploy})=1.
+\]
+The gate may also include a statistical endpoint, but statistical success cannot override a failed hard
+invariant. A verified regression failure \(r_t\) updates \(\OCEAN_{t+1}=\OCEAN_t\cup\{r_t\}\).
+Operational authority is granted by a distinct deployment controller with least privilege and rollback,
+not by membership in a speculative search frontier. This does not solve alignment in general. It
+supplies a checkable separation law: policy may change attention, but promotion remains conditional
+on an independently governed acceptance relation.
+
+\begin{proposition}[Generator-independent promotion]
+Under the displayed promotion rule, changing \(\theta\) alone cannot cause a certificate rejected by
+\(V_\omega\) to enter \(B_t\) through the modeled update.
+\end{proposition}
+
+\begin{proof}
+Promotion depends on \(V_\omega\), not on the identity or parameters of the proposing generator.
+Apply Proposition~\ref{prop:noncontamination}.
+\end{proof}
+
+\begin{boundary}
+Independent verification is a safety mechanism, not a proof of global AI safety. The verifier,
+specification, interfaces, deployment controller, and environment remain possible failure surfaces.
+\end{boundary}
+
+\section{DATA-MIND 2.10 update}
+In 2.10, specialized departments can receive different verified contexts around the same trusted
+core. That supports least-context reasoning experiments: QH may see quotient results, Professor and
+Child may share evaluation-relevant facts, and COMPASS may combine global verified structure with
+selected local geometry. Yet the named endpoints are presently topology interfaces, not evidence that
+all named cognitive modules are fully wired or safe.
+
+For a generated action \(a\), a certificate \(\pi\), and destination department \(d\), define
+\[
+\operatorname{Release}(a,\pi,d)=1
+\Longrightarrow
+\underbrace{V_\omega(a,\pi)=1}_{\text{mathematical or policy certificate}}
+\land
+\underbrace{a\in\View_t^{\rm sec}(d)}_{\text{authorized visibility}}
+\land
+\underbrace{S(a,d)=\mathsf{approve}}_{\text{Sentinel}}
+\land H(a,d),
+\]
+where \(H\) is required human authorization for the policy-defined high-risk cases. No propagation
+mode can delete a conjunct. Core placement does not grant execution authority; local placement does
+not excuse verification; quarantine does not turn a preserved item into trusted BANK knowledge.
+
+Federation may reduce irrelevant context or isolate resource-pathological strategies, but isolation
+must not erase the underlying theorem, failure, provenance, or cohort membership. In particular, a
+future frozen-cohort rerun should preserve the identity of \texttt{quartfull} while Sentinel contains
+an abnormal transaction. This yields a testable safety claim about containment without silent data
+deletion, not a general alignment theorem.
+
+\paragraph{Source anchors.} Policy-neutral verification and safe quotienting appear in
+\emph{What Checks the Proof?} v6.80, pp. 10 and 68 \cite{TennesonChecks}; the Ocean moat appears
+in the older security treatise, pp. 32--33 \cite{TennesonSecurity}.
+
+\part{Research Boundaries and Program}
+
+\chapter{A Cross-Domain Experimental Program}
+
+The eight sketches can be tested without pretending that they are already established capabilities.
+DATA-MIND 2.10 creates a new independent variable---BANK topology---while leaving the verifier,
+Sentinel, FUTUREBANK separation, and settlement outcomes conceptually fixed. For each application
+family, freeze
+\[
+(\text{target family},\text{model},\text{verifier},\text{budget},\text{baseline},
+\text{split},\text{stopping rule},\text{metric},G_{\rm B},m).
+\]
+The first 2.10 comparison should hold the frozen 95\% training cohort and learning objective fixed and
+compare four propagation conditions: core, broadcast, local, and coupled. Local and coupled
+conditions require a preregistered coupling graph and item-placement rule. The theorem
+\texttt{quartfull}, or any other resource-pathological member, must not be silently removed from the
+cohort. Sentinel may stop or quarantine an abnormal transaction while the experiment retains its
+identity, provenance, resource trace, and outcome.
+
+Let \(N_{\rm phys}\) be physical BANK entries, \(N_{\rm vis}\) the mean number visible per active
+department, and \(H_{\rm reuse}\) the number of useful verified cross-department reuse events. A
+topology-efficiency coordinate is
+\[
+\eta_{\rm B}=
+\frac{H_{\rm reuse}}
+{\alpha N_{\rm phys}+\beta N_{\rm vis}+\gamma T_{\rm bank}+\delta R_{\rm miss}},
+\]
+reported alongside, never instead of, verified settlement. The primary endpoint remains verifier-
+accepted settlement per unit resource. Secondary endpoints include certificate size, wall time, peak
+memory, duplicate copy count, visible BANK size, BANK lookup time, reuse latency, missing-dependency
+events, false-promotion count, Sentinel decisions, quarantine count, and application-specific
+non-regression coordinates.
+
+\section{Topology comparison}
+For problem \(i\), seed \(s\), and mode \(m\), record the outcome vector
+\[
+Y_{ism}=(\settle_{ism},T_{ism},M_{ism},L_{ism},N^{\rm phys}_{ism},
+N^{\rm vis}_{ism},H^{\rm reuse}_{ism},R^{\rm miss}_{ism},Q_{ism}).
+\]
+Use the same problem--seed blocks across modes. Report paired differences and the full outcome
+distribution rather than selecting only the best topology after inspection. If adaptive topology is
+later studied, freeze the adaptation rule and charge its computation to the same budget. A valid
+result may show that core wins, that selective coupling wins, or that federation overhead dominates;
+2.10 makes these alternatives testable rather than predetermining the answer.
+
+\section{A minimum preregistration schema}
+\begin{enumerate}[leftmargin=*]
+\item State the target claim and the exact verifier acceptance relation.
+\item State which data or instances inform search and which remain held out.
+\item State the quotient preservation obligation before observing target results.
+\item Freeze the registered departments, directed coupling graph, propagation rule, and any
+label/clearance filter before the comparison.
+\item Match baselines on verifier, budget, and stopping conditions.
+\item Record every promoted object with its certificate, dependencies, provenance, and environment.
+\item Record physical destination, logical viewers, missing dependencies, Sentinel classification,
+and Quarantine status for every proposed deposit or release.
+\item Treat \(\UNKNOWN\) as a distinct outcome rather than silently reclassifying it.
+\item Retain verified failures as regression cases and report all non-regression coordinates.
+\item Preserve every frozen-cohort identity even when a resource tripwire contains its execution.
+\end{enumerate}
+
+\begin{conjecture}[Separation-aware advantage]
+On some repeated target-settlement distributions, a controller that optimizes both settlement progress
+and verifier-boundary preservation attains a better Pareto frontier than a matched controller that
+optimizes settlement success alone.
+\end{conjecture}
+
+\begin{conjecture}[Selective federation advantage]
+For some repeated settlement families with sparse department relevance, a preregistered coupled
+topology attains the same verifier-accepted settlement set as core access while reducing mean visible
+BANK mass or total BANK processing cost. For other families with dense reuse, core access may be
+Pareto-superior. The boundary should be estimated, not assumed.
+\end{conjecture}
+
+\chapter{Claims This Manuscript Does Not Make}
+
+\begin{enumerate}[leftmargin=*]
+\item No finite Ocean suite proves universal security.
+\item No heuristic score is promoted to a truth predicate.
+\item No failure to settle is treated as proof of safety, falsity, or independence.
+\item No quotient is safe merely because it compresses a benchmark well.
+\item No proof of implementation conformance establishes adequacy of the specification.
+\item No component-local proof automatically establishes secure composition.
+\item No chapter reports a new practical cryptanalytic attack or operational vulnerability.
+\item No verifier-gated architecture, by itself, proves global AI safety.
+\item No successful federation unit test establishes a training, settlement-rate, wall-time, or
+memory improvement on theorem benchmarks.
+\item No BANK coupling graph, by itself, implements confidentiality, mandatory access control,
+declassification, or noninterference.
+\item No named 2.10 topology endpoint is represented as a completed reasoning module merely because
+it can receive a federated BANK view.
+\item No core placement grants operational authority, and no local placement relaxes verification.
+\end{enumerate}
+
+The positive claim is narrower and, for research, more useful: each application can be formulated so
+that the powerful component proposes search directions while an explicit preservation obligation and
+independent checker govern promotion. DATA-MIND 2.10 adds a configurable, testable answer to where
+accepted objects are retained and reused, while leaving truth and security authorization as separate
+gates. That is the precise point at which this successor extends Security 3 without displacing its
+older siblings.
+
+\appendix
+\chapter{Glossary}
+
+\begin{description}[style=nextline,leftmargin=1.8em,labelindent=0pt]
+\item[AMLD] A verifier-gated, multi-role architecture for settling formal targets through proof,
+refutation, independence, contradiction, or an explicit resource-bounded unknown outcome.
+\item[Blast radius] The set or weighted consequence of resources reachable after a modeled compromise.
+\item[Certificate] A finite object whose validity for a declared claim can be checked independently.
+\item[COMPASS] Learned or engineered guidance that ranks search actions without defining truth.
+\item[Coupled BANK] A propagation mode that physically retains an accepted item at its source node
+and the source's explicitly declared neighboring BANK nodes.
+\item[DATA-MIND 2.10] The architecture revision that places department-local and coupled verified
+BANK nodes around one verifier-gated, logically shared core while retaining Sentinel, FUTUREBANK,
+Quarantine, and verifier sovereignty.
+\item[Federated BANK] The family consisting of the verified core, department-local BANK nodes, and
+their configured read-only views and propagation paths.
+\item[Future-sufficient quotient] A state compression that identifies histories only when all declared
+future facts needed for search and verification are preserved.
+\item[Ocean] A versioned adversarial and regression environment used before candidate machinery is
+granted trusted authority.
+\item[Policy-neutral verification] The requirement that changing search policy does not silently change
+the acceptance relation.
+\item[Quarantine BANK] Sentinel-controlled preservation for risky, blocked, or security-uncleared
+objects and actions. Preservation in Quarantine is not promotion into verified BANK.
+\item[Sentinel] The DATA-MIND 2.9 security and resource governor retained by 2.10 as a gate distinct
+from mathematical verification.
+\item[Settlement] Acceptance of a certificate for one of the declared $P/R/I/C$ outcomes.
+\item[Verified BANK] Trusted state whose semantic assertions enter only through the declared
+verification gate. In 2.10 it may be retained in the shared core or in local/coupled nodes.
+\item[FUTUREBANK] Append-only speculative state containing hypotheses, imagined traces, candidate
+quotients, and proposed repairs not yet admitted to verified BANK. It is distinct from Sentinel
+Quarantine.
+\end{description}
+
+\chapter{Symbols and Notation}
+
+\begin{longtable}{&gt;{\raggedright\arraybackslash}p{0.18\textwidth}&gt;{\raggedright\arraybackslash}p{0.68\textwidth}}
+\toprule
+Symbol &amp; Meaning in this manuscript \\
+\midrule
+\endfirsthead
+\toprule
+Symbol &amp; Meaning in this manuscript \\
+\midrule
+\endhead
+\(c\) &amp; Target claim or goal \\
+\(\Gamma\) &amp; Admitted theory, specification, and scoped dependencies \\
+\(\mathcal E\) &amp; Declared environment or threat model \\
+\(V\) &amp; Independent verifier or checker \\
+\(P,R,I,C\) &amp; Prover, Refuter, Independence, and Contradiction settlement roles \\
+\(\UNKNOWN\) &amp; No accepted settlement certificate within declared conditions \\
+\(B_t\) &amp; Verified BANK contents at time \(t\) \\
+\(B_t^0\) &amp; Logically shared verified core at time \(t\) \\
+\(B_t^d\) &amp; Department \(d\)'s local verified BANK node at time \(t\) \\
+\(F_t\) &amp; FUTUREBANK speculative contents at time \(t\) \\
+\(\mathcal D\) &amp; Set of registered reasoning departments \\
+\(G_{\rm B}=(\mathcal D,E_{\rm B})\) &amp; Directed BANK coupling graph \\
+\(\Delta_m(d)\) &amp; Physical destinations selected by propagation mode \(m\) for source \(d\) \\
+\(\View_t(d)\) &amp; Core, local, and coupled verified items visible to department \(d\) \\
+\(\lambda(x),\kappa(d)\) &amp; Application-level security label of item \(x\) and clearance of department \(d\) \\
+\(Q\) &amp; Candidate future-sufficient descriptor or quotient map \\
+\(h_1\sim_Qh_2\) &amp; Histories have the same quotient state \\
+\(\OCEAN_t\) &amp; Ocean regression suite at time \(t\) \\
+\(\Reach_G(c)\) &amp; Vertices reachable from \(c\) in graph \(G\) \\
+\(D_2\succ_XD_1\) &amp; \(D_2\) strictly improves the declared metric for vulnerability class \(X\), subject to stated non-regression constraints \\
+\bottomrule
+\end{longtable}
+
+\backmatter
+\chapter*{References}
+\addcontentsline{toc}{chapter}{References}
+\begin{thebibliography}{99}
+
+\bibitem{Anderson}
+Ross Anderson.
+\newblock \emph{Security Engineering: A Guide to Building Dependable Distributed Systems}.
+\newblock 3rd ed., Wiley, 2020.
+
+\bibitem{Bishop}
+Matt Bishop.
+\newblock \emph{Computer Security: Art and Science}.
+\newblock 2nd ed., Addison-Wesley, 2018.
+
+\bibitem{CoverThomas}
+Thomas M. Cover and Joy A. Thomas.
+\newblock \emph{Elements of Information Theory}.
+\newblock 2nd ed., Wiley, 2006.
+
+\bibitem{SaltzerSchroeder}
+Jerome H. Saltzer and Michael D. Schroeder.
+\newblock ``The Protection of Information in Computer Systems.''
+\newblock \emph{Proceedings of the IEEE} 63(9), 1975, 1278--1308.
+
+\bibitem{TennesonSecurity}
+Brian Tenneson.
+\newblock \href{https://btenneson.github.io/pub/papers/amld_security_treatise_v0_1/}
+{\emph{Security by Separation, Verification, and Settlement: An AMLD-Oriented Mathematical Treatise}}.
+\newblock Working research manuscript v0.1, August 30, 2026.
+
+\bibitem{TennesonSecurity3}
+Brian Tenneson.
+\newblock \href{https://btenneson.github.io/pub/papers/amld_security_3/}
+{\emph{AMLD Security 3: Eight Formal Application Sketches for Intelligent Target Settlement}}.
+\newblock Companion research manuscript v1.0, September 2, 2026.
+
+\bibitem{TennesonChecks}
+Brian Tenneson.
+\newblock \href{https://btenneson.github.io/pub/papers/what_checks_the_proof_v6_80/}
+{\emph{What Checks the Proof? A Textbook Introduction to Automated Mathematical Logic Deciders}}.
+\newblock Version 6.80, August 22, 2026.
+
+\bibitem{DataMind29ADR}
+Brian Tenneson.
+\newblock \href{https://github.com/btenneson/Data-ATP/blob/main/docs/architecture/ADR-0002-data-mind-2.9-sentinel.md}
+{\emph{ADR-0002: DATA-MIND 2.9 Sentinel Security Architecture}}.
+\newblock Data-ATP architecture decision, September 2, 2026.
+
+\bibitem{DataMind210ADR}
+Brian Tenneson.
+\newblock \href{https://github.com/btenneson/Data-ATP/blob/main/docs/architecture/ADR-0003-data-mind-2.10-federated-bank.md}
+{\emph{ADR-0003: DATA-MIND 2.10 Federated BANK Architecture}}.
+\newblock Accepted for integration testing, September 2, 2026.
+
+\bibitem{DataMind210Code}
+Brian Tenneson.
+\newblock \href{https://github.com/btenneson/Data-ATP/commit/a47e4bfa626b6def3378b4a44f0bfc0a34bf8bda}
+{\emph{Merge DATA-MIND 2.10 Federated BANK Architecture}}.
+\newblock Public source integration commit, September 2, 2026.
+
+\bibitem{DataMind210Run}
+Brian Tenneson.
+\newblock \href{https://github.com/btenneson/Data-ATP/actions/runs/33613319331}
+{\emph{DATA-MIND 2.10 Federated BANK CI}}.
+\newblock Successful public integration test run, September 2, 2026.
+
+\end{thebibliography}
+
+\clearpage
+\thispagestyle{empty}
+\vspace*{0.66\textheight}
+\begin{center}
+\fbox{\begin{minipage}{0.82\textwidth}
+\itshape\small\raggedright
+AI assistance note. This manuscript develops Brian Tenneson's AMLD, DATA-MIND 2.10 federated
+BANK, BANK/FUTUREBANK, Sentinel, COMPASS, Quotient Hunter, Ocean, and verifier-gated settlement
+ideas. ChatGPT assisted with architecture comparison, mathematical formalization, LaTeX drafting,
+and editorial revision. The named author is responsible for reviewing the definitions, propositions,
+conjectures, citations, security boundaries, implementation-status statements, and final publication
+text.
+\end{minipage}}
+\end{center}
+
+\end{document}
+</pre></body></html>

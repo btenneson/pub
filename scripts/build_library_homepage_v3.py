@@ -44,6 +44,7 @@ RANKED_HREFS = (
     "papers/what_checks_the_proof_v6_80/",
     "papers/amld_security_treatise_v0_1/",
     "papers/amld_security_3/",
+    "papers/amld_security_4/",
     "papers/verified_settlement_search_v1_4/",
     "papers/shortest_settlement_optimal_control_v1_0/",
     "papers/search_dynamics_abel_v0_4/",
@@ -99,6 +100,10 @@ FEATURE_QUOTES = {
     },
     "papers/amld_security_3/": {
         "quote": "The central problem is not merely computational power. It is how to separate creative search from the authority to promote claims into trusted state.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
+    "papers/amld_security_4/": {
+        "quote": "DATA-MIND 2.10 changes where verified information is retained and who sees it by default. It does not change what makes an assertion true.",
         "quote_attribution": "Brian Tenneson and ChatGPT",
     },
     "papers/verified_settlement_search_v1_4/": {
