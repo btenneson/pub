@@ -29,9 +29,9 @@ jobs:
           set -euo pipefail
           work="$RUNNER_TEMP/amld-security-v0-1"
           mkdir -p "$work"
-          cat .build/amld_security_v0_1/tex/part-* | base64 -d > "$work/source.tex.xz"
+          cat .build/amld_security_v0_1/tex_exact/part-* | base64 -d > "$work/source.tex.xz"
           xz -dc "$work/source.tex.xz" > "$work/AMLD_Security_Treatise_v0_1.tex"
-          echo 'fb05e5f3c9c74110a854a7cfc0fa151d0a73169d6121a97d647885b6e4080ab9  '"$work/AMLD_Security_Treatise_v0_1.tex" | sha256sum -c -
+          echo 'b1041ecdd3f3907e11656a2f31f31e53c5c08d9742f34a967be43db78753f8f6  '"$work/AMLD_Security_Treatise_v0_1.tex" | sha256sum -c -
 
       - name: Compile PDF
         shell: bash
