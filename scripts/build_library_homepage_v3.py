@@ -97,6 +97,10 @@ FEATURE_QUOTES = {
         "quote": "The machine may be uncertain about what to try next while being exact about what it has already certified.",
         "quote_attribution": "Brian Tenneson and ChatGPT",
     },
+    "papers/amld_security_3/": {
+        "quote": "The central problem is not merely computational power. It is how to separate creative search from the authority to promote claims into trusted state.",
+        "quote_attribution": "Brian Tenneson and ChatGPT",
+    },
     "papers/verified_settlement_search_v1_4/": {
         "quote": "The final sections convert these results into a staged experimental program whose primary endpoint is not prediction accuracy but independently verified settlement of withheld and eventually genuinely difficult conjectures.",
         "quote_attribution": "Brian Tenneson and ChatGPT",
