@@ -40,6 +40,20 @@ const experimentEntry={
   quote:'Use the first experiments to learn mechanisms; use later experiments to choose architecture.',
   quote_attribution:'DATA MIND 2.10 Experiments'
 };
+const cfaEntry={
+  title:'Controlled Formal Awareness Security',
+  kind:'Core paper',
+  category:'Research Papers',
+  tags:['Controlled Formal Awareness','ITS security','awareness preorder','federation'],
+  href:'https://github.com/btenneson/pub/blob/main/cs.LO_Logic_in_Computer_Science/Controlled_Formal_Awareness_Security_Working_Draft.pdf',
+  pdf:'https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/Controlled_Formal_Awareness_Security_Working_Draft.pdf',
+  source:'',
+  archive_path:'cs.LO_Logic_in_Computer_Science/Controlled_Formal_Awareness_Security_Working_Draft.pdf',
+  search:'Controlled Formal Awareness Security Intelligent Target Seekers ITS automated theorem provers AMLD DATA-MIND directed awareness budgeted awareness horizons target-relative preorders quotient classes federation security-capability preorder Frozen-Ocean proof depth nonstandard bounds',
+  summary:'A security framework for Intelligent Target Seekers that models directed and budgeted awareness, target-relative preorders and quotient classes, federation constraints, awareness horizons, and security-capability ordering while keeping unauthorized cross-machine awareness controlled.',
+  quote:'maximize authorized awareness and constrain unauthorized awareness.',
+  quote_attribution:'Controlled Formal Awareness Security'
+};
 const nsaFallback={title:'Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups',kind:'Core paper',category:'Research Papers',tags:[],href:'papers/nsa_and_trading_speedup/',pdf:'https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf',source:'',archive_path:'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf',search:'Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups Research Papers nsa_and_trading_speedup'};
 function populate(){const ks=[...new Set(DATA.map(x=>x.kind))].sort(),cs=[...new Set(DATA.map(x=>x.category))].sort();kind.innerHTML='<option value="">All collections</option>'+ks.map(x=>`<option>${esc(x)}</option>`).join('');cat.innerHTML='<option value="">All subjects</option>'+cs.map(x=>`<option>${esc(x)}</option>`).join('')}
 function tokens(){return norm(q.value).trim().split(/\s+/).filter(Boolean)}
@@ -53,10 +67,11 @@ async function init(){
     const r=await fetch('search-index.json',{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);const payload=await r.json();const base=Array.isArray(payload)?payload:(payload.items||[]);
     const isNsa=x=>x.archive_path==='cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'||norm(x.title).includes('nonstandard analysis and certified presentation trading');
     const isExperiments=x=>x.archive_path==='cs.LO_Logic_in_Computer_Science/DATA_MIND_2_10_Experiments.md'||x.title==='DATA MIND 2.10 Experiments';
+    const isCfa=x=>x.archive_path==='${repoPdfPath}'||x.title==='Controlled Formal Awareness Security';
     const nsa=base.find(isNsa)||nsaFallback;
-    DATA=[nsa,experimentEntry,...base.filter(x=>!isNsa(x)&&!isExperiments(x))];
+    DATA=[nsa,cfaEntry,experimentEntry,...base.filter(x=>!isNsa(x)&&!isCfa(x)&&!isExperiments(x))];
     populate();render();
-  }catch(e){DATA=[nsaFallback,experimentEntry];populate();render();count.textContent=`2 pinned items — library index failed to load`;console.error(e)}
+  }catch(e){DATA=[nsaFallback,cfaEntry,experimentEntry];populate();render();count.textContent=`3 pinned items — library index failed to load`;console.error(e)}
 }
 [q,kind,cat,sort].forEach(el=>el.addEventListener(el===q?'input':'change',render));clear.onclick=()=>{q.value='';kind.value='';cat.value='';sort.value='default';q.focus();render()};init();
 </script>
