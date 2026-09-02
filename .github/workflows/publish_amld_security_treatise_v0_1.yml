@@ -23,19 +23,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Reconstruct and validate publication files
+      - name: Reconstruct source
         shell: bash
         run: |
           set -euo pipefail
           work="$RUNNER_TEMP/amld-security-v0-1"
           mkdir -p "$work"
-          cat .build/amld_security_v0_1/pdf/part-* | base64 -d > "$work/paper.pdf.xz"
-          xz -dc "$work/paper.pdf.xz" > "$work/AMLD_Security_Treatise_v0_1.pdf"
           cat .build/amld_security_v0_1/tex/part-* | base64 -d > "$work/source.tex.xz"
           xz -dc "$work/source.tex.xz" > "$work/AMLD_Security_Treatise_v0_1.tex"
-          echo '5e8765bb5c393492d6f5c060a277c289ea3b803117a108431a7898def69d263b  '"$work/AMLD_Security_Treatise_v0_1.pdf" | sha256sum -c -
           echo 'fb05e5f3c9c74110a854a7cfc0fa151d0a73169d6121a97d647885b6e4080ab9  '"$work/AMLD_Security_Treatise_v0_1.tex" | sha256sum -c -
-          test "$(head -c 5 "$work/AMLD_Security_Treatise_v0_1.pdf")" = '%PDF-'
+
+      - name: Compile PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super
+          work="$RUNNER_TEMP/amld-security-v0-1"
+          cd "$work"
+          pdflatex -interaction=nonstopmode -halt-on-error AMLD_Security_Treatise_v0_1.tex
+          pdflatex -interaction=nonstopmode -halt-on-error AMLD_Security_Treatise_v0_1.tex
+          pdflatex -interaction=nonstopmode -halt-on-error AMLD_Security_Treatise_v0_1.tex
+          test -s AMLD_Security_Treatise_v0_1.pdf
 
       - name: Install publication and reader
         shell: bash
@@ -47,7 +56,7 @@ jobs:
           cp "$work/AMLD_Security_Treatise_v0_1.pdf" 'documents and their sources/AMLD_Security_Treatise_v0_1.pdf'
           cp "$work/AMLD_Security_Treatise_v0_1.tex" 'documents and their sources/AMLD_Security_Treatise_v0_1.tex'
           cat > 'docs/papers/amld_security_treatise_v0_1/index.html' <<'HTML'
-          <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Security by Separation, Verification, and Settlement: An AMLD-Oriented Mathematical Treatise</title><meta name="description" content="Canonical reader for Security by Separation, Verification, and Settlement: An AMLD-Oriented Mathematical Treatise by Brian Tenneson."><link rel="canonical" href="https://btenneson.github.io/pub/papers/amld_security_treatise_v0_1/"><style>:root{color-scheme:light dark;--b:#8885}*{box-sizing:border-box}body{margin:0;font-family:system-ui}header{padding:1rem;border-bottom:1px solid var(--b)}h1{font-size:1.2rem;margin:0 0 .3rem}.sub{opacity:.76}.links{display:flex;gap:.55rem;flex-wrap:wrap}.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}iframe{width:100%;height:calc(100vh - 165px);min-height:560px;border:0}</style></head><body><header><h1><b>Security by Separation, Verification, and Settlement: An AMLD-Oriented Mathematical Treatise</b></h1><p class="sub">Working research manuscript v0.1 · Brian Tenneson · August 30, 2026</p><nav class="links" id="links"></nav></header><iframe id="reader"></iframe><script>const p='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/AMLD_Security_Treatise_v0_1.pdf',source='https://btenneson.github.io/pub/papers/amld_security_treatise_v0_1/source.html',v='https://mozilla.github.io/pdf.js/web/viewer.html?file='+encodeURIComponent(p);reader.src=v;links.innerHTML='<a href="'+v+'" target="_blank" rel="noopener">Open full-screen reader</a><a href="'+p+'">PDF</a><a href="'+source+'">LaTeX source</a>';</script></body></html>
+          <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Security by Separation, Verification, and Settlement: An AMLD-Oriented Mathematical Treatise</title><meta name="description" content="Canonical reader for Security by Separation, Verification, and Settlement: An AMLD-Oriented Mathematical Treatise by Brian Tenneson."><link rel="canonical" href="https://btenneson.github.io/pub/papers/amld_security_treatise_v0_1/"><style>:root{color-scheme:light dark;--b:#8885}*{box-sizing:border-box}body{margin:0;font-family:system-ui}header{padding:1rem;border-bottom:1px solid var(--b)}h1{font-size:1.2rem;margin:0 0 .3rem}.sub{opacity:.76}.links{display:flex;gap:.55rem;flex-wrap:wrap}.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}iframe{width:100%;height:calc(100vh - 165px);min-height:560px;border:0}</style></head><body><header><h1><b>Security by Separation, Verification, and Settlement: An AMLD-Oriented Mathematical Treatise</b></h1><p class="sub">Working research manuscript v0.1 · Brian Tenneson · August 30, 2026</p><nav class="links" id="links"></nav></header><iframe id="reader"></iframe><script>const p='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/AMLD_Security_Treatise_v0_1.pdf',source='source.html',v='https://mozilla.github.io/pdf.js/web/viewer.html?file='+encodeURIComponent(p);reader.src=v;links.innerHTML='<a href="'+v+'" target="_blank" rel="noopener">Open full-screen reader</a><a href="'+p+'">PDF</a><a href="'+source+'">LaTeX source</a>';</script></body></html>
           HTML
           cat > 'docs/papers/amld_security_treatise_v0_1/source.html' <<'HTML'
           <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Security by Separation, Verification, and Settlement — source</title><link rel="canonical" href="https://btenneson.github.io/pub/papers/amld_security_treatise_v0_1/source.html"><style>body{font:15px/1.5 system-ui;max-width:1100px;margin:auto;padding:24px}pre{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid #8885;border-radius:10px;padding:16px}a{font-weight:650}</style></head><body><p><a href="./">← Back to article</a></p><h1>LaTeX source</h1><p><a href="https://github.com/btenneson/pub/blob/main/documents%20and%20their%20sources/AMLD_Security_Treatise_v0_1.tex">Open source on GitHub</a></p><pre id="src">Loading source…</pre><script>fetch('https://raw.githubusercontent.com/btenneson/pub/main/documents%20and%20their%20sources/AMLD_Security_Treatise_v0_1.tex').then(r=>r.text()).then(t=>src.textContent=t).catch(()=>src.textContent='Source could not be loaded here; use the GitHub link above.');</script></body></html>
@@ -80,6 +89,8 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add 'cs.LO_Logic_in_Computer_Science/AMLD_Security_Treatise_v0_1.pdf' 'documents and their sources/AMLD_Security_Treatise_v0_1.pdf' 'documents and their sources/AMLD_Security_Treatise_v0_1.tex' 'docs/papers/amld_security_treatise_v0_1' docs/index.html docs/search-index.json scripts/build_library_homepage_v3.py
-          git commit -m 'Publish AMLD Security Treatise v0.1 and update index'
-          git pull --rebase origin main
-          git push origin HEAD:main
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish AMLD Security Treatise v0.1 and update index'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
