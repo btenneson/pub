@@ -1,0 +1,65 @@
+name: Compile AMLD Security 3
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/compile_amld_security_3.yml'
+      - 'documents and their sources/AMLD Security 3.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: amld-security-3-pdf-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compile AMLD Security 3
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: 'AMLD Security 3.tex'
+          working_directory: 'documents and their sources'
+          args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode
+
+      - name: Publish compiled PDF into Logic collection
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC='documents and their sources/AMLD Security 3.pdf'
+          DST='cs.LO_Logic_in_Computer_Science/AMLD Security 3.pdf'
+          test -s "$SRC"
+          cp "$SRC" "$DST"
+          file "$DST"
+
+      - name: Upload compiled PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AMLD-Security-3
+          path: 'cs.LO_Logic_in_Computer_Science/AMLD Security 3.pdf'
+          if-no-files-found: error
+
+      - name: Commit compiled PDF to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          PDF='cs.LO_Logic_in_Computer_Science/AMLD Security 3.pdf'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$PDF"
+          if git diff --cached --quiet; then
+            echo 'Compiled PDF is already current.'
+            exit 0
+          fi
+          git commit -m 'Compile AMLD Security 3 PDF'
+          git pull --rebase origin main
+          git push origin HEAD:main
