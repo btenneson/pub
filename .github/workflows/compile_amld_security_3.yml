@@ -25,10 +25,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Stage source under a TeX-safe build name
+        shell: bash
+        run: |
+          cp 'documents and their sources/AMLD Security 3.tex' \
+             'documents and their sources/AMLD_Security_3.tex'
+
       - name: Compile AMLD Security 3
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: 'AMLD Security 3.tex'
+          root_file: AMLD_Security_3.tex
           working_directory: 'documents and their sources'
           args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode
 
@@ -36,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          SRC='documents and their sources/AMLD Security 3.pdf'
+          SRC='documents and their sources/AMLD_Security_3.pdf'
           DST='cs.LO_Logic_in_Computer_Science/AMLD Security 3.pdf'
           test -s "$SRC"
           cp "$SRC" "$DST"
