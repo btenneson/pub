@@ -13,16 +13,16 @@ Training used 95% of the frozen `set.mm` corpus and targets were drawn from the 
 | 4 | `isfin3-4` | **FAILURE — BOUNDED_UNKNOWN** | **Medium.** Quick bounded failure; useful for premise/ranking analysis. |
 | 5 | `prmone0` | **FAILURE — BOUNDED_UNKNOWN** | **High diagnostic value.** Hidden proof is short, yet DATA failed after substantial search; points to a ranking/search-geometry gap. |
 | 6 | `1sdom2ALT` | **NOMINAL SUCCESS — SETTLED** | **Low / invalid benchmark value.** DATA used the already-available identical theorem `1sdom2` as a one-step proof. This exposed a statement-level leakage issue. Do not count as a meaningful held-out success. |
-| 7 | `afv2eq2` | **IN PROGRESS** | **Pending.** Search is still running. |
+| 7 | `afv2eq2` | **FAILURE — BOUNDED_UNKNOWN** | **High diagnostic value.** No candidate proof was found; fresh verifier gate therefore did not run. Hidden proof length was 17 steps, but DATA exhausted essentially the full 30-minute budget (1799.88 s), indicating a serious search/ranking miss on a relatively short theorem. |
 | 8 | `sbf2` | **SUCCESS — SETTLED** | **High.** Clean compositional reconstruction; verifier accepted a 9-step proof. |
 | 9 | `ex-eprel` | **FAILURE — BOUNDED_UNKNOWN** | **Medium-high diagnostic value.** Substantial search without a certificate; useful negative trajectory. |
 | 10 | `pm5.62` | **SUCCESS — SETTLED** | **Very high.** DATA found a verifier-accepted 300-step alternative to a much shorter hidden proof, strong evidence of actual certificate search rather than simple proof reproduction. |
-| 11 | `nelbrnelim` | **IN PROGRESS** | **Pending.** Search is still running. |
+| 11 | `nelbrnelim` | **FAILURE — BOUNDED_UNKNOWN** | **High diagnostic value.** No candidate proof was found; fresh verifier gate therefore did not run. Hidden proof length was 18 steps, but DATA used essentially the full 30-minute budget (1799.81 s), another strong short-proof search/ranking failure case. |
 | 12 | `2exnexn` | **SUCCESS — SETTLED** | **High.** Reconstructed a valid 16-step quantifier proof; strong learned proof-pattern transfer. |
 | 13 | `pred0` | **SUCCESS — SETTLED** | **Very high.** DATA found a verifier-accepted 15-step route versus the 23-step hidden proof; especially interesting alternative proof discovery. |
 
-## Current interpretation
+## Final interpretation
 
-At this snapshot, **12 of 14 attempts have finished**. Among those, there are **6 nominal verifier-accepted settlements**, but `1sdom2ALT` should not be counted as a meaningful held-out success because an identical statement remained available in training. Thus there are currently **5 meaningful successes among 11 evaluable finished non-duplicate cases**, with 2 searches still running.
+All **14 of 14 attempts have finished**. There were **6 nominal verifier-accepted settlements**, but `1sdom2ALT` should not be counted as a meaningful held-out success because an identical statement remained available in training. Excluding that duplicate-statement case leaves **13 evaluable non-duplicate targets**, of which **5 were meaningfully settled and 8 were bounded failures**, for a provisional meaningful settlement rate of **5/13 ≈ 38.5%**.
 
-The next benchmark revision should split the corpus **modulo identical theorem statements**, not merely theorem labels and proof dependencies, before quoting a formal generalization rate.
+This rate should still be treated as provisional because the benchmark has not yet been fully re-audited for other identical or equivalent statements. The next benchmark revision should split the corpus **modulo identical theorem statements**, not merely theorem labels and proof dependencies, before quoting a formal generalization rate.
