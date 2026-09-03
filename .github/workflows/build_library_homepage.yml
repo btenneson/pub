@@ -10,6 +10,7 @@ on:
       - 'pub.experimental/**'
       - '.build/pubexp_import/**'
       - '.build/nsa_and_trading_speedup/**'
+      - 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
       - 'scripts/import_pubexp_packages.py'
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
@@ -39,7 +40,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Restore NSA/trading PDF from saved chunks
+      - name: Ensure NSA/trading PDF is valid
         shell: bash
         run: |
           set -euo pipefail
@@ -51,6 +52,15 @@ jobs:
           src = Path('.build/nsa_and_trading_speedup')
           out = Path('cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf')
           out.parent.mkdir(parents=True, exist_ok=True)
+
+          def looks_complete_pdf(data: bytes) -> bool:
+              return data.startswith(b'%PDF-') and b'%%EOF' in data[-4096:]
+
+          if out.is_file() and looks_complete_pdf(out.read_bytes()):
+              print('using canonical NSA/trading PDF:', out, 'bytes=', out.stat().st_size)
+              raise SystemExit(0)
+
+          print('canonical PDF missing or invalid; trying saved chunk fallback')
           files = sorted(src.glob('chunk-*.b64'))
           if not files:
               raise SystemExit('no NSA/trading PDF chunks found')
@@ -60,37 +70,24 @@ jobs:
               raw=p.read_text(encoding='ascii', errors='ignore')
               clean=re.sub(r'[^A-Za-z0-9+/=]', '', raw)
               texts.append(clean)
-              print(p.name, 'chars=', len(raw), 'clean=', len(clean), 'mod4=', len(clean)%4, 'pads=', clean.count('='))
 
           def padded(s: str) -> str:
               s=s.rstrip('=')
               return s + ('=' * ((-len(s)) % 4))
 
-          def looks_complete_pdf(data: bytes) -> bool:
-              return data.startswith(b'%PDF-') and b'%%EOF' in data[-4096:]
-
           candidates=[]
-
-          # Layout A: files are slices of one base64 stream. Remove any archival
-          # padding at slice boundaries, join, repad once, then decode.
           try:
               joined=''.join(t.replace('=', '') for t in texts)
               candidates.append(('joined-stream', base64.b64decode(padded(joined), validate=False)))
           except Exception as e:
               print('joined-stream decode failed:', repr(e))
-
-          # Layout B: files are independently encoded binary blocks. Decode each
-          # block after normalizing padding, then concatenate the decoded bytes.
           try:
-              blocks=[]
-              for t in texts:
-                  blocks.append(base64.b64decode(padded(t.replace('=', '')), validate=False))
+              blocks=[base64.b64decode(padded(t.replace('=', '')), validate=False) for t in texts]
               candidates.append(('decoded-blocks', b''.join(blocks)))
           except Exception as e:
               print('decoded-blocks decode failed:', repr(e))
 
           for mode,data in candidates:
-              print(mode, 'bytes=', len(data), 'header=', repr(data[:8]), 'complete=', looks_complete_pdf(data))
               if looks_complete_pdf(data):
                   out.write_bytes(data)
                   print('restored NSA/trading PDF using', mode, 'bytes=', len(data))
@@ -121,6 +118,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
+          import hashlib
 
           d=json.load(open('docs/search-index.json', encoding='utf-8'))
           assert d['schema_version'] == 1
@@ -139,11 +137,15 @@ jobs:
           assert lead['href'] == 'papers/nsa_and_trading_speedup/'
           assert lead['archive_path'] == 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
           assert lead.get('quote'), 'NSA/trading lead card is missing its quote'
-          assert Path(lead['archive_path']).is_file(), 'NSA/trading PDF is missing'
+          p=Path(lead['archive_path'])
+          assert p.is_file(), 'NSA/trading PDF is missing'
+          data=p.read_bytes()
+          assert data.startswith(b'%PDF-') and b'%%EOF' in data[-4096:]
           print('searchable items:', d['count'])
           print('experimental items:', len(experimental))
           print('lead item:', lead['href'])
           print('lead quote:', lead['quote'])
+          print('lead PDF sha256:', hashlib.sha256(data).hexdigest())
           PY
 
       - name: Commit generated and imported files if changed
@@ -160,4 +162,4 @@ jobs:
           fi
 
 # The public default order is curator-ranked but intentionally unlabeled.
-# NSA/trading is restored from saved chunks and validated as the quoted lead card.
+# The canonical NSA/trading PDF is preferred; saved chunks are fallback only.
