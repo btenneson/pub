@@ -13,7 +13,9 @@ on:
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
       - 'scripts/build_library_homepage_v5.py'
+      - 'scripts/build_dm3_architecture_pdf.py'
       - 'scripts/fix_nsa_trading_card.py'
+      - 'scripts/fix_dm3_card.py'
       - 'scripts/sync_experimental_pages.py'
       - 'scripts/fix_experimental_page_links.py'
       - '.github/workflows/build_library_homepage.yml'
@@ -39,6 +41,14 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Build DATA MIND 3.0 architecture PDF if missing
+        shell: bash
+        run: |
+          if [ ! -s cs.LO_Logic_in_Computer_Science/DATA_MIND_3_0_Module_and_Interface_Freeze.pdf ]; then
+            python -m pip install --quiet reportlab
+            python scripts/build_dm3_architecture_pdf.py
+          fi
+
       - name: Import verified experimental packages
         run: python scripts/import_pubexp_packages.py
 
@@ -50,6 +60,9 @@ jobs:
 
       - name: Repair NSA/trading card
         run: python scripts/fix_nsa_trading_card.py
+
+      - name: Pin DATA MIND 3.0 as card 3
+        run: python scripts/fix_dm3_card.py
 
       - name: Route experimental links through Pages
         run: python scripts/fix_experimental_page_links.py
@@ -64,6 +77,8 @@ jobs:
           test -s docs/papers/nsa_and_trading_speedup/fulltext-00.txt
           test -s docs/papers/nsa_and_trading_speedup/fulltext-01.txt
           test -s docs/papers/nsa_and_trading_speedup/fulltext-02.txt
+          test -s docs/papers/data_mind_3_0_module_interface_freeze/index.html
+          test -s cs.LO_Logic_in_Computer_Science/DATA_MIND_3_0_Module_and_Interface_Freeze.pdf
           python - <<'PY'
           import json
           from pathlib import Path
@@ -77,11 +92,18 @@ jobs:
           assert lead['href'] == 'papers/nsa_and_trading_speedup/'
           assert lead.get('quote'), 'NSA/trading lead card is missing its quote'
           assert not lead.get('pdf'), 'NSA/trading card still exposes a broken PDF link'
+          assert len(d['items']) >= 3
+          dm3=d['items'][2]
+          assert dm3['href'] == 'papers/data_mind_3_0_module_interface_freeze/'
+          assert dm3.get('quote'), 'DATA MIND 3.0 card is missing its quote'
           reader=Path('docs/papers/nsa_and_trading_speedup/index.html').read_text(encoding='utf-8')
           assert 'fulltext-00.txt' in reader and 'fulltext-02.txt' in reader
           assert lead['quote'] in Path('docs/index.html').read_text(encoding='utf-8')
+          assert dm3['quote'] in Path('docs/index.html').read_text(encoding='utf-8')
           print('searchable items:', d['count'])
           print('lead quote:', lead['quote'])
+          print('card 3:', dm3['title'])
+          print('card 3 quote:', dm3['quote'])
           print('NSA/trading reader: restored full text')
           PY
 
