@@ -9,9 +9,11 @@ on:
       - 'docs/ADS/manifest.json'
       - 'pub.experimental/**'
       - '.build/pubexp_import/**'
+      - '.build/nsa_and_trading_speedup/**'
       - 'scripts/import_pubexp_packages.py'
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
+      - 'scripts/build_library_homepage_v5.py'
       - 'scripts/sync_experimental_pages.py'
       - 'scripts/fix_experimental_page_links.py'
       - '.github/workflows/build_library_homepage.yml'
@@ -37,6 +39,22 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Restore NSA/trading PDF from saved chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
+          mkdir -p "$(dirname "$out")"
+          LC_ALL=C cat .build/nsa_and_trading_speedup/chunk-*.b64 | tr -d '\r\n' | base64 --decode > "$out"
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf')
+          data = p.read_bytes()
+          assert data.startswith(b'%PDF-'), 'reconstructed file is not a PDF'
+          assert b'%%EOF' in data[-4096:], 'reconstructed PDF is missing EOF marker'
+          print('restored NSA/trading PDF bytes:', len(data))
+          PY
+
       - name: Import verified experimental packages
         run: python scripts/import_pubexp_packages.py
 
@@ -44,7 +62,7 @@ jobs:
         run: python scripts/sync_experimental_pages.py
 
       - name: Build searchable homepage
-        run: python scripts/build_library_homepage_v3.py
+        run: python scripts/build_library_homepage_v5.py
 
       - name: Route experimental links through Pages
         run: python scripts/fix_experimental_page_links.py
@@ -55,8 +73,11 @@ jobs:
           test -s docs/index.html
           test -s docs/search-index.json
           test -s docs/pub.experimental/index.html
+          test -s cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf
           python - <<'PY'
           import json
+          from pathlib import Path
+
           d=json.load(open('docs/search-index.json', encoding='utf-8'))
           assert d['schema_version'] == 1
           assert d['count'] == len(d['items'])
@@ -69,22 +90,16 @@ jobs:
           experimental=[x for x in d['items'] if x['kind']=='Experimental']
           assert all(str(x['href']).startswith('pub.experimental/') for x in experimental)
           assert all(not str(x.get('pdf') or '').startswith('https://raw.githubusercontent.com/') for x in experimental)
-          hrefs=[x['href'] for x in d['items']]
-          brain='pub.experimental/BRAINSTORMING-the_creativity_knobs_limits_natures_for_an_ATP.pdf'
-          creativity='papers/data_atp_creativity_treatise_v0_1/'
-          what_checks='papers/what_checks_the_proof_v6_80/'
-          if brain in hrefs:
-              assert hrefs[0] == brain
-              assert hrefs[1] == creativity
-              if what_checks in hrefs:
-                  assert hrefs[2] == what_checks
-          else:
-              assert hrefs[0] == creativity
-              if what_checks in hrefs:
-                  assert hrefs[1] == what_checks
+
+          lead=d['items'][0]
+          assert lead['href'] == 'papers/nsa_and_trading_speedup/'
+          assert lead['archive_path'] == 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
+          assert lead.get('quote'), 'NSA/trading lead card is missing its quote'
+          assert Path(lead['archive_path']).is_file(), 'NSA/trading PDF is missing'
           print('searchable items:', d['count'])
           print('experimental items:', len(experimental))
-          print('first item:', hrefs[0])
+          print('lead item:', lead['href'])
+          print('lead quote:', lead['quote'])
           PY
 
       - name: Commit generated and imported files if changed
@@ -101,4 +116,4 @@ jobs:
           fi
 
 # The public default order is curator-ranked but intentionally unlabeled.
-# Triggered after the six-card quotation QC batch so generated Pages data is rebuilt from source.
+# NSA/trading is restored from saved chunks and validated as the quoted lead card.
