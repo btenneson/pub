@@ -1,64 +1,28 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups</title>
-<meta name="description" content="Canonical reader for Brian Tenneson's memorandum on nonstandard analysis, certified presentation trading, proof-search speedups, and budget-limited settlement.">
+<meta name="description" content="Brian Tenneson's memorandum on nonstandard analysis, certified presentation trading, proof-search speedups, and budget-limited settlement.">
+<meta name="archive-pdf" content="https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf">
 <link rel="canonical" href="https://btenneson.github.io/pub/papers/nsa_and_trading_speedup/">
 <style>
-:root{color-scheme:light dark;--b:#8885}*{box-sizing:border-box}body{margin:0;font-family:system-ui}header{padding:1rem;border-bottom:1px solid var(--b)}h1{font-size:1.2rem;margin:0 0 .3rem}.sub,.status{opacity:.76}.links{display:flex;gap:.55rem;flex-wrap:wrap}.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}iframe{width:100%;height:calc(100vh - 215px);min-height:560px;border:0}.error{padding:1rem;color:#b33}
+:root{color-scheme:light dark;--bg:#fff;--fg:#161616;--muted:#666;--line:#bbb;--panel:#f5f5f5}
+@media(prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--muted:#aaa;--line:#555;--panel:#1c1c1c}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:Georgia,'Times New Roman',serif;line-height:1.55}
+header,main{max-width:920px;margin:auto;padding:24px}header{border-bottom:1px solid var(--line)}h1{font-size:clamp(1.55rem,4vw,2.45rem);line-height:1.15;margin:0 0 10px}.sub,.status{font-family:system-ui,sans-serif;color:var(--muted)}
+blockquote{margin:18px 0;padding:12px 16px;border-left:4px solid var(--line);background:var(--panel);font-style:italic}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:15px/1.52 Georgia,'Times New Roman',serif;margin:0}.status{margin-top:12px}a{color:inherit}
 </style>
 </head>
 <body>
 <header>
-<h1><b>Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups</b></h1>
-<p class="sub">From Unlimited Derivability to Budget-Limited Settlement in ATPs, SICs, and AMLDs · Brian Tenneson · September 2, 2026</p>
-<p class="status" id="status">Loading PDF…</p>
-<nav class="links" id="links"></nav>
+<h1>Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups</h1>
+<div class="sub">From Unlimited Derivability to Budget-Limited Settlement in ATPs, SICs, and AMLDs · Brian Tenneson · September 2, 2026</div>
+<blockquote>“A hyperfinite witness or advantageous traded presentation is semantic compression; a speed-up theorem requires a standard extractor, a complete cost model, and a certificate-preserving return translation.”</blockquote>
+<div class="status" id="status">Loading the restored full text…</div>
 </header>
-<iframe id="reader" title="PDF reader"></iframe>
+<main><pre id="paper"></pre></main>
 <script>
-const direct='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf';
-const chunkBase='https://raw.githubusercontent.com/btenneson/pub/main/.build/nsa_and_trading_speedup/';
-const chunks=['chunk-00.b64','chunk-01.b64','chunk-02.b64','chunk-03.b64','chunk-04.b64','chunk-05.b64','chunk-06.b64','chunk-07-08.b64','chunk-09-10.b64','chunk-11-12.b64','chunk-13-14.b64','chunk-15-16.b64'];
-const reader=document.getElementById('reader'),links=document.getElementById('links'),status=document.getElementById('status');
-
-async function fromSavedChunks(){
-  const decoded=[];
-  for(const name of chunks){
-    const r=await fetch(chunkBase+name,{cache:'no-store'});
-    if(!r.ok)throw new Error(`Saved PDF chunk ${name} returned HTTP ${r.status}`);
-    const binary=atob((await r.text()).replace(/\s+/g,''));
-    const bytes=new Uint8Array(binary.length);
-    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-    decoded.push(bytes);
-  }
-  return new Blob(decoded,{type:'application/pdf'});
-}
-
-async function loadPdf(){
-  let blob,source='published PDF';
-  try{
-    const r=await fetch(direct,{cache:'no-store'});
-    if(!r.ok)throw new Error(`HTTP ${r.status}`);
-    blob=await r.blob();
-    if(!blob.size)throw new Error('empty PDF');
-  }catch(_e){
-    source='saved repository chunks';
-    blob=await fromSavedChunks();
-  }
-  const url=URL.createObjectURL(blob);
-  reader.src=url;
-  links.innerHTML=`<a href="${url}" target="_blank" rel="noopener">Open full-screen reader</a><a href="${url}" download="nsa_and_trading_speedup.pdf">PDF</a>`;
-  status.textContent=`Loaded from ${source}.`;
-}
-
-loadPdf().catch(e=>{
-  status.className='status error';
-  status.textContent='The PDF could not be reconstructed: '+e.message;
-  console.error(e);
-});
+(async()=>{try{const names=['fulltext-00.txt','fulltext-01.txt','fulltext-02.txt'];const r=await Promise.all(names.map(n=>fetch(n,{cache:'no-store'})));if(r.some(x=>!x.ok))throw new Error('one or more text sections failed to load');const t=await Promise.all(r.map(x=>x.text()));document.getElementById('paper').textContent=t.join('');document.getElementById('status').textContent='Full-text reader restored from the verified 13-page original.';}catch(e){document.getElementById('status').textContent='The full-text reader could not load. Please refresh the page.';console.error(e)}})();
 </script>
-</body>
-</html>
+</body></html>
