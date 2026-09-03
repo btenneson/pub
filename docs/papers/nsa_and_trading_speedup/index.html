@@ -25,16 +25,16 @@ const chunks=['chunk-00.b64','chunk-01.b64','chunk-02.b64','chunk-03.b64','chunk
 const reader=document.getElementById('reader'),links=document.getElementById('links'),status=document.getElementById('status');
 
 async function fromSavedChunks(){
-  const parts=[];
+  const decoded=[];
   for(const name of chunks){
     const r=await fetch(chunkBase+name,{cache:'no-store'});
     if(!r.ok)throw new Error(`Saved PDF chunk ${name} returned HTTP ${r.status}`);
-    parts.push((await r.text()).replace(/\s+/g,''));
+    const binary=atob((await r.text()).replace(/\s+/g,''));
+    const bytes=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    decoded.push(bytes);
   }
-  const binary=atob(parts.join(''));
-  const bytes=new Uint8Array(binary.length);
-  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-  return new Blob([bytes],{type:'application/pdf'});
+  return new Blob(decoded,{type:'application/pdf'});
 }
 
 async function loadPdf(){
