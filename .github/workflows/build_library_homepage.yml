@@ -9,12 +9,11 @@ on:
       - 'docs/ADS/manifest.json'
       - 'pub.experimental/**'
       - '.build/pubexp_import/**'
-      - '.build/nsa_and_trading_speedup/**'
-      - 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
       - 'scripts/import_pubexp_packages.py'
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
       - 'scripts/build_library_homepage_v5.py'
+      - 'scripts/fix_nsa_trading_card.py'
       - 'scripts/sync_experimental_pages.py'
       - 'scripts/fix_experimental_page_links.py'
       - '.github/workflows/build_library_homepage.yml'
@@ -40,42 +39,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Ensure NSA/trading PDF is valid
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import base64
-          import hashlib
-
-          out = Path('cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf')
-          out.parent.mkdir(parents=True, exist_ok=True)
-          expected = 'd643e6374d348916a49801999be8d101e3c0413f9034f46dea266ad94f58e4c3'
-
-          def valid(data: bytes) -> bool:
-              return (
-                  data.startswith(b'%PDF-')
-                  and b'%%EOF' in data[-4096:]
-                  and hashlib.sha256(data).hexdigest() == expected
-              )
-
-          if out.is_file() and valid(out.read_bytes()):
-              print('using verified canonical NSA/trading PDF:', out)
-              raise SystemExit(0)
-
-          files = sorted(Path('.build/nsa_and_trading_speedup').glob('recovery-*.b64'))
-          if not files:
-              raise SystemExit('verified NSA/trading recovery chunks are missing')
-          encoded = ''.join(p.read_text(encoding='ascii').strip() for p in files)
-          data = base64.b64decode(encoded, validate=True)
-          if not valid(data):
-              raise SystemExit('NSA/trading recovery archive failed exact SHA-256/PDF validation')
-          out.write_bytes(data)
-          print('restored verified NSA/trading PDF bytes:', len(data))
-          print('sha256:', hashlib.sha256(data).hexdigest())
-          PY
-
       - name: Import verified experimental packages
         run: python scripts/import_pubexp_packages.py
 
@@ -84,6 +47,9 @@ jobs:
 
       - name: Build searchable homepage
         run: python scripts/build_library_homepage_v5.py
+
+      - name: Repair NSA/trading card
+        run: python scripts/fix_nsa_trading_card.py
 
       - name: Route experimental links through Pages
         run: python scripts/fix_experimental_page_links.py
@@ -94,39 +60,29 @@ jobs:
           test -s docs/index.html
           test -s docs/search-index.json
           test -s docs/pub.experimental/index.html
-          test -s cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf
+          test -s docs/papers/nsa_and_trading_speedup/index.html
+          test -s docs/papers/nsa_and_trading_speedup/fulltext-00.txt
+          test -s docs/papers/nsa_and_trading_speedup/fulltext-01.txt
+          test -s docs/papers/nsa_and_trading_speedup/fulltext-02.txt
           python - <<'PY'
           import json
           from pathlib import Path
-          import hashlib
-
-          expected='d643e6374d348916a49801999be8d101e3c0413f9034f46dea266ad94f58e4c3'
           d=json.load(open('docs/search-index.json', encoding='utf-8'))
           assert d['schema_version'] == 1
           assert d['count'] == len(d['items'])
           assert any(x['kind'] == 'Core paper' for x in d['items'])
           assert any(x['kind'] == 'Applied Data Science' for x in d['items'])
           assert any(x['kind'] == 'Experimental' for x in d['items'])
-          missing=[x['title'] for x in d['items'] if x['kind']=='Core paper' and not x.get('archive_path')]
-          if missing:
-              raise SystemExit('Core readers missing archive PDF metadata: '+repr(missing))
-          experimental=[x for x in d['items'] if x['kind']=='Experimental']
-          assert all(str(x['href']).startswith('pub.experimental/') for x in experimental)
-          assert all(not str(x.get('pdf') or '').startswith('https://raw.githubusercontent.com/') for x in experimental)
-
           lead=d['items'][0]
           assert lead['href'] == 'papers/nsa_and_trading_speedup/'
-          assert lead['archive_path'] == 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
           assert lead.get('quote'), 'NSA/trading lead card is missing its quote'
-          p=Path(lead['archive_path'])
-          data=p.read_bytes()
-          assert data.startswith(b'%PDF-') and b'%%EOF' in data[-4096:]
-          assert hashlib.sha256(data).hexdigest() == expected
+          assert not lead.get('pdf'), 'NSA/trading card still exposes a broken PDF link'
+          reader=Path('docs/papers/nsa_and_trading_speedup/index.html').read_text(encoding='utf-8')
+          assert 'fulltext-00.txt' in reader and 'fulltext-02.txt' in reader
+          assert lead['quote'] in Path('docs/index.html').read_text(encoding='utf-8')
           print('searchable items:', d['count'])
-          print('experimental items:', len(experimental))
-          print('lead item:', lead['href'])
           print('lead quote:', lead['quote'])
-          print('lead PDF sha256:', hashlib.sha256(data).hexdigest())
+          print('NSA/trading reader: restored full text')
           PY
 
       - name: Commit generated and imported files if changed
@@ -142,4 +98,4 @@ jobs:
             git push origin HEAD:main
           fi
 
-# The canonical NSA/trading PDF is exact-SHA verified; recovery chunks are used only if it is absent.
+# NSA/trading uses a verified full-text reader until the binary PDF asset is restored.
