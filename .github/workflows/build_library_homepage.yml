@@ -47,53 +47,33 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import base64
-          import re
+          import hashlib
 
-          src = Path('.build/nsa_and_trading_speedup')
           out = Path('cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf')
           out.parent.mkdir(parents=True, exist_ok=True)
+          expected = 'd643e6374d348916a49801999be8d101e3c0413f9034f46dea266ad94f58e4c3'
 
-          def looks_complete_pdf(data: bytes) -> bool:
-              return data.startswith(b'%PDF-') and b'%%EOF' in data[-4096:]
+          def valid(data: bytes) -> bool:
+              return (
+                  data.startswith(b'%PDF-')
+                  and b'%%EOF' in data[-4096:]
+                  and hashlib.sha256(data).hexdigest() == expected
+              )
 
-          if out.is_file() and looks_complete_pdf(out.read_bytes()):
-              print('using canonical NSA/trading PDF:', out, 'bytes=', out.stat().st_size)
+          if out.is_file() and valid(out.read_bytes()):
+              print('using verified canonical NSA/trading PDF:', out)
               raise SystemExit(0)
 
-          print('canonical PDF missing or invalid; trying saved chunk fallback')
-          files = sorted(src.glob('chunk-*.b64'))
+          files = sorted(Path('.build/nsa_and_trading_speedup').glob('recovery-*.b64'))
           if not files:
-              raise SystemExit('no NSA/trading PDF chunks found')
-
-          texts=[]
-          for p in files:
-              raw=p.read_text(encoding='ascii', errors='ignore')
-              clean=re.sub(r'[^A-Za-z0-9+/=]', '', raw)
-              texts.append(clean)
-
-          def padded(s: str) -> str:
-              s=s.rstrip('=')
-              return s + ('=' * ((-len(s)) % 4))
-
-          candidates=[]
-          try:
-              joined=''.join(t.replace('=', '') for t in texts)
-              candidates.append(('joined-stream', base64.b64decode(padded(joined), validate=False)))
-          except Exception as e:
-              print('joined-stream decode failed:', repr(e))
-          try:
-              blocks=[base64.b64decode(padded(t.replace('=', '')), validate=False) for t in texts]
-              candidates.append(('decoded-blocks', b''.join(blocks)))
-          except Exception as e:
-              print('decoded-blocks decode failed:', repr(e))
-
-          for mode,data in candidates:
-              if looks_complete_pdf(data):
-                  out.write_bytes(data)
-                  print('restored NSA/trading PDF using', mode, 'bytes=', len(data))
-                  break
-          else:
-              raise SystemExit('saved chunks did not reconstruct to a complete PDF')
+              raise SystemExit('verified NSA/trading recovery chunks are missing')
+          encoded = ''.join(p.read_text(encoding='ascii').strip() for p in files)
+          data = base64.b64decode(encoded, validate=True)
+          if not valid(data):
+              raise SystemExit('NSA/trading recovery archive failed exact SHA-256/PDF validation')
+          out.write_bytes(data)
+          print('restored verified NSA/trading PDF bytes:', len(data))
+          print('sha256:', hashlib.sha256(data).hexdigest())
           PY
 
       - name: Import verified experimental packages
@@ -120,6 +100,7 @@ jobs:
           from pathlib import Path
           import hashlib
 
+          expected='d643e6374d348916a49801999be8d101e3c0413f9034f46dea266ad94f58e4c3'
           d=json.load(open('docs/search-index.json', encoding='utf-8'))
           assert d['schema_version'] == 1
           assert d['count'] == len(d['items'])
@@ -138,9 +119,9 @@ jobs:
           assert lead['archive_path'] == 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
           assert lead.get('quote'), 'NSA/trading lead card is missing its quote'
           p=Path(lead['archive_path'])
-          assert p.is_file(), 'NSA/trading PDF is missing'
           data=p.read_bytes()
           assert data.startswith(b'%PDF-') and b'%%EOF' in data[-4096:]
+          assert hashlib.sha256(data).hexdigest() == expected
           print('searchable items:', d['count'])
           print('experimental items:', len(experimental))
           print('lead item:', lead['href'])
@@ -161,5 +142,4 @@ jobs:
             git push origin HEAD:main
           fi
 
-# The public default order is curator-ranked but intentionally unlabeled.
-# The canonical NSA/trading PDF is preferred; saved chunks are fallback only.
+# The canonical NSA/trading PDF is exact-SHA verified; recovery chunks are used only if it is absent.
