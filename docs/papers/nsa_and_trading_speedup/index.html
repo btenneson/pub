@@ -1,1 +1,64 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups</title><meta name="description" content="Canonical reader for Brian Tenneson's memorandum on nonstandard analysis, certified presentation trading, proof-search speedups, and budget-limited settlement."><link rel="canonical" href="https://btenneson.github.io/pub/papers/nsa_and_trading_speedup/"><style>:root{color-scheme:light dark;--b:#8885}*{box-sizing:border-box}body{margin:0;font-family:system-ui}header{padding:1rem;border-bottom:1px solid var(--b)}h1{font-size:1.2rem;margin:0 0 .3rem}.sub{opacity:.76}.links{display:flex;gap:.55rem;flex-wrap:wrap}.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}iframe{width:100%;height:calc(100vh - 190px);min-height:560px;border:0}</style></head><body><header><h1><b>Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups</b></h1><p class="sub">From Unlimited Derivability to Budget-Limited Settlement in ATPs, SICs, and AMLDs · Brian Tenneson · September 2, 2026</p><nav class="links" id="links"></nav></header><iframe id="reader"></iframe><script>const p='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf',v='https://mozilla.github.io/pdf.js/web/viewer.html?file='+encodeURIComponent(p);reader.src=v;links.innerHTML='<a href="'+v+'" target="_blank" rel="noopener">Open full-screen reader</a><a href="'+p+'">PDF</a>';</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups</title>
+<meta name="description" content="Canonical reader for Brian Tenneson's memorandum on nonstandard analysis, certified presentation trading, proof-search speedups, and budget-limited settlement.">
+<link rel="canonical" href="https://btenneson.github.io/pub/papers/nsa_and_trading_speedup/">
+<style>
+:root{color-scheme:light dark;--b:#8885}*{box-sizing:border-box}body{margin:0;font-family:system-ui}header{padding:1rem;border-bottom:1px solid var(--b)}h1{font-size:1.2rem;margin:0 0 .3rem}.sub,.status{opacity:.76}.links{display:flex;gap:.55rem;flex-wrap:wrap}.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}iframe{width:100%;height:calc(100vh - 215px);min-height:560px;border:0}.error{padding:1rem;color:#b33}
+</style>
+</head>
+<body>
+<header>
+<h1><b>Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups</b></h1>
+<p class="sub">From Unlimited Derivability to Budget-Limited Settlement in ATPs, SICs, and AMLDs · Brian Tenneson · September 2, 2026</p>
+<p class="status" id="status">Loading PDF…</p>
+<nav class="links" id="links"></nav>
+</header>
+<iframe id="reader" title="PDF reader"></iframe>
+<script>
+const direct='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf';
+const chunkBase='https://raw.githubusercontent.com/btenneson/pub/main/.build/nsa_and_trading_speedup/';
+const chunks=['chunk-00.b64','chunk-01.b64','chunk-02.b64','chunk-03.b64','chunk-04.b64','chunk-05.b64','chunk-06.b64','chunk-07-08.b64','chunk-09-10.b64','chunk-11-12.b64','chunk-13-14.b64','chunk-15-16.b64'];
+const reader=document.getElementById('reader'),links=document.getElementById('links'),status=document.getElementById('status');
+
+async function fromSavedChunks(){
+  const parts=[];
+  for(const name of chunks){
+    const r=await fetch(chunkBase+name,{cache:'no-store'});
+    if(!r.ok)throw new Error(`Saved PDF chunk ${name} returned HTTP ${r.status}`);
+    parts.push((await r.text()).replace(/\s+/g,''));
+  }
+  const binary=atob(parts.join(''));
+  const bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+  return new Blob([bytes],{type:'application/pdf'});
+}
+
+async function loadPdf(){
+  let blob,source='published PDF';
+  try{
+    const r=await fetch(direct,{cache:'no-store'});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    blob=await r.blob();
+    if(!blob.size)throw new Error('empty PDF');
+  }catch(_e){
+    source='saved repository chunks';
+    blob=await fromSavedChunks();
+  }
+  const url=URL.createObjectURL(blob);
+  reader.src=url;
+  links.innerHTML=`<a href="${url}" target="_blank" rel="noopener">Open full-screen reader</a><a href="${url}" download="nsa_and_trading_speedup.pdf">PDF</a>`;
+  status.textContent=`Loaded from ${source}.`;
+}
+
+loadPdf().catch(e=>{
+  status.className='status error';
+  status.textContent='The PDF could not be reconstructed: '+e.message;
+  console.error(e);
+});
+</script>
+</body>
+</html>
