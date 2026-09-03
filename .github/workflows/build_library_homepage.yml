@@ -43,19 +43,60 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          out='cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf'
-          mkdir -p "$(dirname "$out")"
-          : > "$out"
-          for f in $(LC_ALL=C printf '%s\n' .build/nsa_and_trading_speedup/chunk-*.b64 | sort); do
-            base64 --decode "$f" >> "$out"
-          done
           python - <<'PY'
           from pathlib import Path
-          p = Path('cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf')
-          data = p.read_bytes()
-          assert data.startswith(b'%PDF-'), 'reconstructed file is not a PDF'
-          assert b'%%EOF' in data[-4096:], 'reconstructed PDF is missing EOF marker'
-          print('restored NSA/trading PDF bytes:', len(data))
+          import base64
+          import re
+
+          src = Path('.build/nsa_and_trading_speedup')
+          out = Path('cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup.pdf')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          files = sorted(src.glob('chunk-*.b64'))
+          if not files:
+              raise SystemExit('no NSA/trading PDF chunks found')
+
+          texts=[]
+          for p in files:
+              raw=p.read_text(encoding='ascii', errors='ignore')
+              clean=re.sub(r'[^A-Za-z0-9+/=]', '', raw)
+              texts.append(clean)
+              print(p.name, 'chars=', len(raw), 'clean=', len(clean), 'mod4=', len(clean)%4, 'pads=', clean.count('='))
+
+          def padded(s: str) -> str:
+              s=s.rstrip('=')
+              return s + ('=' * ((-len(s)) % 4))
+
+          def looks_complete_pdf(data: bytes) -> bool:
+              return data.startswith(b'%PDF-') and b'%%EOF' in data[-4096:]
+
+          candidates=[]
+
+          # Layout A: files are slices of one base64 stream. Remove any archival
+          # padding at slice boundaries, join, repad once, then decode.
+          try:
+              joined=''.join(t.replace('=', '') for t in texts)
+              candidates.append(('joined-stream', base64.b64decode(padded(joined), validate=False)))
+          except Exception as e:
+              print('joined-stream decode failed:', repr(e))
+
+          # Layout B: files are independently encoded binary blocks. Decode each
+          # block after normalizing padding, then concatenate the decoded bytes.
+          try:
+              blocks=[]
+              for t in texts:
+                  blocks.append(base64.b64decode(padded(t.replace('=', '')), validate=False))
+              candidates.append(('decoded-blocks', b''.join(blocks)))
+          except Exception as e:
+              print('decoded-blocks decode failed:', repr(e))
+
+          for mode,data in candidates:
+              print(mode, 'bytes=', len(data), 'header=', repr(data[:8]), 'complete=', looks_complete_pdf(data))
+              if looks_complete_pdf(data):
+                  out.write_bytes(data)
+                  print('restored NSA/trading PDF using', mode, 'bytes=', len(data))
+                  break
+          else:
+              raise SystemExit('saved chunks did not reconstruct to a complete PDF')
           PY
 
       - name: Import verified experimental packages
