@@ -62,7 +62,7 @@ jobs:
       - name: Repair NSA/trading card
         run: python scripts/fix_nsa_trading_card.py
 
-      - name: Pin Hyperfinite Oracles as card 2 with same-origin PDF
+      - name: Pin Hyperfinite Oracles as card 2 with direct same-origin PDF
         run: python scripts/fix_hyperfinite_oracles_card.py
 
       - name: Pin DATA MIND 3.0 as card 3
@@ -102,9 +102,10 @@ jobs:
           assert not lead.get('pdf'), 'NSA/trading card still exposes a broken PDF link'
           assert len(d['items']) >= 3
           hf=d['items'][1]
-          assert hf['href'] == 'papers/hyperfinite_oracles_data_mind_3_2/'
+          direct='papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
+          assert hf['href'] == direct
+          assert hf.get('pdf') == direct
           assert hf.get('quote'), 'Hyperfinite Oracles card is missing its quote'
-          assert hf.get('pdf') == 'papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
           dm3=d['items'][2]
           assert dm3['href'] == 'papers/data_mind_3_0_module_interface_freeze/'
           assert dm3.get('quote'), 'DATA MIND 3.0 card is missing its quote'
@@ -121,9 +122,9 @@ jobs:
           print('searchable items:', d['count'])
           print('lead quote:', lead['quote'])
           print('card 2:', hf['title'])
-          print('card 2 PDF:', hf['pdf'])
+          print('card 2 direct target:', hf['href'])
           print('card 3:', dm3['title'])
-          print('Hyperfinite reader: direct same-origin PDF redirect, no iframe')
+          print('Hyperfinite card: direct same-origin PDF; reader retained only as fallback')
           PY
 
       - name: Commit generated and imported files if changed
