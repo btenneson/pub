@@ -11,6 +11,7 @@ on:
       - '.build/pubexp_import/**'
       - 'documents and their sources/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.tex'
       - 'documents and their sources/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.tex'
+      - 'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
       - 'scripts/import_pubexp_packages.py'
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
@@ -46,6 +47,57 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Restore invariant-core source
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          import hashlib
+
+          source = Path('documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex')
+          if not source.exists():
+              staging = Path('.build/invariant_core_source')
+              parts = sorted(staging.glob('part*.b64'))
+              if len(parts) != 4:
+                  raise SystemExit(f'expected 4 invariant-core source chunks, found {len(parts)}')
+              encoded = ''.join(p.read_text(encoding='utf-8').strip() for p in parts)
+              data = base64.b64decode(encoded, validate=True)
+              expected = 'f26fd877d92b3c6b0323d47d7726e11d0976bf1eddb9637ea0ac91531d350e57'
+              got = hashlib.sha256(data).hexdigest()
+              if got != expected:
+                  raise SystemExit(f'invariant-core source checksum mismatch: {got}')
+              source.parent.mkdir(parents=True, exist_ok=True)
+              source.write_bytes(data)
+              print('restored invariant-core source:', got)
+          else:
+              print('invariant-core source already present')
+          PY
+
+      - name: Compile invariant-core paper if source changed
+        shell: bash
+        run: |
+          SOURCE='documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
+          ARCHIVE='cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf'
+          READER='docs/papers/invariant_core_geometry_settlement/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf'
+          HASHFILE='cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.source.sha256'
+          CURRENT="$(sha256sum "$SOURCE" | awk '{print $1}')"
+          STORED="$(cat "$HASHFILE" 2>/dev/null || true)"
+          mkdir -p "$(dirname "$ARCHIVE")" "$(dirname "$READER")"
+          if [ ! -s "$ARCHIVE" ] || [ "$CURRENT" != "$STORED" ]; then
+            sudo apt-get update
+            sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern cm-super
+            mkdir -p build/invariant-core
+            pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/invariant-core "$SOURCE"
+            pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/invariant-core "$SOURCE"
+            test -s build/invariant-core/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf
+            cp build/invariant-core/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf "$ARCHIVE"
+            printf '%s\n' "$CURRENT" > "$HASHFILE"
+          fi
+          if [ ! -s "$READER" ] || ! cmp -s "$ARCHIVE" "$READER"; then
+            cp "$ARCHIVE" "$READER"
+          fi
+
       - name: Build DATA MIND 3.0 architecture PDF if missing
         shell: bash
         run: |
@@ -69,13 +121,13 @@ jobs:
       - name: Repair NSA/trading card
         run: python scripts/fix_nsa_trading_card.py
 
-      - name: Pin Hyperfinite Oracles as card 2 before final lead pin
+      - name: Pin Hyperfinite Oracles before final featured ordering
         run: python scripts/fix_hyperfinite_oracles_card.py
 
-      - name: Pin DATA MIND 3.0 as card 3 before final lead pin
+      - name: Pin DATA MIND 3.0 before final featured ordering
         run: python scripts/fix_dm3_card.py
 
-      - name: Pin Dreamer four-oracle synthesis as card 1
+      - name: Pin invariant-core synthesis as card 1
         run: python scripts/pin_dreamer_four_oracle_card.py
 
       - name: Route experimental links through Pages
@@ -87,6 +139,12 @@ jobs:
           test -s docs/index.html
           test -s docs/search-index.json
           test -s docs/pub.experimental/index.html
+          test -s docs/papers/invariant_core_geometry_settlement/index.html
+          test -s docs/papers/invariant_core_geometry_settlement/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf
+          test -s cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf
+          test -s cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.source.sha256
+          test -s 'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
+          cmp -s cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf docs/papers/invariant_core_geometry_settlement/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf
           test -s docs/papers/nsa_and_trading_speedup/index.html
           test -s docs/papers/nsa_and_trading_speedup/fulltext-00.txt
           test -s docs/papers/nsa_and_trading_speedup/fulltext-01.txt
@@ -112,9 +170,17 @@ jobs:
           assert any(x['kind'] == 'Core paper' for x in d['items'])
           assert any(x['kind'] == 'Applied Data Science' for x in d['items'])
           assert any(x['kind'] == 'Experimental' for x in d['items'])
-          assert len(d['items']) >= 4
+          assert len(d['items']) >= 5
 
-          dreamer=d['items'][0]
+          invariant=d['items'][0]
+          invariant_reader='papers/invariant_core_geometry_settlement/'
+          invariant_pdf=invariant_reader+'The_Invariant_Core_and_the_Geometry_of_Settlement.pdf'
+          assert invariant['title'] == 'The Invariant Core and the Geometry of Settlement'
+          assert invariant['href'] == invariant_reader
+          assert invariant.get('pdf') == invariant_pdf
+          assert invariant.get('quote')
+
+          dreamer=d['items'][1]
           dreamer_reader='papers/dreamer_four_oracle_data_mind_3_2/'
           dreamer_pdf=dreamer_reader+'DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf'
           assert dreamer['title'] == 'Dreamer and Four-Oracle Extension to DATA MIND 3.2'
@@ -123,21 +189,28 @@ jobs:
           assert dreamer.get('source') == dreamer_reader+'source.html'
           assert dreamer.get('quote') == 'Dream freely, route intelligently, verify exactly.'
 
-          nsa=d['items'][1]
+          nsa=d['items'][2]
           assert nsa['href'] == 'papers/nsa_and_trading_speedup/'
           assert nsa.get('quote'), 'NSA/trading card is missing its quote'
           assert not nsa.get('pdf'), 'NSA/trading card still exposes a broken PDF link'
 
-          hf=d['items'][2]
+          hf=d['items'][3]
           hf_reader_target='papers/hyperfinite_oracles_data_mind_3_2/'
           hf_direct='papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
           assert hf['href'] == hf_reader_target
           assert hf.get('pdf') == hf_direct
           assert hf.get('quote'), 'Hyperfinite Oracles card is missing its quote'
 
-          dm3=d['items'][3]
+          dm3=d['items'][4]
           assert dm3['href'] == 'papers/data_mind_3_0_module_interface_freeze/'
           assert dm3.get('quote'), 'DATA MIND 3.0 card is missing its quote'
+
+          invariant_html=Path('docs/papers/invariant_core_geometry_settlement/index.html').read_text(encoding='utf-8')
+          assert '<iframe' in invariant_html
+          assert '/pub/' in invariant_html
+          assert 'Open full-screen reader' in invariant_html
+          assert 'The_Invariant_Core_and_the_Geometry_of_Settlement.pdf' in invariant_html
+          assert 'LaTeX source' in invariant_html
 
           reader=Path('docs/papers/nsa_and_trading_speedup/index.html').read_text(encoding='utf-8')
           assert 'fulltext-00.txt' in reader and 'fulltext-02.txt' in reader
@@ -157,18 +230,16 @@ jobs:
           assert 'source.html' in dreamer_html
 
           home=Path('docs/index.html').read_text(encoding='utf-8')
+          assert invariant['quote'] in home
           assert dreamer['quote'] in home
           assert nsa['quote'] in home
           assert hf['quote'] in home
           assert dm3['quote'] in home
           print('searchable items:', d['count'])
-          print('card 1:', dreamer['title'])
-          print('card 1 quote:', dreamer['quote'])
-          print('card 1 Read target:', dreamer['href'])
-          print('card 1 PDF target:', dreamer['pdf'])
-          print('card 2:', nsa['title'])
-          print('card 3:', hf['title'])
-          print('card 4:', dm3['title'])
+          for i, item in enumerate(d['items'][:5], 1):
+              print(f'card {i}:', item['title'])
+          print('card 1 Read target:', invariant['href'])
+          print('card 1 PDF target:', invariant['pdf'])
           PY
 
       - name: Commit generated and imported files if changed
@@ -177,6 +248,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           find scripts -type d -name __pycache__ -prune -exec rm -rf {} + || true
+          rm -rf .build/invariant_core_source
           git add -A
           if ! git diff --cached --quiet; then
             git commit -m 'Rebuild searchable publication library homepage'
