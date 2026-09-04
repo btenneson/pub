@@ -1,0 +1,120 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\definecolor{linkblue}{RGB}{32,83,117}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue,
+  pdftitle={Dreamer and Four-Oracle Extension to DATA MIND 3.2},
+  pdfauthor={Brian Tenneson}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Dreamer + Four-Oracle Extension}
+\rhead{DATA MIND 3.2}
+\cfoot{\thepage\ of \pageref{LastPage}}
+\setlength{\headheight}{14pt}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{principle}[definition]{Principle}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{hypothesis}[definition]{Hypothesis}
+\newtheorem{remark}[definition]{Remark}
+
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\FBANK}{\mathrm{FUTUREBANK}}
+\newcommand{\V}{\mathrm{V}}
+\newcommand{\Dream}{\mathcal D}
+\newcommand{\Oracle}{\mathscr O}
+\newcommand{\AMLD}{\operatorname{AMLD}}
+\newcommand{\Perf}{\operatorname{Perf}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\st}{\operatorname{st}}
+\newcommand{\Omn}{\operatorname{Omn}}
+\newcommand{\Cn}{\operatorname{Cn}}
+
+\title{\textbf{Dreamer and Four-Oracle Extension to DATA MIND 3.2}\\[0.35em]
+\large A Theoretical Synthesis of Counterfactual Replay, Hyperfinite Epistemic Guidance, and Verifier-Gated Settlement}
+\author{Brian Tenneson}
+\date{September 4, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{minipage}{0.86\textwidth}
+\centering\itshape
+``Dream freely, route intelligently, verify exactly.''
+\end{minipage}
+\end{center}
+
+\begin{abstract}
+This note summarizes the theoretical work combining the DATA MIND Dreamer/Simulator with the four-level oracle interface developed for DATA MIND 3.2. The Dreamer is a bounded replay and counterfactual simulation mechanism over accumulated proof-search experience. It may vary assumptions, representations, lemma orderings, and strategies; recombine failed branches; compress recurring motifs; and return proposals to waking search. The oracle layer is an idealized epistemic instrument with four distinct interfaces: a role oracle, a resource oracle, a strategy oracle, and a certificate oracle. The central synthesis is that oracle information may guide what the Dreamer simulates, how much effort it spends, which simulated branch it extends, or which certificate candidate it proposes, while preserving a strict epistemic firewall: no dreamed or oracle-produced mathematical claim becomes certified knowledge until the independent verifier accepts it. The resulting architecture is therefore not an omniscient theorem prover. It is a controlled experimental framework for separating recognition, routing, strategy selection, and certificate construction from verification, and for measuring which of those layers account for settlement cost.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Status and scope}
+
+The work summarized here is a \emph{theoretical extension and experimental design}. It should not be reported as evidence that Dreamer improves performance, that a realizable perfect oracle exists, or that the combined Dreamer-oracle mechanism has already solved a benchmark. The oracle mathematics provides idealized comparison objects and finite executable proxies; the Dreamer remains a speculative module whose value must be established by matched ablation.
+
+The extension is also deliberately conservative with respect to DATA MIND's trusted boundary. The frozen verifier semantics, certificate languages, formal database, and BANK admission policy remain outside the control of Dreamer, Professor, learned routing, and every oracle interface.
+
+\begin{principle}[Change-control discipline]
+The Dreamer-oracle synthesis is an additive research layer. It does not silently rewrite a frozen canonical DATA MIND architecture. Any future canonical architectural change should be versioned explicitly, frozen by hash, and tied to the implementation and experiment manifest that uses it.
+\end{principle}
+
+\section{The Dreamer before the oracle layer}
+
+The Dreamer is not identical to ordinary Creativity. Creativity acts during waking search by proposing alternatives outside the ordinary best-first neighborhood. Dreamer instead operates on accumulated experience: traces, failed branches, verified lemmas, partial-credit signals, postmortems, representation choices, and prior strategy outcomes.
+
+\begin{definition}[Bounded dreaming]
+Let $\mathcal H_t$ denote the bounded history available at time $t$. A Dreamer episode is a controlled map
+\begin{equation}
+\Dream_t:\mathcal H_t\times B_D\longrightarrow \mathcal Q_t,
+\end{equation}
+where $B_D$ is a declared dream budget and $\mathcal Q_t$ is a set of untrusted proposals. A proposal may be a candidate lemma, representation, branch recombination, strategy change, search ordering, or heuristic update.
+\end{definition}
+
+A provisional dream cycle is:
+\begin{enumerate}[leftmargin=2em]
+\item capture bounded traces;
+\item select high-value or puzzling material;
+\item replay and vary assumptions, representations, lemma orderings, and strategies;
+\item recombine compatible fragments and failed branches;
+\item compress recurring structures into candidate motifs or macros;
+\item return proposals to waking search;
+\item verify mathematical candidates and evaluate heuristic candidates under frozen protocols;
+\item integrate, quarantine, or reject.
+\end{enumerate}
+
+The always-awake core remains operational throughout. Dreaming is therefore a sandboxed operating mode, not a suspension of verification, control, or safety.
+
+\begin{principle}[Dream-product firewall]
+No dreamed lemma, theorem, strategy, representation, or self-description becomes trusted merely because it was generated, replayed, compressed, or repeatedly encountered. Mathematical products remain candidates until verifier acceptance; control products remain experimental until controlled evaluation.
+\end{principle}
+
+\section{Resource-indexed epistemic background}
+
+Classical epistemic logic often idealizes knowledge as deductively closed. DATA MIND instead studies a resource-bounded settlement process. Write
+\begin{equation}
+K_i^{\le r}\varphi
+\end{equation}
+for the claim that agent $i$ can acquire the declared admissible warrant for $\varphi$ using at most resource budget $r$.
