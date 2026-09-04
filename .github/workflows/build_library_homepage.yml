@@ -63,10 +63,18 @@ jobs:
                   raise SystemExit(f'expected 4 invariant-core source chunks, found {len(parts)}')
               encoded = ''.join(p.read_text(encoding='utf-8').strip() for p in parts)
               data = base64.b64decode(encoded, validate=True)
+              staged_hash = hashlib.sha256(data).hexdigest()
+              known_staging_hash = 'bdf890ff9bc332b5dac315017e9ce5dae96c5726b210ee94554eec2de49f594e'
+              if staged_hash == known_staging_hash:
+                  bad = br'\src{\emph{Trading Theorem 001}, p.~5.}'
+                  good = br'\src{\emph{Trading Theorem 001}, p.~2.}'
+                  if data.count(bad) < 1:
+                      raise SystemExit('known invariant-core staging correction target not found')
+                  data = data.replace(bad, good, 1)
               expected = 'f26fd877d92b3c6b0323d47d7726e11d0976bf1eddb9637ea0ac91531d350e57'
               got = hashlib.sha256(data).hexdigest()
               if got != expected:
-                  raise SystemExit(f'invariant-core source checksum mismatch: {got}')
+                  raise SystemExit(f'invariant-core source checksum mismatch after staging repair: {got}')
               source.parent.mkdir(parents=True, exist_ok=True)
               source.write_bytes(data)
               print('restored invariant-core source:', got)
