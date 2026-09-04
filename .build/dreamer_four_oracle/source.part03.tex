@@ -1,0 +1,120 @@
+\Delta_{\mathrm{resource}} &\text{ estimates avoidable allocation waste},\\
+\Delta_{\mathrm{strategy}} &\text{ estimates avoidable action-selection or representation waste},\\
+\Delta_{\mathrm{certificate}} &\text{ estimates the remaining cost of constructing a valid terminal certificate.}
+\end{align}
+
+These are counterfactual diagnostic upper bounds. They do not imply that a practical learned component can reproduce the oracle gain.
+
+\section{Dreamer-specific ablation}
+
+The Dreamer itself requires a separate comparison. Let
+\begin{align}
+P_0 &= \text{baseline waking system},\\
+P_C &= \text{baseline plus Creativity},\\
+P_{CD} &= \text{baseline plus Creativity plus Dreamer}.
+\end{align}
+Define
+\begin{equation}
+\Delta_D=\Perf(P_{CD})-\Perf(P_C),
+\end{equation}
+under matched total compute and held-out evaluation.
+
+The new oracle theory permits a richer question:
+\begin{equation}
+\Delta_D(g)=\Perf(P_{CD};g)-\Perf(P_C;g).
+\end{equation}
+If Dreamer helps only when ideal oracle guidance is available, then the bottleneck may be dream selection or steering rather than the value of replay itself. If Dreamer helps in the no-oracle condition and retains its gain under several oracle configurations, then replay/recombination may be contributing independent value.
+
+\begin{hypothesis}[Dreamer value under bounded guidance]
+There exist finite benchmark families and fixed compute budgets for which a provenance-controlled Dreamer improves verifier-confirmed settlement performance beyond Creativity alone without requiring certificate-oracle access.
+\end{hypothesis}
+
+This hypothesis is intentionally falsifiable.
+
+\section{A factorial experiment design}
+
+A full $2^4$ oracle factorial crossed with Dreamer on/off would contain $32$ arms before Professor-hint submodes are added. That is theoretically clean but expensive. A staged design is preferable.
+
+\subsection*{Stage 1: no certificate oracle}
+Use
+\begin{equation}
+g\in\{0000,1000,0100,0010,1100,1010,0110,1110\}
+\end{equation}
+with Dreamer off/on. This studies recognition, allocation, and strategy without collapsing the construction problem through $O_4$.
+
+\subsection*{Stage 2: certificate upper bound}
+Open $O_4$ only after Stage 1 is understood. This estimates verifier and integration overhead when a terminal candidate is supplied, and provides a deliberately strong ceiling condition.
+
+\subsection*{Stage 3: learned surrogates}
+Replace idealized oracle signals one at a time by learned predictors trained only on allowed data. Compare realized gain to the corresponding oracle gap. If a learned component recovers fraction $\eta_j$ of an oracle benefit, define
+\begin{equation}
+\eta_j=
+\frac{C_{\mathrm{baseline}}-C_{\mathrm{learned},j}}
+{C_{\mathrm{baseline}}-C_{\mathrm{oracle},j}},
+\end{equation}
+when the denominator is positive. This converts the oracle from a philosophical idealization into an engineering yardstick.
+
+\section{Protected partner lanes and anti-herding}
+
+The Professor-facing versus direct-hint distinction has a second use: it probes the value of strategic diversity. In the DATA MIND couple architecture, a Professor-facing agent can receive guidance while its protected partner remains independent.
+
+Two outcomes are especially informative:
+\begin{itemize}
+\item If Professor-only guidance beats direct perfect guidance, the protected lane is contributing anti-herding value even when the high-level role signal is correct.
+\item If direct guidance strongly beats Professor-only guidance, the communication or translation layer from Professor to search may be limiting performance.
+\end{itemize}
+
+Dreamer makes this comparison richer because the protected partner may also preserve counterfactual diversity in replay. A dream system in which every simulated branch is forced to obey the same oracle-guided policy can lose the very branch diversity that dreaming was intended to supply.
+
+\begin{principle}[Oracle guidance without monoculture]
+Perfect information about one variable should not automatically collapse all strategic diversity in unrelated variables. Oracle assistance should be scoped to the uncertainty it is intended to remove.
+\end{principle}
+
+\section{Sentinel and resource safety}
+
+Oracle guidance does not eliminate the need for Sentinel. A correct role, resource, or strategy cue can still induce a pathological implementation response: an oversized branch, runaway memory growth, repeated replay, or a control loop that monopolizes the budget.
+
+Thus Sentinel remains logically separate:
+\begin{equation}
+\text{oracle correctness}\not\Rightarrow\text{resource safety}.
+\end{equation}
+Sentinel may veto or throttle resource-pathological actions while remaining outside mathematical truth determination. The verifier answers ``is this certificate acceptable?'' Sentinel answers ``is this computation allowed to consume these resources under the current policy?''
+
+This separation is important for Dreamer because replay can multiply branch count rapidly if counterfactual variation is left unconstrained.
+
+\section{A motivating PRCOM role quartet}
+
+A first role-oriented test can be organized around the Metamath theorem \texttt{prcom},
+\begin{equation}
+\{A,B\}=\{B,A\}.
+\end{equation}
+The ordinary theorem exercises the proof role. A matched quartet is more informative:
+
+\begin{center}
+\begin{tabular}{p{0.17\textwidth}p{0.60\textwidth}c}
+\toprule
+Case & Construction & Gold role \\
+\midrule
+PRCOM-P & Ordinary \texttt{prcom} in the consistent frozen theory & $P$ \\
+PRCOM-R & A target representing the negation of PRCOM in the same consistent environment & $R$ \\
+PRCOM-C & A context containing PRCOM and its negation, with an otherwise ordinary target & $C$ \\
+PRCOM-I & A carefully constructed related environment with a genuine independence certificate & $I$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The $I$ case is the delicate one. Failure to prove after deleting an axiom is not independence. A defensible independence instance requires certified witnesses, such as appropriate models of the base theory with the target true and false, or an equivalent formal metacertificate.
+
+For the Dreamer synthesis, one can compare waking-only and Dreamer-enabled versions of:
+\begin{enumerate}[leftmargin=2em]
+\item hidden role oracle;
+\item Professor-facing role hint;
+\item direct role hint;
+\item later, resource and strategy oracle assistance.
+\end{enumerate}
+
+The certificate oracle should be withheld from the first serious comparison because it would answer a much stronger question.
+
+\section{Metrics}
+
+Every comparison should state what is frozen. At minimum:
