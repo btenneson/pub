@@ -44,7 +44,109 @@ jobs:
             --out diagnostics/pub-101-visual-audit \
             --live-base https://btenneson.github.io/pub/
 
-      - name: Show report
+      - name: Interpret findings and render suspect PDF pages
+        run: |
+          python - <<'PY'
+          import json, hashlib
+          from collections import defaultdict, Counter
+          from pathlib import Path
+          from urllib.parse import unquote
+          import fitz
+
+          root=Path('.').resolve()
+          out=root/'diagnostics/pub-101-visual-audit'
+          d=json.load(open(out/'audit.json', encoding='utf-8'))
+          items=d['items']
+
+          # Reclassify two systematic transport/implementation patterns that are not
+          # observed runtime rendering failures.
+          def substantive_issues(r):
+              keep=[]; notes=[]
+              for f in r['issues']:
+                  code=f['code']
+                  if code=='EMPTY_IFRAME' and r.get('browser',{}).get('loaded') and r.get('browser',{}).get('blank_iframes')==0:
+                      notes.append('iframe src is assigned by JavaScript and was populated successfully in Chrome')
+                      continue
+                  if code=='PDF_CONTENT_TYPE' and 'application/octet-stream' in f.get('message','') and r.get('pdf_scan',{}).get('exists'):
+                      notes.append('raw GitHub serves the PDF as application/octet-stream; local PDF structure is valid')
+                      continue
+                  keep.append(f)
+              return keep,notes
+
+          for r in items:
+              r['substantive_issues'],r['normalized_notes']=substantive_issues(r)
+              rank={'critical':4,'high':3,'medium':2,'low':1}
+              r['normalized_status']='ok' if not r['substantive_issues'] else max(r['substantive_issues'], key=lambda x:rank[x['severity']])['severity']
+
+          # Duplicates in the index.
+          by_sha=defaultdict(list)
+          by_title=defaultdict(list)
+          for r in items:
+              by_title[r['title']].append(r)
+              sh=r.get('pdf_scan',{}).get('sha256')
+              if sh: by_sha[sh].append(r)
+          duplicate_byte_groups=[v for v in by_sha.values() if len(v)>1]
+          duplicate_title_groups=[v for v in by_title.values() if len(v)>1]
+
+          # Render every page where extracted text escapes the PDF page box and
+          # record the offending block text/coordinates for human inspection.
+          detail=[]
+          pages_dir=out/'suspect-pages'; pages_dir.mkdir(exist_ok=True)
+          for r in items:
+              outside=r.get('pdf_scan',{}).get('outside_text') or []
+              if not outside: continue
+              raw=r.get('archive_path') or ''
+              rel=unquote(raw).lstrip('/')
+              candidates=[root/rel, root/'docs'/rel]
+              path=next((p for p in candidates if p.exists()), None)
+              if not path: continue
+              doc=fitz.open(path)
+              try:
+                  for rec in outside:
+                      page_no=rec['page']; p=doc.load_page(page_no-1); rect=p.rect
+                      escaped=[]
+                      for b in p.get_text('blocks', sort=False):
+                          x0,y0,x1,y1=map(float,b[:4])
+                          if x0 < rect.x0-4 or y0 < rect.y0-4 or x1 > rect.x1+4 or y1 > rect.y1+4:
+                              escaped.append({'bbox':[round(x0,2),round(y0,2),round(x1,2),round(y1,2)], 'text':str(b[4]).strip()[:1000]})
+                      png=pages_dir/f"{r['index']:03d}_page_{page_no}.png"
+                      p.get_pixmap(matrix=fitz.Matrix(1.8,1.8), alpha=False).save(png)
+                      detail.append({'index':r['index'],'title':r['title'],'archive_path':r['archive_path'],'page':page_no,'page_box':[rect.x0,rect.y0,rect.x1,rect.y1],'escaped_blocks':escaped,'render':str(png.relative_to(out))})
+              finally:
+                  doc.close()
+          json.dump(detail, open(out/'suspect-pages.json','w',encoding='utf-8'), indent=2, ensure_ascii=False)
+
+          counts=Counter(r['normalized_status'] for r in items)
+          md=['# Interpreted 101-item publication diagnostic','',
+              'This removes two systematic false alarms from the raw detector: JavaScript-populated iframes that rendered successfully in Chrome, and raw GitHub PDFs served as `application/octet-stream` whose local PDF structure opened successfully.','',
+              '## Normalized severity counts','']
+          for s in ('critical','high','medium','low','ok'):
+              md.append(f'- **{s}**: {counts.get(s,0)}')
+          md += ['', '## Substantive publication findings','']
+          for r in items:
+              if r['normalized_status']=='ok': continue
+              md += [f"### {r['index']:03d}. {r['title']} — {r['normalized_status'].upper()}",'']
+              for f in r['substantive_issues']:
+                  md.append(f"- **{f['severity'].upper()} {f['code']}** — {f['message']}")
+              md.append('')
+          md += ['## Index/deduplication findings','',
+                 f'- Byte-identical PDF groups represented more than once: **{len(duplicate_byte_groups)}**',
+                 f'- Exact duplicate-title groups: **{len(duplicate_title_groups)}**','']
+          for g in duplicate_byte_groups:
+              md.append('- byte-identical: ' + ' | '.join(f"#{x['index']} {x['title']}" for x in g))
+          md += ['', '### Exact duplicate titles','']
+          for g in duplicate_title_groups:
+              md.append('- ' + ' | '.join(f"#{x['index']} {x['title']}" for x in g))
+          md += ['', '## Suspect page renders','']
+          for x in detail:
+              md.append(f"- #{x['index']} **{x['title']}**, page {x['page']} — `{x['render']}`")
+              for b in x['escaped_blocks']:
+                  md.append(f"  - bbox={b['bbox']} text={b['text']!r}")
+          (out/'interpreted.md').write_text('\n'.join(md)+'\n', encoding='utf-8')
+          print('\n'.join(md))
+          PY
+
+      - name: Show raw report
         if: always()
         run: |
           test -s diagnostics/pub-101-visual-audit/audit.md
