@@ -53,7 +53,7 @@ def main() -> None:
     assert "http-equiv=\"refresh\"" not in check
     assert 'id="from-logical-omniscience-to-resource-indexed-knowledge"' in check
     assert 'id="the-hyperfinite-settlement-oracle"' in check
-    assert "MathJax" in check
+    assert "mathjax" in check.lower()
     print("Built HTML reader:", OUT)
 
 
