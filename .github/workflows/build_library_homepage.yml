@@ -61,12 +61,8 @@ jobs:
       - name: Build searchable homepage
         run: python scripts/build_library_homepage_v5.py
 
-      - name: Build Hyperfinite Oracles HTML reader
-        shell: bash
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends pandoc
-          python scripts/build_hyperfinite_oracles_reader.py
+      - name: Build Hyperfinite Oracles standard reader
+        run: python scripts/build_hyperfinite_oracles_reader.py
 
       - name: Repair NSA/trading card
         run: python scripts/fix_nsa_trading_card.py
@@ -122,12 +118,12 @@ jobs:
           reader=Path('docs/papers/nsa_and_trading_speedup/index.html').read_text(encoding='utf-8')
           assert 'fulltext-00.txt' in reader and 'fulltext-02.txt' in reader
           hf_reader=Path('docs/papers/hyperfinite_oracles_data_mind_3_2/index.html').read_text(encoding='utf-8')
-          assert 'window.location.replace' not in hf_reader
-          assert 'http-equiv="refresh"' not in hf_reader
-          assert '<iframe' not in hf_reader
-          assert 'id="from-logical-omniscience-to-resource-indexed-knowledge"' in hf_reader
-          assert 'id="the-hyperfinite-settlement-oracle"' in hf_reader
-          assert 'mathjax' in hf_reader.lower()
+          assert '<iframe' in hf_reader
+          assert '/pub/' in hf_reader
+          assert 'Open full-screen reader' in hf_reader
+          assert 'The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf' in hf_reader
+          assert 'source.html' in hf_reader
+          assert '../../../' not in hf_reader
           home=Path('docs/index.html').read_text(encoding='utf-8')
           assert lead['quote'] in home
           assert hf['quote'] in home
@@ -138,7 +134,7 @@ jobs:
           print('card 2 Read target:', hf['href'])
           print('card 2 PDF target:', hf['pdf'])
           print('card 3:', dm3['title'])
-          print('Hyperfinite card: true HTML reader plus separate PDF action')
+          print('Hyperfinite card: standard core-paper reader plus separate PDF action')
           PY
 
       - name: Commit generated and imported files if changed
