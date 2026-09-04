@@ -1,0 +1,148 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{csquotes}
+
+\definecolor{linkblue}{RGB}{32,83,117}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue,
+  pdftitle={The Hyperfinite Oracles of DATA MIND 3.2},
+  pdfauthor={Brian Tenneson}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{The Hyperfinite Oracles of DATA MIND 3.2}
+\rhead{Brian Tenneson}
+\cfoot{\thepage\ of \pageref{LastPage}}
+\setlength{\headheight}{14pt}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{principle}[definition]{Principle}
+
+\newcommand{\st}{\operatorname{st}}
+\newcommand{\Omn}{\operatorname{Omn}}
+\newcommand{\Cn}{\operatorname{Cn}}
+\newcommand{\AMLD}{\operatorname{AMLD}}
+\newcommand{\Role}{\operatorname{Role}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\FBANK}{\mathrm{FUTUREBANK}}
+\newcommand{\V}{\mathrm{V}}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Rcal}{\mathcal{R}}
+\newcommand{\Ical}{\mathcal{I}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Ocal}{\mathcal{O}}
+\newcommand{\Kcal}{\mathcal{K}}
+\newcommand{\Fcal}{\mathcal{F}}
+
+\title{\textbf{The Hyperfinite Oracles of DATA MIND 3.2}\\[0.35em]
+\large Logical Omniscience, Nonstandard Horizons, and Verifier-Gated Epistemic Guidance}
+\author{Brian Tenneson}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{minipage}{0.84\textwidth}
+\centering\itshape
+``The oracle may direct attention; it may not manufacture certified knowledge.''
+\end{minipage}
+\end{center}
+
+\begin{abstract}
+Standard epistemic logic idealizes knowledge as deductively closed: if an agent knows premises and knows that they imply a conclusion, the agent knows the conclusion. Combined with necessitation, this produces the familiar phenomenon of logical omniscience. DATA MIND, by contrast, is a settlement architecture whose agents must spend finite resources to discover verifier-acceptable certificates. This note develops a nonstandard bridge between the ideal semantic picture and the computational one. A resource-indexed modality $K_i^{\le r}\varphi$ is extended, conceptually, to an unlimited hypernatural horizon $H$. The resulting internal hyperfinite family supports a hyperfinite conjunction of epistemic obligations and a hypernatural closure-cost functional $\Ocal_i(H)$. Standard traces and, where a bounded hyperreal normalization exists, standard-part shadows provide ways to compare the hyperfinite construction with ordinary mathematics.
+
+The paper then introduces a hyperfinite settlement oracle $\mathscr O_H$ with values in the AMLD settlement roles $\{P,R,I,C,U\}$. The oracle is not a verifier and does not possess authority to place propositions in the verified BANK. Instead it may be used as hidden ground truth or, in explicitly counterfactual experiments, as a source of role information that changes awareness and resource routing. DATA MIND 3.2 implements only finite-horizon proxies of these ideas; it does not claim to instantiate an unlimited hypernatural on a conventional computer. The resulting architecture gives a controlled way to measure how much of settlement difficulty comes from recognizing the epistemic role of a problem, as opposed to executing the relevant proof, refutation, independence, or contradiction search once that role is known.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{From logical omniscience to resource-indexed knowledge}
+
+Let $K_i\varphi$ mean that epistemic agent $i$ knows $\varphi$. In a normal modal epistemic logic, the distribution axiom is
+\begin{equation}
+K_i(\varphi\rightarrow\psi)\rightarrow(K_i\varphi\rightarrow K_i\psi),
+\label{eq:K}
+\end{equation}
+and necessitation has the rule form
+\begin{equation}
+\frac{\vdash\varphi}{\vdash K_i\varphi}.
+\label{eq:nec}
+\end{equation}
+If $\Gamma=\{\varphi_1,\ldots,\varphi_n\}$ and $\Gamma\vdash\psi$, then a corresponding theorem of the object logic can be written in nested implication form. Necessitation followed by repeated applications of \eqref{eq:K} yields
+\begin{equation}
+\bigl(K_i\varphi_1\wedge\cdots\wedge K_i\varphi_n\bigr)\Longrightarrow K_i\psi.
+\end{equation}
+Thus an ideal epistemic agent is closed under logical consequence. If it knows the members of $\Gamma$, it knows every member of $\Cn(\Gamma)$.
+
+That abstraction suppresses search cost. DATA MIND is built precisely in the regime where cost matters. The distinction motivates a budget-indexed epistemic relation.
+
+\begin{definition}[Resource-indexed knowledge]
+For a resource scale $r\in\mathbb N$, write
+\begin{equation}
+K_i^{\le r}\varphi
+\end{equation}
+for the claim that agent $i$ can acquire an admissible epistemic warrant for $\varphi$ using at most $r$ units of the frozen resource measure.
+\end{definition}
+
+The word ``warrant'' is intentionally architecture-dependent. In a proof lane it may be a verifier-accepted proof certificate; in an experimental routing layer it may instead refer to a formally specified evidence state. The verifier boundary must be stated separately. In particular, a high-confidence forecast is not automatically $K_i^{\le r}\varphi$.
+
+For a finite benchmark family $F$, one may measure bounded closure by
+\begin{equation}
+\Omega_i(r;F)=
+\frac{
+\left|\{\varphi\in F:T\vdash\varphi\text{ and }K_i^{\le r}\varphi\}\right|
+}{
+\left|\{\varphi\in F:T\vdash\varphi\}\right|
+},
+\end{equation}
+when the denominator is nonzero. Ordinary logical omniscience corresponds to the ideal in which deductive consequence is available without a computationally meaningful resource barrier. DATA MIND instead studies the growth of accessible, certifiable consequence as resources increase.
+
+\section{The nonstandard horizon}
+
+Assume a nonstandard extension containing the hypernaturals ${}^*\mathbb N$. An element
+\begin{equation}
+H\in{}^*\mathbb N\setminus\mathbb N
+\end{equation}
+is called unlimited when it exceeds every standard natural number. There is no largest hypernatural: $H+1$ is larger than $H$. Consequently the construction below fixes an unlimited horizon rather than invoking a nonexistent ``largest infinity.''
+
+Let
+\begin{equation}
+\varphi_0,\varphi_1,\varphi_2,\ldots
+\end{equation}
+be a standard enumeration of the formulas or sentences relevant to the chosen formal environment. Its nonstandard extension yields a hyperfinite initial segment
+\begin{equation}
+F_H=\{\varphi_n:n\le H\}.
+\label{eq:FH}
+\end{equation}
+Internally, $F_H$ behaves like a finite family under transferred finite statements. Externally, it contains every standard-indexed $\varphi_n$ because $n<H$ for every standard $n$.
+
+\subsection{What transfer does and does not provide}
+
+The intended use of transfer is conservative: begin with a genuinely finitary, internal definition, and transfer that definition to hyperfinite indices. This permits finite combinatorial principles to be used on internally hyperfinite objects. It does \emph{not} justify replacing arbitrary external countable conjunctions by internal hyperfinite conjunctions without further work.
+
+This distinction is essential. The expression
+\begin{equation}
+\bigwedge_{n\le H}{}^*\varphi_n
+\en²È="25±…¥µÌ¸()qÍÕ‰Í•Ñ¥½¹í•Á•¹‘•¹”½¸•¹Õµ•É…Ñ¥½¹ô()	½Ñ ¡åÁ•É™¥¹¥Ñ”‘•¹Í¥Ñä…¹¡½É¥é½¸½ÍÑÌµ…ä‘•Á•¹½¸Ñ¡”¡½Í•¸•¹Õµ•É…Ñ¥½¸½˜™½ÉµÕ±…Ì¸É½‰ÕÍÐÑ¡•½ÉäÍ¡½Õ±ÍÑ…Ñ”¥¹Ù…É¥…¹”½¹‘¥Ñ¥½¹Ì½È½µÁ…É”•ÅÕ¥Ù…±•¹”±…ÍÍ•Ì½˜…‘µ¥ÍÍ¥‰±”•¹Õµ•É…Ñ¥½¹ÌÉ…Ñ¡•ÈÑ¡…¸ÑÉ•…Ñ¥¹œ½¹”½‘¥¹œ…Ì…¹½¹¥…°Ý¥Ñ¡½ÕÐ©ÕÍÑ¥™¥…Ñ¥½¸¸()qÍÕ‰Í•Ñ¥½¹í•Á•¹‘•¹”½¸ÁÉ•Í•¹Ñ…Ñ¥½¹ô()AÉ½½˜½ÍÐ¥ÌÁÉ•Í•¹Ñ…Ñ¥½¸µÍ•¹Í¥Ñ¥Ù”¸•ÉÑ¥™¥•ÁÉ•Í•¹Ñ…Ñ¥½¸ÑÉ…‘¥¹œµ…ä¡…¹”€‘}¤¡qÙ…ÉÁ¡¤¤…¹Ñ¡•É•™½É”€‘q=…±}¤¡ ¤Ý¥Ñ¡½ÕÐ¡…¹¥¹œÁÉ½Ù…‰¥±¥Ñä¸Q¡¥Ì¥Ù•Ì„¹…ÑÕÉ…°µ••Ñ¥¹œÁ½¥¹Ð‰•ÑÝ••¸Ñ¡”¡åÁ•É™¥¹¥Ñ”½É…±”™É…µ•Ý½É¬…¹Ñ¡”ÑÉ…‘¥¹œµÑ¡•½É•´ÁÉ½É…´èÍ•µ…¹Ñ¥Œ½¹Ñ•¹Ðµ…ä‰”¥¹Ù…É¥…¹ÐÝ¡¥±”Ñ¡”™¥¹¥Ñ”½È¡åÁ•É™¥¹¥Ñ”½ÍÐ•½µ•ÑÉä¡…¹•Ì¸()qÍÕ‰Í•Ñ¥½¹í!åÁ•É™¥¹¥Ñ”Ù•ÉÍÕÌ¥¹™¥¹¥Ñ…Éä±½ÍÕÉ•ô()¸¥¹Ñ•É¹…°¡åÁ•É™¥¹¥Ñ”½¹©Õ¹Ñ¥½¸¥Ì¹½Ð…ÕÑ½µ…Ñ¥…±±ä„™½ÉµÕ±„½˜…¸•áÑ•É¹…°¥¹™¥¹¥Ñ…Éä±½¥Œ°…¹„Ñ¡•½É•´…‰½ÕÐ½¹”Í¡½Õ±¹½Ð‰”Í¥±•¹Ñ±äÉ•Á½ÉÑ•…Ì„Ñ¡•½É•´…‰½ÕÐÑ¡”½Ñ¡•È¸ÍÑ…‰±¥Í¡¥¹œÁÉ•¥Í”‰É¥‘”É•ÍÕ±ÑÌÝ½Õ±‰”µ…Ñ¡•µ…Ñ¥…±±äÙ…±Õ…‰±”¸()qÍÕ‰Í•Ñ¥½¹íMÑ…¹‘…É•áÑÉ…Ñ¥½¹ô()%˜„ÍÑ…¹‘…ÉÑ…É•Ð¥ÌÍ•ÑÑ±•‰ä…¸¥¹Ñ•É¹…°¡åÁ•É™¥¹¥Ñ”‘•É¥Ù…Ñ¥½¸½˜Õ¹±¥µ¥Ñ•±•¹Ñ °…‘‘¥Ñ¥½¹…°Ý½É¬¥Ì¹••‘•‰•™½É”½¹”µ…ä¥¹™•ÈÑ¡”•á¥ÍÑ•¹”½˜…¸…ÁÁÉ½ÁÉ¥…Ñ”ÍÑ…¹‘…É™¥¹¥Ñ”•ÉÑ¥™¥…Ñ”¸QÉ…¹Í™•È…±½¹”‘½•Ì¹½Ð±¥•¹Í”Ñ¡…Ð½±±…ÁÍ”¸MÑ…¹‘…É•áÑÉ…Ñ¥½¸°Õ¹‘•ÉÍÁ¥±°°½µÁ…Ñ¹•ÍÌ°½È„ÍåÍÑ•´µÍÁ•¥™¥Œ…ÉÕµ•¹Ðµ…ä‰”É•ÅÕ¥É•°‘•Á•¹‘¥¹œ½¸Ñ¡”™½Éµ…±¥é…Ñ¥½¸¸()qÍÕ‰Í•Ñ¥½¹í=É…±”ÁÉ½Ù•¹…¹•ô()™¥¹¥Ñ”‰•¹¡µ…É¬½É…±”¥Ì½¹±ä…ÌÑÉÕÍÑÝ½ÉÑ¡ä…Ì¥ÑÌ±…‰•±Ì¸€‘@…¹€‘H…Í•Ìµ…ä½™Ñ•¸‰”É½Õ¹‘•‰ä•ÉÑ¥™¥…Ñ•Ì¸€‘$…¹€‘…Í•Ì‘•µ…¹•ÅÕ…±±ä•áÁ±¥¥ÐÍ•µ…¹Ñ¥Ì…¹Ý¥Ñ¹•ÍÍ•Ì¸½±±…‰•°œœµÕÍÐ¹•Ù•È‰•½µ”„Íå¹½¹å´™½È±…‰•°Ý”‘•¥‘•Ñ¼ÑÉÕÍÐ¸œœ()qÍ•Ñ¥½¹íI•±…Ñ¥½¸Ñ¼•Á¥ÍÑ•µ¥Œ…á¥½µÍô()Q¡”½É…±”½¹ÍÑÉÕÑ¥½¸‘½•Ì¹½ÐÉ•ÅÕ¥É”Ñ¡”¥µÁ±•µ•¹Ñ•51…•¹ÑÌÑ¡•µÍ•±Ù•ÌÑ¼Í…Ñ¥Í™äÑ¡”™Õ±°LÔÁ…­…”¸M•Ù•É…°µ½‘…°ÁÉ½Á•ÉÑ¥•ÌÍ¡½Õ±‰”‘¥ÍÑ¥¹Õ¥Í¡•¸()q‰•¥¹í…±¥¸©ô)qµ…Ñ¡‰˜,è™qÅÕ…-}¤¡qÙ…ÉÁ¡¥qÑ½qÁÍ¤¥qÑ¼¡-}¥qÙ…ÉÁ¡¥qÑ¼-}¥qÁÍ¤¤±qp)qµ…Ñ¡‰˜Pè™qÅÕ…-}¥qÙ…ÉÁ¡¥qÑ½qÙ…ÉÁ¡¤±qp)qµ…Ñ¡‰˜€Ðè™qÅÕ…-}¥qÙ…ÉÁ¡¥qÑ¼-}¥-}¥qÙ…ÉÁ¡¤±qp)qµ…Ñ¡‰˜€Ôè™qÅÕ…q¹•œ-}¥qÙ…ÉÁ¡¥qÑ¼-}¥q¹•œ-}¥qÙ…ÉÁ¡¤¸)q•¹‘í…±¥¸©ô()½ÈQ5%9°™…Ñ¥Ù¥Ñä¥Ìµ½ÍÐ¹…ÑÕÉ…±±ä…ÑÑ…¡•Ñ¼Ù•É¥™¥•Èµ•ÉÑ¥™¥•­¹½Ý±•‘”°Ý¡¥±”Á½Í¥Ñ¥Ù”…¹¹•…Ñ¥Ù”¥¹ÑÉ½ÍÁ•Ñ¥½¸½¹•É¸Í•±˜µ…Ý…É•¹•ÍÌ¸Õ±°±½¥…°½µ¹¥Í¥•¹”…É¥Í•Ì™É½´±½ÍÕÉ”…ÍÍÕµÁÑ¥½¹ÌÍÕ …Ì¹½Éµ…±¥Ñä…¹¹••ÍÍ¥Ñ…Ñ¥½¸ì¥ÐÍ¡½Õ±¹½Ð‰”¥¹™•ÉÉ•µ•É•±ä™É½´ÍÑÉ½¹œÍ•±˜µ…Ý…É•¹•ÍÌ¸ÁÉ…Ñ¥…°…É¡¥Ñ•ÑÕÉ”µ…äÑ¡•É•™½É”‰”™…Ñ¥Ù”…ÐÑ¡”•ÉÑ¥™¥…Ñ¥½¸‰½Õ¹‘…Éä°¥¹ÑÉ½ÍÁ•Ñ¥Ù•±ä‰½Õ¹‘•°…¹½µÁÕÑ…Ñ¥½¹…±±ä™…È™É½´‘•‘ÕÑ¥Ù”±½ÍÕÉ”¸()Q¡”¡åÁ•É™¥¹¥Ñ”½É…±”ÁÉ½Ù¥‘•Ì…¸¥‘•…°½µÁ…É¥Í½¸½‰©•ÐÝ¥Ñ¡½ÕÐ™½É¥¹œ51¥ÑÍ•±˜Ñ¼‰”…¸¥‘•…°•Á¥ÍÑ•µ¥Œ…•¹Ð¸()qÍ•Ñ¥½¹íÉ¡¥Ñ•ÑÕÉ”ÍÕµµ…Éåô()Q¡”½¹•ÁÑÕ…°‘¥Ù¥Í¥½¸½˜±…‰½È¥¸Q5%9€Ì¸È…¸‰”ÝÉ¥ÑÑ•¸½µÁ…Ñ±äè)q‰•¥¹í•¹Ñ•Éô)q‰•¥¹íÑ…‰Õ±…ÉõíÁìÀ¸ÈÉqÑ•áÑÝ¥‘Ñ¡õÁìÀ¸ØÙqÑ•áÑÝ¥‘Ñ¡õô)qÑ½ÁÉÕ±”)½µÁ½¹•¹Ð€˜Á¥ÍÑ•µ¥ŒÉ½±•qp)qµ¥‘ÉÕ±”)!åÁ•É™¥¹¥Ñ”½É…±”€˜%‘•…±¥é•½±¥¹™½Éµ…Ñ¥½¸™½Èµ…Ñ¡•µ…Ñ¥…°…¹…±åÍ¥Ì…¹½¹ÑÉ½±±•½Õ¹Ñ•É™…ÑÕ…±Íqp)AÉ½™•ÍÍ½È€˜¡…¹•ÌÍ…±¥•¹”°…ÑÑ•¹Ñ¥½¸°…¹…‘Ù¥Í½ÉäÉ½ÕÑ¥¹œì‘½•Ì¹½Ð•ÉÑ¥™äÑ¡•½É•µ¡½½‘qp(‘@½H½$½…•¹ÑÌ€˜ÑÑ•µÁÐÑ¡”½ÉÉ•ÍÁ½¹‘¥¹œ™½ÉµÌ½˜Í•ÑÑ±•µ•¹Ñqp)Y•É¥™¥•È€‘qX€˜•Ñ•Éµ¥¹•ÌÝ¡•Ñ¡•È„…¹‘¥‘…Ñ”•ÉÑ¥™¥…Ñ”Í…Ñ¥Í™¥•ÌÑ¡”™É½é•¸…•ÁÑ…¹”ÉÕ±•qp(‘q	9,€˜MÑ½É•ÌÍ¡…É•Ù•É¥™¥•Èµ…‘µ¥ÑÑ•µ…Ñ¡•µ…Ñ¥…°…Á¥Ñ…±qp(‘q	9,€˜MÑ½É•ÌÍÁ•Õ±…Ñ¥Ù”…¹½Õ¹Ñ•É™…ÑÕ…°Á½ÍÍ¥‰¥±¥Ñ¥•ÌÝ¥Ñ¡½ÕÐÁÉ½µ½Ñ¥¹œÑ¡•´Ñ¼ÑÉÕÑ¡qp)M•¹Ñ¥¹•°€˜5…äÙ•Ñ¼É•Í½ÕÉ”µÁ…Ñ¡½±½¥…°…Ñ¥½¹Ìì‘½•Ì¹½Ð‘•Ñ•Éµ¥¹”µ…Ñ¡•µ…Ñ¥…°ÑÉÕÑ¡qp)q‰½ÑÑ½µÉÕ±”)q•¹‘íÑ…‰Õ±…Éô)q•¹‘í•¹Ñ•Éô()Q¡”…É¡¥Ñ•ÑÕÉ”Ñ¡•É•™½É”…±±½ÝÌ„‘•±¥‰•É…Ñ•±äÁ½Ý•É™Õ°•Á¥ÍÑ•µ¥Œ¥‘•…±¥é…Ñ¥½¸Ý¡¥±”­••Á¥¹œÑ¡”ÑÉÕÍÑ•½µÁÕÑ¥¹œ‰½Õ¹‘…Éä¹…ÉÉ½Ü¸()qÍ•Ñ¥½¹í½¹±ÕÍ¥½¹ô()1½¥…°½µ¹¥Í¥•¹”¥ÌÕÍÕ…±±äÁÉ•Í•¹Ñ•…Ì…¸Õ¹É•…±¥ÍÑ¥Œ½¹Í•ÅÕ•¹”½˜¥‘•…°•Á¥ÍÑ•µ¥Œ±½ÍÕÉ”¸Q5%9€Ì¸ÈÑÕÉ¹ÌÑ¡…Ð±¥µ¥Ñ…Ñ¥½¸¥¹Ñ¼„µ•…ÍÕÉ…‰±”É•Í•…É ½‰©•Ð¸Q¡”½Á•É…Ñ½È€‘-}¥yíq±”Éôµ…­•ÌÉ•Í½ÕÉ”½ÍÐ•áÁ±¥¥Ð¸¸Õ¹±¥µ¥Ñ•¡åÁ•É¹…ÑÕÉ…°¡½É¥é½¸€‘ å¥•±‘Ì„½¹•ÁÑÕ…°¡åÁ•É™¥¹¥Ñ”±½ÍÕÉ”ÁÉ½‰±•´°…¹€‘q=…±}¤¡ ¤É•½É‘Ì„¡åÁ•É¹…ÑÕÉ…°Ý½ÉÍÐµ…Í”±½ÍÕÉ”½ÍÐ¸MÑ…¹‘…ÉÑÉ…•ÌÉ•½Ù•ÈÍÑ…¹‘…Éµ¥¹‘•á•‰•¡…Ù¥½È°Ý¡¥±”¹½Éµ…±¥é•±¥µ¥Ñ•¡åÁ•ÉÉ•…±Ì…‘µ¥ÐÍÑ…¹‘…ÉµÁ…ÉÐÍ¡…‘½ÝÌ¸()Q¡”¡åÁ•É™¥¹¥Ñ”½É…±”Ñ¡•¸µ½Ù•ÌÑ¡”½¹ÍÑÉÕÑ¥½¸™É½´ÁÕÉ”•Á¥ÍÑ•µ¥ŒÍ•µ…¹Ñ¥Ì¥¹Ñ¼51¸	äÍ•±•Ñ¥Ù•±äÝ¥Ñ¡¡½±‘¥¹œ½ÈÉ•Ù•…±¥¹œ½¹±äÑ¡”½ÉÉ•ÐÍ•ÑÑ±•µ•¹ÐÉ½±”°½¹”…¸µ•…ÍÕÉ”Ñ¡”Ù…±Õ”½˜Á•É™•ÐÉ½±”¥¹™½Éµ…Ñ¥½¸Ý¥Ñ¡½ÕÐ¡…¹‘¥¹œÑ¡”ÍåÍÑ•´„•ÉÑ¥™¥…Ñ”¸Q¡¥ÌÉ•…Ñ•Ì„½¹ÑÉ½±±•‘¥…¹½ÍÑ¥Œ½˜Ñ¡”¹½ÐµQ@œœÁ…ÉÐ½˜Í•ÑÑ±•µ•¹ÐèÉ•½¹¥Ñ¥½¸°É½ÕÑ¥¹œ°…Ý…É•¹•ÍÌ°…¹½½É‘¥¹…Ñ¥½¸…µ½¹œÁÉ½½˜°É•™ÕÑ…Ñ¥½¸°¥¹‘•Á•¹‘•¹”°…¹½¹ÑÉ…‘¥Ñ¥½¸…•¹ÑÌ¸()Q¡”‘•¥Í¥Ù”ÑÉÕÍÐÁÉ¥¹¥Á±”É•µ…¥¹ÌÕ¹¡…¹•¸=É…±”¥¹™½Éµ…Ñ¥½¸µ…ä‰”¥‘•…±¥é•°AÉ½™•ÍÍ½È…‘Ù¥”µ…ä‰”¥¹Ñ•±±¥•¹Ð°…¹Í•…É µ…ä‰”É•…Ñ¥Ù”°‰ÕÐ¹½¹”½˜Ñ¡•´…É”Á•Éµ¥ÑÑ•Ñ¼µ…¹Õ™…ÑÕÉ”•ÉÑ¥™¥•µ…Ñ¡•µ…Ñ¥Ì¸Q¡”Ù•É¥™¥•ÈÉ•µ…¥¹ÌÍ½Ù•É•¥¸°…¹	9,É•µ…¥¹ÌÑ¡”Í¡…É•É•½É½˜Ý¡…Ð¡…Ì…ÑÕ…±±äÉ½ÍÍ•Ñ¡…Ð‰½Õ¹‘…Éä¸()q…ÁÁ•¹‘¥à)qÍ•Ñ¥½¹í9½Ñ…Ñ¥½¹ô()q‰•¥¹í•¹Ñ•Éô)q‰•¥¹íÑ…‰Õ±…ÉõíÁìÀ¸ÈÑqÑ•áÑÝ¥‘Ñ¡õÁìÀ¸ØÙqÑ•áÑÝ¥‘Ñ¡õô)qÑ½ÁÉÕ±”)Måµ‰½°€˜5•…¹¥¹qp)qµ¥‘ÉÕ±”(‘-}¥qÙ…ÉÁ¡¤€˜•¹Ð€‘¤­¹½ÝÌ€‘qÙ…ÉÁ¡¤¥¸Ñ¡”Í•±•Ñ••Á¥ÍÑ•µ¥ŒÍ•µ…¹Ñ¥Íqp(‘-}¥yíq±”ÉõqÙ…ÉÁ¡¤€˜•¹Ð€‘¤…¸…ÅÕ¥É”Ñ¡”‘•±…É•Ý…ÉÉ…¹Ð™½È€‘qÙ…ÉÁ¡¤Ý¥Ñ¡¥¸‰Õ‘•Ð€‘È‘qp(‘ €˜¥á•Õ¹±¥µ¥Ñ•¡åÁ•É¹…ÑÕÉ…°ÕÍ•¥¸Ñ¡”µ…Ñ¡•µ…Ñ¥…°ÍÁ•¥™¥…Ñ¥½¹qp(‘} €˜%¹Ñ•É¹…°¡åÁ•É™¥¹¥Ñ”™½ÉµÕ±„¡½É¥é½¸€‘qíqÙ…ÉÁ¡¥}¸é¹q±”!qô‘qp(‘q=µ¹}¤¡ ¤€˜!åÁ•É™¥¹¥Ñ”½¹©Õ¹Ñ¥½¸½˜É•ÅÕ¥É••Á¥ÍÑ•µ¥Œ±½ÍÕÉ•ÌÑ¡É½Õ €‘ ‘qp(‘}¤¡qÙ…ÉÁ¡¤¤€˜1•…ÍÐÉ•Í½ÕÉ”½ÍÐ°Ý¡•¸‘•™¥¹•‘qp(‘q=…±}¤¡ ¤€˜!åÁ•É™¥¹¥Ñ”µ…á¥µÕ´±½ÍÕÉ”½ÍÐÑ¡É½Õ ¡½É¥é½¸€‘ ‘qp(‘qÉ¡½}¤¡ ¤€˜MÑ…¹‘…ÉÁ…ÉÐ½˜€‘q=…±}¤¡ ¤½ Ý¡•¸±¥µ¥Ñ•‘qp(‘q½µ•…}¤¡ ¤€˜MÑ…¹‘…ÉÁ…ÉÐ½˜¡åÁ•É™¥¹¥Ñ”½Ù•É…”‘•¹Í¥ÑäÝ¡•¸‘•™¥¹•‘qp(‘qµ…Ñ¡ÍÈ=} €˜!åÁ•É™¥¹¥Ñ”Í•ÑÑ±•µ•¹ÐµÉ½±”½É…±•qp(‘@±H±$±±T€˜AÉ½½˜°É•™ÕÑ…Ñ¥½¸°¥¹‘•Á•¹‘•¹”°½¹ÑÉ…‘¥Ñ¥½¸°Õ¹É•Í½±Ù•½Ý¥Ñ¡¡•±‘qp(‘qX€˜áÑ•É¹…°½™É½é•¸Ù•É¥™¥•È‰½Õ¹‘…Éåqp(‘q	9,€˜M¡…É•Ù•É¥™¥•Èµ…‘µ¥ÑÑ•µ…Ñ¡•µ…Ñ¥…°…Á¥Ñ…±qp(‘q	9,€˜MÁ•Õ±…Ñ¥Ù”ÑÉ…¹Í…Ñ¥½¹…°™ÕÑÕÉ”ÍÑ…Ñ•qp)q‰½ÑÑ½µÉÕ±”)q•¹‘íÑ…‰Õ±…Éô)q•¹‘í•¹Ñ•Éô()qÍ•Ñ¥½¹í%µÁ±•µ•¹Ñ…Ñ¥½¸µÍÑ…ÑÕÌÍÑ…Ñ•µ•¹Ñô()Ì½˜M•ÁÑ•µ‰•È€ÈÀÈØ°Q5%9€Ì¸È½¹Ñ…¥¹Ì„É•Ù•ÉÍ¥‰±”™¥¹¥Ñ”µ¡½É¥é½¸½É…±”É•Í•…É ±…å•È½¸„Í•Á…É…Ñ”‘•Ù•±½Áµ•¹Ð‰É…¹ ¸%ÑÌ•á•ÕÑ…‰±”±…ÍÍ•Ì…É”™¥¹¥Ñ”ÁÉ½á¥•Ì½˜Ñ¡”¹½¹ÍÑ…¹‘…ÉÍÁ•¥™¥…Ñ¥½¸¸Q¡”¥µÁ±•µ•¹Ñ…Ñ¥½¸‘¥ÍÑ¥¹Õ¥Í¡•Ì¡¥‘‘•¸•Ù…±Õ…Ñ¥½¸°AÉ½™•ÍÍ½Èµ™…¥¹œÉ½±”¡¥¹ÑÌ°…¹‘¥É•ÐÉ½±”¡¥¹ÑÌ°…¹¥Ðµ…É­Ì½É…±”µ‘•É¥Ù•Õ•Ì…Ì¹½¸µ•ÉÑ¥™¥•¸Q¡”±…å•È¡…Ì¥¹Ñ•É™…”Ñ•ÍÑÌ‰ÕÐ°…ÐÑ¡”Ñ¥µ”½˜Ñ¡¥Ì¹½Ñ”°Q5%9€Ì¸ÈáÁ•É¥µ•¹Ð€Ä¡…Ì¹½Ð‰••¸±…Õ¹¡•¸()q‰•¥¹íÑ¡•‰¥‰±¥½É…Á¡åõìåô()q‰¥‰¥Ñ•µí!¥¹Ñ¥­­„ÄäØÉô)(¸!¥¹Ñ¥­­„°)q•µÁ¡í-¹½Ý±•‘”…¹	•±¥•˜è¸%¹ÑÉ½‘ÕÑ¥½¸Ñ¼Ñ¡”1½¥Œ½˜Ñ¡”QÝ¼9½Ñ¥½¹Íô°)½É¹•±°U¹¥Ù•ÉÍ¥ÑäAÉ•ÍÌ°€ÄäØÈ¸()q‰¥‰¥Ñ•µí…¥¸ÄääÕô)H¸…¥¸°(¸d¸!…±Á•É¸°d¸5½Í•Ì°…¹4¸d¸Y…É‘¤°)q•µÁ¡íI•…Í½¹¥¹œ‰½ÕÐ-¹½Ý±•‘•ô°)5%PAÉ•ÍÌ°€ÄääÔ¸()q‰¥‰¥Ñ•µíI½‰¥¹Í½¸ÄäØÙô)¸I½‰¥¹Í½¸°)q•µÁ¡í9½¸µÍÑ…¹‘…É¹…±åÍ¥Íô°)9½ÉÑ µ!½±±…¹°€ÄäØØ¸()q‰¥‰¥Ñ•µí½±‘‰±…ÑÐÄääáô)H¸½±‘‰±…ÑÐ°)q•µÁ¡í1•ÑÕÉ•Ì½¸Ñ¡”!åÁ•ÉÉ•…±Ìè¸%¹ÑÉ½‘ÕÑ¥½¸Ñ¼9½¹ÍÑ…¹‘…É¹…±åÍ¥Íô°)MÁÉ¥¹•È°€Äääà¸()q‰¥‰¥Ñ•µí¡…¹-•¥Í±•ÈÄääÁô)¸¸¡…¹œ…¹ ¸(¸-•¥Í±•È°)q•µÁ¡í5½‘•°Q¡•½Éåô°€ÍÉ•¸°)9½ÉÑ µ!½±±…¹°€ÄääÀ¸()q‰¥‰¥Ñ•µí	…ÉÝ¥Í••™•Éµ…¸ÄäàÕô)(¸	…ÉÝ¥Í”…¹L¸•™•Éµ…¸°•‘¥Ñ½ÉÌ°)q•µÁ¡í5½‘•°µQ¡•½É•Ñ¥Œ1½¥Íô°)MÁÉ¥¹•È°€ÄäàÔ¸()q•¹‘íÑ¡•‰¥‰±¥½É…Á¡åô()q•¹‘í‘½Õµ•¹Ñô(
