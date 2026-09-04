@@ -10,6 +10,7 @@ on:
       - 'pub.experimental/**'
       - '.build/pubexp_import/**'
       - 'documents and their sources/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.tex'
+      - 'documents and their sources/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.tex'
       - 'scripts/import_pubexp_packages.py'
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
@@ -19,6 +20,7 @@ on:
       - 'scripts/fix_nsa_trading_card.py'
       - 'scripts/fix_hyperfinite_oracles_card.py'
       - 'scripts/fix_dm3_card.py'
+      - 'scripts/pin_dreamer_four_oracle_card.py'
       - 'scripts/sync_experimental_pages.py'
       - 'scripts/fix_experimental_page_links.py'
       - '.github/workflows/build_library_homepage.yml'
@@ -67,11 +69,14 @@ jobs:
       - name: Repair NSA/trading card
         run: python scripts/fix_nsa_trading_card.py
 
-      - name: Pin Hyperfinite Oracles as card 2 with HTML Read target
+      - name: Pin Hyperfinite Oracles as card 2 before final lead pin
         run: python scripts/fix_hyperfinite_oracles_card.py
 
-      - name: Pin DATA MIND 3.0 as card 3
+      - name: Pin DATA MIND 3.0 as card 3 before final lead pin
         run: python scripts/fix_dm3_card.py
+
+      - name: Pin Dreamer four-oracle synthesis as card 1
+        run: python scripts/pin_dreamer_four_oracle_card.py
 
       - name: Route experimental links through Pages
         run: python scripts/fix_experimental_page_links.py
@@ -89,9 +94,15 @@ jobs:
           test -s docs/papers/hyperfinite_oracles_data_mind_3_2/index.html
           test -s docs/papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf
           test -s docs/papers/data_mind_3_0_module_interface_freeze/index.html
+          test -s docs/papers/dreamer_four_oracle_data_mind_3_2/index.html
+          test -s docs/papers/dreamer_four_oracle_data_mind_3_2/source.html
+          test -s docs/papers/dreamer_four_oracle_data_mind_3_2/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf
           test -s cs.LO_Logic_in_Computer_Science/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf
           test -s cs.LO_Logic_in_Computer_Science/DATA_MIND_3_0_Module_and_Interface_Freeze.pdf
+          test -s cs.LO_Logic_in_Computer_Science/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf
+          test -s 'documents and their sources/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.tex'
           cmp -s cs.LO_Logic_in_Computer_Science/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf docs/papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf
+          cmp -s cs.LO_Logic_in_Computer_Science/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf docs/papers/dreamer_four_oracle_data_mind_3_2/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf
           python - <<'PY'
           import json
           from pathlib import Path
@@ -101,20 +112,33 @@ jobs:
           assert any(x['kind'] == 'Core paper' for x in d['items'])
           assert any(x['kind'] == 'Applied Data Science' for x in d['items'])
           assert any(x['kind'] == 'Experimental' for x in d['items'])
-          lead=d['items'][0]
-          assert lead['href'] == 'papers/nsa_and_trading_speedup/'
-          assert lead.get('quote'), 'NSA/trading lead card is missing its quote'
-          assert not lead.get('pdf'), 'NSA/trading card still exposes a broken PDF link'
-          assert len(d['items']) >= 3
-          hf=d['items'][1]
-          reader_target='papers/hyperfinite_oracles_data_mind_3_2/'
-          direct='papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
-          assert hf['href'] == reader_target
-          assert hf.get('pdf') == direct
+          assert len(d['items']) >= 4
+
+          dreamer=d['items'][0]
+          dreamer_reader='papers/dreamer_four_oracle_data_mind_3_2/'
+          dreamer_pdf=dreamer_reader+'DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf'
+          assert dreamer['title'] == 'Dreamer and Four-Oracle Extension to DATA MIND 3.2'
+          assert dreamer['href'] == dreamer_reader
+          assert dreamer.get('pdf') == dreamer_pdf
+          assert dreamer.get('source') == dreamer_reader+'source.html'
+          assert dreamer.get('quote') == 'Dream freely, route intelligently, verify exactly.'
+
+          nsa=d['items'][1]
+          assert nsa['href'] == 'papers/nsa_and_trading_speedup/'
+          assert nsa.get('quote'), 'NSA/trading card is missing its quote'
+          assert not nsa.get('pdf'), 'NSA/trading card still exposes a broken PDF link'
+
+          hf=d['items'][2]
+          hf_reader_target='papers/hyperfinite_oracles_data_mind_3_2/'
+          hf_direct='papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
+          assert hf['href'] == hf_reader_target
+          assert hf.get('pdf') == hf_direct
           assert hf.get('quote'), 'Hyperfinite Oracles card is missing its quote'
-          dm3=d['items'][2]
+
+          dm3=d['items'][3]
           assert dm3['href'] == 'papers/data_mind_3_0_module_interface_freeze/'
           assert dm3.get('quote'), 'DATA MIND 3.0 card is missing its quote'
+
           reader=Path('docs/papers/nsa_and_trading_speedup/index.html').read_text(encoding='utf-8')
           assert 'fulltext-00.txt' in reader and 'fulltext-02.txt' in reader
           hf_reader=Path('docs/papers/hyperfinite_oracles_data_mind_3_2/index.html').read_text(encoding='utf-8')
@@ -124,17 +148,27 @@ jobs:
           assert 'The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf' in hf_reader
           assert 'source.html' in hf_reader
           assert '../../../' not in hf_reader
+
+          dreamer_html=Path('docs/papers/dreamer_four_oracle_data_mind_3_2/index.html').read_text(encoding='utf-8')
+          assert '<iframe' in dreamer_html
+          assert 'Dream freely, route intelligently, verify exactly.' in dreamer_html
+          assert 'Open full-screen reader' in dreamer_html
+          assert 'DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf' in dreamer_html
+          assert 'source.html' in dreamer_html
+
           home=Path('docs/index.html').read_text(encoding='utf-8')
-          assert lead['quote'] in home
+          assert dreamer['quote'] in home
+          assert nsa['quote'] in home
           assert hf['quote'] in home
           assert dm3['quote'] in home
           print('searchable items:', d['count'])
-          print('lead quote:', lead['quote'])
-          print('card 2:', hf['title'])
-          print('card 2 Read target:', hf['href'])
-          print('card 2 PDF target:', hf['pdf'])
-          print('card 3:', dm3['title'])
-          print('Hyperfinite card: standard core-paper reader plus separate PDF action')
+          print('card 1:', dreamer['title'])
+          print('card 1 quote:', dreamer['quote'])
+          print('card 1 Read target:', dreamer['href'])
+          print('card 1 PDF target:', dreamer['pdf'])
+          print('card 2:', nsa['title'])
+          print('card 3:', hf['title'])
+          print('card 4:', dm3['title'])
           PY
 
       - name: Commit generated and imported files if changed
