@@ -1,0 +1,120 @@
+
+For a frozen finite benchmark family $F$, one may define a bounded closure fraction
+\begin{equation}
+\Omega_i(r;F)=
+\frac{\left|\{\varphi\in F:T\vdash\varphi\text{ and }K_i^{\le r}\varphi\}\right|}
+{\left|\{\varphi\in F:T\vdash\varphi\}\right|},
+\end{equation}
+when the denominator is nonzero. This makes explicit a distinction suppressed by logical omniscience: a consequence can be valid yet expensive to discover.
+
+Conceptually, if $H\in{}^*\mathbb N\setminus\mathbb N$ is an unlimited hypernatural and $F_H=\{\varphi_n:n\le H\}$ is the transferred hyperfinite horizon, define
+\begin{equation}
+\Omn_i(H)=
+\bigwedge_{\substack{n\le H\\T\vdash\varphi_n}}
+{}^*K_i^{\le H}\varphi_n.
+\end{equation}
+A corresponding hyperfinite worst-case closure cost is
+\begin{equation}
+\mathcal O_i(H)=
+\max_{\substack{n\le H\\T\vdash\varphi_n}}
+{}^*c_i(\varphi_n),
+\end{equation}
+when the internal least-cost relation is defined. If $\mathcal O_i(H)/H$ is limited, its standard part
+\begin{equation}
+\rho_i(H)=\st\!\left(\frac{\mathcal O_i(H)}{H}\right)
+\end{equation}
+provides a standard real shadow of normalized worst-case closure cost.
+
+The conventional implementation does not instantiate an unlimited hypernatural. It uses frozen finite horizons as empirical proxies. This separation between mathematical idealization and executable approximation is part of the theory, not a cosmetic disclaimer.
+
+\section{Settlement roles and the oracle object}
+
+DATA MIND is a settlement architecture, not only a proof lane. Let
+\begin{equation}
+\mathcal S=\{P,R,I,C,U\},
+\end{equation}
+where $P$ denotes proof-directed settlement, $R$ refutation-directed settlement, $I$ independence-directed settlement, $C$ contradiction or integrity-directed settlement, and $U$ unresolved or withheld status.
+
+The key diagnostic problem is not only whether a certificate can be found, but whether the system recognizes \emph{which kind} of certificate should be sought.
+
+\begin{definition}[Settlement-role oracle]
+For a declared finite or hyperfinite target family, an idealized role oracle is a map
+\begin{equation}
+\Oracle_{\mathrm{role}}:\varphi\longmapsto \{P,R,I,C,U\}
+\end{equation}
+that returns the gold settlement role under frozen semantics and provenance rules.
+\end{definition}
+
+The word \emph{oracle} is conditional: its correctness is part of the mathematical experiment specification. An implemented classifier is not promoted to omniscience merely because it approximates this interface.
+
+\section{The four oracle interfaces}
+
+The new theoretical addition is not one undifferentiated ``oracle.'' Four different interfaces remove four different sources of uncertainty.
+
+\begin{center}
+\begin{tabular}{p{0.11\textwidth}p{0.22\textwidth}p{0.53\textwidth}}
+\toprule
+Interface & Name & Information supplied \\
+\midrule
+$O_1$ & Role oracle & The correct settlement role in $\{P,R,I,C,U\}$. \\
+$O_2$ & Resource oracle & An ideal recipient or allocation of marginal search resources. \\
+$O_3$ & Strategy oracle & An ideal next search direction, branch class, representation move, or action class. \\
+$O_4$ & Certificate oracle & A purported settlement certificate $\pi$, still subject to ordinary verification. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These interfaces should not be conflated. $O_1$ can eliminate role-identification uncertainty while leaving the hard proof or settlement search untouched. $O_2$ can answer where the next unit of compute should go without telling the system what exact inference to make. $O_3$ can guide the next action class without directly producing a certificate. $O_4$ is much stronger because it proposes a terminal mathematical object, but even $O_4$ does not bypass verification.
+
+It is useful to represent oracle access by an intervention vector
+\begin{equation}
+g=(g_1,g_2,g_3,g_4)\in\{0,1\}^4,
+\end{equation}
+where $g_j=1$ means that interface $O_j$ is opened in that experimental arm. This avoids pretending that every oracle combination lies on a single scalar axis of ``strength.'' In particular, resource information and strategy information can be experimentally separated.
+
+\section{The central Dreamer-oracle synthesis}
+
+The main theoretical move is to treat the oracle layer as a set of \emph{controlled interventions on the Dreamer's counterfactual process}, not as a replacement for dreaming and not as a proof authority.
+
+Let a dream state be
+\begin{equation}
+d=(\tau,\sigma,b,a,q),
+\end{equation}
+where $\tau$ is the target, $\sigma$ is the simulated proof/settlement state, $b$ is the remaining dream budget, $a$ is the current action or strategy context, and $q$ is provenance metadata. Let $\Gamma_g(d)$ denote the oracle cue exposed under intervention vector $g$. Then one may write an oracle-assisted dream transition as
+\begin{equation}
+d_{t+1}
+=
+F_{\Dream}(d_t,\Gamma_g(d_t),\xi_t),
+\end{equation}
+where $\xi_t$ contains the ordinary stochastic, learned, creative, or replay signals used by Dreamer.
+
+The four interfaces act at different stages:
+\begin{align}
+O_1 &: \text{which settlement lane should dominate the dream?}\\
+O_2 &: \text{where should the next unit of dream/search budget be spent?}\\
+O_3 &: \text{which counterfactual action or representation should be tried next?}\\
+O_4 &: \text{is there a candidate terminal certificate worth waking verification?}
+\end{align}
+
+This creates a clean decomposition of settlement difficulty:
+\begin{equation}
+\text{total cost}
+\approx
+\text{role cost}
++
+\text{allocation cost}
++
+\text{strategy cost}
++
+\text{certificate-construction cost}
++
+\text{verification cost},
+\end{equation}
+with the understanding that the terms can interact and need not be literally additive in observed wall-clock time. The decomposition is an experimental factorization, not a theorem of independence.
+
+\section{Verifier sovereignty}
+
+The combined architecture retains the same trusted direction of information flow:
+\begin{equation}
+\boxed{
+\text{history / Dreamer / oracle cue}
