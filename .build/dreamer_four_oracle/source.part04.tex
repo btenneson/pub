@@ -1,0 +1,120 @@
+\begin{itemize}
+\item formal database revision and theorem split;
+\item verifier and certificate semantics;
+\item metatheory and allowed auxiliary tools;
+\item total compute and memory caps;
+\item hardware and software environment;
+\item random seeds;
+\item stopping rules and timeout treatment;
+\item training-exclusion rules;
+\item oracle mode and exact information exposed;
+\item Dreamer budget and replay-buffer policy.
+\end{itemize}
+
+Primary outputs should include:
+\begin{itemize}
+\item verifier-valid settlement rate;
+\item role accuracy and role-confusion matrix;
+\item wall-clock time and search expansions;
+\item proof/certificate size and dependency depth where applicable;
+\item peak memory and verifier time;
+\item resources consumed by each settlement role;
+\item oracle-assisted cost gaps $\Delta_j$;
+\item Dreamer marginal gain $\Delta_D(g)$;
+\item useful verified lemma novelty and cross-run reuse;
+\item false positives, faults, crashes, and Sentinel interventions.
+\end{itemize}
+
+A role-confusion matrix for gold role $a$ and reported role $b$ is
+\begin{equation}
+M_{ab}(N)=
+\left|\{n\le N:\Oracle(\varphi_n)=a,\ \AMLD(\varphi_n)=b\}\right|.
+\end{equation}
+This is especially useful because total accuracy can hide systematic directional errors, such as repeatedly treating independence problems as ordinary proof problems.
+
+\section{What different outcomes would mean}
+
+The combined theory is valuable because it supports mutually distinguishable outcomes.
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Large $O_1$ gain:} role recognition and routing are major bottlenecks.
+\item \textbf{Small $O_1$ but large $O_2$ gain:} the right lane is usually recognized, but compute is poorly allocated within or across lanes.
+\item \textbf{Small $O_1,O_2$ but large $O_3$ gain:} action selection, branch ordering, or representation choice dominates.
+\item \textbf{Large $O_4$ gap only:} the dominant difficulty is actual certificate construction rather than recognition or control.
+\item \textbf{Dreamer gain with no oracle:} replay/recombination adds value autonomously.
+\item \textbf{Dreamer gain only with $O_1$ or $O_2$:} Dreamer may be useful but currently suffers from poor replay selection or budget allocation.
+\item \textbf{Oracle hints harm performance:} the translation from correct high-level information to concrete control is oversteering the search.
+\item \textbf{Professor-only beats direct hint:} protected diversity contributes value even under idealized role information.
+\end{enumerate}
+
+None of these outcomes threatens verifier soundness by itself. A strategically bad controller can waste compute while the verifier continues to reject false certificates correctly.
+
+\section{What the theory does not claim}
+
+The following claims are explicitly excluded.
+
+\begin{itemize}
+\item A finite implementation is not a literal unlimited hypernatural computation.
+\item A gold role label is not a proof of theoremhood, refutability, independence, or contradiction unless its benchmark provenance independently supplies the required witness.
+\item A certificate oracle is not permitted to bypass the verifier.
+\item A dreamed object is not true because it appears in a successful simulation.
+\item Dreamer improvement over Creativity alone has not been established merely by defining the module.
+\item Oracle gaps are counterfactual upper bounds, not evidence that a practical perfect oracle can be implemented.
+\item Role, resource, strategy, and certificate uncertainty should not be collapsed into one performance number when the purpose of the experiment is to identify the bottleneck.
+\end{itemize}
+
+\section{Theoretical contribution of the combined addition}
+
+The most important conceptual result of today's synthesis is a clean separation of five layers that are often blurred together in automated reasoning:
+\begin{equation}
+\boxed{
+\text{recognize role}
+\rightarrow
+\text{allocate resources}
+\rightarrow
+\text{choose strategy}
+\rightarrow
+\text{construct candidate}
+\rightarrow
+\text{verify}.
+}
+\end{equation}
+Dreamer supplies a mechanism for exploring the middle of this chain counterfactually. The four oracle interfaces supply controlled interventions that can remove one uncertainty at a time. The verifier supplies the non-negotiable correctness boundary.
+
+This gives DATA MIND a way to ask not merely ``did more intelligence help?'' but rather:
+\begin{quote}
+Which uncertainty was expensive, how much did removing it help, and did the Dreamer still contribute when that uncertainty was controlled?
+\end{quote}
+
+That question is both scientifically sharper and experimentally falsifiable.
+
+\section{Next defensible experiment}
+
+The next defensible experiment is a low-intervention ablation rather than an all-powerful oracle run.
+
+\begin{enumerate}[leftmargin=2em]
+\item Freeze a small matched role-labeled benchmark, ideally beginning with a carefully certified PRCOM quartet or another family with explicit $P/R/I/C$ provenance.
+\item Hold verifier, total compute, memory, seeds, stopping rules, and theorem data fixed.
+\item Compare Creativity-only versus Creativity+Dreamer.
+\item Within each, compare hidden role oracle, Professor-facing $O_1$, and direct $O_1$.
+\item Keep $O_2$, $O_3$, and especially $O_4$ closed in the first pass.
+\item Measure valid settlement, role confusion, expansions, time, memory, per-role budget, Dreamer utilization, and oracle gap.
+\item Only after the role layer is understood, open $O_2$ and $O_3$ in separate arms.
+\item Reserve $O_4$ for a later ceiling experiment because it changes the nature of the search problem most dramatically.
+\end{enumerate}
+
+This order preserves interpretability. If all four oracle interfaces are opened at once, a success says little about which missing capability mattered.
+
+\section{Conclusion}
+
+The Dreamer and the four-oracle layer fit together naturally because they solve different problems. Dreamer is a bounded mechanism for replaying, recombining, and extending experience. The oracle interfaces are idealized sources of information about role, resource allocation, strategy, or a candidate certificate. Their combination creates a controlled laboratory for studying where settlement cost originates.
+
+The key architectural invariant remains simple:
+\begin{equation}
+\boxed{
+\text{Dream and oracle information may guide search; only verification may certify mathematics.}
+}
+\end{equation}
+
+The resulting extension does not grant DATA MIND magical mathematical authority. It gives the research program a more precise way to measure the price of uncertainty and to determine whether dreaming, recognition, routing, strategy, or certificate construction is the limiting factor on a given benchmark.
+
