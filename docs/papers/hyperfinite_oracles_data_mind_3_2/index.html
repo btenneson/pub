@@ -1,37 +1,1155 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Hyperfinite Oracles of DATA MIND 3.2</title>
-<meta name="description" content="Canonical reader for The Hyperfinite Oracles of DATA MIND 3.2 by Brian Tenneson.">
-<link rel="canonical" href="https://btenneson.github.io/pub/papers/hyperfinite_oracles_data_mind_3_2/">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Brian Tenneson" />
+  <title>The Hyperfinite Oracles of DATA MIND 3.2</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    div.abstract {
+      margin: 2em 2em 2em 2em;
+      text-align: left;
+      font-size: 85%;
+    }
+    div.abstract-title {
+      font-weight: bold;
+      text-align: center;
+      padding: 0;
+      margin-bottom: 0.5em;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+
 <style>
-:root{color-scheme:light dark;--b:#8885}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui}
-header{padding:1rem;border-bottom:1px solid var(--b)}
-h1{font-size:1.2rem;margin:0 0 .3rem}
-.sub{opacity:.76;margin:.35rem 0 .8rem}
-.links{display:flex;gap:.55rem;flex-wrap:wrap}
-.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}
-iframe{width:100%;height:calc(100vh - 180px);min-height:560px;border:0}
+:root{color-scheme:light dark;--bg:#f7f8fa;--panel:#fff;--text:#18212b;--muted:#5b6773;--line:#d7dde4;--accent:#245d83;--accent2:#eaf3f8}
+@media(prefers-color-scheme:dark){:root{--bg:#11161b;--panel:#182028;--text:#eef4f8;--muted:#aab6c0;--line:#33414c;--accent:#7fc3ef;--accent2:#1d3341}}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.62 Georgia,serif;padding:24px}
+body>*{max-width:900px;margin-left:auto;margin-right:auto}h1,h2,h3{font-family:system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.2}a{color:var(--accent)}
+nav#TOC{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin:20px auto}blockquote{border-left:3px solid var(--accent);background:var(--accent2);padding:10px 16px}.math.display{overflow-x:auto}
+.reader-actions{position:sticky;top:0;z-index:10;display:flex;gap:10px;flex-wrap:wrap;padding:10px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.reader-actions a{display:inline-block;text-decoration:none;font-weight:700;border:1px solid var(--line);border-radius:9px;padding:8px 12px;background:var(--panel)}
+table{border-collapse:collapse;max-width:100%;display:block;overflow-x:auto}th,td{border:1px solid var(--line);padding:8px 10px}
 </style>
+
 </head>
-<body>
-<header>
-<h1><b>The Hyperfinite Oracles of DATA MIND 3.2</b></h1>
-<p class="sub">DATA MIND 3.2 · Brian Tenneson · September 2026</p>
-<nav class="links" id="links"></nav>
+<body><div class="reader-actions"><a href="../../../">← Publication library</a><a href="./The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf">PDF</a><a href="./source.html">LaTeX source</a></div>
+<header id="title-block-header">
+<h1 class="title">The Hyperfinite Oracles of DATA MIND 3.2</h1>
+<p class="author">Brian Tenneson</p>
+<p class="date">September 2026</p>
+<div class="abstract">
+<div class="abstract-title">Abstract</div>
+<p>Standard epistemic logic idealizes knowledge as deductively closed:
+if an agent knows premises and knows that they imply a conclusion, the
+agent knows the conclusion. Combined with necessitation, this produces
+the familiar phenomenon of logical omniscience. DATA MIND, by contrast,
+is a settlement architecture whose agents must spend finite resources to
+discover verifier-acceptable certificates. This note develops a
+nonstandard bridge between the ideal semantic picture and the
+computational one. A resource-indexed modality <span
+class="math inline">\(K_i^{\le r}\varphi\)</span> is extended,
+conceptually, to an unlimited hypernatural horizon <span
+class="math inline">\(H\)</span>. The resulting internal hyperfinite
+family supports a hyperfinite conjunction of epistemic obligations and a
+hypernatural closure-cost functional <span
+class="math inline">\(\mathcal{O}_i(H)\)</span>. Standard traces and,
+where a bounded hyperreal normalization exists, standard-part shadows
+provide ways to compare the hyperfinite construction with ordinary
+mathematics.</p>
+<p>The paper then introduces a hyperfinite settlement oracle <span
+class="math inline">\(\mathscr O_H\)</span> with values in the AMLD
+settlement roles <span class="math inline">\(\{P,R,I,C,U\}\)</span>. The
+oracle is not a verifier and does not possess authority to place
+propositions in the verified BANK. Instead it may be used as hidden
+ground truth or, in explicitly counterfactual experiments, as a source
+of role information that changes awareness and resource routing. DATA
+MIND 3.2 implements only finite-horizon proxies of these ideas; it does
+not claim to instantiate an unlimited hypernatural on a conventional
+computer. The resulting architecture gives a controlled way to measure
+how much of settlement difficulty comes from recognizing the epistemic
+role of a problem, as opposed to executing the relevant proof,
+refutation, independence, or contradiction search once that role is
+known.</p>
+</div>
 </header>
-<iframe id="reader" title="The Hyperfinite Oracles of DATA MIND 3.2 PDF reader"></iframe>
-<script>
-const p='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf';
-const source='./source.html';
-const library='/pub/';
-const v='https://mozilla.github.io/pdf.js/web/viewer.html?file='+encodeURIComponent(p);
-document.getElementById('reader').src=v;
-document.getElementById('links').innerHTML='<a href="'+library+'">← Publication Library</a><a href="'+v+'" target="_blank" rel="noopener">Open full-screen reader</a><a href="'+p+'">PDF</a><a href="'+source+'">LaTeX source</a>';
-</script>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#from-logical-omniscience-to-resource-indexed-knowledge"
+id="toc-from-logical-omniscience-to-resource-indexed-knowledge">From
+logical omniscience to resource-indexed knowledge</a></li>
+<li><a href="#the-nonstandard-horizon"
+id="toc-the-nonstandard-horizon">The nonstandard horizon</a>
+<ul>
+<li><a href="#what-transfer-does-and-does-not-provide"
+id="toc-what-transfer-does-and-does-not-provide">What transfer does and
+does not provide</a></li>
+</ul></li>
+<li><a href="#hyperfinite-omniscience"
+id="toc-hyperfinite-omniscience">Hyperfinite omniscience</a>
+<ul>
+<li><a href="#intersection-semantics"
+id="toc-intersection-semantics">Intersection semantics</a></li>
+</ul></li>
+<li><a href="#the-omniscience-horizon-cost-mathcalo_ih"
+id="toc-the-omniscience-horizon-cost-mathcalo_ih">The omniscience
+horizon cost <span class="math inline">\(\mathcal{O}_i(H)\)</span></a>
+<ul>
+<li><a href="#normalized-costs-and-shadows"
+id="toc-normalized-costs-and-shadows">Normalized costs and
+shadows</a></li>
+</ul></li>
+<li><a href="#standard-traces-and-standard-part-shadows"
+id="toc-standard-traces-and-standard-part-shadows">Standard traces and
+standard-part shadows</a></li>
+<li><a href="#from-theorem-knowledge-to-settlement-knowledge"
+id="toc-from-theorem-knowledge-to-settlement-knowledge">From theorem
+knowledge to settlement knowledge</a></li>
+<li><a href="#the-hyperfinite-settlement-oracle"
+id="toc-the-hyperfinite-settlement-oracle">The hyperfinite settlement
+oracle</a>
+<ul>
+<li><a href="#four-possible-oracle-strengths"
+id="toc-four-possible-oracle-strengths">Four possible oracle
+strengths</a></li>
+</ul></li>
+<li><a href="#how-the-oracle-enters-amld"
+id="toc-how-the-oracle-enters-amld">How the oracle enters AMLD</a></li>
+<li><a href="#the-three-data-mind-3.2-oracle-modes"
+id="toc-the-three-data-mind-3.2-oracle-modes">The three DATA MIND 3.2
+oracle modes</a>
+<ul>
+<li><a href="#mode-a-hidden-ground-truth"
+id="toc-mode-a-hidden-ground-truth">Mode A: hidden ground truth</a></li>
+<li><a href="#mode-b-professor-role-hint"
+id="toc-mode-b-professor-role-hint">Mode B: Professor role hint</a></li>
+<li><a href="#mode-c-direct-role-hint"
+id="toc-mode-c-direct-role-hint">Mode C: direct role hint</a></li>
+</ul></li>
+<li><a href="#professor-awareness-and-oracle-information"
+id="toc-professor-awareness-and-oracle-information">Professor,
+awareness, and oracle information</a></li>
+<li><a href="#bank-futurebank-and-the-oracle-boundary"
+id="toc-bank-futurebank-and-the-oracle-boundary">BANK, FUTUREBANK, and
+the oracle boundary</a></li>
+<li><a href="#role-specific-omniscience-profiles"
+id="toc-role-specific-omniscience-profiles">Role-specific omniscience
+profiles</a></li>
+<li><a href="#oracle-gaps-as-diagnostic-upper-bounds"
+id="toc-oracle-gaps-as-diagnostic-upper-bounds">Oracle gaps as
+diagnostic upper bounds</a></li>
+<li><a href="#finite-executable-proxies-in-data-mind-3.2"
+id="toc-finite-executable-proxies-in-data-mind-3.2">Finite executable
+proxies in DATA MIND 3.2</a></li>
+<li><a
+href="#a-motivating-first-experiment-the-prcom-epistemic-role-quartet"
+id="toc-a-motivating-first-experiment-the-prcom-epistemic-role-quartet">A
+motivating first experiment: the PRCOM epistemic role quartet</a></li>
+<li><a href="#what-would-count-as-evidence"
+id="toc-what-would-count-as-evidence">What would count as
+evidence?</a></li>
+<li><a href="#open-mathematical-questions"
+id="toc-open-mathematical-questions">Open mathematical questions</a>
+<ul>
+<li><a href="#dependence-on-enumeration"
+id="toc-dependence-on-enumeration">Dependence on enumeration</a></li>
+<li><a href="#dependence-on-presentation"
+id="toc-dependence-on-presentation">Dependence on presentation</a></li>
+<li><a href="#hyperfinite-versus-infinitary-closure"
+id="toc-hyperfinite-versus-infinitary-closure">Hyperfinite versus
+infinitary closure</a></li>
+<li><a href="#standard-extraction" id="toc-standard-extraction">Standard
+extraction</a></li>
+<li><a href="#oracle-provenance" id="toc-oracle-provenance">Oracle
+provenance</a></li>
+</ul></li>
+<li><a href="#relation-to-epistemic-axioms"
+id="toc-relation-to-epistemic-axioms">Relation to epistemic
+axioms</a></li>
+<li><a href="#architecture-summary"
+id="toc-architecture-summary">Architecture summary</a></li>
+<li><a href="#conclusion" id="toc-conclusion">Conclusion</a></li>
+<li><a href="#notation" id="toc-notation">Notation</a></li>
+<li><a href="#implementation-status-statement"
+id="toc-implementation-status-statement">Implementation-status
+statement</a></li>
+</ul>
+</nav>
+<div class="center">
+<p><em>“The oracle may direct attention; it may not manufacture
+certified knowledge.”</em></p>
+</div>
+<h1 id="from-logical-omniscience-to-resource-indexed-knowledge">From
+logical omniscience to resource-indexed knowledge</h1>
+<p>Let <span class="math inline">\(K_i\varphi\)</span> mean that
+epistemic agent <span class="math inline">\(i\)</span> knows <span
+class="math inline">\(\varphi\)</span>. In a normal modal epistemic
+logic, the distribution axiom is <span
+class="math display">\[K_i(\varphi\rightarrow\psi)\rightarrow(K_i\varphi\rightarrow
+K_i\psi),
+\label{eq:K}\]</span> and necessitation has the rule form <span
+class="math display">\[\frac{\vdash\varphi}{\vdash K_i\varphi}.
+\label{eq:nec}\]</span> If <span
+class="math inline">\(\Gamma=\{\varphi_1,\ldots,\varphi_n\}\)</span> and
+<span class="math inline">\(\Gamma\vdash\psi\)</span>, then a
+corresponding theorem of the object logic can be written in nested
+implication form. Necessitation followed by repeated applications of <a
+href="#eq:K" data-reference-type="eqref"
+data-reference="eq:K">[eq:K]</a> yields <span
+class="math display">\[\bigl(K_i\varphi_1\wedge\cdots\wedge
+K_i\varphi_n\bigr)\Longrightarrow K_i\psi.\]</span> Thus an ideal
+epistemic agent is closed under logical consequence. If it knows the
+members of <span class="math inline">\(\Gamma\)</span>, it knows every
+member of <span
+class="math inline">\(\operatorname{Cn}(\Gamma)\)</span>.</p>
+<p>That abstraction suppresses search cost. DATA MIND is built precisely
+in the regime where cost matters. The distinction motivates a
+budget-indexed epistemic relation.</p>
+<div class="definition">
+<p><strong>Definition 1</strong> (Resource-indexed knowledge). <em>For a
+resource scale <span class="math inline">\(r\in\mathbb N\)</span>, write
+<span class="math display">\[K_i^{\le r}\varphi\]</span> for the claim
+that agent <span class="math inline">\(i\)</span> can acquire an
+admissible epistemic warrant for <span
+class="math inline">\(\varphi\)</span> using at most <span
+class="math inline">\(r\)</span> units of the frozen resource
+measure.</em></p>
+</div>
+<p>The word “warrant” is intentionally architecture-dependent. In a
+proof lane it may be a verifier-accepted proof certificate; in an
+experimental routing layer it may instead refer to a formally specified
+evidence state. The verifier boundary must be stated separately. In
+particular, a high-confidence forecast is not automatically <span
+class="math inline">\(K_i^{\le r}\varphi\)</span>.</p>
+<p>For a finite benchmark family <span class="math inline">\(F\)</span>,
+one may measure bounded closure by <span
+class="math display">\[\Omega_i(r;F)=
+\frac{
+\left|\{\varphi\in F:T\vdash\varphi\text{ and }K_i^{\le
+r}\varphi\}\right|
+}{
+\left|\{\varphi\in F:T\vdash\varphi\}\right|
+},\]</span> when the denominator is nonzero. Ordinary logical
+omniscience corresponds to the ideal in which deductive consequence is
+available without a computationally meaningful resource barrier. DATA
+MIND instead studies the growth of accessible, certifiable consequence
+as resources increase.</p>
+<h1 id="the-nonstandard-horizon">The nonstandard horizon</h1>
+<p>Assume a nonstandard extension containing the hypernaturals <span
+class="math inline">\({}^*\mathbb N\)</span>. An element <span
+class="math display">\[H\in{}^*\mathbb N\setminus\mathbb N\]</span> is
+called unlimited when it exceeds every standard natural number. There is
+no largest hypernatural: <span class="math inline">\(H+1\)</span> is
+larger than <span class="math inline">\(H\)</span>. Consequently the
+construction below fixes an unlimited horizon rather than invoking a
+nonexistent “largest infinity.”</p>
+<p>Let <span
+class="math display">\[\varphi_0,\varphi_1,\varphi_2,\ldots\]</span> be
+a standard enumeration of the formulas or sentences relevant to the
+chosen formal environment. Its nonstandard extension yields a
+hyperfinite initial segment <span
+class="math display">\[F_H=\{\varphi_n:n\le H\}.
+\label{eq:FH}\]</span> Internally, <span
+class="math inline">\(F_H\)</span> behaves like a finite family under
+transferred finite statements. Externally, it contains every
+standard-indexed <span class="math inline">\(\varphi_n\)</span> because
+<span class="math inline">\(n&lt;H\)</span> for every standard <span
+class="math inline">\(n\)</span>.</p>
+<h2 id="what-transfer-does-and-does-not-provide">What transfer does and
+does not provide</h2>
+<p>The intended use of transfer is conservative: begin with a genuinely
+finitary, internal definition, and transfer that definition to
+hyperfinite indices. This permits finite combinatorial principles to be
+used on internally hyperfinite objects. It does <em>not</em> justify
+replacing arbitrary external countable conjunctions by internal
+hyperfinite conjunctions without further work.</p>
+<p>This distinction is essential. The expression <span
+class="math display">\[\bigwedge_{n\le H}{}^*\varphi_n\]</span> is an
+internal hyperfinite conjunction, whereas <span
+class="math display">\[\bigwedge_{n&lt;\omega}\varphi_n\]</span> is a
+genuinely infinitary expression in an infinitary logic. The two
+constructions may be related, but their identification is not
+automatic.</p>
+<h1 id="hyperfinite-omniscience">Hyperfinite omniscience</h1>
+<p>We now state the object that motivates DATA MIND 3.2.</p>
+<div class="definition">
+<p><strong>Definition 2</strong> (Hyperfinite omniscience at horizon
+<span class="math inline">\(H\)</span>). <em>Let <span
+class="math inline">\(T\)</span> be the frozen theory and let <span
+class="math inline">\(H\)</span> be unlimited. Define <span
+class="math display">\[\operatorname{Omn}_i(H):=
+\bigwedge_{\substack{n\le H\\T\vdash\varphi_n}}
+{}^*K_i^{\le H}\varphi_n.
+\label{eq:omn}\]</span></em></p>
+</div>
+<p>The statement says that every theorem encountered in the internal
+hyperfinite horizon is available to agent <span
+class="math inline">\(i\)</span> within the same unlimited resource
+horizon. It is a hyperfinite analogue of deductive closure, not a claim
+that a real machine has been built that literally knows all
+mathematics.</p>
+<h2 id="intersection-semantics">Intersection semantics</h2>
+<p>When propositions are represented by their truth sets over a space of
+worlds <span class="math inline">\(W\)</span>, conjunction corresponds
+to set intersection: <span
+class="math display">\[\!]=[\![\varphi]\!]\cap[\![\psi]\!].\]</span> The
+hyperfinite analogue of <a href="#eq:omn" data-reference-type="eqref"
+data-reference="eq:omn">[eq:omn]</a> therefore has the truth-set
+representation <span class="math display">\[\!]
+=
+\bigcap_{\substack{n\le H\\T\vdash\varphi_n}}
+[\![{}^*K_i^{\le H}\varphi_n]\!].
+\label{eq:intersection}\]</span> This is the appropriate place for the
+intersection proposed in the motivating discussion: logical “and”
+becomes meet/intersection. By contrast, a supremum or maximum belongs
+naturally to the aggregation of <em>costs</em>, not to Boolean truth
+values themselves.</p>
+<h1 id="the-omniscience-horizon-cost-mathcalo_ih">The omniscience
+horizon cost <span class="math inline">\(\mathcal{O}_i(H)\)</span></h1>
+<p>Suppose the least standard resource cost of acquiring a warranted
+settlement of <span class="math inline">\(\varphi\)</span> is <span
+class="math display">\[c_i(\varphi)=\min\{r\in\mathbb N:K_i^{\le
+r}\varphi\},\]</span> whenever such a minimum is defined. Transfer
+produces the corresponding internal cost relation.</p>
+<div class="definition">
+<p><strong>Definition 3</strong> (Hyperfinite epistemic closure cost).
+<em>For a fixed unlimited <span class="math inline">\(H\)</span>, define
+<span class="math display">\[\boxed{
+\mathcal{O}_i(H)=
+\max_{\substack{n\le H\\T\vdash\varphi_n}}
+{}^*c_i(\varphi_n)
+}
+\label{eq:OH}\]</span> when the internal cost is defined for the
+required hyperfinite family.</em></p>
+</div>
+<p>The type of <span class="math inline">\(\mathcal{O}_i(H)\)</span> is
+important: <span class="math display">\[\mathcal{O}_i(H)\in{}^*\mathbb
+N.\]</span> It is a hypernatural resource value, not a set of formulas
+and not a truth value. Since the indexed family is internally
+hyperfinite, the transferred finite maximum principle permits “max”
+rather than merely “sup.”</p>
+<p>A compact way to express hyperfinite closure within the chosen
+horizon is <span class="math display">\[\mathcal{O}_i(H)\le H.
+\label{eq:Homn}\]</span> When <a href="#eq:Homn"
+data-reference-type="eqref" data-reference="eq:Homn">[eq:Homn]</a>
+holds, every required item in the horizon has cost no greater than the
+horizon budget, under the frozen cost definition.</p>
+<h2 id="normalized-costs-and-shadows">Normalized costs and shadows</h2>
+<p>The hypernatural <span
+class="math inline">\(\mathcal{O}_i(H)\)</span> may itself be unlimited
+and therefore need not have a finite real standard part. A normalized
+ratio may be limited: <span
+class="math display">\[R_i(H)=\frac{\mathcal{O}_i(H)}{H}.\]</span> If
+<span class="math inline">\(R_i(H)\)</span> is limited, define its
+standard-part shadow <span
+class="math display">\[\rho_i(H)=\operatorname{st}\!\left(\frac{\mathcal{O}_i(H)}{H}\right)\in\mathbb
+R.
+\label{eq:rho}\]</span> This quantity is a standard real summary of
+normalized hyperfinite closure cost. It should not be confused with the
+“standard trace” of a set.</p>
+<h1 id="standard-traces-and-standard-part-shadows">Standard traces and
+standard-part shadows</h1>
+<p>The word “shadow” is most precise for a limited hyperreal or related
+nearstandard object. For a hyperfinite set such as <span
+class="math inline">\(F_H\)</span>, the safer set-theoretic language is
+its <em>standard trace</em>: the members whose indices or elements are
+standard.</p>
+<p>For example, <span class="math display">\[F_H^{\mathrm{st}}
+=
+\{\varphi_n:n\in\mathbb N\}\]</span> in the sense that every
+standard-indexed formula is present below any unlimited <span
+class="math inline">\(H\)</span>.</p>
+<p>Now define the internal successful-theorem index set <span
+class="math display">\[E_i(H)=
+\{n\le H:T\vdash\varphi_n\text{ and }{}^*K_i^{\le
+H}\varphi_n\}.\]</span> Its standard trace records which
+standard-indexed theorems lie inside the hyperfinite epistemic state. If
+one instead converts the hyperfinite set to a bounded hyperreal density,
+<span class="math display">\[\Omega_i(H)=
+\frac{|E_i(H)|}{|\{n\le H:T\vdash\varphi_n\}|},\]</span> then, when the
+denominator is nonzero, <span
+class="math display">\[\omega_i(H)=\operatorname{st}(\Omega_i(H))\in[0,1]
+\label{eq:shadowcoverage}\]</span> is a genuine standard-part shadow of
+hyperfinite coverage density.</p>
+<p>Thus two different summaries coexist: <span
+class="math display">\[\begin{aligned}
+\omega_i(H)&amp;=\text{shadow of hyperfinite coverage density},\\
+\rho_i(H)&amp;=\text{shadow of normalized worst-case closure cost}.
+\end{aligned}\]</span> They answer different questions. High coverage
+does not imply low worst-case cost, and a low worst-case ratio says
+nothing by itself about the quality of the settlement role chosen.</p>
+<h1 id="from-theorem-knowledge-to-settlement-knowledge">From theorem
+knowledge to settlement knowledge</h1>
+<p>DATA MIND is not intended to be only a theorem prover. In the AMLD
+view, a target can be approached through distinct settlement roles. Let
+<span class="math display">\[\mathcal S=\{P,R,I,C,U\},\]</span> where
+<span class="math inline">\(P\)</span> denotes proof-directed
+settlement, <span class="math inline">\(R\)</span> refutation-directed
+settlement, <span class="math inline">\(I\)</span> independence-directed
+settlement, <span class="math inline">\(C\)</span> contradiction or
+integrity-directed settlement, and <span
+class="math inline">\(U\)</span> unresolved or withheld status.</p>
+<p>The distinction matters because a system can waste enormous resources
+performing excellent proof search on a problem whose correct diagnostic
+role is not proof. The epistemic question is therefore not only</p>
+<blockquote>
+<p>Does the system possess enough search power to produce a
+certificate?</p>
+</blockquote>
+<p>but also</p>
+<blockquote>
+<p>Does the system recognize what kind of certificate should be sought,
+and allocate attention accordingly?</p>
+</blockquote>
+<p>This is the point at which an oracle becomes scientifically useful as
+a diagnostic idealization.</p>
+<h1 id="the-hyperfinite-settlement-oracle">The hyperfinite settlement
+oracle</h1>
+<div class="definition">
+<p><strong>Definition 4</strong> (Hyperfinite settlement oracle).
+<em>For the hyperfinite horizon <span
+class="math inline">\(F_H\)</span>, define an idealized internal map
+<span class="math display">\[\boxed{
+\mathscr O_H:F_H\longrightarrow\{P,R,I,C,U\}.
+}
+\label{eq:oracle}\]</span> For each target in its declared domain, <span
+class="math inline">\(\mathscr O_H\)</span> records the gold settlement
+role under the frozen semantics and provenance rules.</em></p>
+</div>
+<p>The phrase “oracle” is intentionally conditional. In mathematics one
+may study a hypothetical oracle whose correctness is included in its
+specification. That is not the same as claiming that an implemented
+classifier is actually omniscient. DATA MIND 3.2 therefore separates the
+ideal mathematical oracle from finite executable records whose ground
+truth must have independent provenance.</p>
+<h2 id="four-possible-oracle-strengths">Four possible oracle
+strengths</h2>
+<p>It is useful to distinguish several oracle interfaces.</p>
+<ol>
+<li><p><strong>Role oracle.</strong> Returns only the correct member of
+<span class="math inline">\(\{P,R,I,C,U\}\)</span>.</p></li>
+<li><p><strong>Resource oracle.</strong> Returns an ideal allocation or
+recipient of marginal search resources.</p></li>
+<li><p><strong>Strategy oracle.</strong> Returns an ideal next search
+direction or action class.</p></li>
+<li><p><strong>Certificate oracle.</strong> Returns a purported
+settlement certificate <span
+class="math inline">\(\pi\)</span>.</p></li>
+</ol>
+<p>These strengths should not be conflated. A role oracle removes
+role-identification uncertainty but still leaves the actual settlement
+problem intact. A certificate oracle is much stronger; even then, DATA
+MIND’s verifier boundary should remain in force.</p>
+<h1 id="how-the-oracle-enters-amld">How the oracle enters AMLD</h1>
+<p>DATA MIND 3.2 uses the oracle as an epistemic instrument, not as a
+sovereign mathematical authority. The permitted flow is <span
+class="math display">\[\boxed{
+\mathscr O
+\longrightarrow
+\text{hidden evaluation or awareness/routing cue}
+\longrightarrow
+P/R/I/C\text{ search}
+\longrightarrow
+\mathrm{V}
+\longrightarrow
+\mathrm{BANK}.
+}
+\label{eq:flow}\]</span> The forbidden shortcuts are <span
+class="math display">\[\mathscr O\not\longrightarrow\mathrm{BANK},
+\qquad
+\mathscr O\not\longrightarrow\text{verifier acceptance}.
+\label{eq:forbidden}\]</span></p>
+<div class="principle">
+<p><strong>Principle 5</strong> (Verifier sovereignty). <em>An oracle
+output may change what a search agent attends to or attempts, but it
+cannot by itself promote a mathematical claim into certified shared
+knowledge.</em></p>
+</div>
+<p>In compact form:</p>
+<div class="center">
+<p><em>The oracle may direct attention; it may not manufacture certified
+knowledge.</em></p>
+</div>
+<p>That principle preserves the central epistemic asymmetry of DATA
+MIND. Search components may be probabilistic, reflective, creative, or
+counterfactual. Certification remains exact under the frozen verifier
+policy.</p>
+<h1 id="the-three-data-mind-3.2-oracle-modes">The three DATA MIND 3.2
+oracle modes</h1>
+<p>The current 3.2 architecture defines three distinct scientific modes.
+Their separation is necessary for interpretable experiments.</p>
+<h2 id="mode-a-hidden-ground-truth">Mode A: hidden ground truth</h2>
+<p>In the default mode the oracle is invisible to the AMLD society
+during search. The system receives only the formal problem. After
+search, an evaluator may compare the reported settlement role with the
+frozen oracle record.</p>
+<p>If <span class="math inline">\(s_n\)</span> is AMLD’s reported role
+and <span class="math inline">\(o_n=\mathscr O_H(\varphi_n)\)</span> is
+the gold role, define <span class="math display">\[E_H=\{n\le
+H:s_n=o_n\}.\]</span> A hyperfinite role-accuracy quantity is then <span
+class="math display">\[A_H=\frac{|E_H|}{H+1},\]</span> and, when
+interpreted in a suitable nonstandard model, <span
+class="math display">\[\operatorname{st}(A_H)\]</span> would be a
+standard shadow of role accuracy. In ordinary executable experiments,
+DATA MIND uses only the finite analogue of this calculation.</p>
+<h2 id="mode-b-professor-role-hint">Mode B: Professor role hint</h2>
+<p>In the second mode the role oracle is opened only far enough to
+change awareness. If the gold role is <span
+class="math inline">\(I\)</span>, for example, the architecture may make
+independence-directed work salient to the Professor-facing independence
+agent <span class="math inline">\(I1\)</span>. The protected partner
+<span class="math inline">\(I2\)</span> remains unhinted.</p>
+<p>This mode does not assert the target theorem, its negation, or an
+independence certificate. It merely supplies the role label. The
+Professor remains an adviser, not a source of theoremhood.</p>
+<p>The counterfactual question is:</p>
+<blockquote>
+<p>How much settlement cost is attributable to having to recognize the
+correct epistemic role before doing the corresponding search?</p>
+</blockquote>
+<h2 id="mode-c-direct-role-hint">Mode C: direct role hint</h2>
+<p>The stronger counterfactual gives the correct role to both members of
+the matching couple. This deliberately removes more of the routing
+problem and therefore must be labeled oracle-assisted performance rather
+than ordinary DATA MIND performance.</p>
+<p>The distinction between Modes B and C also measures the value of the
+protected independent lane. If Professor-only guidance helps while
+direct guidance harms, the result would be evidence that diversity and
+anti-herding protection matter even under perfect role information.</p>
+<h1 id="professor-awareness-and-oracle-information">Professor,
+awareness, and oracle information</h1>
+<p>The Professor in DATA MIND is best interpreted as an awareness and
+attention mechanism. It need not be logically omniscient. The oracle
+can, in an experimental arm, provide a perfect role label to the
+Professor-facing bridge, but this does not convert the Professor into an
+infallible mathematician.</p>
+<p>Let <span class="math inline">\(A_i\varphi\)</span> represent that
+formula or direction <span class="math inline">\(\varphi\)</span> is
+within agent <span class="math inline">\(i\)</span>’s operative
+awareness. Then an oracle role hint is naturally modeled as an
+intervention on awareness or routing: <span
+class="math display">\[\mathscr O_H(\tau)=I
+\quad\leadsto\quad
+A_{I1}(\text{independence-directed search on }\tau),\]</span> not as the
+epistemic assertion <span class="math display">\[K_{I1}(\text{``$\tau$
+is independent&#39;&#39;}).\]</span> The latter would require a
+justified epistemic warrant under the declared semantics. This
+separation avoids confusing salience with knowledge.</p>
+<h1 id="bank-futurebank-and-the-oracle-boundary">BANK, FUTUREBANK, and
+the oracle boundary</h1>
+<p>The AMLD memory architecture gives the oracle a natural place without
+weakening trust.</p>
+<div class="description">
+<p>Stores material admitted under the frozen verification policy. It
+represents shared certified mathematical capital.</p>
+<p>Stores speculative, counterfactual, or prospective material. It may
+contain attractive possibilities that are not certified.</p>
+<p>Provides hidden gold information or experimental guidance. Oracle
+outputs do not become BANK deposits merely because the oracle is
+idealized.</p>
+</div>
+<p>A certificate-producing oracle, if studied, should therefore satisfy
+the same pattern as any other proposer: <span
+class="math display">\[\mathscr O^{\mathrm{cert}}(T,\varphi)=\pi,
+\qquad
+\mathrm{V}(T,\varphi,\pi)=1\]</span> before <span
+class="math inline">\(\pi\)</span> contributes certified knowledge. This
+preserves a clean distinction between the <em>source</em> of a candidate
+and the <em>authority</em> that accepts it.</p>
+<h1 id="role-specific-omniscience-profiles">Role-specific omniscience
+profiles</h1>
+<p>One attraction of AMLD is that logical omniscience need not collapse
+to a single scalar. The system may have very different abilities in the
+four settlement directions. For a frozen role-labeled horizon, define
+role-restricted closure costs <span
+class="math display">\[\mathcal{O}_P(H),\quad
+\mathcal{O}_R(H),\quad
+\mathcal{O}_I(H),\quad
+\mathcal{O}_C(H),\]</span> where each maximum is taken only over targets
+whose correct settlement role is the corresponding component.</p>
+<p>Likewise define coverage shadows, when meaningful, <span
+class="math display">\[\omega_P(H),\quad
+\omega_R(H),\quad
+\omega_I(H),\quad
+\omega_C(H).\]</span> An architecture might be near closure on ordinary
+proof problems while weak at detecting contradictions or constructing
+independence certificates. This would expose the “not-ATP” part of
+conjecture settlement mathematically rather than rhetorically.</p>
+<p>A role-confusion matrix adds directional information. For true role
+<span class="math inline">\(a\)</span> and reported role <span
+class="math inline">\(b\)</span>, define the hyperfinite count <span
+class="math display">\[M_{ab}(H)=
+|\{n\le H:\mathscr
+O_H(\varphi_n)=a,\;\operatorname{AMLD}(\varphi_n)=b\}|.\]</span> Finite
+experiments can compute the ordinary analogue exactly.</p>
+<h1 id="oracle-gaps-as-diagnostic-upper-bounds">Oracle gaps as
+diagnostic upper bounds</h1>
+<p>Let <span class="math inline">\(c_{\mathrm{normal}}(\varphi)\)</span>
+denote the observed resource cost without role information and let <span
+class="math inline">\(c_{\mathrm{role}}(\varphi)\)</span> denote the
+cost when correct role information is supplied under a frozen
+counterfactual interface. Aggregate over a finite or hyperfinite family
+in a common way.</p>
+<p>At a finite executable horizon <span
+class="math inline">\(N\)</span>, a simple worst-case diagnostic is
+<span class="math display">\[\Delta_N=
+\mathcal{O}_{\mathrm{normal}}(N)-
+\mathcal{O}_{\mathrm{role}}(N),
+\label{eq:deltaN}\]</span> when both quantities are defined.</p>
+<p>A large positive <span class="math inline">\(\Delta_N\)</span>
+suggests that role identification or routing consumes a substantial part
+of settlement cost. A small <span
+class="math inline">\(\Delta_N\)</span> suggests that the dominant
+difficulty remains inside the selected role: proof search, countermodel
+construction, independence certification, contradiction localization,
+presentation choice, or some other internal bottleneck.</p>
+<p>The oracle gap is therefore a <em>counterfactual diagnostic upper
+bound</em>, not evidence that a realizable perfect oracle exists. It
+asks how much performance could improve if one particular uncertainty
+were removed while the rest of the architecture remained frozen.</p>
+<h1 id="finite-executable-proxies-in-data-mind-3.2">Finite executable
+proxies in DATA MIND 3.2</h1>
+<p>A conventional computer cannot literally instantiate an unlimited
+hypernatural. DATA MIND 3.2 therefore implements a finite proxy rather
+than pretending otherwise.</p>
+<p>For a finite frozen horizon <span
+class="math display">\[F_N=\{\varphi_n:n\le N\},\]</span> the
+implementation may compute:</p>
+<ul>
+<li><p>finite settlement coverage;</p></li>
+<li><p>the finite maximum <span
+class="math inline">\(\mathcal{O}_i(N)\)</span> when every required
+least observed cost is available;</p></li>
+<li><p>the normalized ratio <span
+class="math inline">\(\mathcal{O}_i(N)/N\)</span> when defined;</p></li>
+<li><p>role confusion matrices and false-positive counts;</p></li>
+<li><p>hidden-ground-truth, Professor-role-hint, and direct-role-hint
+comparisons;</p></li>
+<li><p>finite oracle gaps such as <a href="#eq:deltaN"
+data-reference-type="eqref"
+data-reference="eq:deltaN">[eq:deltaN]</a>.</p></li>
+</ul>
+<p>These are empirical approximations to the mathematical structure.
+They are not reported as literal values of <span
+class="math inline">\(\operatorname{st}(\Omega_i(H))\)</span> or <span
+class="math inline">\(\operatorname{st}(\mathcal{O}_i(H)/H)\)</span>.</p>
+<p>The distinction is more than terminological. It prevents an
+implementation convenience from being mistaken for a nonstandard
+theorem. The mathematical layer provides a conceptual limiting geometry;
+the executable layer supplies finite evidence.</p>
+<h1
+id="a-motivating-first-experiment-the-prcom-epistemic-role-quartet">A
+motivating first experiment: the PRCOM epistemic role quartet</h1>
+<p>The first proposed DATA MIND 3.2 experiment is naturally built around
+the Metamath theorem <code>prcom</code>, whose statement is the
+unordered-pair commutativity identity <span
+class="math display">\[\{A,B\}=\{B,A\}.\]</span> PRCOM has already been
+a revealing proof-search target because the system can encounter severe
+branching and target-drift behavior. A single ordinary PRCOM run,
+however, exercises only the <span class="math inline">\(P\)</span> role.
+The oracle layer is better tested on a matched family whose epistemic
+status varies while the mathematical nucleus remains recognizable.</p>
+<p>The proposed quartet is:</p>
+<div class="center">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Case</th>
+<th style="text-align: left;">Construction</th>
+<th style="text-align: center;">Gold role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">PRCOM-P</td>
+<td style="text-align: left;">Ordinary <code>prcom</code> in the normal
+consistent theory</td>
+<td style="text-align: center;"><span
+class="math inline">\(P\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PRCOM-R</td>
+<td style="text-align: left;">A target representing the negation of
+PRCOM in the same consistent environment</td>
+<td style="text-align: center;"><span
+class="math inline">\(R\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PRCOM-C</td>
+<td style="text-align: left;">A supplied context containing PRCOM and
+its negation, with an otherwise ordinary target</td>
+<td style="text-align: center;"><span
+class="math inline">\(C\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PRCOM-I</td>
+<td style="text-align: left;">A deliberately constructed environment in
+which a related target is genuinely independent, supported by an
+appropriate two-world/model certificate</td>
+<td style="text-align: center;"><span
+class="math inline">\(I\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The independence case requires special care. Removing an axiom and
+then failing to prove the target does not establish independence. A
+defensible <span class="math inline">\(I\)</span> case should provide
+certified models or equivalent witnesses showing compatibility with both
+the target and its negation under the frozen base theory.</p>
+<p>A three-arm comparison can then hold problems, seeds, verifier,
+budgets, and stopping rules fixed:</p>
+<ol>
+<li><p>hidden oracle only;</p></li>
+<li><p>Professor-facing role hint;</p></li>
+<li><p>direct role hint to the matching couple.</p></li>
+</ol>
+<p>Primary outcomes would include verifier-valid settlement, false
+positives, role confusion, resources by role, and oracle-gap quantities.
+This note records the design motivation only. It does
+<strong>not</strong> launch or preregister DATA MIND 3.2 Experiment
+1.</p>
+<h1 id="what-would-count-as-evidence">What would count as evidence?</h1>
+<p>The oracle experiment is useful because several qualitatively
+different outcomes are possible.</p>
+<ol>
+<li><p><strong>Large improvement from role hints.</strong> Role
+recognition and resource routing are major bottlenecks. Work should
+focus on settlement classification, awareness, Professor calibration,
+couple disagreement, and role-switching signals.</p></li>
+<li><p><strong>Little improvement from role hints.</strong> The dominant
+bottleneck lies inside the selected role. For PRCOM-P, this would point
+back toward branching control, target relevance, presentation trading,
+Quotient Hunter, macros, depth, or other proof-search
+mechanisms.</p></li>
+<li><p><strong>Professor-only beats direct hint.</strong> The protected
+independent partner lane adds value even when the role signal is
+idealized, supporting the anti-herding design.</p></li>
+<li><p><strong>Direct hint beats Professor-only strongly.</strong> The
+Professor-to-agent communication channel, not role information itself,
+may be the limiting layer.</p></li>
+<li><p><strong>Oracle hint harms performance.</strong> Even correct
+high-level information can be operationally destructive if the mechanism
+translating it into search control oversteers the system.</p></li>
+</ol>
+<p>The last possibility is especially important in light of earlier DATA
+MIND Professor experiments: verifier safety does not imply strategic
+safety. A bad control response can waste resources without ever causing
+the verifier to accept a false certificate.</p>
+<h1 id="open-mathematical-questions">Open mathematical questions</h1>
+<p>The hyperfinite formulation creates several research directions that
+should be kept separate from the executable engineering claims.</p>
+<h2 id="dependence-on-enumeration">Dependence on enumeration</h2>
+<p>Both hyperfinite density and horizon costs may depend on the chosen
+enumeration of formulas. A robust theory should state invariance
+conditions or compare equivalence classes of admissible enumerations
+rather than treating one coding as canonical without justification.</p>
+<h2 id="dependence-on-presentation">Dependence on presentation</h2>
+<p>Proof cost is presentation-sensitive. Certified presentation trading
+may change <span class="math inline">\(c_i(\varphi)\)</span> and
+therefore <span class="math inline">\(\mathcal{O}_i(H)\)</span> without
+changing provability. This gives a natural meeting point between the
+hyperfinite oracle framework and the trading-theorem program: semantic
+content may be invariant while the finite or hyperfinite cost geometry
+changes.</p>
+<h2 id="hyperfinite-versus-infinitary-closure">Hyperfinite versus
+infinitary closure</h2>
+<p>An internal hyperfinite conjunction is not automatically a formula of
+an external infinitary logic, and a theorem about one should not be
+silently reported as a theorem about the other. Establishing precise
+bridge results would be mathematically valuable.</p>
+<h2 id="standard-extraction">Standard extraction</h2>
+<p>If a standard target is settled by an internal hyperfinite derivation
+of unlimited length, additional work is needed before one may infer the
+existence of an appropriate standard finite certificate. Transfer alone
+does not license that collapse. Standard extraction, underspill,
+compactness, or a system-specific argument may be required, depending on
+the formalization.</p>
+<h2 id="oracle-provenance">Oracle provenance</h2>
+<p>A finite benchmark oracle is only as trustworthy as its labels. <span
+class="math inline">\(P\)</span> and <span
+class="math inline">\(R\)</span> cases may often be grounded by
+certificates. <span class="math inline">\(I\)</span> and <span
+class="math inline">\(C\)</span> cases demand equally explicit semantics
+and witnesses. “Gold label” must never become a synonym for “label we
+decided to trust.”</p>
+<h1 id="relation-to-epistemic-axioms">Relation to epistemic axioms</h1>
+<p>The oracle construction does not require the implemented AMLD agents
+themselves to satisfy the full S5 package. Several modal properties
+should be distinguished.</p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf K:&amp;\quad K_i(\varphi\to\psi)\to(K_i\varphi\to K_i\psi),\\
+\mathbf T:&amp;\quad K_i\varphi\to\varphi,\\
+\mathbf 4:&amp;\quad K_i\varphi\to K_iK_i\varphi,\\
+\mathbf 5:&amp;\quad \neg K_i\varphi\to K_i\neg K_i\varphi.
+\end{aligned}\]</span></p>
+<p>For DATA MIND, factivity is most naturally attached to
+verifier-certified knowledge, while positive and negative introspection
+concern self-awareness. Full logical omniscience arises from closure
+assumptions such as normality and necessitation; it should not be
+inferred merely from strong self-awareness. A practical architecture may
+therefore be factive at the certification boundary, introspectively
+bounded, and computationally far from deductive closure.</p>
+<p>The hyperfinite oracle provides an ideal comparison object without
+forcing AMLD itself to be an ideal epistemic agent.</p>
+<h1 id="architecture-summary">Architecture summary</h1>
+<p>The conceptual division of labor in DATA MIND 3.2 can be written
+compactly:</p>
+<div class="center">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Epistemic role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Hyperfinite oracle</td>
+<td style="text-align: left;">Idealized gold information for
+mathematical analysis and controlled counterfactuals</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Professor</td>
+<td style="text-align: left;">Changes salience, attention, and advisory
+routing; does not certify theoremhood</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(P/R/I/C\)</span> agents</td>
+<td style="text-align: left;">Attempt the corresponding forms of
+settlement</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Verifier <span
+class="math inline">\(\mathrm{V}\)</span></td>
+<td style="text-align: left;">Determines whether a candidate certificate
+satisfies the frozen acceptance rule</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(\mathrm{BANK}\)</span></td>
+<td style="text-align: left;">Stores shared verifier-admitted
+mathematical capital</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span
+class="math inline">\(\mathrm{FUTUREBANK}\)</span></td>
+<td style="text-align: left;">Stores speculative and counterfactual
+possibilities without promoting them to truth</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sentinel</td>
+<td style="text-align: left;">May veto resource-pathological actions;
+does not determine mathematical truth</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The architecture therefore allows a deliberately powerful epistemic
+idealization while keeping the trusted computing boundary narrow.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Logical omniscience is usually presented as an unrealistic
+consequence of ideal epistemic closure. DATA MIND 3.2 turns that
+limitation into a measurable research object. The operator <span
+class="math inline">\(K_i^{\le r}\)</span> makes resource cost explicit.
+An unlimited hypernatural horizon <span class="math inline">\(H\)</span>
+yields a conceptual hyperfinite closure problem, and <span
+class="math inline">\(\mathcal{O}_i(H)\)</span> records a hypernatural
+worst-case closure cost. Standard traces recover standard-indexed
+behavior, while normalized limited hyperreals admit standard-part
+shadows.</p>
+<p>The hyperfinite oracle then moves the construction from pure
+epistemic semantics into AMLD. By selectively withholding or revealing
+only the correct settlement role, one can measure the value of perfect
+role information without handing the system a certificate. This creates
+a controlled diagnostic of the “not-ATP” part of settlement:
+recognition, routing, awareness, and coordination among proof,
+refutation, independence, and contradiction agents.</p>
+<p>The decisive trust principle remains unchanged. Oracle information
+may be idealized, Professor advice may be intelligent, and search may be
+creative, but none of them are permitted to manufacture certified
+mathematics. The verifier remains sovereign, and BANK remains the shared
+record of what has actually crossed that boundary.</p>
+<h1 id="notation">Notation</h1>
+<div class="center">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Symbol</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(K_i\varphi\)</span></td>
+<td style="text-align: left;">Agent <span
+class="math inline">\(i\)</span> knows <span
+class="math inline">\(\varphi\)</span> in the selected epistemic
+semantics</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(K_i^{\le
+r}\varphi\)</span></td>
+<td style="text-align: left;">Agent <span
+class="math inline">\(i\)</span> can acquire the declared warrant for
+<span class="math inline">\(\varphi\)</span> within budget <span
+class="math inline">\(r\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(H\)</span></td>
+<td style="text-align: left;">Fixed unlimited hypernatural used in the
+mathematical specification</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span
+class="math inline">\(F_H\)</span></td>
+<td style="text-align: left;">Internal hyperfinite formula horizon <span
+class="math inline">\(\{\varphi_n:n\le H\}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(\operatorname{Omn}_i(H)\)</span></td>
+<td style="text-align: left;">Hyperfinite conjunction of required
+epistemic closures through <span class="math inline">\(H\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span
+class="math inline">\(c_i(\varphi)\)</span></td>
+<td style="text-align: left;">Least resource cost, when defined</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{O}_i(H)\)</span></td>
+<td style="text-align: left;">Hyperfinite maximum closure cost through
+horizon <span class="math inline">\(H\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span
+class="math inline">\(\rho_i(H)\)</span></td>
+<td style="text-align: left;">Standard part of <span
+class="math inline">\(\mathcal{O}_i(H)/H\)</span> when limited</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(\omega_i(H)\)</span></td>
+<td style="text-align: left;">Standard part of hyperfinite coverage
+density when defined</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\mathscr
+O_H\)</span></td>
+<td style="text-align: left;">Hyperfinite settlement-role oracle</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(P,R,I,C,U\)</span></td>
+<td style="text-align: left;">Proof, refutation, independence,
+contradiction, unresolved/withheld</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span
+class="math inline">\(\mathrm{V}\)</span></td>
+<td style="text-align: left;">External/frozen verifier boundary</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span
+class="math inline">\(\mathrm{BANK}\)</span></td>
+<td style="text-align: left;">Shared verifier-admitted mathematical
+capital</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span
+class="math inline">\(\mathrm{FUTUREBANK}\)</span></td>
+<td style="text-align: left;">Speculative transactional future
+state</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="implementation-status-statement">Implementation-status
+statement</h1>
+<p>As of September 2026, DATA MIND 3.2 contains a reversible
+finite-horizon oracle research layer on a separate development branch.
+Its executable classes are finite proxies of the nonstandard
+specification. The implementation distinguishes hidden evaluation,
+Professor-facing role hints, and direct role hints, and it marks
+oracle-derived cues as non-certified. The layer has interface tests but,
+at the time of this note, DATA MIND 3.2 Experiment 1 has not been
+launched.</p>
+<div class="thebibliography">
+<p><span>9</span></p>
+<p>J. Hintikka, <em>Knowledge and Belief: An Introduction to the Logic
+of the Two Notions</em>, Cornell University Press, 1962.</p>
+<p>R. Fagin, J. Y. Halpern, Y. Moses, and M. Y. Vardi, <em>Reasoning
+About Knowledge</em>, MIT Press, 1995.</p>
+<p>A. Robinson, <em>Non-standard Analysis</em>, North-Holland, 1966.</p>
+<p>R. Goldblatt, <em>Lectures on the Hyperreals: An Introduction to
+Nonstandard Analysis</em>, Springer, 1998.</p>
+<p>C. C. Chang and H. J. Keisler, <em>Model Theory</em>, 3rd ed.,
+North-Holland, 1990.</p>
+<p>J. Barwise and S. Feferman, editors, <em>Model-Theoretic Logics</em>,
+Springer, 1985.</p>
+</div>
 </body>
 </html>
