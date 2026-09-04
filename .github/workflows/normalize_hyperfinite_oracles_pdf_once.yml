@@ -1,0 +1,89 @@
+name: One-time normalize Hyperfinite Oracles PDF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/normalize_hyperfinite_oracles_pdf_once.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: normalize-hyperfinite-oracles-pdf-once
+  cancel-in-progress: false
+
+jobs:
+  normalize:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install PDF validation tools
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ghostscript qpdf poppler-utils
+
+      - name: Normalize to conservative PDF 1.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          src='cs.LO_Logic_in_Computer_Science/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
+          public='docs/papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
+          tmp="$RUNNER_TEMP/hyperfinite_oracles_compat.pdf"
+          final="$RUNNER_TEMP/hyperfinite_oracles_compat_linearized.pdf"
+
+          test -s "$src"
+          gs -sDEVICE=pdfwrite \
+             -dCompatibilityLevel=1.4 \
+             -dPDFSETTINGS=/prepress \
+             -dNOPAUSE -dBATCH -dSAFER \
+             -dAutoRotatePages=/None \
+             -dEmbedAllFonts=true \
+             -dSubsetFonts=true \
+             -dCompressFonts=true \
+             -sOutputFile="$tmp" "$src"
+
+          qpdf --linearize "$tmp" "$final"
+
+          pages=$(pdfinfo "$final" | awk '/^Pages:/ {print $2}')
+          version=$(pdfinfo "$final" | awk '/^PDF version:/ {print $3}')
+          test "$pages" = '15'
+          test "$version" = '1.4'
+          qpdf --check "$final"
+          gs -q -dNOPAUSE -dBATCH -sDEVICE=nullpage "$final"
+
+          mkdir -p "$RUNNER_TEMP/render_check"
+          pdftoppm -png -r 72 "$final" "$RUNNER_TEMP/render_check/page" >/dev/null 2>&1
+          test "$(find "$RUNNER_TEMP/render_check" -name 'page-*.png' | wc -l)" -eq 15
+
+          if pdffonts "$final" | awk 'NR>2 && NF>0 && $4 != "yes" {bad=1} END {exit bad ? 1 : 0}'; then
+            echo 'all fonts embedded'
+          else
+            echo 'one or more fonts are not embedded' >&2
+            exit 1
+          fi
+
+          cp "$final" "$src"
+          cp "$final" "$public"
+          cmp -s "$src" "$public"
+          echo "normalized size: $(stat -c%s "$src") bytes"
+          sha256sum "$src" "$public"
+
+      - name: Commit normalized PDF copies
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            'cs.LO_Logic_in_Computer_Science/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf' \
+            'docs/papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
+          test -n "$(git diff --cached --name-only)"
+          git commit -m 'Normalize Hyperfinite Oracles PDF for reader compatibility'
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
