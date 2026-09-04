@@ -1,0 +1,52 @@
+name: Publish Verifier Certificate 001
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'documents and their sources/Verifier_Certificate_001.tex'
+      - '.github/workflows/publish-verifier-certificate-001.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
+
+      - name: Compile Verifier Certificate 001
+        run: |
+          mkdir -p .build/verifier-certificate-001
+          cp 'documents and their sources/Verifier_Certificate_001.tex' .build/verifier-certificate-001/
+          cd .build/verifier-certificate-001
+          pdflatex -interaction=nonstopmode -halt-on-error Verifier_Certificate_001.tex
+          pdflatex -interaction=nonstopmode -halt-on-error Verifier_Certificate_001.tex
+
+      - name: Publish PDF copies
+        run: |
+          mkdir -p cs.LO_Logic_in_Computer_Science
+          mkdir -p docs/papers/verifier_certificate_001
+          cp .build/verifier-certificate-001/Verifier_Certificate_001.pdf cs.LO_Logic_in_Computer_Science/Verifier_Certificate_001.pdf
+          cp .build/verifier-certificate-001/Verifier_Certificate_001.pdf docs/papers/verifier_certificate_001/Verifier_Certificate_001.pdf
+
+      - name: Commit generated PDF
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cs.LO_Logic_in_Computer_Science/Verifier_Certificate_001.pdf docs/papers/verifier_certificate_001/Verifier_Certificate_001.pdf
+          if git diff --cached --quiet; then
+            echo 'No PDF changes to commit.'
+          else
+            git commit -m 'Publish Verifier Certificate 001 PDF'
+            git push origin main
+          fi
