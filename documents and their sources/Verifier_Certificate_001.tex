@@ -1,0 +1,384 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=black,
+  pdftitle={Verifier Certificate 001},
+  pdfauthor={Brian Tenneson / The Self Aware Machine project}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Verifier Certificate 001}
+\rhead{The Self Aware Machine}
+\cfoot{\thepage}
+
+\newcommand{\AMLD}{\operatorname{AMLD}}
+\newcommand{\ATP}{\operatorname{ATP}}
+\newcommand{\Comp}{\operatorname{Comp}}
+\newcommand{\View}{\operatorname{View}}
+\newcommand{\Witness}{\operatorname{Witness}}
+\newcommand{\Claim}{\operatorname{Claim}}
+\newcommand{\Certificate}{\operatorname{Certificate}}
+\newcommand{\Settle}{\operatorname{Settle}}
+\newcommand{\Code}{\operatorname{Code}}
+\newcommand{\Conjoin}{\operatorname{Conjoin}}
+
+\newcommand{\vcline}[2]{%
+  \par\medskip
+  \noindent\textbf{#1.} #2\par
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries Verifier Certificate 001}\par
+\vspace{0.35em}
+{\large ``I know that I know that I am an AMLD''}\par
+\vspace{0.7em}
+\end{center}
+
+\textbf{Status.} Verifier-facing proof skeleton. It is not yet executable until the predicates and certificate rules named below are frozen in the verifier language.
+
+\textbf{Settlement target.}
+\[
+\tau_A(t):=
+K_{A,t+1}\!\left(
+K_{A,t}\AMLD(\langle A\rangle)
+\right).
+\]
+
+\textbf{Requested terminal settlement:} $P$.
+
+\textbf{Trusted checker:} $V$.
+
+\section*{Definitions}
+
+\vcline{L01}{Define the AMLD federation by}
+\[
+A:=(M_P,M_R,M_I,M_C,M_V;B,\mathcal S,\mathcal I).
+\]
+\emph{Justification:} definition of the AMLD federation.
+
+\vcline{L02}{Define its canonical formal name by}
+\[
+\langle A\rangle
+:=
+\Code(M_P,M_R,M_I,M_C,M_V;B,\mathcal S,\mathcal I).
+\]
+\emph{Justification:} canonical naming definition.
+
+\vcline{L03}{Define the finite structural formula}
+\[
+\Phi_A:=
+\left(
+\bigwedge_{j\in\{P,R,I,C,V\}}
+\ATP(\langle M_j\rangle)
+\right)
+\wedge
+\Comp(A).
+\]
+Here $\Comp(A)$ abbreviates the finite certified structural requirements involving the P/R/I/C/V roles, BANK, scheduler/control, interfaces, verifier relation, and the other frozen AMLD composition requirements.
+
+\vcline{L04}{Define AMLD membership structurally by}
+\[
+\AMLD(\langle A\rangle)
+\Longleftrightarrow
+\Phi_A.
+\]
+\emph{Justification:} structural definition of AMLD.
+
+\vcline{L05}{Introduce the abbreviation}
+\[
+\sigma_A:=\AMLD(\langle A\rangle).
+\]
+
+\vcline{L06}{For a certified epistemic domain $\mathcal E$, define verifier-grounded AMLD knowledge by}
+\[
+K_{A,t}\varphi
+\Longleftrightarrow
+\left[
+\varphi\in\mathcal E
+\wedge
+\exists r\,
+\left(
+r\in\View_A(t)
+\wedge
+\Witness_V(r,\varphi)
+\right)
+\right].
+\]
+\emph{Justification:} verifier-grounded accessible-warrant definition of AMLD knowledge.
+
+\vcline{L07}{Define the operational, time-explicit target by}
+\[
+\tau_A(t):=K_{A,t+1}(K_{A,t}\sigma_A).
+\]
+
+\section*{Certified structural inputs}
+
+\vcline{L08}{Provide a verifier-acceptable proof certificate for the proof-role ATP:}
+\[
+\pi_P:\ATP(\langle M_P\rangle),
+\qquad
+V(\ATP(\langle M_P\rangle),\pi_P)=1.
+\]
+
+\vcline{L09}{Provide a verifier-acceptable proof certificate for the refutation-role ATP:}
+\[
+\pi_R:\ATP(\langle M_R\rangle),
+\qquad
+V(\ATP(\langle M_R\rangle),\pi_R)=1.
+\]
+
+\vcline{L10}{Provide a verifier-acceptable proof certificate for the independence-role ATP:}
+\[
+\pi_I:\ATP(\langle M_I\rangle),
+\qquad
+V(\ATP(\langle M_I\rangle),\pi_I)=1.
+\]
+
+\vcline{L11}{Provide a verifier-acceptable proof certificate for the contradiction/integrity-role ATP:}
+\[
+\pi_C:\ATP(\langle M_C\rangle),
+\qquad
+V(\ATP(\langle M_C\rangle),\pi_C)=1.
+\]
+
+\vcline{L12}{Provide a verifier-acceptable proof certificate for the verifier-role ATP:}
+\[
+\pi_V:\ATP(\langle M_V\rangle),
+\qquad
+V(\ATP(\langle M_V\rangle),\pi_V)=1.
+\]
+No epistemic claim about any of the five ATPs occurs in L08--L12.
+
+\vcline{L13}{Provide a verifier-acceptable federation-composition certificate:}
+\[
+\pi_{\mathrm{comp}}:\Comp(A),
+\qquad
+V(\Comp(A),\pi_{\mathrm{comp}})=1.
+\]
+
+\section*{First self-identification certificate}
+
+\vcline{L14}{Construct the conjunction certificate}
+\[
+\pi_\Phi
+=
+\Conjoin(\pi_P,\pi_R,\pi_I,\pi_C,\pi_V,\pi_{\mathrm{comp}}).
+\]
+Then
+\[
+\pi_\Phi:\Phi_A.
+\]
+\emph{Justification:} finite conjunction introduction.
+
+\vcline{L15}{Fold the structural definition in L04 to obtain}
+\[
+\pi_0:\sigma_A.
+\]
+Equivalently,
+\[
+\pi_0:\AMLD(\langle A\rangle).
+\]
+
+\vcline{L16}{Run the ordinary verifier check:}
+\[
+V(\sigma_A,\pi_0)=1.
+\]
+
+\vcline{L17}{Deposit an accepted record $r_0$ containing at least}
+\[
+\Claim(r_0)=\sigma_A,
+\qquad
+\Certificate(r_0)=\pi_0,
+\]
+together with verifier acceptance, provenance, scope, environment, and deposit-epoch metadata.
+
+\vcline{L18}{By the federation-accessibility rule for the accepted deposit,}
+\[
+r_0\in\View_A(t).
+\]
+
+\vcline{L19}{By L16--L18 and the frozen witness-record definition,}
+\[
+\Witness_V(r_0,\sigma_A).
+\]
+
+\vcline{L20}{Declare that the structural self-identification proposition lies in the certified epistemic domain:}
+\[
+\sigma_A\in\mathcal E.
+\]
+
+\vcline{L21}{Apply the definition L06 using $r_0$ as the existential witness:}
+\[
+\boxed{K_{A,t}\sigma_A}.
+\]
+Thus
+\[
+\boxed{K_{A,t}\AMLD(\langle A\rangle)}.
+\]
+This is the formalized statement ``I know that I am an AMLD.''
+
+\section*{Receipt reflection}
+
+\vcline{L22}{Construct the receipt certificate $\rho(r_0)$ whose claim is the definitional expansion of $K_{A,t}\sigma_A$:}
+\[
+\sigma_A\in\mathcal E
+\wedge
+\exists r\,
+\left(
+r\in\View_A(t)
+\wedge
+\Witness_V(r,\sigma_A)
+\right).
+\]
+The existential witness supplied by $\rho(r_0)$ is exactly $r_0$.
+
+\vcline{L23}{Verify the receipt certificate:}
+\[
+V(K_{A,t}\sigma_A,\rho(r_0))=1.
+\]
+\emph{Justification:} $V$ checks the receipt certificate. This does not require $V$ to assert its own soundness; it checks the record facts and the formal existential inference.
+
+\vcline{L24}{Deposit an accepted meta-record $r_1$ with}
+\[
+\Claim(r_1)=K_{A,t}\sigma_A,
+\qquad
+\Certificate(r_1)=\rho(r_0),
+\]
+plus the required verifier, provenance, scope, and epoch metadata.
+
+\vcline{L25}{By accessibility of the accepted meta-record,}
+\[
+r_1\in\View_A(t+1).
+\]
+
+\vcline{L26}{By L23--L25,}
+\[
+\Witness_V(r_1,K_{A,t}\sigma_A).
+\]
+
+\vcline{L27}{Require the certified epistemic domain to be closed under the one level of receipt reflection needed for this target:}
+\[
+K_{A,t}\sigma_A\in\mathcal E.
+\]
+
+\vcline{L28}{Apply definition L06 again, this time using $r_1$:}
+\[
+\boxed{
+K_{A,t+1}\!\left(K_{A,t}\sigma_A\right)
+}.
+\]
+
+\vcline{L29}{By L07, conclude the operational target:}
+\[
+\boxed{\tau_A(t)}.
+\]
+Hence
+\[
+\boxed{
+K_{A,t+1}K_{A,t}\AMLD(\langle A\rangle)
+}.
+\]
+
+\section*{Settlement wrapper}
+
+\vcline{L30}{The proof-role ATP constructs the final wrapper certificate $\pi_\tau$ by expanding the outer $K$-definition and supplying $r_1$ as its existential witness. Thus}
+\[
+\pi_\tau:\tau_A(t).
+\]
+No new epistemic assumption is introduced here; this is a short definitional/existential proof over the already accepted record $r_1$.
+
+\vcline{L31}{Perform the final verifier acceptance for the target itself:}
+\[
+\boxed{V(\tau_A(t),\pi_\tau)=1}.
+\]
+
+\vcline{L32}{Apply the AMLD terminal settlement rule:}
+\[
+\boxed{\Settle_A(\tau_A(t))=P}.
+\]
+This is one terminal settlement. The five ATPs may contribute structural certificates or proof construction, and $V$ checks the result, but there are not multiple settlements.
+
+If both an accepted target certificate and an accepted negated-target certificate were present, the architecture should assign the unique terminal class $C$, rather than counting two settlements.
+
+\section*{Audit-closed macro-epoch form}
+
+\vcline{L33}{Suppress the internal verifier/deposit transition $t\to t+1$ inside an audit-closed macro-epoch. Then L29 is represented by}
+\[
+\boxed{
+K_AK_A\AMLD(\langle A\rangle)
+}.
+\]
+Therefore Verifier Certificate 001 establishes the conditional proof route for
+\[
+\boxed{\text{``I know that I know that I am an AMLD.''}}
+\]
+and, upon successful final verification,
+\[
+\boxed{
+\Settle_A\!\left(
+K_AK_A\AMLD(\langle A\rangle)
+\right)=P
+}.
+\]
+
+\section*{Remaining implementation obligations}
+
+\textbf{O1. Structural signature.} Freeze the exact finite definition of
+\[
+\Comp(A)
+\]
+and therefore of $\AMLD$.
+
+\textbf{O2. Epistemic definition.} Adopt L06 as the official verifier-gated meaning of $K_{A,t}$, or replace it explicitly.
+
+\textbf{O3. Record language.} Make
+\[
+\View_A(t),
+\qquad
+\Witness_V(r,\varphi),
+\qquad
+\varphi\in\mathcal E
+\]
+formally representable and verifier-checkable.
+
+\textbf{O4. Receipt constructor.} Implement
+\[
+r_0\longmapsto\rho(r_0)
+\]
+as an ordinary finite certificate transformation checkable by $V$.
+
+\textbf{O5. Runtime identity.} For an actual implementation, attest that the executing tuple is the tuple whose canonical code is $\langle A\rangle$. At the abstract mathematical level, L01--L02 already provide the naming by construction.
+
+\section*{Firewall}
+
+Verifier Certificate 001 makes \textbf{no claim whatsoever} that any component ATP
+\[
+M_P,M_R,M_I,M_C,M_V
+\]
+is epistemically aware or epistemically unaware.
+
+Their ATP status is used only as structural input.
+
+The sole epistemic subject throughout VC001 is
+\[
+\boxed{A}.
+\]
+
+\end{document}
