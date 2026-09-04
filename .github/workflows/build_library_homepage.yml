@@ -9,11 +9,13 @@ on:
       - 'docs/ADS/manifest.json'
       - 'pub.experimental/**'
       - '.build/pubexp_import/**'
+      - 'documents and their sources/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.tex'
       - 'scripts/import_pubexp_packages.py'
       - 'scripts/build_library_homepage_v2.py'
       - 'scripts/build_library_homepage_v3.py'
       - 'scripts/build_library_homepage_v5.py'
       - 'scripts/build_dm3_architecture_pdf.py'
+      - 'scripts/build_hyperfinite_oracles_reader.py'
       - 'scripts/fix_nsa_trading_card.py'
       - 'scripts/fix_hyperfinite_oracles_card.py'
       - 'scripts/fix_dm3_card.py'
@@ -59,10 +61,17 @@ jobs:
       - name: Build searchable homepage
         run: python scripts/build_library_homepage_v5.py
 
+      - name: Build Hyperfinite Oracles HTML reader
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends pandoc
+          python scripts/build_hyperfinite_oracles_reader.py
+
       - name: Repair NSA/trading card
         run: python scripts/fix_nsa_trading_card.py
 
-      - name: Pin Hyperfinite Oracles as card 2 with direct same-origin PDF
+      - name: Pin Hyperfinite Oracles as card 2 with HTML Read target
         run: python scripts/fix_hyperfinite_oracles_card.py
 
       - name: Pin DATA MIND 3.0 as card 3
@@ -102,8 +111,9 @@ jobs:
           assert not lead.get('pdf'), 'NSA/trading card still exposes a broken PDF link'
           assert len(d['items']) >= 3
           hf=d['items'][1]
+          reader_target='papers/hyperfinite_oracles_data_mind_3_2/'
           direct='papers/hyperfinite_oracles_data_mind_3_2/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'
-          assert hf['href'] == direct
+          assert hf['href'] == reader_target
           assert hf.get('pdf') == direct
           assert hf.get('quote'), 'Hyperfinite Oracles card is missing its quote'
           dm3=d['items'][2]
@@ -112,9 +122,12 @@ jobs:
           reader=Path('docs/papers/nsa_and_trading_speedup/index.html').read_text(encoding='utf-8')
           assert 'fulltext-00.txt' in reader and 'fulltext-02.txt' in reader
           hf_reader=Path('docs/papers/hyperfinite_oracles_data_mind_3_2/index.html').read_text(encoding='utf-8')
-          assert "location.replace('./The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf')" in hf_reader
+          assert 'window.location.replace' not in hf_reader
+          assert 'http-equiv="refresh"' not in hf_reader
           assert '<iframe' not in hf_reader
-          assert 'mozilla.github.io/pdf.js' not in hf_reader
+          assert 'From logical omniscience to resource-indexed knowledge' in hf_reader
+          assert 'The hyperfinite settlement oracle' in hf_reader
+          assert 'MathJax' in hf_reader
           home=Path('docs/index.html').read_text(encoding='utf-8')
           assert lead['quote'] in home
           assert hf['quote'] in home
@@ -122,9 +135,10 @@ jobs:
           print('searchable items:', d['count'])
           print('lead quote:', lead['quote'])
           print('card 2:', hf['title'])
-          print('card 2 direct target:', hf['href'])
+          print('card 2 Read target:', hf['href'])
+          print('card 2 PDF target:', hf['pdf'])
           print('card 3:', dm3['title'])
-          print('Hyperfinite card: direct same-origin PDF; reader retained only as fallback')
+          print('Hyperfinite card: true HTML reader plus separate PDF action')
           PY
 
       - name: Commit generated and imported files if changed
