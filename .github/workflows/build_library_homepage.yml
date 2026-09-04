@@ -111,7 +111,8 @@ jobs:
           reader=Path('docs/papers/nsa_and_trading_speedup/index.html').read_text(encoding='utf-8')
           assert 'fulltext-00.txt' in reader and 'fulltext-02.txt' in reader
           hf_reader=Path('docs/papers/hyperfinite_oracles_data_mind_3_2/index.html').read_text(encoding='utf-8')
-          assert "local='./The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf'" in hf_reader
+          assert "location.replace('./The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf')" in hf_reader
+          assert '<iframe' not in hf_reader
           assert 'mozilla.github.io/pdf.js' not in hf_reader
           home=Path('docs/index.html').read_text(encoding='utf-8')
           assert lead['quote'] in home
@@ -122,7 +123,7 @@ jobs:
           print('card 2:', hf['title'])
           print('card 2 PDF:', hf['pdf'])
           print('card 3:', dm3['title'])
-          print('Hyperfinite reader: same-origin PDF, no external PDF.js')
+          print('Hyperfinite reader: direct same-origin PDF redirect, no iframe')
           PY
 
       - name: Commit generated and imported files if changed
