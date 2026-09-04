@@ -1,60 +1,63 @@
 #!/usr/bin/env python3
-"""Build a true HTML reader for The Hyperfinite Oracles of DATA MIND 3.2."""
+"""Build the standard publication reader for The Hyperfinite Oracles of DATA MIND 3.2."""
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "documents and their sources" / "The_Hyperfinite_Oracles_of_DATA_MIND_3_2.tex"
 OUT = ROOT / "docs" / "papers" / "hyperfinite_oracles_data_mind_3_2" / "index.html"
 
-STYLE = r"""
+PAGE = r'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Hyperfinite Oracles of DATA MIND 3.2</title>
+<meta name="description" content="Canonical reader for The Hyperfinite Oracles of DATA MIND 3.2 by Brian Tenneson.">
+<link rel="canonical" href="https://btenneson.github.io/pub/papers/hyperfinite_oracles_data_mind_3_2/">
 <style>
-:root{color-scheme:light dark;--bg:#f7f8fa;--panel:#fff;--text:#18212b;--muted:#5b6773;--line:#d7dde4;--accent:#245d83;--accent2:#eaf3f8}
-@media(prefers-color-scheme:dark){:root{--bg:#11161b;--panel:#182028;--text:#eef4f8;--muted:#aab6c0;--line:#33414c;--accent:#7fc3ef;--accent2:#1d3341}}
-body{margin:0;background:var(--bg);color:var(--text);font:17px/1.62 Georgia,serif;padding:24px}
-body>*{max-width:900px;margin-left:auto;margin-right:auto}h1,h2,h3{font-family:system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.2}a{color:var(--accent)}
-nav#TOC{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin:20px auto}blockquote{border-left:3px solid var(--accent);background:var(--accent2);padding:10px 16px}.math.display{overflow-x:auto}
-.reader-actions{position:sticky;top:0;z-index:10;display:flex;gap:10px;flex-wrap:wrap;padding:10px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-.reader-actions a{display:inline-block;text-decoration:none;font-weight:700;border:1px solid var(--line);border-radius:9px;padding:8px 12px;background:var(--panel)}
-table{border-collapse:collapse;max-width:100%;display:block;overflow-x:auto}th,td{border:1px solid var(--line);padding:8px 10px}
+:root{color-scheme:light dark;--b:#8885}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui}
+header{padding:1rem;border-bottom:1px solid var(--b)}
+h1{font-size:1.2rem;margin:0 0 .3rem}
+.sub{opacity:.76;margin:.35rem 0 .8rem}
+.links{display:flex;gap:.55rem;flex-wrap:wrap}
+.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}
+iframe{width:100%;height:calc(100vh - 180px);min-height:560px;border:0}
 </style>
-"""
-
-ACTIONS = """<div class=\"reader-actions\"><a href=\"../../../\">← Publication library</a><a href=\"./The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf\">PDF</a><a href=\"./source.html\">LaTeX source</a></div>"""
+</head>
+<body>
+<header>
+<h1><b>The Hyperfinite Oracles of DATA MIND 3.2</b></h1>
+<p class="sub">DATA MIND 3.2 · Brian Tenneson · September 2026</p>
+<nav class="links" id="links"></nav>
+</header>
+<iframe id="reader" title="The Hyperfinite Oracles of DATA MIND 3.2 PDF reader"></iframe>
+<script>
+const p='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf';
+const source='./source.html';
+const library='/pub/';
+const v='https://mozilla.github.io/pdf.js/web/viewer.html?file='+encodeURIComponent(p);
+document.getElementById('reader').src=v;
+document.getElementById('links').innerHTML='<a href="'+library+'">← Publication Library</a><a href="'+v+'" target="_blank" rel="noopener">Open full-screen reader</a><a href="'+p+'">PDF</a><a href="'+source+'">LaTeX source</a>';
+</script>
+</body>
+</html>
+'''
 
 
 def main() -> None:
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(
-        [
-            "pandoc",
-            str(SRC),
-            "--from=latex",
-            "--to=html5",
-            "--standalone",
-            "--toc",
-            "--mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js",
-            "--metadata",
-            "title=The Hyperfinite Oracles of DATA MIND 3.2",
-            "-o",
-            str(OUT),
-        ],
-        check=True,
-    )
-    page = OUT.read_text(encoding="utf-8")
-    page = page.replace("</head>", STYLE + "\n</head>", 1)
-    page = page.replace("<body>", "<body>" + ACTIONS, 1)
-    OUT.write_text(page, encoding="utf-8")
-
+    OUT.write_text(PAGE, encoding="utf-8")
     check = OUT.read_text(encoding="utf-8")
-    assert "window.location.replace" not in check
-    assert "http-equiv=\"refresh\"" not in check
-    assert 'id="from-logical-omniscience-to-resource-indexed-knowledge"' in check
-    assert 'id="the-hyperfinite-settlement-oracle"' in check
-    assert "mathjax" in check.lower()
-    print("Built HTML reader:", OUT)
+    assert "<iframe" in check
+    assert "'/pub/'" in check
+    assert "Open full-screen reader" in check
+    assert "The_Hyperfinite_Oracles_of_DATA_MIND_3_2.pdf" in check
+    assert "source.html" in check
+    assert "../../../" not in check
+    print("Built standard publication reader:", OUT)
 
 
 if __name__ == "__main__":
