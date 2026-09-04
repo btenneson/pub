@@ -1,0 +1,134 @@
+name: Install Dreamer four-oracle publication
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.build/dreamer_four_oracle/TRIGGER'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: install-dreamer-four-oracle-publication
+  cancel-in-progress: false
+
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Assemble canonical LaTeX source
+        shell: bash
+        run: |
+          set -euo pipefail
+          NAME='DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04'
+          mkdir -p build/dreamer_four_oracle 'documents and their sources'
+          cat .build/dreamer_four_oracle/source.part*.tex > "build/dreamer_four_oracle/${NAME}.tex"
+          cp "build/dreamer_four_oracle/${NAME}.tex" "documents and their sources/${NAME}.tex"
+          grep -Fq 'Dream freely, route intelligently, verify exactly.' "documents and their sources/${NAME}.tex"
+          grep -Fq '\\end{document}' "documents and their sources/${NAME}.tex"
+
+      - name: Install LaTeX
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-science
+
+      - name: Compile PDF from canonical source
+        shell: bash
+        run: |
+          set -euo pipefail
+          NAME='DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04'
+          cd build/dreamer_four_oracle
+          pdflatex -interaction=nonstopmode -halt-on-error "${NAME}.tex"
+          pdflatex -interaction=nonstopmode -halt-on-error "${NAME}.tex"
+          test -s "${NAME}.pdf"
+
+      - name: Install archive and Pages copies
+        shell: bash
+        run: |
+          set -euo pipefail
+          NAME='DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04'
+          SLUG='dreamer_four_oracle_data_mind_3_2'
+          mkdir -p cs.LO_Logic_in_Computer_Science "docs/papers/${SLUG}"
+          cp "build/dreamer_four_oracle/${NAME}.pdf" "cs.LO_Logic_in_Computer_Science/${NAME}.pdf"
+          cp "build/dreamer_four_oracle/${NAME}.pdf" "docs/papers/${SLUG}/${NAME}.pdf"
+          cmp -s "cs.LO_Logic_in_Computer_Science/${NAME}.pdf" "docs/papers/${SLUG}/${NAME}.pdf"
+
+      - name: Build canonical reader and source page
+        shell: bash
+        run: |
+          set -euo pipefail
+          SLUG='dreamer_four_oracle_data_mind_3_2'
+          mkdir -p "docs/papers/${SLUG}"
+          cat > "docs/papers/${SLUG}/index.html" <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>Dreamer and Four-Oracle Extension to DATA MIND 3.2</title>
+          <meta name="description" content="Canonical reader for Dreamer and Four-Oracle Extension to DATA MIND 3.2 by Brian Tenneson.">
+          <link rel="canonical" href="https://btenneson.github.io/pub/papers/dreamer_four_oracle_data_mind_3_2/">
+          <style>
+          :root{color-scheme:light dark;--b:#8885}*{box-sizing:border-box}body{margin:0;font-family:system-ui}header{padding:1rem;border-bottom:1px solid var(--b)}h1{font-size:1.2rem;margin:0 0 .3rem}.sub{opacity:.76;margin:.35rem 0 .8rem}.quote{font-style:italic;margin:.4rem 0 .8rem}.links{display:flex;gap:.55rem;flex-wrap:wrap}.links a{padding:.45rem .65rem;border:1px solid var(--b);border-radius:8px;text-decoration:none;font-weight:650}iframe{width:100%;height:calc(100vh - 205px);min-height:560px;border:0}
+          </style>
+          </head>
+          <body>
+          <header>
+          <h1><b>Dreamer and Four-Oracle Extension to DATA MIND 3.2</b></h1>
+          <p class="sub">Brian Tenneson · September 4, 2026</p>
+          <p class="quote">“Dream freely, route intelligently, verify exactly.”</p>
+          <nav class="links" id="links"></nav>
+          </header>
+          <iframe id="reader" title="Dreamer and Four-Oracle Extension to DATA MIND 3.2 PDF reader"></iframe>
+          <script>
+          const p='https://raw.githubusercontent.com/btenneson/pub/main/cs.LO_Logic_in_Computer_Science/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf';
+          const source='./source.html';
+          const library='/pub/';
+          const v='https://mozilla.github.io/pdf.js/web/viewer.html?file='+encodeURIComponent(p);
+          document.getElementById('reader').src=v;
+          document.getElementById('links').innerHTML='<a href="'+library+'">← Publication Library</a><a href="'+v+'" target="_blank" rel="noopener">Open full-screen reader</a><a href="./DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf">PDF</a><a href="'+source+'">LaTeX source</a>';
+          </script>
+          </body>
+          </html>
+          HTML
+
+          cat > "docs/papers/${SLUG}/source.html" <<'HTML'
+          <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dreamer and Four-Oracle Extension to DATA MIND 3.2 — LaTeX source</title><link rel="canonical" href="https://btenneson.github.io/pub/papers/dreamer_four_oracle_data_mind_3_2/source.html"><style>body{font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;max-width:900px;margin:auto;padding:24px}.links{display:flex;gap:10px;flex-wrap:wrap}.links a{padding:.55rem .75rem;border:1px solid #8885;border-radius:8px;text-decoration:none;font-weight:650}</style></head><body><p><a href="./">← Back to Dreamer and Four-Oracle Extension to DATA MIND 3.2</a></p><h1>LaTeX source</h1><p>The canonical source used to build the published PDF is stored alongside the publication archive.</p><div class="links"><a href="https://github.com/btenneson/pub/blob/main/documents%20and%20their%20sources/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.tex">View on GitHub</a><a href="https://raw.githubusercontent.com/btenneson/pub/main/documents%20and%20their%20sources/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.tex">Raw .tex</a></div></body></html>
+          HTML
+
+      - name: Validate publication bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          NAME='DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04'
+          SLUG='dreamer_four_oracle_data_mind_3_2'
+          test -s "documents and their sources/${NAME}.tex"
+          test -s "cs.LO_Logic_in_Computer_Science/${NAME}.pdf"
+          test -s "docs/papers/${SLUG}/${NAME}.pdf"
+          test -s "docs/papers/${SLUG}/index.html"
+          test -s "docs/papers/${SLUG}/source.html"
+          cmp -s "cs.LO_Logic_in_Computer_Science/${NAME}.pdf" "docs/papers/${SLUG}/${NAME}.pdf"
+          grep -Fq 'Dream freely, route intelligently, verify exactly.' "docs/papers/${SLUG}/index.html"
+          grep -Fq 'source.html' "docs/papers/${SLUG}/index.html"
+
+      - name: Commit publication if changed
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'documents and their sources/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.tex' \
+                  'cs.LO_Logic_in_Computer_Science/DATA_MIND_3_2_Dreamer_Four_Oracle_Theoretical_Synthesis_2026_09_04.pdf' \
+                  'docs/papers/dreamer_four_oracle_data_mind_3_2'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Dreamer and Four-Oracle DATA MIND 3.2 synthesis'
+            git pull --rebase --autostash origin main
+            git push origin HEAD:main
+          fi
