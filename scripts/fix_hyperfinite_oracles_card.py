@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Keep Hyperfinite Oracles as card #2 and point the card directly at its Pages PDF."""
+"""Keep Hyperfinite Oracles as card #2 with a true HTML Read target."""
 from __future__ import annotations
 
 import json
@@ -40,7 +40,7 @@ def main() -> None:
     item["kind"] = "Core paper"
     item["category"] = "Research Papers"
     item["tags"] = []
-    item["href"] = DIRECT_PDF
+    item["href"] = READER_HREF
     item["pdf"] = DIRECT_PDF
     item["source"] = SOURCE
     item["archive_path"] = ARCHIVE
@@ -62,7 +62,8 @@ def main() -> None:
         raise RuntimeError("Could not replace homepage DATA payload")
     INDEX.write_text(page, encoding="utf-8")
     print("Hyperfinite Oracles card position:", items.index(item) + 1)
-    print("Card target:", DIRECT_PDF)
+    print("Read target:", READER_HREF)
+    print("PDF target:", DIRECT_PDF)
     print("Featured quote:", QUOTE)
 
 
