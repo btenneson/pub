@@ -51,8 +51,8 @@ def main() -> None:
     check = OUT.read_text(encoding="utf-8")
     assert "window.location.replace" not in check
     assert "http-equiv=\"refresh\"" not in check
-    assert "From logical omniscience to resource-indexed knowledge" in check
-    assert "The hyperfinite settlement oracle" in check
+    assert 'id="from-logical-omniscience-to-resource-indexed-knowledge"' in check
+    assert 'id="the-hyperfinite-settlement-oracle"' in check
     assert "MathJax" in check
     print("Built HTML reader:", OUT)
 
