@@ -16,7 +16,11 @@ jobs:
       - name: Assemble corrected PDF
         shell: bash
         run: |
+          wc -c .publish/verifier_certificate/part*.b64
+          sha256sum .publish/verifier_certificate/part*.b64
           cat .publish/verifier_certificate/part*.b64 | base64 -d > /tmp/Verifier_Certificate_001.pdf
+          echo "assembled_size=$(wc -c < /tmp/Verifier_Certificate_001.pdf)"
+          echo "assembled_blob=$(git hash-object /tmp/Verifier_Certificate_001.pdf)"
           test "$(wc -c < /tmp/Verifier_Certificate_001.pdf)" -eq 63919
           test "$(git hash-object /tmp/Verifier_Certificate_001.pdf)" = "4cf15cceaf9bd94a1ce898af9f7e651fd6e22238"
           mkdir -p cs.LO_Logic_in_Computer_Science
