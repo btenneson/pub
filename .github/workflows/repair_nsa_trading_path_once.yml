@@ -1,0 +1,54 @@
+name: Repair NSA trading reader path once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair_nsa_trading_path_once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Repair card path
+        run: python scripts/fix_nsa_trading_card.py
+
+      - name: Validate new public route
+        shell: bash
+        run: |
+          test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/index.html
+          test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/fulltext-00.txt
+          test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/fulltext-01.txt
+          test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/fulltext-02.txt
+          python - <<'PY'
+          import json
+          d=json.load(open('docs/search-index.json', encoding='utf-8'))
+          nsa=next(x for x in d['items'] if x['title']=='Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups')
+          assert nsa['href']=='cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/'
+          assert nsa.get('quote')
+          assert not nsa.get('pdf')
+          print('NSA card href:', nsa['href'])
+          PY
+
+      - name: Commit repaired index if changed
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/search-index.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Repair NSA trading homepage card path'
+            git pull --rebase --autostash origin main
+            git push origin HEAD:main
+          else
+            echo 'No search-index changes needed.'
+          fi
