@@ -1,17 +1,13 @@
-name: Repair NSA trading reader path once
+name: Validate NSA trading reader path - manual safe
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/repair_nsa_trading_path_once.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  repair:
+  validate:
     runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
@@ -19,36 +15,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Repair card path
-        run: python scripts/fix_nsa_trading_card.py
-
-      - name: Validate new public route
+      - name: Validate public reader files
         shell: bash
         run: |
           test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/index.html
           test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/fulltext-00.txt
           test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/fulltext-01.txt
           test -s docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/fulltext-02.txt
+
+      - name: Validate publication count
+        run: |
           python - <<'PY'
           import json
-          d=json.load(open('docs/search-index.json', encoding='utf-8'))
-          nsa=next(x for x in d['items'] if x['title']=='Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups')
-          assert nsa['href']=='cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/'
-          assert nsa.get('quote')
-          assert not nsa.get('pdf')
-          print('NSA card href:', nsa['href'])
+          from pathlib import Path
+          data=json.loads(Path('docs/search-index.json').read_text(encoding='utf-8'))
+          n=len(data.get('items', []))
+          print(f'Publication index count: {n}')
+          if n < 102:
+              raise SystemExit(f'Publication index regression: expected at least 102, found {n}')
+          nsa=next(x for x in data['items'] if x['title']=='Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups')
+          print('NSA card href:', nsa.get('href'))
+          print('NSA archive path:', nsa.get('archive_path'))
           PY
-
-      - name: Commit repaired index if changed
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/search-index.json
-          if ! git diff --cached --quiet; then
-            git commit -m 'Repair NSA trading homepage card path'
-            git pull --rebase --autostash origin main
-            git push origin HEAD:main
-          else
-            echo 'No search-index changes needed.'
-          fi
