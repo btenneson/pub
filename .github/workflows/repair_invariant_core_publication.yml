@@ -36,9 +36,16 @@ jobs:
           parts=sorted(Path('.build/invariant_core_source').glob('part*.b64'))
           if len(parts)!=4: raise SystemExit(f'expected 4 chunks, found {len(parts)}')
           data=base64.b64decode(''.join(p.read_text().strip() for p in parts),validate=True)
+          staged=hashlib.sha256(data).hexdigest()
+          known='bdf890ff9bc332b5dac315017e9ce5dae96c5726b210ee94554eec2de49f594e'
+          if staged==known:
+              bad=br'\src{\emph{Trading Theorem 001}, p.~5.}'
+              good=br'\src{\emph{Trading Theorem 001}, p.~2.}'
+              if data.count(bad)<1: raise SystemExit('known staging correction target not found')
+              data=data.replace(bad,good,1)
           expected='f26fd877d92b3c6b0323d47d7726e11d0976bf1eddb9637ea0ac91531d350e57'
           got=hashlib.sha256(data).hexdigest()
-          if got!=expected: raise SystemExit(f'checksum mismatch: {got}')
+          if got!=expected: raise SystemExit(f'checksum mismatch after staging repair: {got}')
           out=Path('documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex')
           out.write_bytes(data)
           print('restored exact source:',got)
@@ -58,6 +65,13 @@ jobs:
           cp "build/invariant-core/$OUT" "cs.LO_Logic_in_Computer_Science/$OUT"
           cp "build/invariant-core/$OUT" "docs/papers/invariant_core_geometry_settlement/$OUT"
           sha256sum "$SOURCE" | awk '{print $1}' > cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.source.sha256
+          python - <<'PY'
+          from pathlib import Path
+          import html
+          src=Path('documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex').read_text(encoding='utf-8')
+          out=Path('docs/papers/invariant_core_geometry_settlement/source.html')
+          out.write_text('<!doctype html><meta charset="utf-8"><title>The Invariant Core — source</title><p><a href="./">← Back to article</a></p><h1>LaTeX source</h1><pre>'+html.escape(src)+'</pre>\n',encoding='utf-8')
+          PY
 
       - name: Repair Invariant Core catalogue entry without disturbing Story card 1
         run: python scripts/repair_invariant_core_card.py
@@ -70,7 +84,8 @@ jobs:
           a=Path('cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf')
           r=Path('docs/papers/invariant_core_geometry_settlement/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf')
           s=Path('documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex')
-          assert a.is_file() and r.is_file() and s.is_file()
+          sh=Path('docs/papers/invariant_core_geometry_settlement/source.html')
+          assert a.is_file() and r.is_file() and s.is_file() and sh.is_file()
           assert a.read_bytes()==r.read_bytes()
           d=json.load(open('docs/search-index.json',encoding='utf-8'))
           assert d['items'][0]['title']=='The Gedanbedai of Wake Island'
@@ -89,6 +104,7 @@ jobs:
                   cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf \
                   cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.source.sha256 \
                   docs/papers/invariant_core_geometry_settlement/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf \
+                  docs/papers/invariant_core_geometry_settlement/source.html \
                   docs/index.html docs/search-index.json
           if git diff --cached --quiet; then
             echo 'Nothing to commit.'
