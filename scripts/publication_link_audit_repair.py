@@ -79,12 +79,14 @@ def scan():
   t=p.read_text(errors='replace')
   for u in anch.findall(t):
    u=html.unescape(u)
+   # JavaScript template placeholders are not literal links and must not be resolved as files.
+   if '${' in u: continue
    if u.startswith((BLOB,TREE)):ugly.append(f'{p.relative_to(ROOT)} -> {u}')
    if u.startswith(('http://','https://')):ext.add(u)
    elif u and not u.startswith(('#','mailto:')):
     q=(p.parent/urllib.parse.unquote(urllib.parse.urlsplit(u).path)).resolve(); q=q/'index.html' if q.is_dir() else q
     if not q.exists():broken.append(f'{p.relative_to(ROOT)} -> {u}')
-  for u in re.findall(r'https://github\.com/btenneson/pub/(?:blob|tree)/main/[^\"\'<>\s]+',t):ugly.append(f'{p.relative_to(ROOT)} -> {u}')
+ # Do not grep raw source text inside <pre> blocks for URLs: only actual anchors are destinations.
  return sorted(set(ugly)),sorted(set(broken)),ext
 def netcheck(urls):
  bad=[]
@@ -127,7 +129,7 @@ def main():
    if o.apply:page.write_text(want)
  ugly,broken,ext=scan();bad=netcheck(ext) if o.network else [];unres=unresolved(rs)
  Path(o.manifest).parent.mkdir(parents=True,exist_ok=True);Path(o.manifest).write_text(json.dumps({'changed_sources':changed},indent=2)+'\n')
- L=['# Publication Link Audit','',f'- Active canonical readers: **{len(rs)}**',f'- Reader pages changed/needed: **{reader_changes}**',f'- Clean source pages changed/needed: **{source_changes}**',f'- Article sources changed: **{len(changed)}**',f'- Visible GitHub blob/tree destinations remaining: **{len(ugly)}**',f'- Broken local links: **{len(broken)}**',f'- Unresolved confidently matched self-citations: **{len(unres)}**',f'- External URL failures: **{len(bad)}**','','## Remaining ugly destinations']
+ L=['# Publication Link Audit','',f'- Active canonical readers: **{len(rs)}**',f'- Reader pages changed/needed: **{reader_changes}**',f'- Clean source pages changed/needed: **{source_changes}**',f'- Article sources changed: **{len(changed)}**',f'- Visible GitHub blob/tree destinations remaining: **{len(ugly)}**',f'- Broken local links: **{len(broken)}**',f'- Unresolved confidently matched self-citations: **{len(unres)}**',f'- External URL failures: **{len(bad)}**','','## Remaining GitHub destinations']
  L+=['- None.'] if not ugly else [f'- `{x}`' for x in ugly];L+=['','## Broken local links']+(['- None.'] if not broken else [f'- `{x}`' for x in broken]);L+=['','## Unresolved self-citations']+(['- None.'] if not unres else [f'- `{x}`' for x in unres]);L+=['','## External failures']+(['- None.'] if not bad else [f'- `{x}`' for x in bad]);L+=['','## Repairs']+(['- No source citations changed in this pass.'] if not changed else [f'- `{x["source"]}` — '+', '.join(x['notes']) for x in changed])
  Path(o.report).write_text('\n'.join(L)+'\n');print(json.dumps({'readers':len(rs),'reader_changes':reader_changes,'source_pages':source_changes,'sources_changed':len(changed),'ugly':len(ugly),'broken':len(broken),'unresolved':len(unres),'external_failures':len(bad)},indent=2))
 if __name__=='__main__':main()
