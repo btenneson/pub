@@ -1,0 +1,161 @@
+name: Publish Gedanbedai story and full audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'stories/The_Gedanbedai_of_Wake_Island_001.tex'
+      - 'scripts/pin_story_card.py'
+      - '.github/workflows/publish_gedanbedai_story.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-gedanbedai-story
+  cancel-in-progress: false
+
+jobs:
+  publish-and-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Compile story PDF
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern cm-super
+          mkdir -p build/gedanbedai
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/gedanbedai stories/The_Gedanbedai_of_Wake_Island_001.tex
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/gedanbedai stories/The_Gedanbedai_of_Wake_Island_001.tex
+          cp build/gedanbedai/The_Gedanbedai_of_Wake_Island_001.pdf stories/The_Gedanbedai_of_Wake_Island_001.pdf
+          test -s stories/The_Gedanbedai_of_Wake_Island_001.pdf
+
+      - name: Rebuild and pin publication catalogue
+        shell: bash
+        run: |
+          python scripts/build_library_homepage_v5.py
+          python scripts/fix_nsa_trading_card.py
+          python scripts/fix_hyperfinite_oracles_card.py
+          python scripts/fix_dm3_card.py
+          python scripts/pin_dreamer_four_oracle_card.py
+          python scripts/fix_experimental_page_links.py
+          python scripts/pin_story_card.py
+
+      - name: Validate story card and category
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.load(open('docs/search-index.json', encoding='utf-8'))
+          assert d['count']==len(d['items'])
+          s=d['items'][0]
+          assert s['title']=='The Gedanbedai of Wake Island'
+          assert s['kind']=='Story'
+          assert s['category']=='Stories'
+          assert s['archive_path']=='stories/The_Gedanbedai_of_Wake_Island_001.pdf'
+          assert s.get('quote')
+          assert Path(s['archive_path']).is_file()
+          assert Path('stories/The_Gedanbedai_of_Wake_Island_001.tex').is_file()
+          home=Path('docs/index.html').read_text(encoding='utf-8')
+          assert 'The Gedanbedai of Wake Island' in home
+          assert 'Stories' in home
+          print('indexed items:', d['count'])
+          print('card 1:', s['title'])
+          PY
+
+      - name: Repository and link integrity audits
+        shell: bash
+        run: |
+          python scripts/audit_publication_library.py
+          python scripts/publication_link_audit_repair.py --report /tmp/LINK_AUDIT.md --manifest /tmp/link-audit.json > /tmp/link-audit-summary.json
+          cat /tmp/link-audit-summary.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/link-audit-summary.json', encoding='utf-8'))
+          bad={k:d.get(k,0) for k in ('ugly','broken','unresolved') if d.get(k,0)}
+          if bad:
+              raise SystemExit('publication link audit failed: '+repr(bad))
+          PY
+
+      - name: Audit every indexed PDF for page overflow and corruption
+        shell: bash
+        run: |
+          python -m pip install --quiet pymupdf
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from urllib.parse import unquote
+          import fitz
+
+          root=Path('.').resolve()
+          d=json.load(open('docs/search-index.json', encoding='utf-8'))
+          failures=[]
+          checked=0
+          pages=0
+          seen=set()
+          for i,item in enumerate(d['items'],1):
+              rel=unquote(str(item.get('archive_path') or '')).lstrip('/')
+              if not rel.lower().endswith('.pdf'):
+                  continue
+              p=root/rel
+              if not p.is_file():
+                  failures.append((i,item.get('title'),'MISSING',rel))
+                  continue
+              rp=str(p.resolve())
+              if rp in seen:
+                  continue
+              seen.add(rp)
+              checked += 1
+              try:
+                  doc=fitz.open(p)
+              except Exception as e:
+                  failures.append((i,item.get('title'),'OPEN',str(e)))
+                  continue
+              try:
+                  if doc.page_count < 1:
+                      failures.append((i,item.get('title'),'EMPTY','zero pages'))
+                  for n in range(doc.page_count):
+                      pages += 1
+                      page=doc.load_page(n)
+                      r=page.rect
+                      for b in page.get_text('blocks', sort=False):
+                          x0,y0,x1,y1=map(float,b[:4])
+                          # Four-point tolerance matches the established visual audit.
+                          if x0 < r.x0-4 or y0 < r.y0-4 or x1 > r.x1+4 or y1 > r.y1+4:
+                              text=' '.join(str(b[4]).split())[:220]
+                              failures.append((i,item.get('title'),f'PAGE {n+1} OVERFLOW',f'{[round(x,2) for x in (x0,y0,x1,y1)]} {text}'))
+              finally:
+                  doc.close()
+
+          print(f'indexed items: {len(d["items"])}')
+          print(f'unique PDFs checked: {checked}')
+          print(f'PDF pages checked: {pages}')
+          if failures:
+              for f in failures:
+                  print('FAIL', *f, sep=' | ')
+              raise SystemExit(f'{len(failures)} PDF audit findings')
+          print('PDF audit: PASS — no missing/corrupt indexed PDFs and no text blocks outside page boxes.')
+          PY
+
+      - name: Commit published story and rebuilt index
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add stories/The_Gedanbedai_of_Wake_Island_001.pdf docs/index.html docs/search-index.json
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit.'
+          else
+            git commit -m 'Publish Gedanbedai story as Stories card 1'
+            git push
+          fi
