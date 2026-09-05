@@ -1,0 +1,87 @@
+name: Restore Invariant Core publication
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair_invariant_core_publication.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Restore exact Invariant Core LaTeX source from known publication commit
+        shell: bash
+        run: |
+          mkdir -p 'documents and their sources'
+          git show b88b832a577569bf189991e0e51dce3595abdbe9:'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex' \
+            > 'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
+          test -s 'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
+
+      - name: Compile restored paper and install archive/reader copies
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern cm-super
+          SOURCE='documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
+          OUT='The_Invariant_Core_and_the_Geometry_of_Settlement.pdf'
+          mkdir -p build/invariant-core cs.LO_Logic_in_Computer_Science docs/papers/invariant_core_geometry_settlement
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/invariant-core "$SOURCE"
+          pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build/invariant-core "$SOURCE"
+          test -s "build/invariant-core/$OUT"
+          cp "build/invariant-core/$OUT" "cs.LO_Logic_in_Computer_Science/$OUT"
+          cp "build/invariant-core/$OUT" "docs/papers/invariant_core_geometry_settlement/$OUT"
+          sha256sum "$SOURCE" | awk '{print $1}' > cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.source.sha256
+
+      - name: Restore Invariant Core card, then preserve Story as card 1
+        run: |
+          python scripts/pin_dreamer_four_oracle_card.py
+          python scripts/pin_story_card.py
+
+      - name: Validate restored publication
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=Path('cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf')
+          r=Path('docs/papers/invariant_core_geometry_settlement/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf')
+          s=Path('documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex')
+          assert a.is_file() and r.is_file() and s.is_file()
+          assert a.read_bytes()==r.read_bytes()
+          d=json.load(open('docs/search-index.json',encoding='utf-8'))
+          assert d['items'][0]['title']=='The Gedanbedai of Wake Island'
+          inv=next(x for x in d['items'] if x.get('title')=='The Invariant Core and the Geometry of Settlement')
+          assert inv['archive_path']==str(a)
+          assert inv.get('pdf')
+          assert inv.get('source')
+          print('card 1:',d['items'][0]['title'])
+          print('Invariant Core restored:',a.stat().st_size,'bytes')
+          PY
+
+      - name: Commit restoration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex' \
+                  cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf \
+                  cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.source.sha256 \
+                  docs/papers/invariant_core_geometry_settlement/The_Invariant_Core_and_the_Geometry_of_Settlement.pdf \
+                  docs/index.html docs/search-index.json
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit.'
+          else
+            git commit -m 'Restore Invariant Core source PDF and catalogue entry'
+            git push
+          fi
