@@ -40,16 +40,8 @@ jobs:
           cp build/gedanbedai/The_Gedanbedai_of_Wake_Island_001.pdf stories/The_Gedanbedai_of_Wake_Island_001.pdf
           test -s stories/The_Gedanbedai_of_Wake_Island_001.pdf
 
-      - name: Rebuild and pin publication catalogue
-        shell: bash
-        run: |
-          python scripts/build_library_homepage_v5.py
-          python scripts/fix_nsa_trading_card.py
-          python scripts/fix_hyperfinite_oracles_card.py
-          python scripts/fix_dm3_card.py
-          python scripts/pin_dreamer_four_oracle_card.py
-          python scripts/fix_experimental_page_links.py
-          python scripts/pin_story_card.py
+      - name: Pin story into existing publication catalogue
+        run: python scripts/pin_story_card.py
 
       - name: Validate story card and category
         run: |
@@ -130,7 +122,6 @@ jobs:
                       r=page.rect
                       for b in page.get_text('blocks', sort=False):
                           x0,y0,x1,y1=map(float,b[:4])
-                          # Four-point tolerance matches the established visual audit.
                           if x0 < r.x0-4 or y0 < r.y0-4 or x1 > r.x1+4 or y1 > r.y1+4:
                               text=' '.join(str(b[4]).split())[:220]
                               failures.append((i,item.get('title'),f'PAGE {n+1} OVERFLOW',f'{[round(x,2) for x in (x0,y0,x1,y1)]} {text}'))
@@ -147,7 +138,7 @@ jobs:
           print('PDF audit: PASS — no missing/corrupt indexed PDFs and no text blocks outside page boxes.')
           PY
 
-      - name: Commit published story and rebuilt index
+      - name: Commit published story and updated index
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
