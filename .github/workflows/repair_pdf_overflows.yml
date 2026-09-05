@@ -1,0 +1,101 @@
+name: Repair audited PDF overflows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair_pdf_overflows.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet pymupdf
+      - name: Scale only the affected pages safely inside their original paper boxes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pymupdf
+
+          repairs = {
+              Path('pub.experimental/02_amld_complete_picture.pdf'): {7},
+              Path('AMLD_Reading_Wing/02_amld_complete_picture.pdf'): {7},
+              Path('ADS/healthcare_biomedical/ADS_534-tenneson_homework_8_version_1.pdf'): {5},
+          }
+
+          for path, page_indexes in repairs.items():
+              if not path.is_file():
+                  raise SystemExit(f'missing repair target: {path}')
+              src = pymupdf.open(path)
+              dst = pymupdf.open()
+              meta = src.metadata
+              toc = src.get_toc(simple=False)
+              for i in range(src.page_count):
+                  if i not in page_indexes:
+                      dst.insert_pdf(src, from_page=i, to_page=i, links=True, annots=True)
+                      continue
+                  p = src.load_page(i)
+                  w, h = p.rect.width, p.rect.height
+                  # Uniform ~2% shrink into a 6-point inset. This keeps the
+                  # same paper size and brings the audited right-edge overflow
+                  # comfortably inside the page without deleting content.
+                  out = dst.new_page(width=w, height=h)
+                  target = pymupdf.Rect(6, 6, w - 6, h - 6)
+                  out.show_pdf_page(target, src, i, keep_proportion=True)
+              if meta:
+                  dst.set_metadata(meta)
+              if toc:
+                  try:
+                      dst.set_toc(toc)
+                  except Exception as e:
+                      print(f'warning: could not restore TOC for {path}: {e}')
+              tmp = path.with_suffix('.repaired.pdf')
+              dst.save(tmp, garbage=4, deflate=True)
+              dst.close(); src.close()
+              tmp.replace(path)
+              print('repaired', path)
+          PY
+
+      - name: Verify repaired PDFs have no text outside page boxes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pymupdf
+          targets = [
+              Path('pub.experimental/02_amld_complete_picture.pdf'),
+              Path('AMLD_Reading_Wing/02_amld_complete_picture.pdf'),
+              Path('ADS/healthcare_biomedical/ADS_534-tenneson_homework_8_version_1.pdf'),
+          ]
+          failures=[]
+          for path in targets:
+              doc=pymupdf.open(path)
+              for n,p in enumerate(doc):
+                  r=p.rect
+                  for b in p.get_text('blocks', sort=False):
+                      x0,y0,x1,y1=map(float,b[:4])
+                      if x0 < r.x0-4 or y0 < r.y0-4 or x1 > r.x1+4 or y1 > r.y1+4:
+                          failures.append((str(path),n+1,[round(x,2) for x in (x0,y0,x1,y1)],' '.join(str(b[4]).split())[:180]))
+              doc.close()
+          if failures:
+              for f in failures: print('FAIL',f)
+              raise SystemExit(f'{len(failures)} overflow findings remain')
+          print('targeted overflow repair verification: PASS')
+          PY
+
+      - name: Commit repaired PDFs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pub.experimental/02_amld_complete_picture.pdf AMLD_Reading_Wing/02_amld_complete_picture.pdf ADS/healthcare_biomedical/ADS_534-tenneson_homework_8_version_1.pdf
+          git commit -m 'Repair PDF content overflowing page bounds'
+          git push
