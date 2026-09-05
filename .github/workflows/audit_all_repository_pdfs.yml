@@ -1,0 +1,54 @@
+name: Audit every repository PDF
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit_all_repository_pdfs.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet pymupdf
+      - name: Open every PDF and scan every page for content outside the paper box
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pymupdf
+
+          roots=[Path('.')]
+          pdfs=sorted({p for r in roots for p in r.rglob('*.pdf') if '.git' not in p.parts and 'build' not in p.parts and '.build' not in p.parts})
+          findings=[]; pages=0; opened=0
+          for p in pdfs:
+              try:
+                  doc=pymupdf.open(p)
+              except Exception as e:
+                  findings.append((str(p),'OPEN ERROR',str(e))); continue
+              opened+=1
+              if doc.page_count<1: findings.append((str(p),'EMPTY','zero pages'))
+              for n,page in enumerate(doc):
+                  pages+=1; r=page.rect
+                  for b in page.get_text('blocks',sort=False):
+                      x0,y0,x1,y1=map(float,b[:4])
+                      if x0<r.x0-4 or y0<r.y0-4 or x1>r.x1+4 or y1>r.y1+4:
+                          txt=' '.join(str(b[4]).split())[:240]
+                          findings.append((str(p),f'page {n+1}',f'bbox={[round(x,2) for x in (x0,y0,x1,y1)]} paper={[round(r.width,2),round(r.height,2)]} text={txt}'))
+              doc.close()
+          print('PDF_FILES_DISCOVERED',len(pdfs))
+          print('PDF_FILES_OPENED',opened)
+          print('PDF_PAGES_SCANNED',pages)
+          print('FINDINGS',len(findings))
+          for f in findings: print('FINDING | '+' | '.join(f))
+          if findings: raise SystemExit(f'{len(findings)} repository PDF findings')
+          print('PASS: every repository PDF opened and every text block remained within its page box.')
+          PY
