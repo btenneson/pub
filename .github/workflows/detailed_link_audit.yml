@@ -1,0 +1,24 @@
+name: Detailed publication link audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/detailed_link_audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Print complete link audit report
+        run: |
+          python scripts/publication_link_audit_repair.py --report /tmp/LINK_AUDIT.md --manifest /tmp/link-audit.json || true
+          cat /tmp/LINK_AUDIT.md
