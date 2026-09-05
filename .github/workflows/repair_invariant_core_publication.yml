@@ -22,13 +22,27 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Restore exact Invariant Core LaTeX source from known publication commit
+      - name: Reconstruct exact Invariant Core LaTeX source from historical chunks
         shell: bash
         run: |
-          mkdir -p 'documents and their sources'
-          git show b88b832a577569bf189991e0e51dce3595abdbe9:'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex' \
-            > 'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
-          test -s 'documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex'
+          mkdir -p .build/invariant_core_source 'documents and their sources'
+          git show 021f5be0dbe3c89a29be85915615d521adcd08d6:.build/invariant_core_source/part00.b64 > .build/invariant_core_source/part00.b64
+          git show c75779d58f5fe8f6cc53498b4fc9b9053de6cb34:.build/invariant_core_source/part01.b64 > .build/invariant_core_source/part01.b64
+          git show 214663732966498dc4b40d401db555b92142694c:.build/invariant_core_source/part02.b64 > .build/invariant_core_source/part02.b64
+          git show 14ba8786e67aa8a361465903b88d4432a416faf9:.build/invariant_core_source/part03.b64 > .build/invariant_core_source/part03.b64
+          python - <<'PY'
+          from pathlib import Path
+          import base64,hashlib
+          parts=sorted(Path('.build/invariant_core_source').glob('part*.b64'))
+          if len(parts)!=4: raise SystemExit(f'expected 4 chunks, found {len(parts)}')
+          data=base64.b64decode(''.join(p.read_text().strip() for p in parts),validate=True)
+          expected='f26fd877d92b3c6b0323d47d7726e11d0976bf1eddb9637ea0ac91531d350e57'
+          got=hashlib.sha256(data).hexdigest()
+          if got!=expected: raise SystemExit(f'checksum mismatch: {got}')
+          out=Path('documents and their sources/The_Invariant_Core_and_the_Geometry_of_Settlement.tex')
+          out.write_bytes(data)
+          print('restored exact source:',got)
+          PY
 
       - name: Compile restored paper and install archive/reader copies
         shell: bash
@@ -45,10 +59,8 @@ jobs:
           cp "build/invariant-core/$OUT" "docs/papers/invariant_core_geometry_settlement/$OUT"
           sha256sum "$SOURCE" | awk '{print $1}' > cs.LO_Logic_in_Computer_Science/The_Invariant_Core_and_the_Geometry_of_Settlement.source.sha256
 
-      - name: Restore Invariant Core card, then preserve Story as card 1
-        run: |
-          python scripts/pin_dreamer_four_oracle_card.py
-          python scripts/pin_story_card.py
+      - name: Repair Invariant Core catalogue entry without disturbing Story card 1
+        run: python scripts/repair_invariant_core_card.py
 
       - name: Validate restored publication
         run: |
@@ -64,8 +76,7 @@ jobs:
           assert d['items'][0]['title']=='The Gedanbedai of Wake Island'
           inv=next(x for x in d['items'] if x.get('title')=='The Invariant Core and the Geometry of Settlement')
           assert inv['archive_path']==str(a)
-          assert inv.get('pdf')
-          assert inv.get('source')
+          assert inv.get('pdf') and inv.get('source') and inv.get('quote')
           print('card 1:',d['items'][0]['title'])
           print('Invariant Core restored:',a.stat().st_size,'bytes')
           PY
