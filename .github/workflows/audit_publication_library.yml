@@ -39,7 +39,9 @@ jobs:
           python - <<'PY'
           import json
           d=json.load(open('/tmp/link-audit-summary.json', encoding='utf-8'))
-          bad={k:d.get(k,0) for k in ('ugly','broken','unresolved') if d.get(k,0)}
+          # GitHub blob/tree destinations are valid external links and are reported
+          # for style only. Broken local links and unresolved self-citations fail.
+          bad={k:d.get(k,0) for k in ('broken','unresolved') if d.get(k,0)}
           if bad:
               raise SystemExit('publication link audit failed: '+repr(bad))
           PY
