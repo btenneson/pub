@@ -36,19 +36,35 @@ const FEATURED={
   search:"The Gedanbedai of Wake Island A Logic Parable Brian Tenneson Wake Island gedanbedai self-description I know that I know that I am a gedanbedai",
   quote:"At last, you have asked a gedanbedai question.",
   quote_attribution:"Brian Tenneson",
+  pin_label:"Pinned card #1",
+  pinned:true
+};
+const COMPANION={
+  title:"Verifier Certificate 001 — Technical Companion to The Gedanbedai of Wake Island",
+  kind:"Technical companion",
+  category:"Self-Awareness & Simulation",
+  tags:["AMLD","verifier","receipt reflection","technical companion"],
+  href:"stories/the_gedanbedai_of_wake_island_001/verifier_certificate_001_technical_companion/",
+  pdf:"papers/verifier_certificate_001/Verifier_Certificate_001.pdf",
+  source:"",
+  archive_path:"cs.LO_Logic_in_Computer_Science/Verifier_Certificate_001.pdf",
+  search:"Verifier Certificate 001 technical companion The Gedanbedai of Wake Island I know that I know that I am an AMLD conditional verifier-facing proof skeleton receipt reflection AMLD verifier self-awareness",
+  quote:"The second occurrence of K is not obtained automatically from AMLD status alone.",
+  quote_attribution:"Brian Tenneson",
+  pin_label:"Card #2 · Technical companion",
   pinned:true
 };
 let DATA=[];
 const $=id=>document.getElementById(id),q=$('q'),kind=$('kind'),cat=$('cat'),sort=$('sort'),clear=$('clear'),grid=$('grid'),count=$('count');
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function norm(s){return String(s??'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'')}
-function dedupe(items){return [FEATURED,...items.filter(x=>x.archive_path!==FEATURED.archive_path&&x.href!==FEATURED.href&&x.title!==FEATURED.title)]}
+function dedupe(items){return [FEATURED,COMPANION,...items.filter(x=>x.archive_path!==FEATURED.archive_path&&x.href!==FEATURED.href&&x.title!==FEATURED.title&&x.archive_path!==COMPANION.archive_path&&x.href!==COMPANION.href&&x.title!==COMPANION.title)]}
 function populate(){const ks=[...new Set(DATA.map(x=>x.kind).filter(Boolean))].sort(),cs=[...new Set(DATA.map(x=>x.category).filter(Boolean))].sort();kind.innerHTML='<option value="">All collections</option>'+ks.map(x=>`<option>${esc(x)}</option>`).join('');cat.innerHTML='<option value="">All subjects</option>'+cs.map(x=>`<option>${esc(x)}</option>`).join('')}
 function tokens(){return norm(q.value).trim().split(/\s+/).filter(Boolean)}
 function hay(x){return norm([x.title,x.kind,x.category,(x.tags||[]).join(' '),x.search,x.archive_path,x.quote].join(' '))}
 function matches(x){const ts=tokens();if(!ts.every(t=>hay(x).includes(t)))return false;if(ts.length)return true;return(!kind.value||x.kind===kind.value)&&(!cat.value||x.category===cat.value)}
 function relevance(x){const ts=tokens(),title=norm(x.title),h=hay(x);let n=0;for(const t of ts){if(title===t)n+=100;if(title.startsWith(t))n+=60;if(title.includes(t))n+=40;else if(h.includes(t))n+=10}return n+(x.pinned?5:0)}
-function card(x){const tags=(x.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');const pdf=x.pdf?`<a href="${esc(x.pdf)}">PDF</a>`:'';const src=x.source?`<a href="${esc(x.source)}">Source</a>`:'';const quote=x.quote?`<blockquote class="featured-quote"><p>&ldquo;${esc(x.quote)}&rdquo;</p>${x.quote_attribution?`<cite>— ${esc(x.quote_attribution)}</cite>`:''}</blockquote>`:'';return `<article class="card${x.pinned?' featured':''}">${x.pinned?'<div class="pin">Pinned card #1</div>':''}<h2>${esc(x.title)}</h2><div class="meta">${esc(x.kind)} · ${esc(x.category)}</div>${tags?`<div class="tags">${tags}</div>`:''}${quote}<div class="links"><a href="${esc(x.href)}">${x.kind==='Core paper'?'Read':'Open'}</a>${pdf}${src}</div></article>`}
+function card(x){const tags=(x.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');const pdf=x.pdf?`<a href="${esc(x.pdf)}">PDF</a>`:'';const src=x.source?`<a href="${esc(x.source)}">Source</a>`:'';const quote=x.quote?`<blockquote class="featured-quote"><p>&ldquo;${esc(x.quote)}&rdquo;</p>${x.quote_attribution?`<cite>— ${esc(x.quote_attribution)}</cite>`:''}</blockquote>`:'';return `<article class="card${x.pinned?' featured':''}">${x.pinned?`<div class="pin">${esc(x.pin_label||'Pinned card')}</div>`:''}<h2>${esc(x.title)}</h2><div class="meta">${esc(x.kind)} · ${esc(x.category)}</div>${tags?`<div class="tags">${tags}</div>`:''}${quote}<div class="links"><a href="${esc(x.href)}">${x.kind==='Core paper'?'Read':'Open'}</a>${pdf}${src}</div></article>`}
 function render(){let a=DATA.filter(matches),ts=tokens();if(ts.length)a.sort((x,y)=>relevance(y)-relevance(x)||x.title.localeCompare(y.title));else if(sort.value==='title')a.sort((x,y)=>x.title.localeCompare(y.title));else if(sort.value==='subject')a.sort((x,y)=>x.category.localeCompare(y.category)||x.title.localeCompare(y.title));count.textContent=`${a.length} of ${DATA.length} items`;grid.innerHTML=a.length?a.map(card).join(''):'<div class="empty">No publications match that search.</div>'}
 function init(items){DATA=dedupe(items||[]);populate();[q,kind,cat,sort].forEach(el=>el.addEventListener(el===q?'input':'change',render));clear.onclick=()=>{q.value='';kind.value='';cat.value='';sort.value='default';q.focus();render()};render()}
 fetch('search-index.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('search index unavailable');return r.json()}).then(j=>init(j.items||[])).catch(()=>init([]));
