@@ -33,5 +33,7 @@ jobs:
           git add docs/papers/awareness_geometry_hyperfinite_omniscience/Awareness_Geometry_Hyperfinite_Omniscience.tex docs/papers/awareness_geometry_hyperfinite_omniscience/Awareness_Geometry_Hyperfinite_Omniscience.pdf
           if ! git diff --cached --quiet; then
             git commit -m "Build awareness geometry PDF [skip ci]"
-            git push
+            git fetch origin main
+            git rebase origin/main
+            git push origin main
           fi
