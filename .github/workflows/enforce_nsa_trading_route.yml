@@ -1,0 +1,75 @@
+name: Enforce NSA trading reader route
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/search-index.json'
+      - 'docs/index.html'
+      - 'docs/papers/nsa_and_trading_speedup/**'
+      - 'docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/**'
+      - 'scripts/fix_nsa_trading_card.py'
+      - '.github/workflows/enforce_nsa_trading_route.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: enforce-nsa-trading-reader-route
+  cancel-in-progress: false
+
+jobs:
+  enforce:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Enforce canonical card route
+        run: python scripts/fix_nsa_trading_card.py
+
+      - name: Validate canonical reader and legacy redirect
+        shell: bash
+        run: |
+          CANON='docs/cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup'
+          LEGACY='docs/papers/nsa_and_trading_speedup/index.html'
+          test -s "$CANON/index.html"
+          test -s "$CANON/fulltext-00.txt"
+          test -s "$CANON/fulltext-01.txt"
+          test -s "$CANON/fulltext-02.txt"
+          test -s "$LEGACY"
+          grep -q 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup' "$LEGACY"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = json.loads(Path('docs/search-index.json').read_text(encoding='utf-8'))
+          item = next(x for x in d['items'] if x['title'] == 'Nonstandard Analysis and Certified Presentation Trading as Sources of Proof-Search Speedups')
+          expected = 'cs.LO_Logic_in_Computer_Science/nsa_and_trading_speedup/'
+          assert item['href'] == expected, item['href']
+          assert not item.get('pdf')
+          assert item.get('quote')
+          assert item.get('archive_path') == expected
+          reader = Path('docs') / expected / 'index.html'
+          assert reader.is_file()
+          print('NSA/trading canonical route:', expected)
+          PY
+
+      - name: Commit route repair if needed
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/search-index.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Enforce NSA trading canonical reader route'
+            git pull --rebase --autostash origin main
+            git push origin HEAD:main
+          fi
