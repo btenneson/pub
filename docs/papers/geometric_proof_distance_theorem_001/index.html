@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A Fixed-Target Geometric Proof-Distance Theorem — Brian Tenneson</title>
+<style>body{font:18px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:900px;margin:auto;padding:28px;color:#18212b;background:#fff}h1{line-height:1.15}h2{margin-top:2em}blockquote{border-left:4px solid #245d83;padding:10px 16px;margin:20px 0;background:#eef5f9}code,.math{font-family:Cambria Math,STIX Two Math,serif}.eq{display:block;text-align:center;margin:1em 0;font-family:Cambria Math,STIX Two Math,serif}.meta{color:#5b6773}.note{font-size:.95em;color:#4d5863}a{color:#245d83}</style>
+</head>
+<body>
+<p><a href="../../">← Publication library</a></p>
+<h1>A Fixed-Target Geometric Proof-Distance Theorem for Verifier-Gated Proof-State Graphs and AMLD Search</h1>
+<p class="meta">Brian Tenneson · September 6, 2026</p>
+<p class="note"><strong>Development note.</strong> This argument was developed interactively by Brian Tenneson with assistance from ChatGPT (OpenAI) in proof structuring, gap detection, formalization, and exploration of alternative proof routes. The mathematical claims below stand or fall on the stated definitions and proofs, independently of the search process that led to them.</p>
+<h2>1. Setting</h2>
+<p>Fix a formal deductive presentation with an independent verifier. Rather than using individual formulas as graph vertices when inference rules may have multiple premises, let a proof state contain enough information to retain all premises needed for subsequent legal inferences.</p>
+<p class="eq">G = (X,E).</p>
+<p>An edge <span class="math">x → y</span> means that <span class="math">y</span> is obtainable from <span class="math">x</span> by one licensed verifier-compatible proof-state transition. Fix a target well-formed formula <span class="math">T</span>, and let <span class="math">x<sub>T</sub> ∈ X</span> denote a terminal proof state in which the verifier has accepted a certificate for <span class="math">T</span>.</p>
+<p class="eq">H : X → [0,1]<sup>d</sup>, &nbsp; d ∈ ℕ<sup>+</sup>.</p>
+<p>Let this be the declared rational/Hilbert address representation. No metric preservation is assumed a priori. Define the maximum one-step geometric displacement by</p>
+<p class="eq">δ<sub>H</sub> := sup({‖H(x) − H(y)‖<sub>1</sub> : (x,y) ∈ E} ∪ {0}).</p>
+<p>Because the image lies in the unit <span class="math">d</span>-cube, <span class="math">0 ≤ δ<sub>H</sub> ≤ d</span>. For <span class="math">x ∈ X</span>, define the directed logical distance to the fixed target by</p>
+<p class="eq">d<sub>G</sub>(x,x<sub>T</sub>) := min{m ∈ ℕ : there is a legal path of m edges from x to x<sub>T</sub>},</p>
+<p>when such a path exists, and set <span class="math">d<sub>G</sub>(x,x<sub>T</sub>) = +∞</span> otherwise.</p>
+<h2>2. Main theorem</h2>
+<p><strong>Theorem 1 (Fixed-Target Geometric Proof-Distance Theorem).</strong> For every proof state <span class="math">x ∈ X</span>,</p>
+<p class="eq">‖H(x) − H(x<sub>T</sub>)‖<sub>1</sub> ≤ δ<sub>H</sub>d<sub>G</sub>(x,x<sub>T</sub>).</p>
+<p>Here the inequality is interpreted in the extended-real sense when <span class="math">d<sub>G</sub>(x,x<sub>T</sub>) = +∞</span>.</p>
+<p><strong>Proof.</strong> The target <span class="math">x<sub>T</sub></span> is fixed throughout. Thus the induction variable is only the logical distance of the other state <span class="math">x</span> from <span class="math">x<sub>T</sub></span>. If <span class="math">d<sub>G</sub>(x,x<sub>T</sub>)=+∞</span>, the assertion is immediate. Assume therefore that <span class="math">d<sub>G</sub>(x,x<sub>T</sub>)=m&lt;∞</span>. We prove <span class="math">‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub>≤mδ<sub>H</sub></span> by induction on <span class="math">m</span>.</p>
+<p>Base case: <span class="math">m=0</span>. Then <span class="math">x=x<sub>T</sub></span>, so <span class="math">‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub>=0=0·δ<sub>H</sub></span>.</p>
+<p>Inductive step. Assume the claim holds for every state whose directed logical distance to <span class="math">x<sub>T</sub></span> is <span class="math">m</span>. Let <span class="math">d<sub>G</sub>(x,x<sub>T</sub>)=m+1</span>. Choose the first edge of a shortest legal route <span class="math">x→y→⋯→x<sub>T</sub></span>. The remaining route from <span class="math">y</span> to <span class="math">x<sub>T</sub></span> has exactly <span class="math">m</span> edges; otherwise the original route would not be shortest. Hence <span class="math">d<sub>G</sub>(y,x<sub>T</sub>)=m</span>. By the definition of <span class="math">δ<sub>H</sub></span>, <span class="math">‖H(x)−H(y)‖<sub>1</sub>≤δ<sub>H</sub></span>. By the induction hypothesis, <span class="math">‖H(y)−H(x<sub>T</sub>)‖<sub>1</sub>≤mδ<sub>H</sub></span>. Applying the triangle inequality in ℓ<sub>1</sub>,</p>
+<p class="eq">‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub> ≤ ‖H(x)−H(y)‖<sub>1</sub> + ‖H(y)−H(x<sub>T</sub>)‖<sub>1</sub> ≤ (m+1)δ<sub>H</sub>.</p>
+<p>Thus the statement holds at distance <span class="math">m+1</span>, completing the induction.</p>
+<h2>3. Immediate consequences</h2>
+<p><strong>Corollary 1 (Geometric lower bound on logical distance).</strong> If <span class="math">δ<sub>H</sub>&gt;0</span> and <span class="math">d<sub>G</sub>(x,x<sub>T</sub>)&lt;∞</span>, then</p>
+<p class="eq">d<sub>G</sub>(x,x<sub>T</sub>) ≥ ‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub>/δ<sub>H</sub>,</p>
+<p>and, since the logical distance is integral, it is at least the corresponding ceiling.</p>
+<p><strong>Corollary 2 (Universal unit-cube bound).</strong> Because <span class="math">δ<sub>H</sub>≤d</span>,</p>
+<p class="eq">(1/d)‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub> ≤ d<sub>G</sub>(x,x<sub>T</sub>)</p>
+<p>for every reachable <span class="math">x</span>.</p>
+<p><strong>Corollary 3 (Unit-step normalization).</strong> If every legal proof-state edge satisfies <span class="math">‖H(x)−H(y)‖<sub>1</sub>≤1</span>, then <span class="math">δ<sub>H</sub>≤1</span> and therefore <span class="math">‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub>≤d<sub>G</sub>(x,x<sub>T</sub>)</span>.</p>
+<h2>4. AMLD/Tenneson1 certification invariant</h2>
+<p>The geometric theorem above is a theorem about a fixed target and the certified proof-state graph. Tenneson1 and the AMLD architecture concern how the system searches that graph and related represented search spaces. The search policy must not be confused with the certification relation.</p>
+<p>Let <span class="math">S<sub>0</sub>→S<sub>1</sub>→S<sub>2</sub>→⋯</span> be the actual sequence of AMLD states, and let <span class="math">B(S<sub>n</sub>)</span> denote the certified Bank component. Other components may include FutureBank, Hilbert location, Compass information, horizon estimates, Creativity state, and Depth-Charge control state; no independent indexing of those components is required here.</p>
+<p><strong>(A1)</strong> <span class="math">B(S<sub>0</sub>)</span> contains only trusted initial items or items with verifier-valid provenance.</p>
+<p><strong>(A2)</strong> A new item may enter the certified part of Bank only if it is admitted by the independent verifier from premises whose provenance is already certified, or by a verifier-checked finite derivation from such premises.</p>
+<p><strong>(A3)</strong> Hilbert traversal, Compass guidance, FutureBank updates, Creativity, and Depth Charge may change search order, allocation, representation choice, or proposal state, but cannot by themselves mark a mathematical item as certified.</p>
+<p><strong>Proposition 1 (Outer AMLD induction with inner rule induction).</strong> Under assumptions (A1)–(A3), every item in <span class="math">B(S<sub>n</sub>)</span> has verifier-valid finite provenance for every <span class="math">n∈ℕ</span>.</p>
+<p><strong>Proof.</strong> Define <span class="math">P(S<sub>n</sub>)</span> to mean that every certified item in <span class="math">B(S<sub>n</sub>)</span> has verifier-valid finite provenance. By (A1), <span class="math">P(S<sub>0</sub>)</span> holds. Assume <span class="math">P(S<sub>n</sub>)</span> and consider the licensed transition <span class="math">S<sub>n</sub>→S<sub>n+1</sub></span>. If the transition changes only search-control information and certifies no new mathematical item, (A3) preserves the claim. If Bank grows, every newly certified item must satisfy (A2). For one conclusion, the certified premises have valid provenance by the outer induction hypothesis, and the verifier-accepted inference extends that provenance by one legal step. For a finite batch in which later new items depend on earlier new items, order the batch by its verifier-checked derivation order and perform an inner induction. Thus every new item has verifier-valid finite provenance, so <span class="math">P(S<sub>n+1</sub>)</span> holds. By induction, <span class="math">∀n∈ℕ, P(S<sub>n</sub>)</span>.</p>
+<p><strong>Corollary 4 (Certified AMLD settlement inherits the geometric bound).</strong> Suppose that at some AMLD stage the verifier accepts a certificate for the fixed target <span class="math">T</span>. Its certified provenance determines a finite legal route in <span class="math">G</span> ending at <span class="math">x<sub>T</sub></span>. If that route has <span class="math">m</span> edges and begins at <span class="math">x<sub>0</sub></span>, then <span class="math">‖H(x<sub>0</sub>)−H(x<sub>T</sub>)‖<sub>1</sub>≤mδ<sub>H</sub></span>, and when <span class="math">δ<sub>H</sub>&gt;0</span>, <span class="math">m</span> is at least the ceiling of <span class="math">‖H(x<sub>0</sub>)−H(x<sub>T</sub>)‖<sub>1</sub>/δ<sub>H</sub></span>.</p>
+<h2>5. Scope and the remaining stronger conjecture</h2>
+<p>The theorem proves a one-sided Lipschitz estimate from logical path length to geometric displacement:</p>
+<p class="eq">‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub> ≤ δ<sub>H</sub>d<sub>G</sub>(x,x<sub>T</sub>).</p>
+<p>It does not prove, for an arbitrary address representation, a positive reverse inequality of the form <span class="math">c d<sub>G</sub>(x,x<sub>T</sub>)≤‖H(x)−H(x<sub>T</sub>)‖<sub>1</sub></span>, <span class="math">c&gt;0</span>. Such a reverse inequality can fail when long logical routes fold back or collapse geometrically. Establishing it requires an additional global anti-collapse or quasi-isometric hypothesis on <span class="math">H</span>.</p>
+<blockquote>Thus the proved theorem supplies a rigorous first bridge between verifier-generated logical distance and Hilbert-address geometry.</blockquote>
+<p>The next mathematical problem is to construct or characterize address maps for which the reverse control is also nontrivial.</p>
+<h2>6. Role of Tenneson1 and Depth Charge</h2>
+<p>Tenneson1 is a search-control architecture rather than a proof rule. Its Hilbert component supplies local traversal, Creativity supplies controlled escape, Minimum Settlement-Horizon Regret supplies an optimization objective after correctness is protected, fair exhaustive fallback protects coverage, and the verifier remains the certification boundary.</p>
+<p>Depth Charge therefore does not appear as a premise of the geometric theorem. Its role is meta-mathematical: when a proof-search route stagnates, it permits a controlled change of search basin or representation without changing verifier semantics. In the development of this argument, the productive change of basin was from a direct two-WFF geometric attack to a fixed-target formulation combined with local edge control and nested/interleaved induction.</p>
+</body>
+</html>
