@@ -250,6 +250,9 @@ jobs:
           print('card 1 PDF target:', invariant['pdf'])
           PY
 
+      - name: Preserve MAPQUEST trilogy and RANSOM listings
+        run: python scripts/index_mapquest_publications.py
+
       - name: Commit generated and imported files if changed
         shell: bash
         run: |
