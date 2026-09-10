@@ -1,0 +1,57 @@
+name: Compile AMLD recursive what-if imagination
+
+on:
+  push:
+    paths:
+      - '.github/workflows/compile_amld_recursive_what_if_imagination.yml'
+      - 'cs.LO_Logic_in_Computer_Science/AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended cm-super
+
+      - name: Compile AMLD imagination paper
+        run: |
+          ROOT='cs.LO_Logic_in_Computer_Science'
+          TEX='AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001.tex'
+          PDF='AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001.pdf'
+          cd "$ROOT"
+          pdflatex -interaction=nonstopmode -halt-on-error "$TEX"
+          pdflatex -interaction=nonstopmode -halt-on-error "$TEX"
+          pdflatex -interaction=nonstopmode -halt-on-error "$TEX"
+          test -s "$PDF"
+          cd -
+          DEST='docs/papers/amld_recursive_what_if_imagination_and_mapquest_001'
+          mkdir -p "$DEST"
+          cp "$ROOT/$PDF" "$DEST/$PDF"
+
+      - name: Upload compiled PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001
+          path: docs/papers/amld_recursive_what_if_imagination_and_mapquest_001/AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001.pdf
+
+      - name: Commit public PDF
+        run: |
+          PDF='docs/papers/amld_recursive_what_if_imagination_and_mapquest_001/AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001.pdf'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$PDF"
+          if git diff --cached --quiet; then
+            echo 'Nothing to commit.'
+          else
+            git commit -m 'Publish AMLD recursive what-if imagination PDF [skip ci]'
+            git push
+          fi
