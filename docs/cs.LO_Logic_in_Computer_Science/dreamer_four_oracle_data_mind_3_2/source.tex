@@ -1,0 +1,631 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\definecolor{linkblue}{RGB}{32,83,117}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue,
+  pdftitle={Dreamer and Four-Oracle Extension to DATA MIND 3.2},
+  pdfauthor={Brian Tenneson}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Dreamer + Four-Oracle Extension}
+\rhead{DATA MIND 3.2}
+\cfoot{\thepage\ of \pageref{LastPage}}
+\setlength{\headheight}{14pt}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{principle}[definition]{Principle}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{hypothesis}[definition]{Hypothesis}
+\newtheorem{remark}[definition]{Remark}
+
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\FBANK}{\mathrm{FUTUREBANK}}
+\newcommand{\V}{\mathrm{V}}
+\newcommand{\Dream}{\mathcal D}
+\newcommand{\Oracle}{\mathscr O}
+\newcommand{\AMLD}{\operatorname{AMLD}}
+\newcommand{\Perf}{\operatorname{Perf}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\st}{\operatorname{st}}
+\newcommand{\Omn}{\operatorname{Omn}}
+\newcommand{\Cn}{\operatorname{Cn}}
+
+\title{\textbf{Dreamer and Four-Oracle Extension to DATA MIND 3.2}\\[0.35em]
+\large A Theoretical Synthesis of Counterfactual Replay, Hyperfinite Epistemic Guidance, and Verifier-Gated Settlement}
+\author{Brian Tenneson}
+\date{September 4, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{minipage}{0.86\textwidth}
+\centering\itshape
+``Dream freely, route intelligently, verify exactly.''
+\end{minipage}
+\end{center}
+
+\begin{abstract}
+This note summarizes the theoretical work combining the DATA MIND Dreamer/Simulator with the four-level oracle interface developed for DATA MIND 3.2. The Dreamer is a bounded replay and counterfactual simulation mechanism over accumulated proof-search experience. It may vary assumptions, representations, lemma orderings, and strategies; recombine failed branches; compress recurring motifs; and return proposals to waking search. The oracle layer is an idealized epistemic instrument with four distinct interfaces: a role oracle, a resource oracle, a strategy oracle, and a certificate oracle. The central synthesis is that oracle information may guide what the Dreamer simulates, how much effort it spends, which simulated branch it extends, or which certificate candidate it proposes, while preserving a strict epistemic firewall: no dreamed or oracle-produced mathematical claim becomes certified knowledge until the independent verifier accepts it. The resulting architecture is therefore not an omniscient theorem prover. It is a controlled experimental framework for separating recognition, routing, strategy selection, and certificate construction from verification, and for measuring which of those layers account for settlement cost.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Status and scope}
+
+The work summarized here is a \emph{theoretical extension and experimental design}. It should not be reported as evidence that Dreamer improves performance, that a realizable perfect oracle exists, or that the combined Dreamer-oracle mechanism has already solved a benchmark. The oracle mathematics provides idealized comparison objects and finite executable proxies; the Dreamer remains a speculative module whose value must be established by matched ablation.
+
+The extension is also deliberately conservative with respect to DATA MIND's trusted boundary. The frozen verifier semantics, certificate languages, formal database, and BANK admission policy remain outside the control of Dreamer, Professor, learned routing, and every oracle interface.
+
+\begin{principle}[Change-control discipline]
+The Dreamer-oracle synthesis is an additive research layer. It does not silently rewrite a frozen canonical DATA MIND architecture. Any future canonical architectural change should be versioned explicitly, frozen by hash, and tied to the implementation and experiment manifest that uses it.
+\end{principle}
+
+\section{The Dreamer before the oracle layer}
+
+The Dreamer is not identical to ordinary Creativity. Creativity acts during waking search by proposing alternatives outside the ordinary best-first neighborhood. Dreamer instead operates on accumulated experience: traces, failed branches, verified lemmas, partial-credit signals, postmortems, representation choices, and prior strategy outcomes.
+
+\begin{definition}[Bounded dreaming]
+Let $\mathcal H_t$ denote the bounded history available at time $t$. A Dreamer episode is a controlled map
+\begin{equation}
+\Dream_t:\mathcal H_t\times B_D\longrightarrow \mathcal Q_t,
+\end{equation}
+where $B_D$ is a declared dream budget and $\mathcal Q_t$ is a set of untrusted proposals. A proposal may be a candidate lemma, representation, branch recombination, strategy change, search ordering, or heuristic update.
+\end{definition}
+
+A provisional dream cycle is:
+\begin{enumerate}[leftmargin=2em]
+\item capture bounded traces;
+\item select high-value or puzzling material;
+\item replay and vary assumptions, representations, lemma orderings, and strategies;
+\item recombine compatible fragments and failed branches;
+\item compress recurring structures into candidate motifs or macros;
+\item return proposals to waking search;
+\item verify mathematical candidates and evaluate heuristic candidates under frozen protocols;
+\item integrate, quarantine, or reject.
+\end{enumerate}
+
+The always-awake core remains operational throughout. Dreaming is therefore a sandboxed operating mode, not a suspension of verification, control, or safety.
+
+\begin{principle}[Dream-product firewall]
+No dreamed lemma, theorem, strategy, representation, or self-description becomes trusted merely because it was generated, replayed, compressed, or repeatedly encountered. Mathematical products remain candidates until verifier acceptance; control products remain experimental until controlled evaluation.
+\end{principle}
+
+\section{Resource-indexed epistemic background}
+
+Classical epistemic logic often idealizes knowledge as deductively closed. DATA MIND instead studies a resource-bounded settlement process. Write
+\begin{equation}
+K_i^{\le r}\varphi
+\end{equation}
+for the claim that agent $i$ can acquire the declared admissible warrant for $\varphi$ using at most resource budget $r$.
+
+For a frozen finite benchmark family $F$, one may define a bounded closure fraction
+\begin{equation}
+\Omega_i(r;F)=
+\frac{\left|\{\varphi\in F:T\vdash\varphi\text{ and }K_i^{\le r}\varphi\}\right|}
+{\left|\{\varphi\in F:T\vdash\varphi\}\right|},
+\end{equation}
+when the denominator is nonzero. This makes explicit a distinction suppressed by logical omniscience: a consequence can be valid yet expensive to discover.
+
+Conceptually, if $H\in{}^*\mathbb N\setminus\mathbb N$ is an unlimited hypernatural and $F_H=\{\varphi_n:n\le H\}$ is the transferred hyperfinite horizon, define
+\begin{equation}
+\Omn_i(H)=
+\bigwedge_{\substack{n\le H\\T\vdash\varphi_n}}
+{}^*K_i^{\le H}\varphi_n.
+\end{equation}
+A corresponding hyperfinite worst-case closure cost is
+\begin{equation}
+\mathcal O_i(H)=
+\max_{\substack{n\le H\\T\vdash\varphi_n}}
+{}^*c_i(\varphi_n),
+\end{equation}
+when the internal least-cost relation is defined. If $\mathcal O_i(H)/H$ is limited, its standard part
+\begin{equation}
+\rho_i(H)=\st\!\left(\frac{\mathcal O_i(H)}{H}\right)
+\end{equation}
+provides a standard real shadow of normalized worst-case closure cost.
+
+The conventional implementation does not instantiate an unlimited hypernatural. It uses frozen finite horizons as empirical proxies. This separation between mathematical idealization and executable approximation is part of the theory, not a cosmetic disclaimer.
+
+\section{Settlement roles and the oracle object}
+
+DATA MIND is a settlement architecture, not only a proof lane. Let
+\begin{equation}
+\mathcal S=\{P,R,I,C,U\},
+\end{equation}
+where $P$ denotes proof-directed settlement, $R$ refutation-directed settlement, $I$ independence-directed settlement, $C$ contradiction or integrity-directed settlement, and $U$ unresolved or withheld status.
+
+The key diagnostic problem is not only whether a certificate can be found, but whether the system recognizes \emph{which kind} of certificate should be sought.
+
+\begin{definition}[Settlement-role oracle]
+For a declared finite or hyperfinite target family, an idealized role oracle is a map
+\begin{equation}
+\Oracle_{\mathrm{role}}:\varphi\longmapsto \{P,R,I,C,U\}
+\end{equation}
+that returns the gold settlement role under frozen semantics and provenance rules.
+\end{definition}
+
+The word \emph{oracle} is conditional: its correctness is part of the mathematical experiment specification. An implemented classifier is not promoted to omniscience merely because it approximates this interface.
+
+\section{The four oracle interfaces}
+
+The new theoretical addition is not one undifferentiated ``oracle.'' Four different interfaces remove four different sources of uncertainty.
+
+\begin{center}
+\begin{tabular}{p{0.11\textwidth}p{0.22\textwidth}p{0.53\textwidth}}
+\toprule
+Interface & Name & Information supplied \\
+\midrule
+$O_1$ & Role oracle & The correct settlement role in $\{P,R,I,C,U\}$. \\
+$O_2$ & Resource oracle & An ideal recipient or allocation of marginal search resources. \\
+$O_3$ & Strategy oracle & An ideal next search direction, branch class, representation move, or action class. \\
+$O_4$ & Certificate oracle & A purported settlement certificate $\pi$, still subject to ordinary verification. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These interfaces should not be conflated. $O_1$ can eliminate role-identification uncertainty while leaving the hard proof or settlement search untouched. $O_2$ can answer where the next unit of compute should go without telling the system what exact inference to make. $O_3$ can guide the next action class without directly producing a certificate. $O_4$ is much stronger because it proposes a terminal mathematical object, but even $O_4$ does not bypass verification.
+
+It is useful to represent oracle access by an intervention vector
+\begin{equation}
+g=(g_1,g_2,g_3,g_4)\in\{0,1\}^4,
+\end{equation}
+where $g_j=1$ means that interface $O_j$ is opened in that experimental arm. This avoids pretending that every oracle combination lies on a single scalar axis of ``strength.'' In particular, resource information and strategy information can be experimentally separated.
+
+\section{The central Dreamer-oracle synthesis}
+
+The main theoretical move is to treat the oracle layer as a set of \emph{controlled interventions on the Dreamer's counterfactual process}, not as a replacement for dreaming and not as a proof authority.
+
+Let a dream state be
+\begin{equation}
+d=(\tau,\sigma,b,a,q),
+\end{equation}
+where $\tau$ is the target, $\sigma$ is the simulated proof/settlement state, $b$ is the remaining dream budget, $a$ is the current action or strategy context, and $q$ is provenance metadata. Let $\Gamma_g(d)$ denote the oracle cue exposed under intervention vector $g$. Then one may write an oracle-assisted dream transition as
+\begin{equation}
+d_{t+1}
+=
+F_{\Dream}(d_t,\Gamma_g(d_t),\xi_t),
+\end{equation}
+where $\xi_t$ contains the ordinary stochastic, learned, creative, or replay signals used by Dreamer.
+
+The four interfaces act at different stages:
+\begin{align}
+O_1 &: \text{which settlement lane should dominate the dream?}\\
+O_2 &: \text{where should the next unit of dream/search budget be spent?}\\
+O_3 &: \text{which counterfactual action or representation should be tried next?}\\
+O_4 &: \text{is there a candidate terminal certificate worth waking verification?}
+\end{align}
+
+This creates a clean decomposition of settlement difficulty:
+\begin{equation}
+\text{total cost}
+\approx
+\text{role cost}
++
+\text{allocation cost}
++
+\text{strategy cost}
++
+\text{certificate-construction cost}
++
+\text{verification cost},
+\end{equation}
+with the understanding that the terms can interact and need not be literally additive in observed wall-clock time. The decomposition is an experimental factorization, not a theorem of independence.
+
+\section{Verifier sovereignty}
+
+The combined architecture retains the same trusted direction of information flow:
+\begin{equation}
+\boxed{
+\text{history / Dreamer / oracle cue}
+\longrightarrow
+\text{untrusted proposal or routing action}
+\longrightarrow
+P/R/I/C\text{ work}
+\longrightarrow
+\V
+\longrightarrow
+\BANK.
+}
+\end{equation}
+
+The forbidden shortcuts are
+\begin{equation}
+\Dream\not\longrightarrow\BANK,
+\qquad
+O_j\not\longrightarrow\BANK,
+\qquad
+O_j\not\longrightarrow\text{verifier acceptance}.
+\end{equation}
+
+\begin{principle}[Verifier sovereignty]
+Dreamer and all four oracle interfaces may alter attention, simulation, routing, allocation, strategy, or candidate generation. None may by itself promote a mathematical proposition into certified shared knowledge.
+\end{principle}
+
+For the strongest interface,
+\begin{equation}
+O_4(T,\varphi)=\pi
+\end{equation}
+means only that $\pi$ is a proposed certificate. Deposit requires
+\begin{equation}
+\V(T,\varphi,\pi)=1.
+\end{equation}
+Thus the oracle can be idealized without expanding the trusted kernel.
+
+\section{BANK, FUTUREBANK, and dream provenance}
+
+The combined architecture benefits from a three-way distinction.
+
+\begin{description}[leftmargin=2.5cm,style=nextline]
+\item[$\BANK$] Verified, provenance-tracked mathematical capital admitted under the frozen verifier policy.
+\item[$\FBANK$] Speculative, prospective, or counterfactual material that may be useful but is not certified.
+\item[Dream trace] Sandboxed replay state and simulation history, including oracle cues and their provenance.
+\end{description}
+
+Oracle-derived information should be tagged at the point of use. A minimum provenance tuple for a candidate is
+\begin{equation}
+q=(\text{source},\text{oracle interface},\text{mode},\text{target},\text{seed},\text{budget},\text{parent trace}).
+\end{equation}
+This makes it possible to determine whether a successful certificate was discovered normally, found after role information, obtained after idealized strategy guidance, or simply proposed by the certificate oracle.
+
+Without this tagging, oracle-assisted performance could be accidentally reported as autonomous DATA MIND performance.
+
+\section{Three role-hint modes already implied by the oracle theory}
+
+For $O_1$, three scientifically distinct modes are especially useful.
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Hidden ground truth.} The role label is invisible during search and used only for post-run scoring.
+\item \textbf{Professor-facing role hint.} The correct role changes awareness or salience in the Professor-facing member of the corresponding couple while the protected partner remains unhinted.
+\item \textbf{Direct role hint.} The correct role is supplied directly to both members of the matching couple.
+\end{enumerate}
+
+These arms answer different questions. The first measures ordinary recognition accuracy. The second measures the value of perfect role information when it enters through the existing advisory channel. The third deliberately removes more of the routing problem and provides an upper-bound counterfactual for role identification.
+
+A role hint should be modeled as an awareness intervention, for example
+\begin{equation}
+O_1(\tau)=I
+\quad\leadsto\quad
+A_{I_1}(\text{independence-directed work on }\tau),
+\end{equation}
+not as the epistemic assertion that the agent already possesses a proof that $\tau$ is independent.
+
+\section{Oracle-assisted Dreamer cycle}
+
+A combined operational cycle can be written as follows.
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Capture:} record bounded waking traces, verified deposits, failed branches, Professor scores, resource use, and representation changes.
+\item \textbf{Select:} choose material for replay using ordinary criteria or, in oracle-assisted arms, $O_1$ role relevance and $O_2$ marginal-resource guidance.
+\item \textbf{Simulate:} replay and vary assumptions, representations, lemma orderings, and strategies.
+\item \textbf{Steer:} optionally use $O_3$ to choose a next simulated action class or representation move.
+\item \textbf{Compress:} identify recurring structures and produce candidate lemmas, macros, or strategy motifs.
+\item \textbf{Propose:} return waking proposals; in an $O_4$ arm, permit a purported certificate to enter the same untrusted proposal channel.
+\item \textbf{Verify:} send every mathematical certificate candidate through the frozen verifier.
+\item \textbf{Evaluate:} score control proposals only under frozen held-out protocols.
+\item \textbf{Deposit or reject:} admit verified products to BANK; keep speculative material outside BANK; quarantine or reject invalid or resource-pathological material.
+\end{enumerate}
+
+The essential asymmetry is that the oracle can make the dream \emph{better informed} without making the dream \emph{true}.
+
+\section{What the four oracles let us measure}
+
+The scientific value of the four interfaces is that they turn vague claims about ``intelligence'' into ablatable bottlenecks.
+
+For a fixed target $\varphi$, let
+\begin{equation}
+C_g(\varphi)
+\end{equation}
+be the observed settlement cost under oracle intervention vector $g$, with theorem split, verifier, hardware, total compute, memory, seeds, stopping rule, and training exclusions held fixed.
+
+Define the marginal counterfactual gain from opening interface $j$ on top of configuration $g$ by
+\begin{equation}
+\Delta_j(g;\varphi)
+=
+C_g(\varphi)-C_{g+e_j}(\varphi),
+\end{equation}
+when $g_j=0$ and both costs are defined. Positive $\Delta_j$ means that removing the uncertainty represented by interface $j$ lowered observed cost in that arm.
+
+Over a benchmark $B$, use robust aggregates such as median cost, settlement rate, log-cost ratios, or capped expected cost rather than only raw means when timeouts occur.
+
+The original role-oracle diagnostic is the special case
+\begin{equation}
+\Delta_{\mathrm{role}}(B)
+=
+C_{0000}(B)-C_{1000}(B).
+\end{equation}
+A large positive role gap indicates that recognition/routing is expensive. A small role gap indicates that difficulty remains inside the selected settlement lane.
+
+Similarly,
+\begin{align}
+\Delta_{\mathrm{resource}} &\text{ estimates avoidable allocation waste},\\
+\Delta_{\mathrm{strategy}} &\text{ estimates avoidable action-selection or representation waste},\\
+\Delta_{\mathrm{certificate}} &\text{ estimates the remaining cost of constructing a valid terminal certificate.}
+\end{align}
+
+These are counterfactual diagnostic upper bounds. They do not imply that a practical learned component can reproduce the oracle gain.
+
+\section{Dreamer-specific ablation}
+
+The Dreamer itself requires a separate comparison. Let
+\begin{align}
+P_0 &= \text{baseline waking system},\\
+P_C &= \text{baseline plus Creativity},\\
+P_{CD} &= \text{baseline plus Creativity plus Dreamer}.
+\end{align}
+Define
+\begin{equation}
+\Delta_D=\Perf(P_{CD})-\Perf(P_C),
+\end{equation}
+under matched total compute and held-out evaluation.
+
+The new oracle theory permits a richer question:
+\begin{equation}
+\Delta_D(g)=\Perf(P_{CD};g)-\Perf(P_C;g).
+\end{equation}
+If Dreamer helps only when ideal oracle guidance is available, then the bottleneck may be dream selection or steering rather than the value of replay itself. If Dreamer helps in the no-oracle condition and retains its gain under several oracle configurations, then replay/recombination may be contributing independent value.
+
+\begin{hypothesis}[Dreamer value under bounded guidance]
+There exist finite benchmark families and fixed compute budgets for which a provenance-controlled Dreamer improves verifier-confirmed settlement performance beyond Creativity alone without requiring certificate-oracle access.
+\end{hypothesis}
+
+This hypothesis is intentionally falsifiable.
+
+\section{A factorial experiment design}
+
+A full $2^4$ oracle factorial crossed with Dreamer on/off would contain $32$ arms before Professor-hint submodes are added. That is theoretically clean but expensive. A staged design is preferable.
+
+\subsection*{Stage 1: no certificate oracle}
+Use
+\begin{equation}
+g\in\{0000,1000,0100,0010,1100,1010,0110,1110\}
+\end{equation}
+with Dreamer off/on. This studies recognition, allocation, and strategy without collapsing the construction problem through $O_4$.
+
+\subsection*{Stage 2: certificate upper bound}
+Open $O_4$ only after Stage 1 is understood. This estimates verifier and integration overhead when a terminal candidate is supplied, and provides a deliberately strong ceiling condition.
+
+\subsection*{Stage 3: learned surrogates}
+Replace idealized oracle signals one at a time by learned predictors trained only on allowed data. Compare realized gain to the corresponding oracle gap. If a learned component recovers fraction $\eta_j$ of an oracle benefit, define
+\begin{equation}
+\eta_j=
+\frac{C_{\mathrm{baseline}}-C_{\mathrm{learned},j}}
+{C_{\mathrm{baseline}}-C_{\mathrm{oracle},j}},
+\end{equation}
+when the denominator is positive. This converts the oracle from a philosophical idealization into an engineering yardstick.
+
+\section{Protected partner lanes and anti-herding}
+
+The Professor-facing versus direct-hint distinction has a second use: it probes the value of strategic diversity. In the DATA MIND couple architecture, a Professor-facing agent can receive guidance while its protected partner remains independent.
+
+Two outcomes are especially informative:
+\begin{itemize}
+\item If Professor-only guidance beats direct perfect guidance, the protected lane is contributing anti-herding value even when the high-level role signal is correct.
+\item If direct guidance strongly beats Professor-only guidance, the communication or translation layer from Professor to search may be limiting performance.
+\end{itemize}
+
+Dreamer makes this comparison richer because the protected partner may also preserve counterfactual diversity in replay. A dream system in which every simulated branch is forced to obey the same oracle-guided policy can lose the very branch diversity that dreaming was intended to supply.
+
+\begin{principle}[Oracle guidance without monoculture]
+Perfect information about one variable should not automatically collapse all strategic diversity in unrelated variables. Oracle assistance should be scoped to the uncertainty it is intended to remove.
+\end{principle}
+
+\section{Sentinel and resource safety}
+
+Oracle guidance does not eliminate the need for Sentinel. A correct role, resource, or strategy cue can still induce a pathological implementation response: an oversized branch, runaway memory growth, repeated replay, or a control loop that monopolizes the budget.
+
+Thus Sentinel remains logically separate:
+\begin{equation}
+\text{oracle correctness}\not\Rightarrow\text{resource safety}.
+\end{equation}
+Sentinel may veto or throttle resource-pathological actions while remaining outside mathematical truth determination. The verifier answers ``is this certificate acceptable?'' Sentinel answers ``is this computation allowed to consume these resources under the current policy?''
+
+This separation is important for Dreamer because replay can multiply branch count rapidly if counterfactual variation is left unconstrained.
+
+\section{A motivating PRCOM role quartet}
+
+A first role-oriented test can be organized around the Metamath theorem \texttt{prcom},
+\begin{equation}
+\{A,B\}=\{B,A\}.
+\end{equation}
+The ordinary theorem exercises the proof role. A matched quartet is more informative:
+
+\begin{center}
+\begin{tabular}{p{0.17\textwidth}p{0.60\textwidth}c}
+\toprule
+Case & Construction & Gold role \\
+\midrule
+PRCOM-P & Ordinary \texttt{prcom} in the consistent frozen theory & $P$ \\
+PRCOM-R & A target representing the negation of PRCOM in the same consistent environment & $R$ \\
+PRCOM-C & A context containing PRCOM and its negation, with an otherwise ordinary target & $C$ \\
+PRCOM-I & A carefully constructed related environment with a genuine independence certificate & $I$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The $I$ case is the delicate one. Failure to prove after deleting an axiom is not independence. A defensible independence instance requires certified witnesses, such as appropriate models of the base theory with the target true and false, or an equivalent formal metacertificate.
+
+For the Dreamer synthesis, one can compare waking-only and Dreamer-enabled versions of:
+\begin{enumerate}[leftmargin=2em]
+\item hidden role oracle;
+\item Professor-facing role hint;
+\item direct role hint;
+\item later, resource and strategy oracle assistance.
+\end{enumerate}
+
+The certificate oracle should be withheld from the first serious comparison because it would answer a much stronger question.
+
+\section{Metrics}
+
+Every comparison should state what is frozen. At minimum:
+\begin{itemize}
+\item formal database revision and theorem split;
+\item verifier and certificate semantics;
+\item metatheory and allowed auxiliary tools;
+\item total compute and memory caps;
+\item hardware and software environment;
+\item random seeds;
+\item stopping rules and timeout treatment;
+\item training-exclusion rules;
+\item oracle mode and exact information exposed;
+\item Dreamer budget and replay-buffer policy.
+\end{itemize}
+
+Primary outputs should include:
+\begin{itemize}
+\item verifier-valid settlement rate;
+\item role accuracy and role-confusion matrix;
+\item wall-clock time and search expansions;
+\item proof/certificate size and dependency depth where applicable;
+\item peak memory and verifier time;
+\item resources consumed by each settlement role;
+\item oracle-assisted cost gaps $\Delta_j$;
+\item Dreamer marginal gain $\Delta_D(g)$;
+\item useful verified lemma novelty and cross-run reuse;
+\item false positives, faults, crashes, and Sentinel interventions.
+\end{itemize}
+
+A role-confusion matrix for gold role $a$ and reported role $b$ is
+\begin{equation}
+M_{ab}(N)=
+\left|\{n\le N:\Oracle(\varphi_n)=a,\ \AMLD(\varphi_n)=b\}\right|.
+\end{equation}
+This is especially useful because total accuracy can hide systematic directional errors, such as repeatedly treating independence problems as ordinary proof problems.
+
+\section{What different outcomes would mean}
+
+The combined theory is valuable because it supports mutually distinguishable outcomes.
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Large $O_1$ gain:} role recognition and routing are major bottlenecks.
+\item \textbf{Small $O_1$ but large $O_2$ gain:} the right lane is usually recognized, but compute is poorly allocated within or across lanes.
+\item \textbf{Small $O_1,O_2$ but large $O_3$ gain:} action selection, branch ordering, or representation choice dominates.
+\item \textbf{Large $O_4$ gap only:} the dominant difficulty is actual certificate construction rather than recognition or control.
+\item \textbf{Dreamer gain with no oracle:} replay/recombination adds value autonomously.
+\item \textbf{Dreamer gain only with $O_1$ or $O_2$:} Dreamer may be useful but currently suffers from poor replay selection or budget allocation.
+\item \textbf{Oracle hints harm performance:} the translation from correct high-level information to concrete control is oversteering the search.
+\item \textbf{Professor-only beats direct hint:} protected diversity contributes value even under idealized role information.
+\end{enumerate}
+
+None of these outcomes threatens verifier soundness by itself. A strategically bad controller can waste compute while the verifier continues to reject false certificates correctly.
+
+\section{What the theory does not claim}
+
+The following claims are explicitly excluded.
+
+\begin{itemize}
+\item A finite implementation is not a literal unlimited hypernatural computation.
+\item A gold role label is not a proof of theoremhood, refutability, independence, or contradiction unless its benchmark provenance independently supplies the required witness.
+\item A certificate oracle is not permitted to bypass the verifier.
+\item A dreamed object is not true because it appears in a successful simulation.
+\item Dreamer improvement over Creativity alone has not been established merely by defining the module.
+\item Oracle gaps are counterfactual upper bounds, not evidence that a practical perfect oracle can be implemented.
+\item Role, resource, strategy, and certificate uncertainty should not be collapsed into one performance number when the purpose of the experiment is to identify the bottleneck.
+\end{itemize}
+
+\section{Theoretical contribution of the combined addition}
+
+The most important conceptual result of today's synthesis is a clean separation of five layers that are often blurred together in automated reasoning:
+\begin{equation}
+\boxed{
+\text{recognize role}
+\rightarrow
+\text{allocate resources}
+\rightarrow
+\text{choose strategy}
+\rightarrow
+\text{construct candidate}
+\rightarrow
+\text{verify}.
+}
+\end{equation}
+Dreamer supplies a mechanism for exploring the middle of this chain counterfactually. The four oracle interfaces supply controlled interventions that can remove one uncertainty at a time. The verifier supplies the non-negotiable correctness boundary.
+
+This gives DATA MIND a way to ask not merely ``did more intelligence help?'' but rather:
+\begin{quote}
+Which uncertainty was expensive, how much did removing it help, and did the Dreamer still contribute when that uncertainty was controlled?
+\end{quote}
+
+That question is both scientifically sharper and experimentally falsifiable.
+
+\section{Next defensible experiment}
+
+The next defensible experiment is a low-intervention ablation rather than an all-powerful oracle run.
+
+\begin{enumerate}[leftmargin=2em]
+\item Freeze a small matched role-labeled benchmark, ideally beginning with a carefully certified PRCOM quartet or another family with explicit $P/R/I/C$ provenance.
+\item Hold verifier, total compute, memory, seeds, stopping rules, and theorem data fixed.
+\item Compare Creativity-only versus Creativity+Dreamer.
+\item Within each, compare hidden role oracle, Professor-facing $O_1$, and direct $O_1$.
+\item Keep $O_2$, $O_3$, and especially $O_4$ closed in the first pass.
+\item Measure valid settlement, role confusion, expansions, time, memory, per-role budget, Dreamer utilization, and oracle gap.
+\item Only after the role layer is understood, open $O_2$ and $O_3$ in separate arms.
+\item Reserve $O_4$ for a later ceiling experiment because it changes the nature of the search problem most dramatically.
+\end{enumerate}
+
+This order preserves interpretability. If all four oracle interfaces are opened at once, a success says little about which missing capability mattered.
+
+\section{Conclusion}
+
+The Dreamer and the four-oracle layer fit together naturally because they solve different problems. Dreamer is a bounded mechanism for replaying, recombining, and extending experience. The oracle interfaces are idealized sources of information about role, resource allocation, strategy, or a candidate certificate. Their combination creates a controlled laboratory for studying where settlement cost originates.
+
+The key architectural invariant remains simple:
+\begin{equation}
+\boxed{
+\text{Dream and oracle information may guide search; only verification may certify mathematics.}
+}
+\end{equation}
+
+The resulting extension does not grant DATA MIND magical mathematical authority. It gives the research program a more precise way to measure the price of uncertainty and to determine whether dreaming, recognition, routing, strategy, or certificate construction is the limiting factor on a given benchmark.
+
+\appendix
+\section{Compact notation}
+
+\begin{center}
+\begin{tabular}{p{0.22\textwidth}p{0.66\textwidth}}
+\toprule
+Symbol & Meaning \\
+\midrule
+$\Dream$ & Dreamer/Simulator bounded replay and counterfactual map \\
+$O_1$ & Role oracle \\
+$O_2$ & Resource oracle \\
+$O_3$ & Strategy oracle \\
+$O_4$ & Certificate oracle \\
+$g\in\{0,1\}^4$ & Oracle intervention vector \\
+$K_i^{\le r}\varphi$ & Resource-indexed epistemic warrant \\
+$\mathcal O_i(H)$ & Hyperfinite worst-case closure cost when defined \\
+$P,R,I,C,U$ & Proof, refutation, independence, contradiction, unresolved \\
+$\V$ & Frozen independent verifier \\
+$\BANK$ & Verifier-admitted shared mathematical capital \\
+$\FBANK$ & Speculative/counterfactual future material \\
+$\Delta_j$ & Counterfactual cost gain from oracle interface $j$ \\
+$\Delta_D(g)$ & Dreamer marginal performance gain under oracle configuration $g$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Research provenance}
+
+This synthesis consolidates two previously developed DATA MIND ideas: (i) the Dreamer/Simulator as a bounded replay, recombination, and counterfactual extension mechanism whose products remain untrusted until waking verification or controlled evaluation; and (ii) the DATA MIND 3.2 hyperfinite epistemic-oracle framework, including role-indexed settlement, finite proxy experiments, verifier sovereignty, Professor-facing versus direct role hints, and the four oracle interfaces. The present note's additional contribution is to formalize how those four interfaces can act as staged interventions on the Dreamer's internal selection, allocation, steering, and candidate-generation process, and to turn the combined mechanism into an ablation program.
+
+\end{document}

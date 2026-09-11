@@ -1,0 +1,62 @@
+\documentclass[11pt]{article}
+\usepackage{cmap}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Solving SAT in polynomial time?},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={SAT and Groebner bases},
+  pdfkeywords={P vs NP, polynomial time SAT solver, Boolean algebra}
+}
+
+\title{Solving SAT in polynomial time?}
+\author{Brian Tenneson}
+\date{March 22, 2025}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Our goal is to shed some light on the $\mathcal{P}$ vs $\mathcal{NP}$ problem by looking at a SAT solver and investigate whether it runs in polynomial time. Given the $\mathcal{NP}$-completeness of SAT, if it does, this would imply $\mathcal{P}=\mathcal{NP}$.
+\end{abstract}
+
+\noindent\textbf{Keywords:} $\mathcal{P}$ vs $\mathcal{NP}$, polynomial time SAT solver, Boolean algebra
+
+\medskip
+\noindent We would like to acknowledge all of the many people who contributed to this work.
+
+\section{A SAT solver which might run in polynomial time}
+
+\subsection{Input Boolean wff $\varphi$}
+Either $\varphi=p_i$ for a propositional variable $p_i$ or $\varphi=\neg\varphi_1$ for some Boolean wff $\varphi_1$, or $\varphi=\varphi_1\wedge\varphi_2$ for Boolean wffs $\varphi_1$ and $\varphi_2$, or $\varphi=\varphi_1\vee\varphi_2$ for Boolean wffs $\varphi_1$ and $\varphi_2$.
+
+\subsection{Compute a polynomial associated with $\varphi$ called $\tau(\varphi)$ as follows:}
+\begin{align*}
+\tau(p_i) &:= x_i,\\[0.65em]
+\tau(\neg\varphi_1) &:= 1+\tau(\varphi_1),\\[0.65em]
+\tau(\varphi_1\wedge\varphi_2) &:= \tau(\varphi_1)\tau(\varphi_2),\\[0.65em]
+\tau(\varphi_1\vee\varphi_2) &:= 1+\bigl(1+\tau(\varphi_1)\bigr)\bigl(1+\tau(\varphi_2)\bigr).
+\end{align*}
+Calculations are done in $\mathbb{F}_2$.
+
+\subsection{Let $J=\langle \tau+1,x_1^2+x_1,\ldots,x_n^2+x_n\rangle$ be an ideal in $\mathbb{F}_2[x_1,\ldots,x_n]$}
+Note that
+\[
+J=\langle\tau+1\rangle+\langle x_1^2-x_1,\ldots,x_n^2-x_n\rangle.
+\]
+
+\newpage
+\subsection{Find a Gr\"obner basis $G$ for $J$ which might be done in polynomial time using the FGLM algorithm or a different algorithm}
+
+\subsection{Check whether $\overline{1}^{\,G}=0$}
+
+\subsubsection{If $\overline{1}^{\,G}=0$, then $\varphi$ is not satisfiable}
+
+\subsubsection{If $\overline{1}^{\,G}\neq 0$, then $\varphi$ is satisfiable}
+
+\end{document}

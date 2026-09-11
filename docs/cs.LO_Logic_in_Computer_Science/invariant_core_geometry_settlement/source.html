@@ -1,0 +1,600 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Invariant Core and the Geometry of Settlement — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/invariant_core_geometry_settlement/">Back to publication</a><h1>The Invariant Core and the Geometry of Settlement</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/invariant_core_geometry_settlement/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+
+\hypersetup{
+  pdftitle={The Invariant Core and the Geometry of Settlement},
+  pdfauthor={Brian Tenneson},
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=black,
+  citecolor=black
+}
+
+\setstretch{1.08}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65em}
+\setlist[itemize]{topsep=0.35em,itemsep=0.2em,parsep=0pt}
+\setlist[enumerate]{topsep=0.35em,itemsep=0.2em,parsep=0pt}
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.6em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{The Invariant Core and the Geometry of Settlement}
+\rhead{Brian Tenneson}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\newcommand{\src}[1]{\par\smallskip\noindent\textit{Source: #1}\normalsize}
+\newcommand{\BANK}{\ensuremath{\mathrm{BANK}}}
+\newcommand{\FUTUREBANK}{\ensuremath{\mathrm{FUTUREBANK}}}
+\newcommand{\Cn}{\mathrm{Cn}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\st}{\operatorname{st}}
+
+\title{\textbf{The Invariant Core and the Geometry of Settlement}\\[0.5em]
+\large Trading, Induction, Formal Self-Awareness, Hyperfinite Epistemic Horizons, and Counterfactual Dreaming in DATA MIND}
+\author{Brian Tenneson}
+\date{September 4, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Taken separately, the four works considered here address apparently different problems: consequence-preserving changes of formal presentation; induction and formal self-awareness in automated theorem provers; hyperfinite analogues of logical omniscience and settlement-role oracles; and a Dreamer architecture guided by four experimentally separable oracle interfaces. Taken together, however, they support a considerably more unified picture.
+
+The central conclusion of this synthesis is that \emph{mathematical settlement has an invariant core surrounded by a highly mutable computational geometry}. The invariant core consists of those claims that survive certified translations, verifier checking, and appropriately sound quotienting. Around that core lie presentation choice, search topology, resource allocation, strategic attention, abstraction, memory reuse, self-modeling, counterfactual replay, and scheduling. These latter structures can change enormously without changing what is ultimately certified.
+
+This distinction permits a stronger interpretation of DATA MIND. It is not merely a theorem prover with additional heuristics. It can instead be understood as an experimental architecture for searching over ways of knowing and ways of searching, while keeping mathematical acceptance outside that search. Trading changes the presentation in which a problem is attacked. Quotient hunting changes the resolution at which its search space is represented. BANK changes the cost of reconstructing previously verified knowledge. Dreamer changes which past experiences and counterfactual alternatives are explored. The oracle interfaces selectively remove uncertainty about role, resources, strategy, or certificate construction. Formal self-awareness supplies a mathematically distinct coordinate describing what a system proves about its own designated representation. Induction supplies the machinery needed to distinguish genuine structural lower bounds from avoidable search waste.
+
+The result is a proposed theory of \emph{verifier-gated metareasoning}: search may alter almost everything about the route to a result, while certification itself remains narrow, exact, and provenance controlled.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{The fundamental distinction: consequence is not search geometry}
+
+The strongest common idea across all four works is a separation between \emph{what follows mathematically} and \emph{how expensive it is to discover that it follows}.
+
+\emph{Trading Theorem 001} formalizes this distinction by defining consequence-equivalent presentations $P_1\equiv_{\Cn}P_2$. Such presentations have the same consequence behavior, yet their proof horizons need not have the same numerical value. The paper explicitly identifies this gap as the region in which trading can alter proof search without changing provability.
+\src{\emph{Trading Theorem 001}, p.~2.}
+
+The Settlement Preservation Theorem strengthens the point. A consequence-preserving trade cannot change whether a conjecture lies in the proof, refutation, syntactic-independence, or contradiction class, even though the trade may substantially alter the proof-search geometry. The subsequent distortion theorem likewise allows shortest proof costs to change under controlled translation.
+\src{\emph{Trading Theorem 001}, p.~5.}
+
+The hyperfinite work reaches the same distinction from epistemic logic. Ordinary logical omniscience suppresses computational cost; the resource-indexed relation $K_i^{\le r}\varphi$ restores it. A theorem may be a logical consequence and nevertheless lie beyond a particular finite resource horizon.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, p.~3.}
+
+Most importantly for the present synthesis, the hyperfinite paper explicitly observes that proof cost is presentation-sensitive: certified trading may change $c_i(\varphi)$, and consequently $O_i(H)$, while leaving provability unchanged. It calls this the natural meeting point between hyperfinite epistemic geometry and the trading program.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, p.~12.}
+
+This gives the first synthetic principle.
+
+\begin{quote}
+\textbf{Invariant-Core Principle.} A settlement architecture should distinguish mathematical invariants from computational coordinates. Consequence, properly certified settlement status, and verifier acceptance belong to the invariant core. Proof horizon, branching factor, presentation, quotient size, scheduling, attention, memory access, and strategy belong to the mutable geometry around that core.
+\end{quote}
+
+This is more than a philosophical distinction. It tells us what DATA MIND is allowed to optimize aggressively. It can change the geometry without being permitted to change the criterion for mathematical acceptance.
+
+\section{The search space is larger than the space of proof steps}
+
+A conventional prover searches mainly for a sequence of inference steps inside a fixed formal presentation. The combined theory suggests that this is unnecessarily restrictive.
+
+The Trading Theorem program explicitly enlarges the state of search. After certified trading and quotient hunting, the search space becomes
+\[
+(\text{candidate presentation},\ \text{candidate quotient},\ \text{candidate lemma}),
+\]
+rather than merely a set of formulas or derivation states. A quotient may even be discovered in a traded presentation where an invariant becomes transparent although it was opaque in the original one.
+\src{\emph{Trading Theorem 001}, p.~8.}
+
+Dreamer naturally occupies this larger space. It does not merely continue ordinary best-first proof search. It replays accumulated traces, failed branches, verified lemmas, representation choices, strategy outcomes, and partial-credit information. It may vary representations and lemma orderings, recombine failed branches, and compress recurring structures into candidate motifs or macros.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~3.}
+
+This leads to a second synthetic conclusion: \textbf{Dreamer can be interpreted as a generator of hypotheses about the meta-search space that Trading and QH make mathematically tractable.}
+
+A dreamed presentation change is not automatically a valid trade. A dreamed quotient is not automatically sound. A dreamed macro is not automatically a theorem. But Dreamer can generate such objects, after which specialized certification procedures decide whether they may safely influence waking search.
+
+A natural division of labor is therefore
+\[
+\text{Dream}
+\longrightarrow
+\begin{cases}
+\text{candidate presentation},\\
+\text{candidate quotient},\\
+\text{candidate lemma/macro},\\
+\text{candidate strategy}
+\end{cases}
+\longrightarrow
+\text{certification/evaluation}
+\longrightarrow
+\text{waking search}.
+\]
+
+The importance of this interpretation is that creativity and mathematical trust need not be enemies. Creativity can be permissive precisely because acceptance is restrictive.
+
+\section{Verification makes radical search transformations possible}
+
+Both the oracle and Dreamer papers insist that neither dreaming nor even idealized oracle information is itself mathematical authority. The strongest certificate oracle $O_4$ is still only a source of a proposed certificate; the certificate enters BANK only if the frozen verifier accepts it. The trusted flow is
+\[
+\text{Dreamer/oracle information}
+\rightarrow
+\text{proposal or routing}
+\rightarrow
+P/R/I/C
+\rightarrow
+V
+\rightarrow
+\BANK.
+\]
+The prohibited arrows are Dreamer-to-BANK and oracle-to-BANK.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~6.}
+
+The hyperfinite paper formulates the same principle: the oracle may alter attention, but it may not manufacture certified knowledge.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, p.~7.}
+
+Trading adds another kind of trust obligation. A transformed presentation must itself be justified by faithful translation or consequence equivalence; a quotient used for hard pruning must satisfy the required transition-preservation conditions; a BANK macro remains safe because it can be expanded back into a verified derivation. The paper&#x27;s verifier-gated pipeline is therefore
+\[
+\text{original presentation}
+\rightarrow
+\text{certified trade}
+\rightarrow
+\text{verified quotient}
+\rightarrow
+\text{BANK macros}
+\rightarrow
+\text{verifier}
+\rightarrow
+\text{settlement}.
+\]
+\src{\emph{Trading Theorem 001}, p.~11.}
+
+The synthesis therefore suggests that ``the verifier&#x27;&#x27; should be understood broadly as part of a family of narrow certification gates:
+\[
+\begin{array}{rcl}
+V_{\mathrm{cert}} &amp;:&amp; \text{Is the final mathematical certificate valid?}\\
+V_{\mathrm{trade}} &amp;:&amp; \text{Does this transformation preserve the required consequences?}\\
+V_{\mathrm{quot}} &amp;:&amp; \text{Does this abstraction preserve the reachability implication being used?}\\
+S &amp;:&amp; \text{Is this computation permitted under the resource policy?}
+\end{array}
+\]
+
+The last object is Sentinel, not a mathematical verifier. The Dreamer paper stresses that oracle correctness does not imply resource safety: even a correct strategic cue can cause runaway memory, repeated replay, or budget monopolization.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~10.}
+
+Thus truth safety, transformation safety, and resource safety are three different questions.
+
+\section{Induction supplies the missing notion of structural inevitability}
+
+Trading, QH, Dreamer, and oracles all concern ways to make search better. But without lower bounds, an experiment cannot always tell whether a difficult proof was difficult because the controller searched poorly or because the target was structurally deep.
+
+The Version 46 supplement to \emph{Depths of Induction and Formalized Self-Awareness} gives exactly the missing tool. It distinguishes structural induction on formulas, induction on inference closure, induction on ATP stages or birth times, and induction on the reflection sequence. These are related but explicitly not interchangeable.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, Version 46 Supplement, V46-1; PDF p.~51.}
+
+More importantly, the ATP potential theorem gives a quantitative lower bound. If a rank $r$ can increase by at most $d$ in one rule-driven inference layer, then a target of rank $r(\varphi)$ cannot be born before
+\[
+b_{M,\Gamma}(\varphi)
+\ge
+1+
+\left\lceil
+\frac{\max\{0,r(\varphi)-r_0\}}{d}
+\right\rceil.
+\]
+The paper is careful that this is a lower bound on logical stages, not automatically on wall-clock runtime.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, Version 46 Supplement, V46-4; PDF p.~54.}
+
+QH supplies a different sort of certified lower bound. If quotient edge costs relax original edge costs, quotient distance satisfies
+\[
+\dist_Q(q(s),q(T))\le \dist_G(s,T),
+\]
+making quotient distance an admissible heuristic for shortest-path proof search.
+\src{\emph{Trading Theorem 001}, pp.~6--7.}
+
+This gives an important new experimental distinction: \textbf{structural difficulty and search waste should be measured separately.}
+
+An observed large cost does not by itself imply poor search. If a certified rank argument says that the target cannot appear before a large number of inference layers, some depth is unavoidable. Conversely, if a quotient gives a small lower bound while observed search explodes, there is stronger evidence of avoidable branching, representation, or strategy waste.
+
+The two lower bounds should not simply be numerically combined unless they have been calibrated into the same cost units. A logical birth-stage lower bound is not seconds; a quotient path distance is not automatically an expansion count. The correct object is initially a \emph{vector of structural floors}, not a falsely precise scalar.
+
+\section{Oracle gaps can diagnose where excess cost resides}
+
+The Dreamer-oracle synthesis decomposes settlement into five experimentally separable layers:
+\[
+\text{recognize role}
+\rightarrow
+\text{allocate resources}
+\rightarrow
+\text{choose strategy}
+\rightarrow
+\text{construct candidate}
+\rightarrow
+\text{verify}.
+\]
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~13.}
+
+The four oracle interfaces remove different uncertainties: $O_1$ supplies role, $O_2$ resource allocation, $O_3$ strategy or representation direction, and $O_4$ a candidate certificate.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~5.}
+
+For fixed conditions, the marginal oracle gain
+\[
+\Delta_j(g;\varphi)=C_g(\varphi)-C_{g+e_j}(\varphi)
+\]
+estimates how much observed cost disappears when one particular uncertainty is removed. A large $O_1$ gap implicates role recognition; a large $O_2$ gap implicates allocation; a large $O_3$ gap implicates action selection or representation; an $O_4$-only gap suggests that certificate construction remains dominant.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~8.}
+
+The new conclusion obtained by combining this with induction and quotient bounds is stronger:
+
+\begin{quote}
+\textbf{Oracle gaps diagnose avoidable uncertainty; structural bounds diagnose irreducible difficulty under a specified representation and rule system.}
+\end{quote}
+
+Suppose, for example, that $O_1$ and $O_2$ produce almost no gain, $O_3$ produces a large gain, and the ATP birth-stage lower bound is small. That pattern would implicate representation or strategy rather than intrinsic proof depth.
+
+Conversely, suppose all of $O_1,O_2,O_3$ have small gaps, while a certified potential argument forces a large logical depth. Then poor high-level intelligence is a less plausible explanation: the target may simply lie far from the initial state under the current presentation.
+
+This creates a possible empirical program for distinguishing \emph{unavoidable proof depth from avoidable epistemic waste}.
+
+\section{Resource-bounded omniscience is presentation-relative}
+
+The hyperfinite framework defines an idealized closure-cost object
+\[
+O_i(H)
+=
+\max_{\substack{n\le H\\T\vdash\varphi_n}}
+{}^*c_i(\varphi_n),
+\]
+and, when normalization is limited,
+\[
+\rho_i(H)=\st\!\left(\frac{O_i(H)}{H}\right).
+\]
+It separately defines a coverage shadow $\omega_i(H)$, emphasizing that high coverage and low worst-case cost are distinct properties.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, pp.~5--6.}
+
+Reading this together with the Trading Theorem changes how these quantities should be interpreted. If presentation $P$ and presentation $Q$ prove the same things but assign different proof horizons to them, then $O_i(H)$ is not simply a property of ``agent $i$.&#x27;&#x27; It depends on the formal and computational environment in which the agent is asked to acquire its warrants.
+
+A more accurate conceptual dependence is therefore something like
+\[
+O_i(H;P,\Pi,V,B),
+\]
+where $P$ is presentation, $\Pi$ is search/control policy, $V$ is the verification regime, and $B$ is the available verified BANK.
+
+This notation is a conclusion of the synthesis rather than a theorem stated in the source papers. But it follows directly from their conjunction: the hyperfinite paper says closure costs are presentation-sensitive, while the Trading Theorem proves that presentations can change proof cost without changing consequence.
+
+This has a significant conceptual consequence: \textbf{resource-bounded logical omniscience is not an intrinsic scalar measure of mathematical intelligence.} It is a relational property of an agent embedded in a presentation, cost model, memory state, search policy, and verification architecture.
+
+\section{Formal self-awareness is another independent coordinate}
+
+The self-awareness treatise contributes an axis that should not be collapsed into proof power.
+
+An ATP has a formal self-model when it possesses a designated tag and provable self-descriptive formulas concerning that tag. The paper explicitly restricts the interpretation: this is a mathematical formalization of self-identification, not a claim about subjective consciousness.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, Part II, printed p.~54; PDF p.~57.}
+
+The reflection hierarchy then defines increasingly deep statements of the form
+\[
+\theta_0=\mathrm{ATP}(\langle M\rangle),\qquad
+\theta_{k+1}=\mathrm{Pr}(\langle M\rangle,\langle\theta_k\rangle).
+\]
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, printed p.~58; PDF p.~61.}
+
+Yet the paper also shows that self-awareness level deliberately forgets many computational properties. The quotient by formal-self-awareness equivalence identifies machines according to self-descriptive mathematical content while forgetting runtime, memory consumption, proof-search heuristics, and ordinary simulation depth.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, printed p.~64; PDF p.~67.}
+
+Even more strikingly, the reflection-closure machine $R$ has competence level $\omega$, while its performance level at every finite stage remains finite. Thus formal competence and finite performance provably come apart.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, printed p.~89; PDF p.~92.}
+
+This aligns almost perfectly with the resource-indexed epistemic framework. A system may be capable, in the limit of its formal process, of generating every finite reflection level while at each bounded stage having reached only finitely much of that potential. Likewise an ATP may have a fixed deductive closure while only a bounded fraction is accessible at resource $r$.
+
+The shared structure is
+\[
+\text{competence/closure}\neq\text{bounded accessible performance}.
+\]
+
+This gives a major synthetic conclusion: \textbf{formal self-awareness, deductive strength, and bounded settlement efficiency should be measured on separate axes.}
+
+A machine may be highly self-reflective yet inefficient at theorem settlement. A highly efficient prover may be Level 0 in the formal self-awareness hierarchy. Strong self-awareness does not imply logical omniscience; the hyperfinite paper explicitly separates introspection from deductive closure.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, p.~13.}
+
+\section{Self-description must obey the same epistemic firewall}
+
+There is a second, subtler bridge between the Dreamer and self-awareness theories.
+
+The Dreamer paper expressly includes self-descriptions among products that cannot become trusted merely because they were dreamed, replayed, or repeatedly encountered. They remain candidates until the appropriate verification or controlled evaluation occurs.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~4.}
+
+The self-awareness paper independently explains why such caution is necessary. Without provability soundness, a machine can prove a higher reflection statement while failing to prove the lower statement it claims to prove. The Level-2-but-not-Level-1 construction is the formal analogue of an unjustified claim about oneself; provability soundness is introduced precisely to eliminate this behavior.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, printed pp.~59--60; PDF pp.~62--63.}
+
+Thus
+\[
+\text{self-report}\neq\text{factive self-knowledge},
+\]
+just as
+\[
+\text{Dreamer proposal}\neq\text{BANK knowledge}
+\]
+and
+\[
+\text{oracle cue}\neq\text{verified certificate}.
+\]
+
+This suggests a general epistemic rule for DATA MIND: \textbf{no source receives truth authority because of its identity.}
+
+Not Dreamer, not Professor, not an oracle, not the system&#x27;s own self-model, and not a transformed presentation. Authority attaches to the appropriate warrant.
+
+\section{Three different kinds of compression appear---and they preserve different things}
+
+The four papers repeatedly use operations that throw information away. They should not be conflated.
+
+The Quotient Hunter compresses a proof-search graph. If its conditions are satisfied, it may preserve reachability implications, exact settlement reachability, or even shortest distance. An unreachable quotient fiber can be deleted with proof-level safety.
+\src{\emph{Trading Theorem 001}, pp.~6--7.}
+
+The formal-self-awareness quotient does something entirely different. It identifies machines whose self-descriptive content is equivalent, explicitly forgetting speed, memory, heuristics, and implementation.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, printed p.~64; PDF p.~67.}
+
+The nonstandard analysis paper performs yet another reduction when it takes standard traces or standard-part shadows. A hyperfinite coverage density can yield a standard real $\omega_i(H)$, and a normalized worst-case cost can yield $\rho_i(H)$, but these shadows answer different questions and discard different information.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, p.~6.}
+
+The common abstract pattern is information reduction, but every reduction has a \emph{preservation obligation}. One may therefore formulate a useful design question:
+
+\begin{quote}
+What information may be discarded without destroying the property relevant to the current settlement decision?
+\end{quote}
+
+For QH, that property might be reachability. For formal-self-awareness equivalence, it is self-descriptive content. For standard-part extraction, it is an appropriate asymptotic standard summary. The lesson is that ``compression&#x27;&#x27; is not one operation. Safe abstraction always has to state what is preserved.
+
+\section{Provenance is part of the mathematics of experimentation}
+
+The Dreamer paper requires oracle-derived candidates to carry provenance recording source, oracle interface, mode, target, seed, budget, and parent trace. Otherwise an oracle-assisted result could accidentally be reported as autonomous DATA MIND performance.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, pp.~6--7.}
+
+Trading creates another provenance obligation. Cross-presentation BANK reuse is sound because the theorem and the presentation-equivalence certificates travel together. A lemma proved in one consequence-equivalent presentation can safely be reused in another only because the relation between presentations is certified.
+\src{\emph{Trading Theorem 001}, p.~8.}
+
+The self-awareness work supplies a surprisingly strong reason not to discard process provenance. It proves that formal-self-awareness equivalence can contain both a non-handed and a hypothesis-handed representative. Degeneracy is therefore not invariant under the self-awareness equivalence relation.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, printed pp.~89--90; PDF pp.~92--93.}
+
+That means two systems may possess equivalent formal self-theories even though one actually derived those statements and another was handed them.
+
+The synthetic conclusion is important: \textbf{extensional equivalence of outputs does not preserve epistemic history.}
+
+For DATA MIND, provenance should therefore not be treated as mere debugging metadata. It records distinctions that can disappear under mathematically legitimate equivalence relations.
+
+A sufficiently rich BANK item might ultimately need to remember not just
+\[
+(\varphi,\pi),
+\]
+but something closer to
+\[
+(\varphi,\pi,
+P_{\mathrm{origin}},
+\text{trade certificates},
+\text{oracle exposure},
+\text{dream lineage},
+\text{dependencies},
+\text{verification state}).
+\]
+The exact schema is an engineering question, but the reason for retaining it is theoretical.
+
+\section{Diversity has both an empirical and a theorem-backed justification}
+
+The Dreamer synthesis warns against turning perfect high-level information into strategic monoculture. In the couple architecture, a Professor-facing member may receive a role hint while a protected partner remains independent. If Professor-only guidance were to outperform direct guidance to both partners, that would indicate useful anti-herding value. Dreamer magnifies the concern because forcing every counterfactual branch to follow the same hint could destroy the diversity replay was intended to create.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~10.}
+
+The Trading Theorem supplies a mathematical analogue of the same idea. If $k$ certified consequence-equivalent presentations are searched round-robin, settlement is obtained within approximately
+\[
+k\min_i E_i
+\]
+expansions, where $E_i$ is the standalone expansion cost of presentation $i$. The theorem does not guarantee that any trade is superior, but it guarantees that a fair portfolio can capture the best available certified presentation with a bounded scheduling penalty.
+\src{\emph{Trading Theorem 001}, p.~9.}
+
+Together these results support a broader anti-monoculture principle:
+
+\begin{quote}
+\textbf{Preserve diversity not only between agents, but between certified search geometries.}
+\end{quote}
+
+This gives a particularly interesting architecture for Dreamer. Rather than dreaming toward a single supposedly optimal representation, it can maintain a portfolio of distinct consequence-equivalent presentations and distinct sound abstractions. Oracle information may constrain the dimension about which it is informative while leaving unrelated dimensions diverse.
+
+Perfect knowledge of the settlement role does not imply perfect knowledge of the best presentation.
+
+\section{A unified settlement-cost ledger}
+
+The Dreamer paper proposes the experimental factorization
+\[
+C_{\mathrm{settle}}
+\approx
+C_{\mathrm{role}}
++C_{\mathrm{allocation}}
++C_{\mathrm{strategy}}
++C_{\mathrm{construction}}
++C_{\mathrm{verification}},
+\]
+while explicitly warning that the terms interact and are not a theorem of literal wall-clock additivity.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, p.~6.}
+
+The Trading Theorem proposes a related controller objective incorporating the costs of trading, quotient construction, search, and verification.
+\src{\emph{Trading Theorem 001}, p.~12.}
+
+Combining them suggests a more detailed research ledger:
+\[
+\begin{aligned}
+C_{\mathrm{settle}}
+\approx{}&amp;
+C_{\mathrm{role}}
++C_{\mathrm{allocation}}
++C_{\mathrm{presentation}}
++C_{\mathrm{quotient}}\\
+&amp;+C_{\mathrm{strategy}}
++C_{\mathrm{construction}}
++C_{\mathrm{verification}}
++C_{\mathrm{safety/provenance}}.
+\end{aligned}
+\]
+
+This equation is \emph{not a theorem} and should not be reported as additive physics. It is an experimental decomposition.
+
+Its purpose is to prevent one kind of improvement from being misidentified as another. A trade may reduce search cost while adding transformation cost. QH may save millions of raw expansions but cost substantial preprocessing. BANK may shorten proof horizons while increasing retrieval overhead. Dreamer may discover excellent representations but consume too much replay compute. An oracle may lower the role cost while accidentally increasing strategy cost through oversteering.
+
+The true optimization target is therefore not ``shortest proof&#x27;&#x27; in isolation. It is something closer to minimizing \emph{verified total settlement cost subject to invariant-preservation constraints}.
+
+\section{Finite success must not be silently promoted to infinitary success}
+
+The two mathematically deepest papers share another methodological boundary.
+
+The hyperfinite paper insists that an internal hyperfinite conjunction is not automatically the same object as an external countable infinitary conjunction. Transfer applies to genuinely internal finitary constructions extended to hyperfinite indices; it does not license arbitrary collapse between internal hyperfinite and external infinitary mathematics.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, p.~4.}
+
+The induction paper reaches an analogous boundary for reflection. Ordinary induction generates every finite reflection level, but a genuine transfinite sequence needs an explicit limit-stage clause. Repeated application of the finite successor rule does not by itself produce the collective limit ascription.
+\src{\emph{Depths of Induction and Formalized Self-Awareness}, Version 46 Supplement, V46-6; PDF p.~56.}
+
+The shared lesson is
+\[
+\text{arbitrarily deep finite behavior}
+\not\Rightarrow
+\text{a genuine limit object}.
+\]
+
+This matters experimentally. A machine that performs spectacularly on increasingly large finite frozen horizons has not thereby implemented an unlimited hypernatural. A system reaching every finite reflection depth has not thereby obtained a limit-stage reflection rule.
+
+This restraint is one of the strongest signs of mathematical coherence across the corpus: both nonstandard epistemology and reflection theory insist that the bridge from finite to infinite must itself be specified and justified.
+
+\section{A layered theory of epistemic states}
+
+The four papers together suggest that several notions frequently called ``knowledge&#x27;&#x27; should be kept separate.
+
+A target may merely be \emph{salient} to an agent. The hyperfinite oracle paper models a role hint as an intervention on awareness rather than as knowledge that the target has that role.
+\src{\emph{The Hyperfinite Oracles of DATA MIND 3.2}, pp.~8--9.}
+
+A Dreamer may produce an \emph{untrusted candidate}. An agent may possess the \emph{resource-indexed capacity to acquire a warrant}, represented by $K_i^{\le r}\varphi$. A verifier may actually accept a certificate, after which the object may enter \BANK. A tagged ATP may prove a \emph{self-descriptive statement} belonging to $\mathrm{Self}(M)$.
+
+These are not interchangeable.
+
+A useful epistemic ladder suggested by the synthesis is therefore
+\[
+\text{awareness}
+\rightarrow
+\text{proposal}
+\rightarrow
+\text{searchable warrant}
+\rightarrow
+\text{verified warrant}
+\rightarrow
+\text{shared certified capital},
+\]
+with self-description running alongside this ladder rather than above it.
+
+This gives DATA MIND a vocabulary for being highly imaginative without pretending that imagination is knowledge, highly self-reflective without pretending that reflection is omniscience, and strongly advised without pretending that advice is proof.
+
+\section{The emerging unified architecture}
+
+The four works together suggest the following conceptual machine:
+\[
+\boxed{
+\begin{array}{c}
+\text{Target }\tau\\
+\downarrow\\
+\text{Role recognition / }O_1\\
+\downarrow\\
+\text{Certified presentation family}\\
+\downarrow\\
+\text{Resource allocation / }O_2\\
+\downarrow\\
+\text{QH abstractions and structural bounds}\\
+\downarrow\\
+\text{Dreamer replay + strategy / }O_3\\
+\downarrow\\
+\text{P/R/I/C search using BANK macros}\\
+\downarrow\\
+\text{candidate certificate / possible }O_4\\
+\downarrow\\
+V\\
+\downarrow\\
+\BANK
+\end{array}}
+\]
+
+Sentinel runs laterally across the computation, limiting pathological resource consumption. Provenance accompanies every transformation. Formal self-modeling supplies information about the system&#x27;s own formally represented properties but does not acquire special authority over the verifier.
+
+The important feature is not the exact order of these boxes. In a practical implementation they may loop and interact. The important feature is that the architecture has a fixed direction of epistemic authority even while its control structure is recursive and experimental.
+
+The system may search over its search. It may reason about its reasoning. It may dream about alternative reasoning. It may change the presentation in which reasoning occurs. It may compress the state space over which reasoning operates. But none of those operations is identical to certification.
+
+\section{A new experimental program implied by all four papers}
+
+The strongest experiment following from the combined theory would not merely compare DATA MIND against another ATP. It would decompose where its cost originates.
+
+The benchmark should be frozen, provenance-certified, and contain genuinely witnessed P/R/I/C cases. The Dreamer paper already proposes beginning with a matched PRCOM role family while warning that an independence case must be backed by actual models or an equivalent formal metacertificate; failure to prove after removing an axiom is not independence.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, pp.~10--11.}
+
+Within that benchmark, one could compare waking-only and Dreamer-enabled systems; hidden, Professor-facing, and direct $O_1$ conditions; later $O_2$ and $O_3$ interventions; certified original and traded presentations; QH on/off; BANK macros on/off; and diversified versus homogenized presentation portfolios.
+
+The important measurements would not be merely solved/unsolved. They would include verifier-valid settlement, role confusion, expansions, proof horizon, dependency depth, wall time, peak memory, verifier work, quotient construction cost, BANK reuse, Dreamer utilization, oracle gaps, Sentinel interventions, and---where suitable invariants exist---certified birth-stage or abstract-distance lower bounds. The Dreamer paper already argues for freezing theorem data, verifier, resources, seeds, stopping rules, oracle mode, and replay policy so these comparisons are interpretable.
+\src{\emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2}, pp.~11--13.}
+
+The resulting experiment would ask a much sharper question than ``Is DATA MIND better?&#x27;&#x27; It would ask:
+
+\begin{quote}
+\textbf{Where, precisely, is settlement cost coming from, which parts are structurally unavoidable, which parts are caused by uncertainty, and which parts can be removed by changing representation without changing mathematics?}
+\end{quote}
+
+That question is, in this synthesis, the deepest common research question of the four papers.
+
+\section{Final conclusions}
+
+The four treatises jointly support a view of automated mathematics in which the principal object of optimization is not merely a proof but an entire \emph{verified settlement process}.
+
+The Trading Theorem shows that deductive content and deductive presentation can come apart. Quotient hunting shows that proof search need not occur at the full resolution of the original search space. Induction shows that some apparent difficulty is structural and can be lower-bounded rather than blamed on bad heuristics. Formal self-awareness shows that an ATP&#x27;s provable self-model constitutes a separate mathematical coordinate from its external search performance. Hyperfinite epistemic analysis shows that deductive closure becomes computationally meaningful only after resource is introduced. Oracle interventions then make individual sources of uncertainty experimentally removable. Dreamer supplies a bounded mechanism for exploring alternative histories, representations, strategies, and recombinations. BANK converts verified history into reusable mathematical capital. Sentinel prevents strategic intelligence from becoming resource pathology. The verifier preserves the invariant core.
+
+The resulting picture can be summarized in four sentences:
+
+\begin{quote}
+\textbf{Mathematical truth is not search geometry.}
+
+\textbf{Competence is not bounded performance.}
+
+\textbf{Guidance, simulation, and self-description are not certification.}
+
+\textbf{Because those distinctions are maintained, the system is free to search aggressively over representations, abstractions, memories, strategies, and even its own reasoning processes.}
+\end{quote}
+
+The deepest potential contribution of this combined framework is therefore not a claim that any one mechanism makes theorem proving faster. It is a framework in which such speedups can be located, decomposed, certified where possible, and experimentally attributed.
+
+DATA MIND, viewed through all four treatises together, becomes a system for investigating the \emph{geometry of warranted mathematical discovery}: which aspects of a settlement are invariant, which are representation dependent, which are resource dependent, which are epistemically uncertain, and which can be altered without ever relaxing the standard of proof.
+
+That is a considerably stronger and more coherent research thesis than any claim that a single heuristic, oracle, Dreamer, quotient, or trade is itself the source of intelligence.
+
+\newpage
+\section*{Primary source map}
+\addcontentsline{toc}{section}{Primary source map}
+
+\begin{enumerate}
+\item Brian Tenneson, \emph{Trading Theorem 001: Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search}, August 31, 2026. Especially pp.~2--13, for consequence equivalence, proof horizons, settlement invariance, quotient results, BANK macros, portfolios, and the trading/QH implementation program.
+
+\item Brian Tenneson, \emph{Depths of Induction and Formalized Self-Awareness}, Version 46, July 30, 2026. Especially Version 46 Supplement V46-1--V46-6 (PDF pp.~51--56), Part II printed pp.~54--66 (PDF pp.~57--69), and the reflection-closure results around printed pp.~87--89 (PDF pp.~90--92), for induction, birth-time bounds, self-models, reflection levels, self-awareness quotients, and the competence/performance distinction.
+
+\item Brian Tenneson, \emph{The Hyperfinite Oracles of DATA MIND 3.2: Logical Omniscience, Nonstandard Horizons, and Verifier-Gated Epistemic Guidance}, September 2026. Especially pp.~3--14, for resource-indexed knowledge, hyperfinite horizons, closure costs and shadows, settlement-role oracles, oracle gaps, finite proxies, and the presentation-dependence problem.
+
+\item Brian Tenneson, \emph{Dreamer and Four-Oracle Extension to DATA MIND 3.2: A Theoretical Synthesis of Counterfactual Replay, Hyperfinite Epistemic Guidance, and Verifier-Gated Settlement}, September 4, 2026. Especially pp.~3--14, for bounded Dreamer replay, the four oracle interfaces, verifier sovereignty, provenance, anti-herding, Sentinel, ablation, and the five-stage decomposition of settlement.
+\end{enumerate}
+
+\section*{Status note}
+This document is a synthesis of the four sources above. Statements explicitly attributed to a source are intended as source-derived. Principles, notation, decompositions, and proposed experimental interpretations identified as a ``synthetic conclusion,&#x27;&#x27; ``suggestion,&#x27;&#x27; or ``new conclusion&#x27;&#x27; are conclusions drawn by combining the sources and should not be mistaken for theorems individually proved in the cited papers.
+
+\end{document}
+</pre></main></body></html>
