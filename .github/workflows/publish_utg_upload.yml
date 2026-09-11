@@ -1,0 +1,36 @@
+name: Publish Universal Theorem Geometry I upload
+
+on:
+  push:
+    paths:
+      - '.build/utg_upload/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  assemble-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Assemble uploaded PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/papers/universal_theorem_geometry_i_001
+          cat .build/utg_upload/part* | base64 -d > docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf
+          test -s docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf
+          file docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf | grep -q 'PDF document'
+      - name: Commit publication and remove staging files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf
+          git rm -r .build/utg_upload
+          git rm .github/workflows/publish_utg_upload.yml
+          git commit -m 'Publish Universal Theorem Geometry I PDF [skip ci]'
+          git push
