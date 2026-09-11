@@ -7,6 +7,7 @@ on:
       - 'scripts/publications.json'
       - 'scripts/build_publications.py'
       - 'scripts/audit_subject_catalog.py'
+      - 'scripts/recover_106_report.py'
       - '.github/workflows/publication_catalog.yml'
   pull_request:
     paths:
@@ -14,6 +15,7 @@ on:
       - 'scripts/publications.json'
       - 'scripts/build_publications.py'
       - 'scripts/audit_subject_catalog.py'
+      - 'scripts/recover_106_report.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,9 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Compare current catalog with 106-item baseline
+        run: python scripts/recover_106_report.py
       - run: python -m pip install pymupdf==1.26.4
       - run: python scripts/build_publications.py
       - run: python scripts/audit_subject_catalog.py
