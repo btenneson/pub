@@ -24,6 +24,8 @@ UTG = {
         'fibered tagged variable-dimensional directed hypergraph Hilbert-addressable inference geometry '
         + UTG_ARCHIVE
     ),
+    'quote': 'A proof is not just a chain of steps; it is a route through a geometry of possible inferences.',
+    'quote_attribution': 'Brian Tenneson',
     'pin_label': 'Pinned card #1',
     'pinned': True,
 }
