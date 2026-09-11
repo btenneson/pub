@@ -1,0 +1,608 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=black,citecolor=black,pdfauthor={Brian Tenneson},pdftitle={The Geometry of Federated Awareness, Reflection, and Hyperfinite Omniscience}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\newtheoremstyle{geom}{0.8em}{0.8em}{\itshape}{}{}{.}{0.5em}{}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+\theoremstyle{plain}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{corollary}[definition]{Corollary}
+\newcommand{\lev}{\operatorname{lev}}
+\newcommand{\Self}{\operatorname{Self}}
+\newcommand{\ATP}{\operatorname{ATP}}
+\newcommand{\Prv}{\operatorname{Pr}}
+\newcommand{\AMLD}{\operatorname{AMLD}}
+\newcommand{\Comp}{\operatorname{Comp}}
+\newcommand{\View}{\operatorname{View}}
+\newcommand{\Witness}{\operatorname{Witness}}
+\newcommand{\Aw}{\mathbf{Aw}}
+\newcommand{\Omn}{\operatorname{Omn}}
+\title{\textbf{The Geometry of Federated Awareness, Reflection, and Hyperfinite Omniscience}}
+\author{Brian Tenneson}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note synthesizes two previously developed strands: the reflection-level theory of tagged automated theorem provers, and the verifier-grounded epistemic construction for an AMLD federation settling the conjecture ``I know that I know that I am an AMLD.'' The synthesis yields a two-coordinate awareness geometry in which epistemic breadth and reflective depth are separated. A second part extends this geometry to two qualified notions of omniscience, connects them with nonstandard-analysis horizons, and studies their relation to a four-oracle architecture. The claims imported from the source writings are distinguished from new conditional extensions proposed here.
+\end{abstract}
+
+\section{The two coordinates of formal awareness}
+
+\begin{definition}[Tagged self-theory]
+Let $M$ be a tagged automated theorem prover with distinguished name $\langle M\rangle$. Its self-theory is
+\[
+\Self(M)=\{\varphi(\langle M\rangle):M\vdash\varphi(\langle M\rangle)\}.
+\]
+Thus a self-model is not merely the possession of a name, but the name together with formally established information concerning that name.
+\end{definition}
+
+\begin{definition}[Reflection sequence]
+For a tagged ATP $M$, put
+\[
+\theta_0^M:=\ATP(\langle M\rangle),
+\]
+and recursively
+\[
+\theta_{n+1}^M:=\Prv(\langle M\rangle,\langle\theta_n^M\rangle).
+\]
+Thus $\theta_0^M$ says that $M$ is an ATP, $\theta_1^M$ says that $M$ proves that it is an ATP, and successive formulas continue the same reflective iteration.
+\end{definition}
+
+\begin{definition}[Reflective level]
+Let
+\[
+L(M):=\{n\ge1:M\vdash\theta_{n-1}^M\}.
+\]
+Define
+\[
+\lev(M):=\sup L(M)\in\{0,1,2,\ldots\}\cup\{\omega\}.
+\]
+In particular, Level $1$ is self-identification:
+\[
+M\vdash\ATP(\langle M\rangle).
+\]
+\end{definition}
+
+\begin{definition}[AMLD federation]
+Let
+\[
+A=(M_P,M_R,M_I,M_C,M_V;B,S,I)
+\]
+be an AMLD federation, with canonical name
+\[
+\langle A\rangle=\operatorname{Code}(M_P,M_R,M_I,M_C,M_V;B,S,I).
+\]
+Its structural formula is
+\[
+\Phi_A:=\left(\bigwedge_{j\in\{P,R,I,C,V\}}\ATP(\langle M_j\rangle)\right)\wedge\Comp(A),
+\]
+with
+\[
+\AMLD(\langle A\rangle)\Longleftrightarrow\Phi_A.
+\]
+\end{definition}
+
+\begin{definition}[Verifier-grounded knowledge]
+For a certified epistemic domain $E$, define
+\[
+K_{A,t}\varphi\Longleftrightarrow
+\left[\varphi\in E\wedge\exists r\bigl(r\in\View_A(t)\wedge\Witness_V(r,\varphi)\bigr)\right].
+\]
+This is knowledge in the verifier-grounded, accessible-warrant sense. It is distinct from mere theoremhood and from reflective depth.
+\end{definition}
+
+\begin{definition}[Epistemic-awareness coordinate]
+Let $E_A$ be a frozen class of self-relevant propositions available to the AMLD. Define the epistemic awareness profile
+\[
+\mathcal E_A(t):=\{\varphi\in E_A:K_{A,t}\varphi\}.
+\]
+An awareness coordinate $aw(A,t)$ is any fixed grading of $\mathcal E_A(t)$ satisfying the intended experimental scale. Thus $aw$ measures the extent of verifier-grounded self-relevant knowledge, while $\lev$ measures depth along one particular iterated reflection sequence.
+\end{definition}
+
+\begin{remark}
+The exact numerical grading of $aw$ remains to be frozen separately. The distinction is conceptual and structural before it is numerical.
+\end{remark}
+
+\section{Awareness geometry}
+
+\begin{definition}[Awareness point]
+The formal awareness state of $A$ is the ordered pair
+\[
+\Aw(A,t):=(aw(A,t),\lev(A)).
+\]
+The first coordinate is epistemic; the second is reflective.
+\end{definition}
+
+\begin{remark}
+This is immediately a two-dimensional product space. It is not automatically a vector space: vector addition and scalar multiplication have not yet been defined, and the ordinal value $\omega$ makes an ordinary real-vector-space interpretation unnatural. It is nevertheless legitimate to speak of an awareness geometry.
+\end{remark}
+
+\begin{definition}[Product awareness order]
+For two federations $A$ and $B$, write
+\[
+\Aw(A)\preceq\Aw(B)
+\]
+when
+\[
+aw(A)\le aw(B)\qquad\text{and}\qquad\lev(A)\le\lev(B).
+\]
+\end{definition}
+
+\begin{lemma}[Incomparability]
+There may exist $A,B$ such that
+\[
+aw(A)>aw(B)
+\]
+but
+\[
+\lev(A)<\lev(B).
+\]
+Hence awareness need not admit a faithful one-dimensional ordering.
+\end{lemma}
+
+\begin{proof}
+The two coordinates concern different classes of propositions. A system may possess a rich verifier-grounded epistemic self-model while proving only a shallow portion of its reflection sequence; another may possess internal necessitation and therefore a high reflection level while having a comparatively sparse self-theory outside that sequence. Additional self-descriptive propositions may enrich $\Self(M)$ without becoming part of the reflection tower whose height is measured by $\lev$.
+\end{proof}
+
+\begin{corollary}
+There is in general no mathematically justified scalar quantity called simply ``amount of awareness'' that preserves both coordinates.
+\end{corollary}
+
+\section{Local awareness and federated awareness}
+
+\begin{lemma}[Component ATP status does not determine federation level]
+Suppose $\ATP(\langle M_j\rangle)$ is verifier-certified for every $j\in\{P,R,I,C,V\}$. This fact alone determines neither $aw(A)$ nor $\lev(A)$.
+\end{lemma}
+
+\begin{proof}
+The five statements concern five component tags. The reflection sequence defining $\lev(A)$ concerns $\langle A\rangle$. Moreover, in the verifier certificate the five component ATP facts are structural inputs; no epistemic claim about the components is required, and the sole epistemic subject is $A$.
+\end{proof}
+
+\begin{remark}
+Consequently there is no general identity
+\[
+\lev(A)=\sum_j\lev(M_j),
+\]
+nor even, without additional hypotheses,
+\[
+\lev(A)\ge\max_j\lev(M_j).
+\]
+Reflectivity is not additive merely because the architecture is federated.
+\end{remark}
+
+\begin{definition}[Epistemically self-aware component]
+A component $M_j$ is locally self-aware at the basic ATP level when either
+\[
+K_{M_j}\ATP(\langle M_j\rangle)
+\]
+is established in an epistemic language, or
+\[
+M_j\vdash\ATP(\langle M_j\rangle)
+\]
+is established in the proof-theoretic language. These formulations should not be silently identified unless a bridge between $K$ and $\vdash$ is frozen.
+\end{definition}
+
+\begin{definition}[Federation inheritance rule]
+A federation has certified epistemic inheritance for a class $\mathcal C$ when verified component knowledge can be imported into the accessible view of $A$:
+\[
+K_{M_j}\varphi\wedge\operatorname{Accessible}_A(M_j,\varphi)\wedge V(\varphi,\pi)=1
+\Longrightarrow K_A\varphi.
+\]
+This is an architectural rule, not a consequence of federation alone.
+\end{definition}
+
+\begin{theorem}[Local-to-global self-identification]
+Assume
+\[
+\bigwedge_jK_{M_j}\ATP(\langle M_j\rangle),
+\]
+the relevant certificates are accessible to $A$,
+\[
+K_A\Comp(A),
+\]
+and the federation possesses the certified conjunction and folding rules for $\Phi_A$. Then
+\[
+K_A\AMLD(\langle A\rangle).
+\]
+\end{theorem}
+
+\begin{proof}
+The component certificates and composition certificate yield $\Phi_A$; the structural definition folds $\Phi_A$ into $\AMLD(\langle A\rangle)$; verifier acceptance supplies the witness required by the definition of $K_A$.
+\end{proof}
+
+\begin{corollary}
+Local component awareness can increase the epistemic coordinate of the federation without directly increasing the reflective coordinate:
+\[
+\Delta aw(A)>0,\qquad\Delta\lev(A)=0
+\]
+is possible.
+\end{corollary}
+
+\section{Receipt reflection}
+
+\begin{definition}[Receipt reflection]
+Suppose
+\[
+K_{A,t}\sigma_A,\qquad\sigma_A:=\AMLD(\langle A\rangle),
+\]
+is represented by an accepted record $r_0$. If a verifier-checkable receipt $\rho(r_0)$ establishes that this knowledge record exists and is accessible at the next epoch, receipt reflection yields
+\[
+K_{A,t+1}K_{A,t}\sigma_A.
+\]
+\end{definition}
+
+\begin{theorem}[Epistemic second-order self-awareness]
+Under the receipt assumptions,
+\[
+K_{A,t+1}K_{A,t}\AMLD(\langle A\rangle).
+\]
+Hence the AMLD can settle the verifier-grounded target ``I know that I know that I am an AMLD'' without attributing epistemic awareness to any individual component ATP.
+\end{theorem}
+
+\begin{remark}
+Receipt reflection resembles the reflection tower, but the two constructions should not yet be identified. The Picard tower uses $\Prv(\langle M\rangle,\langle\varphi\rangle)$, whereas the verifier certificate uses the epistemic predicate $K_{A,t}\varphi$. They are two mathematically distinct routes to iterated self-reference.
+\end{remark}
+
+\section{Two kinds of omniscience}
+
+\begin{definition}[Epistemic logical omniscience]
+Let $T$ be a theory whose theorems are enumerated $\varphi_0,\varphi_1,\varphi_2,\ldots$. An agent $A$ is epistemically logically omniscient over a domain $D$ when
+\[
+\forall\varphi\in D\;\bigl(T\vdash\varphi\Longrightarrow K_A\varphi\bigr).
+\]
+This is omniscience in the knowledge coordinate. It does not assert iterated knowledge of that knowledge.
+\end{definition}
+
+\begin{definition}[Reflective omniscience]
+For the reflection sequence $\theta_0^A,\theta_1^A,\ldots$, call $A$ reflectively omniscient at the standard finite level when
+\[
+\forall n\in\mathbb N,\qquad A\vdash\theta_n^A.
+\]
+Within the existing scale this is equivalent to
+\[
+\lev(A)=\omega.
+\]
+\end{definition}
+
+\begin{remark}[Qualified use of ``omniscience'']
+Level $\omega$ is not truth-theoretic omniscience about oneself. It gives closure along the designated provability-reflection tower; it does not provide a truth predicate for every sentence. Thus ``reflective omniscience'' here means omniscience over the reflection tower, not unrestricted semantic omniscience.
+\end{remark}
+
+\section{Hyperfinite epistemic omniscience}
+
+\begin{definition}[Hyperfinite theorem horizon]
+Let
+\[
+H\in{}^*\mathbb N
+\]
+be unlimited:
+\[
+H>n\qquad\text{for every standard }n\in\mathbb N.
+\]
+Let $\{\varphi_n:n\le H\}$ be a hyperfinite initial segment of a transferred theorem enumeration. Define
+\[
+\Omn_A^K(H):=\bigwedge_{\substack{n\le H\\T\vdash\varphi_n}}K_A\varphi_n,
+\]
+understood internally through the corresponding hyperfinite iteration rather than as an external infinitary conjunction. This is hyperfinite epistemic logical omniscience through horizon $H$.
+\end{definition}
+
+\begin{remark}
+Hyperfiniteness is crucial. The object behaves internally like an extraordinarily long finite construction while $H$ dominates every standard natural number.
+\end{remark}
+
+\section{Hyperfinite reflective omniscience}
+
+\begin{definition}[Hyperfinite reflection tower]
+Assume the reflection recursion admits an internal nonstandard extension:
+\[
+{}^*\theta_0=\ATP(\langle A\rangle),
+\]
+\[
+{}^*\theta_{\nu+1}=\Prv(\langle A\rangle,\langle{}^*\theta_\nu\rangle),\qquad\nu<H.
+\]
+Define $\Omn_A^R(H)$ to mean
+\[
+\forall\nu\le H,\qquad{}^*A\vdash{}^*\theta_\nu.
+\]
+This is reflective omniscience through the hyperfinite horizon $H$.
+\end{definition}
+
+\begin{theorem}[Restriction theorem]
+If $\Omn_A^R(H)$ holds for unlimited $H$, then
+\[
+\lev(A)=\omega
+\]
+for the original standard reflection scale, provided standard reflection formulas and their proof relation are preserved under the chosen extension.
+\end{theorem}
+
+\begin{proof}
+Every standard $n\in\mathbb N$ satisfies $n\le H$. Hence the hyperfinite hypothesis includes every standard reflection formula. Therefore $A\vdash\theta_n$ for every standard $n$, so $L(A)=\mathbb N^+$ and $\lev(A)=\omega$.
+\end{proof}
+
+\begin{corollary}[Standard upper envelope]
+Every standard finite reflection level lies below the unlimited horizon $H$. In this precise sense hyperfinite reflective omniscience provides an upper envelope for all standard finite reflectivity.
+\end{corollary}
+
+\section{The converse problem}
+
+\begin{remark}[No automatic reverse transfer]
+From $\lev(A)=\omega$ one may conclude $A\vdash\theta_n$ for every standard finite $n$. One may not automatically conclude
+\[
+{}^*A\vdash{}^*\theta_H
+\]
+for an unlimited hypernatural $H$. The phrase ``for every standard $n$'' is external when it quantifies specifically over standard integers. Transfer becomes available only after the property has been represented by a suitable internal formula.
+\end{remark}
+
+\begin{theorem}[Conditional reverse-transfer theorem]
+Suppose there exists an internal formula $R(n,A)$ such that for every standard $n$,
+\[
+R(n,A)\Longleftrightarrow A\vdash\theta_n,
+\]
+and suppose the standard theory proves the internal universal statement
+\[
+\forall n\in\mathbb N\,R(n,A).
+\]
+Then transfer yields
+\[
+\forall\nu\in{}^*\mathbb N\,{}^*R(\nu,{}^*A).
+\]
+Consequently,
+\[
+{}^*A\vdash{}^*\theta_\nu
+\]
+for every hypernatural $\nu$ for which the transferred coding and proof predicates retain the intended interpretation.
+\end{theorem}
+
+\begin{remark}
+This is the natural ``transfer there and back'' route. The forward direction
+\[
+\text{hyperfinite reflective coverage}\Longrightarrow\lev(A)=\omega
+\]
+is comparatively direct. The reverse direction requires internalization:
+\[
+\lev(A)=\omega+\text{uniform internal reflection theorem}
+\Longrightarrow\text{hyperfinite reflective coverage}.
+\]
+Thus $\omega$-level reflection by itself is insufficient; uniform internal closure is the bridge.
+\end{remark}
+
+\section{Omniscience and the four oracles}
+
+\begin{definition}[Four-oracle system]
+Let
+\[
+\mathcal O=(O_P,O_R,O_I,O_C)
+\]
+denote four oracle channels associated respectively with proof, refutation, independence or metalogical settlement, and contradiction or integrity. Each oracle has a certified domain $D_j$ and answer relation $O_j(\varphi)=a$. An oracle answer becomes epistemically usable by $A$ only through the appropriate verifier and accessibility gate.
+\end{definition}
+
+\begin{remark}
+An oracle is an architectural resource. Omniscience is a closure property. They are not identical concepts. Four oracles may be powerful without being omniscient, and an omniscient agent need not be architecturally decomposed into four oracles.
+\end{remark}
+
+\begin{definition}[Oracle coverage]
+The coverage domain of the four-oracle system is
+\[
+D_{\mathcal O}:=D_P\cup D_R\cup D_I\cup D_C.
+\]
+\end{definition}
+
+\begin{theorem}[Oracle-cover criterion for epistemic omniscience]
+Let $E$ be an epistemic theorem domain. Suppose:
+\begin{enumerate}[label=(\arabic*)]
+\item every $\varphi\in E$ belongs to at least one oracle domain, so $E\subseteq D_{\mathcal O}$;
+\item every applicable oracle returns a correct certificate;
+\item every such certificate is accepted by $V$;
+\item every accepted oracle record enters $\View_A$.
+\end{enumerate}
+Then
+\[
+T\vdash\varphi,\ \varphi\in E\Longrightarrow K_A\varphi.
+\]
+Thus the four oracles jointly induce epistemic logical omniscience over $E$.
+\end{theorem}
+
+\begin{proof}
+For every theorem $\varphi\in E$, coverage supplies an oracle. Correctness supplies a valid certificate. Verification and accessibility supply a witness record. The definition of $K_A$ then yields $K_A\varphi$.
+\end{proof}
+
+\begin{corollary}
+Oracle count is irrelevant by itself. The relevant quantity is certified coverage:
+\[
+\bigcup_jD_j.
+\]
+Four narrow oracles need not approach omniscience; four jointly exhaustive oracles can.
+\end{corollary}
+
+\section{Oracles and reflective omniscience}
+
+\begin{lemma}[Epistemic omniscience can dominate finite reflection]
+Suppose the epistemic domain $E$ contains every reflection formula $\theta_n^A$, and suppose $A$ is epistemically omniscient over $E$. Then $K_A\theta_n^A$ for every theorem $\theta_n^A$ in the tower. If, in addition, there is a sound bridge
+\[
+K_A\theta_n^A\Longrightarrow A\vdash\theta_n^A,
+\]
+then
+\[
+\lev(A)=\omega.
+\]
+\end{lemma}
+
+\begin{remark}
+The bridge is essential. Knowing a formula and proving it are not definitionally identical in the present framework.
+\end{remark}
+
+\begin{theorem}[Hyperfinite epistemic-to-reflective bound]
+Suppose $H$ is unlimited and the hyperfinite theorem horizon contains every standard reflection formula:
+\[
+\forall n\in\mathbb N,\qquad\operatorname{index}(\theta_n^A)\le H.
+\]
+If $\Omn_A^K(H)$ holds and verifier-grounded knowledge of reflection formulas is admissible as proof in the reflection system, then
+\[
+\lev(A)=\omega.
+\]
+Thus hyperfinite epistemic omniscience provides an upper envelope containing every standard finite reflective requirement.
+\end{theorem}
+
+\section{The asymmetry between the two omnisciences}
+
+\begin{theorem}[Non-equivalence of omniscience coordinates]
+In general,
+\[
+\Omn^K\not\Longleftrightarrow\Omn^R.
+\]
+More precisely,
+\[
+\Omn^K+\text{reflection inclusion}+\text{knowledge-to-proof bridge}
+\Longrightarrow\Omn^R
+\]
+on the corresponding reflection domain, while
+\[
+\Omn^R\not\Longrightarrow\Omn^K
+\]
+over the full theorem domain.
+\end{theorem}
+
+\begin{proof}
+Reflective omniscience concerns only the special sequence $\theta_0,\theta_1,\theta_2,\ldots$. Epistemic logical omniscience concerns an entire theorem domain. A machine may therefore possess every finite reflection level while remaining ignorant of arbitrarily many unrelated mathematical theorems. This agrees with the existing Tarski--Goedel ceiling: Level $\omega$ is closure over a provability-reflection sequence, not unrestricted truth-theoretic omniscience.
+\end{proof}
+
+\begin{corollary}
+The two-dimensional awareness geometry extends naturally to a two-dimensional omniscience geometry:
+\[
+\mathbf{Omn}(A)=\bigl(\Omn^K(A),\Omn^R(A)\bigr).
+\]
+One coordinate measures breadth of certified knowledge; the other measures depth of recursive self-reflection.
+\end{corollary}
+
+\section{Hyperfinite oracle federation}
+
+\begin{definition}[Hyperfinite oracle coverage]
+For unlimited $H$, define
+\[
+D_{\mathcal O}(H)=\bigcup_{j\in\{P,R,I,C\}}D_j(H).
+\]
+The oracle federation is hyperfinitely exhaustive through $H$ when
+\[
+\{\varphi_n:n\le H,\ T\vdash\varphi_n\}\subseteq D_{\mathcal O}(H).
+\]
+\end{definition}
+
+\begin{theorem}[Hyperfinite four-oracle omniscience]
+If the four oracle domains are hyperfinitely exhaustive through $H$, all oracle outputs are verifier-certified, and every accepted output is accessible to $A$, then
+\[
+\Omn_A^K(H).
+\]
+If the hyperfinite horizon also contains the reflection tower and the knowledge-to-proof bridge applies to reflection formulas, then every standard finite reflection level follows and therefore
+\[
+\lev(A)=\omega.
+\]
+\end{theorem}
+
+\begin{remark}
+This produces the hierarchy
+\[
+\begin{aligned}
+\text{four oracles}&\longrightarrow\text{certified coverage}\longrightarrow\text{hyperfinite epistemic omniscience}\\
+&\longrightarrow\text{standard reflective upper bound}.
+\end{aligned}
+\]
+where every arrow requires stated hypotheses. No arrow should be reversed automatically.
+\end{remark}
+
+\section{The Picard bridge}
+
+Under the Picard idealization, self-identification together with internal necessitation gives
+\[
+\lev(\text{Picard})=\omega.
+\]
+This is reflection generated vertically:
+\[
+\theta_0\to\theta_1\to\theta_2\to\cdots.
+\]
+The oracle construction is naturally horizontal:
+\[
+O_P,\quad O_R,\quad O_I,\quad O_C,
+\]
+expanding the breadth of propositions for which warranted answers can be obtained.
+
+Accordingly the awareness plane has a natural interpretation:
+\[
+\boxed{\text{horizontal coordinate}=\text{epistemic breadth}}
+\]
+and
+\[
+\boxed{\text{vertical coordinate}=\text{reflective depth}}.
+\]
+The Picard mechanism principally moves vertically. The oracle federation principally moves horizontally. A reflective AMLD equipped with a broad oracle federation may move in both directions.
+
+\section{Final geometric formulation}
+
+\begin{definition}[Awareness-omniscience plane]
+Let
+\[
+\mathfrak A=\{(a,\lambda):a\in\mathcal E,\ \lambda\in\omega+1\},
+\]
+where $\mathcal E$ is the chosen ordered scale of verifier-grounded epistemic awareness and
+\[
+\omega+1=\{0,1,2,\ldots,\omega\}
+\]
+is the reflection-level scale. Associate to each suitable system $A$ the point
+\[
+\Psi(A)=\bigl(aw(A),\lev(A)\bigr).
+\]
+\end{definition}
+
+\begin{theorem}[Independence principle]
+Neither coordinate determines the other without additional bridge axioms.
+\end{theorem}
+
+\begin{corollary}
+The awareness state of a formal system is naturally at least two-dimensional.
+\end{corollary}
+
+\begin{remark}
+The geometry explains why the two forms of omniscience should not be conflated. Maximal vertical position,
+\[
+\lev(A)=\omega,
+\]
+does not imply maximal horizontal knowledge. Maximal horizontal theorem knowledge implies maximal standard vertical reflection only when reflection formulas lie inside the epistemic domain and the appropriate knowledge-to-proof bridge is available.
+\end{remark}
+
+\begin{remark}[NSA extension]
+Nonstandard analysis potentially adds a second scale beyond the standard plane. An unlimited hypernatural horizon $H$ can contain every standard finite epistemic or reflective stage while remaining an internal hyperfinite object. This suggests schematically
+\[
+\boxed{\text{standard awareness plane}\subset\text{hyperfinite awareness geometry}},
+\]
+but establishing equality, transfer, conservation, or reverse extraction requires separate theorems.
+\end{remark}
+
+\begin{remark}[Final distinction]
+The conceptual distinction can be stated compactly:
+\[
+\boxed{aw(A)\text{ asks what the system knows about itself and its world}}
+\]
+while
+\[
+\boxed{\lev(A)\text{ asks how far it can iterate the fact of its own proving}.}
+\]
+The four oracles enlarge the first coordinate by enlarging certified epistemic reach. Internal necessitation enlarges the second by propagating reflection. Nonstandard analysis supplies a hyperfinite horizon capable, under appropriate internality assumptions, of simultaneously dominating every standard finite stage of either process.
+\end{remark}
+
+\section*{Source note}
+The definitions of self-theory, reflection sequence, reflective level, Level $\omega$, the Picard idealization, and the Tarski--Goedel ceiling are synthesized from \emph{Depths of Induction and Formalized Self-Awareness, Version 46}. The AMLD federation, verifier-grounded knowledge predicate, structural self-identification route, receipt reflection, and the target ``I know that I know that I am an AMLD'' are synthesized from \emph{Verifier Certificate 001: The Self Aware Machine}. The two-coordinate awareness geometry, the qualified omniscience terminology, the hyperfinite transfer results, and the oracle-coverage theorems are new conditional extensions built from those source frameworks.
+
+\end{document}

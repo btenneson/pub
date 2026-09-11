@@ -1,0 +1,471 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recursive “What If?” Imagination in AMLD — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/recursive_what_if_imagination_in_amld/">Back to publication</a><h1>Recursive “What If?” Imagination in AMLD</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/recursive_what_if_imagination_in_amld/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{AMLD Recursive What-If Imagination}
+\rhead{MAPQUEST Navigation}
+\cfoot{\thepage}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{principle}[definition]{Design Principle}
+
+\newcommand{\BANK}{\ensuremath{\mathsf{BANK}}}
+\newcommand{\MQ}{\ensuremath{\mathsf{MAPQUEST}}}
+\newcommand{\AMLD}{\ensuremath{\mathsf{AMLD}}}
+\newcommand{\V}{\ensuremath{\mathsf{V}}}
+\newcommand{\W}{\mathcal{W}}
+\newcommand{\Th}{\operatorname{Th}}
+\newcommand{\Pred}{\operatorname{Pred}}
+\newcommand{\Enabled}{\operatorname{Enabled}}
+\newcommand{\Score}{\operatorname{Score}}
+\newcommand{\Novelty}{\operatorname{Novelty}}
+\newcommand{\Gain}{\operatorname{Gain}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Res}{\operatorname{Res}}
+
+\title{\textbf{Recursive ``What If?&#x27;&#x27; Imagination in AMLD}\\[0.4em]
+\large Chess-Style Counterfactual Search Guided by MAPQUEST}
+\author{Brian Tenneson}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note develops a precise notion of imagination for an AMLD-style multi-agent theorem-settling architecture. The motivating analogy is chess: a strong player or engine is imaginative not because it violates the rules, but because it recursively asks ``what if?&#x27;&#x27; about unusual continuations, hypothetical positions, sacrifices, and long-range plans. We transfer that idea to automated proof search. A certified proof state is stored in a monotone verifier-gated \BANK, while imaginative agents create speculative counterfactual states that never acquire theorem status merely by being imagined. MAPQUEST supplies the address system, inference geometry, target compass, and navigational machinery for exploring each speculative branch. The verifier remains sovereign: only verified consequences may be promoted from imagination into the certified mathematical state. This separation yields a rigorous form of machine imagination that can be arbitrarily adventurous in search while remaining conservative in proof.
+\end{abstract}
+
+\section{MAPQUEST as Navigation Toward a Winning Strategy}
+
+A useful informal description is:
+\begin{quote}
+\textbf{MAPQUEST is the navigation system for finding a winning strategy.}
+\end{quote}
+In theorem proving, the ``winning strategy&#x27;&#x27; is a finite verifier-accepted route from the initial environment to a target well-formed formula (WFF) $T$.
+
+The current MAPQUEST convention keeps each WFF intrinsically zero-dimensional. Formula addresses identify locations, while inference applications carry the geometric dimension induced by rule arity. If rule $r$ has arity $k$, its navigation component has the form
+\[
+X_r=\{r\}\times (\mathbb{Q}\cap[0,1])^k.
+\]
+Across heterogeneous rules, the global inference-action space is the tagged coproduct
+\[
+\bigsqcup_{r\in z}
+\left(\{r\}\times(\mathbb{Q}\cap[0,1])^{\operatorname{ar}(r)}\right).
+\]
+Thus MAPQUEST is more than a move selector. It provides an address system, a geometry of legal inference applications, a multiscale traversal, a target-oriented compass, a memory of verified progress, and a route-to-certificate mechanism.
+
+In chess language, the analogy is therefore not merely
+\[
+\text{MAPQUEST}=\text{choose a move}.
+\]
+A better analogy is
+\begin{center}
+\fbox{\parbox{0.88\textwidth}{\centering
+\textbf{MAPQUEST is the navigable geometry and compass of move applications leading toward a winning line.}}}
+\end{center}
+
+\section{Imagination as Recursive ``What If?&#x27;&#x27;}
+
+The central proposal of this note is that imagination in AMLD should be defined recursively.
+
+\begin{definition}[Recursive what-if imagination]
+Let $B_t$ be the certified proof state at time $t$, let $T$ be the target, and let $d\in\mathbb{N}$ be a counterfactual depth. The depth-$d$ imaginative operator
+\[
+\W_d(B_t,T)
+\]
+constructs and explores hypothetical extensions of $B_t$ by repeatedly asking questions of the form
+\[
+\text{``What if candidate formula or inference }H\text{ were available?&#x27;&#x27;}
+\]
+and, for each such hypothetical state, recursively asking further ``what if?&#x27;&#x27; questions up to depth $d$.
+\end{definition}
+
+At depth zero, no speculation is performed:
+\[
+\W_0(B,T)=B.
+\]
+At positive depth, candidate hypotheses $H_1,\dots,H_m$ induce speculative states
+\[
+\widetilde B^{(i)}=B\cup\{H_i\},
+\]
+and recursion continues from each such state:
+\[
+\W_d(B,T)
+=
+\bigcup_{i=1}^{m}
+\W_{d-1}(\widetilde B^{(i)},T),
+\]
+subject to a finite search budget, admissibility filters, and MAPQUEST navigation priorities.
+
+The formulas $H_i$ need not yet be theorems. They are hypotheses on an analysis board. Their role is to reveal useful future structure, not to alter the certified mathematical world.
+
+\subsection{The chess interpretation}
+
+A chess engine recursively explores
+\[
+S\xrightarrow{m_1}S_1\xrightarrow{m_2}S_2\xrightarrow{m_3}\cdots
+\]
+and repeatedly asks:
+\begin{quote}
+What if I play this move? What if the opponent replies that way? What if I sacrifice material here? What if I first create this position and only then attack?
+\end{quote}
+Imagination lies in the recursion and in the choice of which counterfactual branches deserve attention. The rules of chess remain fixed.
+
+The AMLD analogue is
+\[
+B_t
+\rightsquigarrow
+\widetilde B_1
+\rightsquigarrow
+\widetilde B_2
+\rightsquigarrow
+\cdots,
+\]
+where $\rightsquigarrow$ denotes a speculative transition rather than a certified BANK deposit.
+
+\section{Certified Reality Versus the Analysis Board}
+
+The architecture must distinguish two kinds of state.
+
+\paragraph{Certified state.}
+\[
+B_t\subseteq \Th_{\mathcal F}(\Gamma)
+\]
+contains only axioms, hypotheses, and verifier-accepted consequences.
+
+\paragraph{Speculative state.}
+\[
+\widetilde B=B_t\cup H
+\]
+may contain unproved formulas introduced solely for counterfactual analysis.
+
+The two must never be confused.
+
+\begin{principle}[Verifier sovereignty]
+No speculative formula becomes a certified BANK entry merely because it creates a promising route. Promotion from speculation to BANK requires an independently verifier-accepted derivation from the frozen environment.
+\end{principle}
+
+This gives the basic information flow
+\[
+\boxed{
+\text{Imagine}
+\longrightarrow
+\text{Navigate}
+\longrightarrow
+\text{Select subgoal}
+\longrightarrow
+\text{Prove}
+\longrightarrow
+\text{Verify}
+\longrightarrow
+\BANK.
+}
+\]
+
+\begin{theorem}[Counterfactual conservativity]
+Assume the certified BANK initially contains only formulas derivable from $\Gamma$, every BANK deposit is accepted by a sound verifier, and speculative states cannot write directly to BANK. Then arbitrary finite or infinite counterfactual exploration cannot make BANK unsound.
+\end{theorem}
+
+\begin{proof}
+Counterfactual search may generate any number of speculative formulas, but none enters BANK through speculation alone. By hypothesis, every actual BANK deposit is verifier accepted, and verifier soundness implies that every accepted deposit is derivable from $\Gamma$. Induction over BANK deposits therefore gives
+\[
+B_t\subseteq\Th_{\mathcal F}(\Gamma)
+\]
+for every certified stage $t$, independently of the behavior of the imaginative search layer.
+\end{proof}
+
+This theorem is the formal reason AMLD can be imaginative without weakening logical rigor.
+
+\section{What MAPQUEST Does Inside Imagination}
+
+MAPQUEST should not merely navigate the certified state. It should also navigate each speculative board.
+
+Given a hypothetical state
+\[
+\widetilde B=B_t\cup\{H_1,\dots,H_j\},
+\]
+MAPQUEST can recompute or estimate:
+\begin{enumerate}[label=(\roman*)]
+\item backward target cones for $T$;
+\item missing-premise counts for target-producing frames;
+\item residual proof estimates such as $\widehat h(T\mid\widetilde B)$;
+\item newly enabled inference neighborhoods;
+\item Hilbert-address regions that become promising;
+\item newly valuable intermediate WFFs;
+\item routes that were invisible or unattractive from $B_t$ alone.
+\end{enumerate}
+
+Thus imagination is not detached fantasy. It is a controlled perturbation of the state followed by disciplined MAPQUEST navigation.
+
+\section{High-Leverage Imagined Lemmas}
+
+Suppose $d(T\mid B)$ is an estimated remaining proof distance. For an imagined lemma $L$, define its counterfactual leverage by
+\[
+\Delta_T(L\mid B_t)
+=
+ d(T\mid B_t)-d(T\mid B_t\cup\{L\}).
+\]
+A large positive value means that, \emph{if} $L$ were available, the target would appear substantially easier.
+
+This does not prove $L$. It changes what AMLD should try to prove next.
+
+\begin{definition}[High-leverage imagined lemma]
+An imagined lemma $L$ is high leverage at time $t$ if
+\[
+\Delta_T(L\mid B_t)\ge \theta
+\]
+for a chosen threshold $\theta&gt;0$, or if it produces a comparably large increase in target-relevant enabled inference structure.
+\end{definition}
+
+The corresponding strategy is
+\[
+\boxed{
+\text{Imagine }L
+\;\to\;
+\text{measure its effect on navigation}
+\;\to\;
+\text{promote }L\text{ to a real subtarget}
+\;\to\;
+\text{attempt to prove }L.
+}
+\]
+
+This is the proof-search analogue of a chess player imagining a knight on $f5$, discovering that the resulting position is winning, and then asking how to maneuver the knight there legally.
+
+\section{Option Gain and the Mathematics of Creative Potential}
+
+A move or lemma can be valuable because it creates many future possibilities, even when it does not immediately approach the target.
+
+Define the enabled-inference set at state $B$ by
+\[
+\Enabled(B)=\{c:\text{all certified premises required by candidate }c\text{ are available in }B\}.
+\]
+For a hypothetical lemma $L$, define its option gain by
+\[
+\Gain(L\mid B_t)
+=
+\left|
+\Enabled(B_t\cup\{L\})\setminus\Enabled(B_t)
+\right|.
+\]
+A high option-gain lemma is analogous to a chess move that activates several pieces simultaneously.
+
+A generic imagination score can therefore combine target leverage, novelty, option gain, and cost:
+\[
+\Score(L)
+=
+\alpha\,\Delta_T(L\mid B_t)
++
+\beta\,\Novelty(L)
++
+\gamma\,\Gain(L\mid B_t)
+-
+\delta\,\Cost(L).
+\]
+The coefficients may be static, learned, or adaptively controlled by AMLD&#x27;s awareness layer.
+
+\section{Strategic Sacrifice}
+
+Chess imagination often includes sacrifice: accepting an immediate local disadvantage in exchange for a superior future position. AMLD should permit the analogous behavior.
+
+Suppose candidate branch $c_1$ appears to reduce the current residual estimate immediately, while $c_2$ temporarily makes it worse but opens a substantially richer future inference neighborhood. A purely greedy controller selects $c_1$. An imaginative controller may select $c_2$.
+
+Define a schematic sacrifice score
+\[
+\operatorname{Sac}(c)
+=
+\operatorname{FutureGain}(c)
+-
+\lambda\operatorname{ImmediateLoss}(c).
+\]
+Branches with positive sacrifice score are candidates for deliberate non-greedy exploration.
+
+This is not permission to accept invalid mathematics. The ``loss&#x27;&#x27; is only a search or heuristic loss. The verifier remains unchanged.
+
+\section{Recursive Depth and Counterfactual Trees}
+
+The strongest form of imagination is not a single hypothetical lemma but nested counterfactual reasoning:
+\[
+\text{What if }L_1?
+\]
+then
+\[
+\text{If }L_1,\text{ what if }L_2?
+\]
+then
+\[
+\text{If }L_1,L_2,\text{ what if }L_3?
+\]
+and so on.
+
+This creates a counterfactual tree or DAG. A node is a speculative state
+\[
+\widetilde B_{\sigma}
+=
+B_t\cup\{L_{\sigma_1},\dots,L_{\sigma_j}\},
+\]
+where $\sigma$ records the hypothetical choices along the branch.
+
+A branch receives attention according to a priority such as
+\[
+Q(\sigma)
+=
+-\alpha\widehat h(T\mid\widetilde B_\sigma)
++\beta\operatorname{Novelty}(\sigma)
++\gamma\operatorname{OptionGain}(\sigma)
+-\delta\operatorname{Cost}(\sigma).
+\]
+
+The imaginative process is therefore recursive but bounded:
+\begin{enumerate}[label=(\arabic*)]
+\item propose unusual but structurally admissible hypotheses;
+\item extend the speculative state;
+\item run MAPQUEST locally on that state;
+\item evaluate target residual and future option gain;
+\item recurse on the best or most novel branches;
+\item extract high-leverage hypothetical lemmas;
+\item return them to the certified system as subgoals, not as facts.
+\end{enumerate}
+
+\section{AMLD Agent Roles Under Recursive Imagination}
+
+A multi-agent architecture can assign different counterfactual personalities:
+
+\begin{center}
+\begin{tabular}{&gt;{\centering\arraybackslash}p{0.08\textwidth} p{0.78\textwidth}}
+\toprule
+Agent &amp; Counterfactual role \\
+\midrule
+$P$ &amp; asks what hypothetical lemmas or decompositions would make $T$ provable quickly; \\
+$R$ &amp; asks what hypothetical routes would make $\neg T$ provable or expose failure in the proposed proof direction; \\
+$I$ &amp; explores alternative assumption sets, model-like obstructions, or certificate structures relevant to independence protocols; \\
+$C$ &amp; challenges speculative branches for hidden inconsistency, provenance conflict, malformed transitions, or environment drift; \\
+$D$ &amp; Dreamer: deliberately proposes unusual, low-prior, high-novelty counterfactual branches; \\
+$A$ &amp; Analyst: measures how each imagined state changes residual distance, option gain, and target geometry. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Each agent can run its own MAPQUEST navigator while sharing the same frozen formal environment and the same verifier-gated BANK.
+
+\section{The Dreamer Depth Charge}
+
+Imagination need not run at full intensity continuously. A natural policy is to trigger deep counterfactual recursion when ordinary search stagnates.
+
+For example, if a residual statistic changes negligibly over a window,
+\[
+\widehat h_{t-k}(T)-\widehat h_t(T)\approx 0,
+\]
+AMLD may launch a \emph{Dreamer Depth Charge}:
+\begin{enumerate}[label=(\alph*)]
+\item checkpoint the certified state;
+\item increase counterfactual depth;
+\item invert or flatten ordinary move priorities;
+\item explore low-frequency Hilbert regions;
+\item hypothesize intermediate lemmas outside the current target cone;
+\item evaluate sacrifices and option gain;
+\item return only verified discoveries to BANK;
+\item resume ordinary search with any new certified information.
+\end{enumerate}
+
+This formalizes a chess-like change of plan without changing the logical rules.
+
+\section{A Minimal Recursive Algorithm}
+
+A compact version of the imaginative controller is:
+
+\begin{verbatim}
+IMAGINE(B, T, depth, budget):
+    if depth = 0 or budget exhausted:
+        return []
+
+    H := propose_counterfactuals(B, T)
+    rank H using target leverage, novelty, option gain, and cost
+
+    discoveries := []
+    for L in selected H:
+        B_tilde := B union {L}          # speculative only
+        analysis := MAPQUEST(B_tilde, T, speculative=True)
+
+        if analysis says L is high-leverage:
+            submit L as a real subtarget to the certified prover
+
+        discoveries += IMAGINE(B_tilde, T, depth-1, remaining_budget)
+
+    return discoveries
+\end{verbatim}
+
+The critical line is the comment ``speculative only.&#x27;&#x27; The hypothetical extension is never a BANK deposit.
+
+\section{Winning Strategy Versus Winning Line}
+
+The chess analogy distinguishes a strategy from a certified line. MAPQUEST navigates toward a winning strategy, but it does not assume that the winning strategy is known in advance.
+
+In theorem-proving notation,
+\[
+\Gamma
+\longrightarrow
+\text{MAPQUEST navigation}
+\longrightarrow
+\text{candidate proof strategy}
+\longrightarrow
+\Pi_T
+\longrightarrow
+\Gamma\vdash T.
+\]
+
+Recursive imagination enriches the middle term:
+\[
+\Gamma
+\longrightarrow
+\underbrace{\text{recursive ``what if?&#x27;&#x27; worlds}}_{\text{imagination}}
+\longrightarrow
+\underbrace{\text{MAPQUEST navigation in those worlds}}_{\text{geometry + compass}}
+\longrightarrow
+\text{valuable real subgoals}
+\longrightarrow
+\text{verified winning proof}.
+\]
+
+Thus the most concise conceptual statement is
+\begin{center}
+\fbox{\parbox{0.88\textwidth}{\centering
+\textbf{Imagination recursively asks ``what if?&#x27;&#x27;; MAPQUEST navigates the resulting possibilities; the verifier decides what is real.}}}
+\end{center}
+
+\section{Conclusion}
+
+A good AMLD should not equate imagination with randomness, temperature, or unrestricted generation. Chess suggests a stronger definition: imagination is the recursive construction and evaluation of counterfactual continuations. In mathematics, this means temporarily supposing that strategically chosen lemmas, decompositions, or intermediate structures are available, then using MAPQUEST to determine how the geometry of possible proof applications changes.
+
+The architecture remains logically conservative because speculative states are separated from certified state. The Dreamer may recursively ask ``what if?&#x27;&#x27; without limit in principle; the only route back to mathematical reality is through proof and verification.
+
+The resulting design can be summarized as
+\begin{center}
+\fbox{\parbox{0.88\textwidth}{
+\textbf{AMLD imagination} = recursive counterfactual construction
++ MAPQUEST navigation
++ target-leverage estimation
++ option-gain valuation
++ strategic sacrifice
++ promotion of valuable imagined lemmas to real subgoals
++ verifier-gated return to BANK.}}
+\end{center}
+
+This makes imagination operational: the system does not merely search harder. It repeatedly asks what world would make the target easier, studies that world, and then attempts to build the verified mathematical road that actually gets there.
+
+\end{document}
+</pre></main></body></html>
