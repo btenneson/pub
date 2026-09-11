@@ -20,7 +20,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p docs/papers/universal_theorem_geometry_i_001
-          cat .build/utg_upload/part* | base64 -d > docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf
+          cat .build/utg_upload/part* | tr -d '\r\n\t ' | base64 -d > docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf
           test -s docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf
           file docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf | grep -q 'PDF document'
       - name: Commit publication and remove staging files
@@ -33,4 +33,5 @@ jobs:
           git rm -r .build/utg_upload
           git rm .github/workflows/publish_utg_upload.yml
           git commit -m 'Publish Universal Theorem Geometry I PDF [skip ci]'
-          git push
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main
