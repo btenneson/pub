@@ -15,63 +15,25 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Assemble uploaded PDF robustly
-        shell: python
-        run: |
-          from pathlib import Path
-          import base64, re, sys
-
-          parts = sorted(Path('.build/utg_upload').glob('part*'))
-          if not parts:
-              raise SystemExit('No staged PDF parts found')
-
-          cleaned = []
-          alphabet = re.compile(r'^[A-Za-z0-9+/=]*$')
-          print('PART DIAGNOSTICS')
-          for p in parts:
-              raw = p.read_text(encoding='utf-8')
-              s = ''.join(raw.split())
-              bad = [(i, ch, ord(ch)) for i, ch in enumerate(s) if ch not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=']
-              print(f'{p.name}: raw={len(raw)} clean={len(s)} mod4={len(s)%4} padding={s.count("=")} bad={bad[:5]}')
-              cleaned.append(s)
-
-          stream = ''.join(cleaned)
-          print(f'TOTAL: clean={len(stream)} mod4={len(stream)%4} padding={stream.count("=")}')
-          eq = [i for i,c in enumerate(stream) if c == '=']
-          print(f'PADDING POSITIONS (last 20): {eq[-20:]}')
-
-          out = Path('docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf')
-          out.parent.mkdir(parents=True, exist_ok=True)
-
-          # First try the intended representation: one continuous Base64 stream.
-          try:
-              data = base64.b64decode(stream, validate=True)
-              mode = 'continuous-stream'
-          except Exception as e:
-              print(f'continuous decode failed: {e!r}')
-              # If padding occurs before the end, the upload may consist of independently
-              # encoded binary chunks. Decode each chunk independently and concatenate bytes.
-              try:
-                  blobs = []
-                  for p, s in zip(parts, cleaned):
-                      blobs.append(base64.b64decode(s, validate=True))
-                  data = b''.join(blobs)
-                  mode = 'per-part-base64'
-              except Exception as e2:
-                  print(f'per-part decode failed: {e2!r}')
-                  raise SystemExit('Staged chunks are not a recoverable Base64 upload')
-
-          print(f'DECODE MODE: {mode}; bytes={len(data)}; signature={data[:8]!r}')
-          if not data.startswith(b'%PDF-'):
-              raise SystemExit(f'Decoded data is not a PDF; signature={data[:16]!r}')
-          out.write_bytes(data)
-      - name: Validate PDF
+      - name: Recover and assemble preserved PDF upload
         shell: bash
         run: |
           set -euo pipefail
-          test -s docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf
-          file docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf | grep -q 'PDF document'
-      - name: Commit publication and remove staging files
+          OLD='fe4bf0eaed7fe2016a2be0efc9a0826e031b0ee0'
+          OUT='docs/papers/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I_Corrected.pdf'
+          mkdir -p "$(dirname "$OUT")"
+          mapfile -t PARTS < <(git ls-tree -r --name-only "$OLD" -- '.build/utg_pdf_parts' | sort)
+          test "${#PARTS[@]}" -eq 12
+          : > /tmp/utg_pdf.b64
+          for p in "${PARTS[@]}"; do
+            git show "$OLD:$p" >> /tmp/utg_pdf.b64
+          done
+          tr -d '\r\n\t ' < /tmp/utg_pdf.b64 | base64 -d > "$OUT"
+          test -s "$OUT"
+          file "$OUT" | grep -q 'PDF document'
+          head -c 5 "$OUT" | grep -q '%PDF-'
+          echo "Recovered PDF size: $(wc -c < "$OUT") bytes"
+      - name: Commit publication and remove temporary staging
         shell: bash
         run: |
           set -euo pipefail
