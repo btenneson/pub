@@ -5,3 +5,4 @@ Canonical archive: `cs.LO_Logic_in_Computer_Science/Universal_Theorem_Geometry_I
 Public reader PDF: `Universal_Theorem_Geometry_I_Corrected.pdf`
 
 Publication library indexing requested after canonical archive validation.
+Universal Theorem Geometry I is the pinned publication-library card #1.
