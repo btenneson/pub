@@ -42,13 +42,11 @@ jobs:
           mkdir -p "$(dirname "$ARCHIVE")" "$(dirname "$READER")"
           cp "$TMP" "$ARCHIVE"
           cp "$TMP" "$READER"
-          cat > "$MARKER" <<'EOF'
-# Universal Theorem Geometry I
-
-Canonical archive: `cs.LO_Logic_in_Computer_Science/Universal_Theorem_Geometry_I.pdf`
-
-Public reader PDF: `Universal_Theorem_Geometry_I_Corrected.pdf`
-EOF
+          printf '%s\n\n%s\n\n%s\n' \
+            '# Universal Theorem Geometry I' \
+            'Canonical archive: `cs.LO_Logic_in_Computer_Science/Universal_Theorem_Geometry_I.pdf`' \
+            'Public reader PDF: `Universal_Theorem_Geometry_I_Corrected.pdf`' \
+            > "$MARKER"
 
       - name: Commit canonical publication and retire this workflow
         shell: bash
