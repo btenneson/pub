@@ -1,0 +1,728 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Universal Theorem Geometry II — Weighted Geodesics, Heuristic Calibration, and MAPQUEST Navigation — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_ii_weighted_geodesics_mapquest_heuristics/">Back to publication</a><h1>Universal Theorem Geometry II — Weighted Geodesics, Heuristic Calibration, and MAPQUEST Navigation</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_ii_weighted_geodesics_mapquest_heuristics/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\setstretch{1.07}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!60!black,pdftitle={Universal Theorem Geometry II: Weighted Geodesics, Heuristic Calibration, and MAPQUEST Navigation},pdfauthor={Brian Tenneson}}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{principle}[theorem]{Principle}
+\newcommand{\MRTD}{\operatorname{MRTD}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\Pred}{\operatorname{Pred}}
+\newcommand{\WFF}{\operatorname{WFF}}
+\newcommand{\route}{\mathrm{route}}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Universal Theorem Geometry II}
+\rhead{Tenneson}
+\cfoot{\thepage}
+\title{\textbf{Universal Theorem Geometry II}\\[4pt]\Large Weighted Geodesics, Heuristic Calibration, and MAPQUEST Navigation\\[5pt]\large Version 2.0 -- Theorem-Audited Edition}
+\author{Brian Tenneson\\\small Framework synthesis and formalization assisted by OpenAI&#x27;s ChatGPT}
+\date{September 11, 2026\\Revision 2.0}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Universal Theorem Geometry I separates intrinsic directed proof distance from the extrinsic address geometry used by MAPQUEST. The present Part II develops the weighted case. A legal inference transition receives a nonnegative cost in an effectively represented, decidably ordered additive cost domain, and a proof becomes a directed weighted route whose intrinsic length is the sum of its edge costs. The unit-cost shortest-path theorem is recovered as a special case, while Dijkstra-type search supplies the canonical weighted analogue under standard finiteness or termination hypotheses. The central new problem is then heuristic calibration: MAPQUEST&#x27;s rectilinear target distance (MRTD) is a navigation residual, but is not automatically an admissible lower bound on proof distance. We prove a consistency-potential criterion that turns any suitably calibrated navigation residual into an admissible heuristic, identify the maximal safe linear calibration scale for MRTD on a declared search domain, and formulate A*-MAPQUEST as geodesic approximation rather than mere address search. We also introduce vector-valued resource costs, heuristic tightness, geodesic regret, and a transport principle for admissible heuristics across proof-preserving maps between formal-system fibers. The resulting picture makes the road-map analogy precise without confusing the map with the road network: formulas are locations, legal inference generates directed roads, cost models assign lengths, MAPQUEST supplies search coordinates and a compass, and verifier-gated proof certificates record the completed route.
+\end{abstract}
+
+\noindent\textbf{Status, audit, and source discipline.} This is Revision 2.0 of a working paper in the Universal Theorem Geometry series. Every theorem, proposition, and corollary in Revision 1.0 was re-audited against its stated hypotheses and the three source manuscripts. Revision 2.0 strengthens the algorithmic hypotheses for Dijkstra and A*, restores the full finite-or-locally-finite unit-cost scope of Theorem 6.9, upgrades the linear calibration result to a maximal-safe-scale theorem on a declared search domain, and makes target-set compatibility explicit in cross-fiber heuristic transport. Statements explicitly attributed to the three source manuscripts below are source-derived; the weighted, calibration, A*-MAPQUEST, multi-resource, and heuristic-transport results developed here are new derivations or proposed extensions unless otherwise stated.
+
+\tableofcontents
+\newpage
+
+\section{From unit steps to weighted theorem roads}
+
+The starting observation is elementary but structurally important. The shortest-path theorem in \emph{Depths of Induction and Formalized Self-Awareness} identifies a finite proof with a directed route through a state theorem graph and proves that, when every edge has unit cost, breadth-first search reaches a target at minimum graph-edge distance and a predecessor map reconstructs the route \cite{Depths46}. In the language used there, Theorem 6.9 is the unit-cost shortest-path ATP principle.
+
+Universal Theorem Geometry I then changes the question. It permits a nonnegative cost $w_F(e)$ on each legal state transition and defines the intrinsic directed proof distance by infimizing total path cost over legal proof routes \cite{UTGI}. Thus ``shortest&#x27;&#x27; no longer has to mean ``fewest transitions.&#x27;&#x27; It can mean least verifier time, least proof-object size, least transaction cost, least memory-weighted cost, or another declared additive resource, provided the cost model is formalized rather than left metaphorical.
+
+This distinction is not cosmetic. Suppose one legal proof has four transitions of cost $3$ each while another has seven transitions of cost $1$ each. The four-step proof has edge count $4$ but weighted cost $12$; the seven-step proof has edge count $7$ but weighted cost $7$. A unit-cost search prefers the former; a weighted geodesic search prefers the latter. Proof length and proof cost are therefore different coordinates of theorem geometry whenever costs are nonconstant.
+
+The MAPQUEST rectilinear manuscript contributes another kind of distance. It assigns exact rational addresses to formulas only when they occupy premise slots, constructs rule-arity coordinate charts, and defines the rectilinear target residual from the current BANK to represented legal target-closing premise configurations \cite{MRTD}. That paper explicitly warns that address proximity is not itself proof distance. Universal Theorem Geometry I sharpens the point in the sentence:
+
+\begin{quote}
+``Address proximity is not proof proximity.&#x27;&#x27; \cite{UTGI}
+\end{quote}
+
+The three manuscripts therefore combine into a layered geometry: a navigation geometry that helps decide where to look, an intrinsic proof geometry that measures the legal cost of getting there, and a verifier layer that decides whether the route is a certificate.
+
+\section{The universal object and the road-map analogy}
+
+Universal Theorem Geometry I proposes that theorem space should not be forced into one metric model. Its guiding statement is:
+
+\begin{quote}
+``Universal theorem space is naturally a stratified, fibered, directed multi-geometry rather than a single metric space.&#x27;&#x27; \cite{UTGI}
+\end{quote}
+
+For a presented formal system
+\[
+F=(\Sigma,\Gamma,R,V),
+\]
+let $W_F=\WFF(F)$ be its well-formed formulas. Individual WFFs remain intrinsically zero-dimensional. A rule of arity $k$ contributes a $k$-coordinate premise-slot chart, and the heterogeneous inference space is a tagged coproduct over rules. Legal verified rule applications induce transitions between trusted proof states. MAPQUEST overlays exact addresses and Hilbert/Hilbert-like traversal policies on these inference charts, while proof-preserving translations connect different formal-system fibers.
+
+The road-map analogy can now be stated carefully:
+\begin{center}
+\begin{tabular}{&gt;{\bfseries}p{0.26\linewidth}p{0.64\linewidth}}
+Map object &amp; MAPQUEST address charts and navigation residuals.\\
+Locations &amp; WFFs, intrinsically zero-dimensional.\\
+Road network &amp; Legal verified inference transitions between proof states.\\
+Road cost &amp; Declared edge cost $w_F(e)$.\\
+Destination &amp; The target-state set containing the target WFF $T$.\\
+Navigator &amp; A prover/search policy such as MAPQUEST.\\
+Optimal route &amp; A minimum-cost legal proof route, when the infimum is attained.\\
+Route receipt &amp; A replayable verifier-accepted proof certificate.\\
+\end{tabular}
+\end{center}
+
+The analogy is useful precisely because its pieces are not identified with one another. A map coordinate does not determine road length. A visually close address need not be deductively close. A long route in number of turns can be cheaper than a short route if the edge costs differ. And reaching the geometric neighborhood of a destination is not the same as producing a verified certificate.
+
+\section{Weighted directed proof geometry}
+
+\begin{definition}[Weighted state theorem graph]
+Let $S_F$ be the reachable proof-state graph of a monotone certificate-accumulating formal system. Assign every legal edge $e:B\to B&#x27;$ a nonnegative cost
+\[
+w_F(e)\in[0,\infty).
+\]
+For a finite legal path $P=(e_1,\dots,e_n)$ define
+\[
+\cost_F(P):=\sum_{j=1}^n w_F(e_j).
+\]
+\end{definition}
+
+\begin{definition}[Intrinsic directed proof distance]
+For states $B,C\in S_F$, set
+\[
+d_F(B,C)=\inf\{\cost_F(P): P:B\rightsquigarrow C\text{ is a legal directed path}\},
+\]
+with $d_F(B,C)=\infty$ if $C$ is unreachable from $B$. For target WFF $T$, define the target-state set
+\[
+\mathcal T_F(T)=\{C\in S_F:T\in C\}
+\]
+and
+\[
+d_F(B,T)=\inf_{C\in\mathcal T_F(T)}d_F(B,C).
+\]
+\end{definition}
+
+This is generally an extended directed quasi-pseudometric rather than a symmetric metric. Direction is forced by inference. If arbitrarily cheap nontrivial paths exist, distinct states may have zero infimum distance unless a separation hypothesis is imposed. The correct geometric language is therefore closer to a Lawvere-type directed metric than to a Euclidean or Riemannian metric \cite{UTGI}.
+
+\begin{remark}[Meaning of geodesic]
+Throughout this paper, ``geodesic&#x27;&#x27; means a legal directed path whose total declared edge cost realizes $d_F(B,T)$. It is a graph-theoretic/directed-metric geodesic. No claim is made that theorem space is a smooth manifold or that the path satisfies a differential-geometric geodesic equation.
+\end{remark}
+
+\subsection{What can an edge cost mean?}
+
+The geometry changes when the cost model changes. Several useful choices are possible:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Inference-count cost}: $w_F(e)=1$, recovering the unit-step geometry.
+\item \emph{Verifier cost}: measured or certified verification time for the transition.
+\item \emph{Certificate-size cost}: bytes, symbols, or coded length added by the step.
+\item \emph{SIC transaction cost}: a declared transaction accounting unit.
+\item \emph{Memory cost}: incremental or peak-memory contribution under a specified model.
+\item \emph{Latency or energy cost}: when the execution model makes those quantities reproducibly measurable.
+\end{enumerate}
+The key requirement is not that one cost is metaphysically ``the&#x27;&#x27; correct distance. Universal theorem geometry says the opposite: each declared cost produces a legitimate intrinsic geometry for the corresponding question.
+
+\section{The Weighted Shortest-Path ATP Principle}
+
+Theorem 6.9 of \emph{Depths} is the unit-cost case. The natural weighted extension is standard shortest-path mathematics applied to the proof-state model, but an executable theorem must say not only that costs exist but that the search can enumerate successors and compare path costs.
+
+\begin{definition}[Effective nonnegative cost domain]\label{def:cost-domain}
+For the algorithmic results below, an \emph{effective nonnegative cost domain} is a set $\mathcal C\subseteq[0,\infty)$ containing $0$, closed under finite addition, with effective exact representation and decidable comparison of finite sums. Edge costs $w_F(e)$ must be effectively obtainable when a legal edge is enumerated. Nonnegative integers or rationals are the canonical examples.
+\end{definition}
+
+\begin{theorem}[Weighted Shortest-Path ATP Principle, finite effective case]\label{thm:weighted-sp}
+Let the relevant reachable portion of $S_F$ be finite and effectively enumerable, and suppose each reachable state has an effectively enumerable finite list of outgoing legal transitions with their rule/witness data. Let every legal edge have cost $w_F(e)$ in an effective nonnegative cost domain $\mathcal C$. Let $B_0$ be the initial proof state and let $T$ be reachable. Then Dijkstra&#x27;s algorithm, run from $B_0$ and stopped when a minimum-key target state is extracted, returns a target state $C\ni T$ satisfying
+\[
+d_F(B_0,C)=d_F(B_0,T).
+\]
+If a predecessor edge and its rule/witness data are stored whenever a tentative distance is improved, tracing predecessors from $C$ to $B_0$ reconstructs a legal minimum-cost proof route and hence a finite replayable proof certificate in the chosen transition model.
+\end{theorem}
+
+\begin{proof}
+Because the reachable graph is finite, outgoing transitions are effectively enumerable, and finite path-cost sums in $\mathcal C$ are decidably comparable, Dijkstra&#x27;s queue operations are effective. The standard Dijkstra invariant for directed graphs with nonnegative edge weights states that when a vertex is extracted at minimum tentative distance, that distance is final. Hence the first extracted state in $\mathcal T_F(T)$ has least path cost among all reachable target states. Each predecessor pointer records an actual legal edge, so reversing the chain reconstructs a legal state path. The stored transition labels retain the premises, rule tag, witness/instantiation data, and conclusion required to replay and verify the proof.
+\end{proof}
+
+\begin{corollary}[Full unit-cost recovery of Theorem 6.9]\label{cor:depths69}
+Assume the relevant state theorem graph is finite, or is locally finite and effectively enumerable in the sense of Theorem 6.9 of \emph{Depths}. If every legal edge has unit cost, then breadth-first search from $B_0$ reaches any reachable target at the least possible edge count, and a stored predecessor map reconstructs a shortest proof route. Thus the unit-cost specialization recovers the full finite-or-locally-finite scope of Theorem 6.9.
+\end{corollary}
+
+\begin{proof}
+When every edge has cost $1$, weighted path cost is exactly edge count. Breadth-first search processes states in nondecreasing edge distance. In the locally finite case every finite depth layer is finite, so a target at finite depth is eventually processed; the first processed target therefore has minimum depth. Predecessor labels reconstruct the legal route exactly as in Theorem 6.9 of \emph{Depths}. In the finite case this is also the unit-cost specialization of Theorem~\ref{thm:weighted-sp}.
+\end{proof}
+
+\begin{remark}[Infinite weighted graphs]
+Local finiteness alone is not enough to assert termination of arbitrary weighted search when edge weights can accumulate toward zero or infinitely many states lie below a finite cost threshold. For infinite weighted state graphs one should add standard hypotheses, such as finite weighted sublevel sets, a positive lower bound on nonzero edge costs together with finite branching, or another condition guaranteeing that the relevant minimum-cost target is reached in finite search time. The weighted generalization is therefore not claimed solely from Theorem 6.9; it is a separate shortest-path extension under weighted-search hypotheses.
+\end{remark}
+
+\section{MAPQUEST rectilinear residuals}
+
+For a legal target-closing candidate
+\[
+c=(r;P_1,\dots,P_k;\xi),\qquad P_1,\dots,P_k\Longrightarrow T,
+\]
+with exact address map $\lambda_F:W_F\hookrightarrow\mathbb Q\cap[0,1)$, define its premise-address point
+\[
+q_c=(\lambda_F(P_1),\dots,\lambda_F(P_k)).
+\]
+The current BANK $B$ generates $k$-slot configurations $\lambda_F(B)^k$. The fixed-doorway rectilinear residual is
+\[
+D^{\lambda_F}_{\mathrm{rect}}(B,c)
+=
+\inf_{q\in\lambda_F(B)^k}\|q_c-q\|_1,
+\]
+and the MAPQUEST rectilinear target distance is
+\[
+\MRTD^{\lambda_F}(B,T)
+=
+\inf_{c\in\Pred_F(T)}D^{\lambda_F}_{\mathrm{rect}}(B,c).
+\]
+These definitions are inherited from the MAPQUEST rectilinear paper \cite{MRTD}.
+
+As BANK grows monotonically, the comparison set enlarges, so MRTD cannot increase. Under isolated addressing, zero distance to a witnessed doorway is equivalent to the presence of all its required premises. With bounded candidate service and verifier acceptance, this yields a replayable certificate. This is the precise bridge from extrinsic geometry to logical contact.
+
+The same source contains a crucial warning:
+\begin{quote}
+``navigation refinement $\neq$ target progress.&#x27;&#x27; \cite{MRTD}
+\end{quote}
+It also proves that arbitrarily fine monotone local subdivisions do not shrink a fixed endpoint $L^1$ distance. In MAPQUEST terms, a finer Hilbert resolution can improve navigation granularity without making the target deductively closer.
+
+\section{Why MRTD is not automatically an A* heuristic}
+
+A* requires a lower-bound estimate of remaining intrinsic cost. Raw MRTD does not satisfy that requirement merely because it decreases as BANK grows. Universal Theorem Geometry I gives two reasons.
+
+First, re-addressing can change MRTD while leaving the intrinsic legal proof paths and their costs unchanged. Second, even under one fixed address map, equal raw address residuals can correspond to different intrinsic proof distances \cite{UTGI}. Therefore no universal identity
+\[
+\MRTD^{\lambda_F}(B,T)=d_F(B,T)
+\]
+can hold without additional compatibility hypotheses.
+
+Consequently, one must not simply set
+\[
+h(B)=\MRTD^{\lambda_F}(B,T)
+\]
+and declare $h$ admissible. The missing object is a calibration theorem connecting changes in the navigation residual to the actual cost of legal proof transitions.
+
+\section{Consistent potentials and admissible proof heuristics}
+
+The right bridge is a directed potential inequality.
+
+\begin{definition}[Admissible theorem-search heuristic]
+A function $h:S_F\to[0,\infty]$ is admissible for target $T$ if
+\[
+h(B)\le d_F(B,T)
+\]
+for every state $B$ in its domain.
+\end{definition}
+
+\begin{definition}[Consistent proof potential]
+A function $h:S_F\to[0,\infty)$ is consistent for target $T$ if
+\begin{enumerate}[label=(\roman*)]
+\item $h(C)=0$ for every target state $C\in\mathcal T_F(T)$, and
+\item for every legal edge $e:B\to B&#x27;$,
+\[
+h(B)\le w_F(e)+h(B&#x27;).
+\]
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Consistency implies admissibility]\label{thm:consistency}
+Every consistent proof potential is admissible.
+\end{theorem}
+
+\begin{proof}
+Let $P=(e_1,\dots,e_n)$ be any legal path
+\[
+B=B_0\to B_1\to\cdots\to B_n=C,
+\qquad C\in\mathcal T_F(T).
+\]
+Repeated use of consistency yields
+\[
+h(B_0)\le w_F(e_1)+h(B_1)
+\le\cdots\le\sum_{j=1}^n w_F(e_j)+h(C)
+=\cost_F(P).
+\]
+Taking the infimum over all target-reaching paths gives $h(B)\le d_F(B,T)$.
+\end{proof}
+
+This theorem is the main mathematical interface between MAPQUEST&#x27;s extrinsic navigation geometry and the intrinsic weighted proof geometry. It tells us exactly what must be proved about a navigation score before A* optimality claims become justified.
+
+\section{Calibrating MRTD}
+
+Raw MRTD may fail to vanish on every target state, depending on the represented predecessor convention, so define a target-normalized residual $r_\lambda(B,T)$ satisfying $r_\lambda(C,T)=0$ whenever $T\in C$. One simple convention is to set
+\[
+r_\lambda(B,T)=
+\begin{cases}
+0,&amp;T\in B,\\
+\MRTD^{\lambda_F}(B,T),&amp;T\notin B.
+\end{cases}
+\]
+This normalization changes only the terminal value used by the search heuristic.
+
+\begin{theorem}[Residual-Potential Calibration Theorem]\label{thm:calibration}
+Let $f:[0,\infty)\to[0,\infty)$ satisfy $f(0)=0$. If every legal edge $e:B\to B&#x27;$ satisfies
+\[
+f(r_\lambda(B,T))
+\le
+w_F(e)+f(r_\lambda(B&#x27;,T)),
+\]
+then
+\[
+h_f(B):=f(r_\lambda(B,T))
+\]
+is a consistent, hence admissible, heuristic for $d_F(B,T)$.
+\end{theorem}
+
+\begin{proof}
+The target condition follows from $f(0)=0$. The edge inequality is exactly consistency. Apply Theorem~\ref{thm:consistency}.
+\end{proof}
+
+The theorem does not claim that such an $f$ always exists in a useful nonzero form. Rather, it isolates the empirical/mathematical work MAPQUEST must perform: discover or prove a calibration that converts coordinate progress into a certified lower bound on remaining proof cost.
+
+\subsection{Linear calibration}
+
+A particularly transparent family is
+\[
+h_\alpha(B)=\alpha\,r_\lambda(B,T),\qquad \alpha\ge0.
+\]
+
+\begin{theorem}[Maximal Safe Linear MAPQUEST Calibration]\label{thm:alpha-max}
+Fix a declared search domain $D\subseteq S_F$ containing every state on which A*-MAPQUEST is to claim optimality, and let $E_D$ be the set of all legal transitions $e:B\to B&#x27;$ with $B,B&#x27;\in D$. Assume
+\[
+r_\lambda(B&#x27;,T)\le r_\lambda(B,T)
+\]
+for every $e\in E_D$. Define
+\[
+\alpha_{\max}(D,T)
+:=
+\inf_{e:B\to B&#x27;\in E_D\,:\,r_\lambda(B,T)&gt;r_\lambda(B&#x27;,T)}
+\frac{w_F(e)}{r_\lambda(B,T)-r_\lambda(B&#x27;,T)},
+\]
+with the infimum over the empty set interpreted as $+\infty$. Then:
+\begin{enumerate}[label=(\roman*)]
+\item every $0\le\alpha\le\alpha_{\max}(D,T)$ makes
+\[
+h_\alpha(B)=\alpha r_\lambda(B,T)
+\]
+consistent on every edge of $E_D$ and therefore admissible on $D$;
+\item if the defining set is nonempty and $\alpha&gt;\alpha_{\max}(D,T)$, then $h_\alpha$ fails the consistency inequality on at least one edge of $E_D$.
+\end{enumerate}
+Consequently $\alpha_{\max}(D,T)$ is the supremal globally safe linear conversion rate from the declared MAPQUEST residual to intrinsic proof cost on $D$.
+\end{theorem}
+
+\begin{proof}
+For an edge with no residual decrease, $r_\lambda(B,T)=r_\lambda(B&#x27;,T)$ by monotonicity, so consistency reduces to $0\le w_F(e)$. For an edge with positive residual decrease, $\alpha\le\alpha_{\max}(D,T)$ implies
+\[
+\alpha\bigl(r_\lambda(B,T)-r_\lambda(B&#x27;,T)\bigr)\le w_F(e),
+\]
+which rearranges to
+\[
+h_\alpha(B)\le w_F(e)+h_\alpha(B&#x27;).
+\]
+Because every legal edge in the declared search domain is covered, $h_\alpha$ is globally consistent on $D$; target normalization gives $h_\alpha=0$ on target states, and Theorem~\ref{thm:consistency} yields admissibility.
+
+For (ii), if $\alpha&gt;\alpha_{\max}(D,T)$ and the ratio set is nonempty, the defining property of an infimum gives an edge whose ratio is strictly less than $\alpha$. On that edge,
+\[
+\alpha\bigl(r_\lambda(B,T)-r_\lambda(B&#x27;,T)\bigr)&gt;w_F(e),
+\]
+so the consistency inequality fails.
+\end{proof}
+
+\begin{remark}
+If $\alpha_{\max}(D,T)=0$, then the only globally guaranteed linear calibration is the zero heuristic. If $\alpha_{\max}(D,T)=+\infty$ because the residual never strictly decreases on $E_D$, every finite $\alpha$ is edge-consistent but the residual supplies no graded decrease information. Both cases diagnose the relation between the chosen address residual and the declared cost geometry rather than contradicting the theorem.
+\end{remark}
+
+\section{A*-MAPQUEST}
+
+Once an admissible heuristic is available, MAPQUEST can be placed inside the standard weighted search template without identifying its address geometry with proof geometry.
+
+For a discovered proof state $B$, let
+\[
+g(B)=\text{least discovered legal path cost from }B_0\text{ to }B
+\]
+and let
+\[
+h(B)=f(r_\lambda(B,T))
+\]
+be a calibrated admissible residual. Define
+\[
+F_{\!*}(B)=g(B)+h(B).
+\]
+A*-MAPQUEST prioritizes states by $F_{\!*}$, while Hilbert-addressed candidate ordering may still be used inside a state&#x27;s rule-arity charts to enumerate or rank legal successor candidates.
+
+\begin{theorem}[A*-MAPQUEST optimality, finite effective case]\label{thm:astar}
+Assume the reachable weighted state graph is finite and effectively enumerable with effectively enumerable finite successor lists. Let edge costs lie in an effective nonnegative cost domain, and suppose the values used for $g+h$ admit effective exact comparison. If $h$ is consistent and graph-search A* terminates when a target state is extracted from the priority queue, then A*-MAPQUEST from $B_0$ returns a minimum-cost target route. Retaining rule-labeled predecessors reconstructs a minimum-cost replayable proof certificate.
+\end{theorem}
+
+\begin{proof}
+The stated effectiveness assumptions make successor generation and priority-queue comparisons executable. For a consistent heuristic, the standard graph-search A* invariant implies that extracted $g$-values are final and that the first extracted target has minimum path cost. The novelty here is interpretive and architectural: $h$ is not postulated from address distance but certified by Theorem~\ref{thm:calibration} or Theorem~\ref{thm:alpha-max}; the returned route remains a sequence of legal verified inference transitions whose stored labels replay the certificate.
+\end{proof}
+
+The result gives a clean division of labor. Dijkstra search uses no theorem-specific compass beyond accumulated cost. A*-MAPQUEST may use geometric navigation information, but only after calibration proves that the information is safe as a lower bound. Hilbert traversal remains an ordering policy inside inference charts, not an axiom of theoremhood.
+
+\section{Geodesic approximation and prover quality}
+
+Universal Theorem Geometry I defines the realized route length of a prover $M$ by
+\[
+L_M^{\route}(B,T)=\cost_F(P_M(B,T))
+\]
+and route efficiency by
+\[
+\rho_M^{\route}(B,T)
+=
+\frac{d_F(B,T)}{L_M^{\route}(B,T)}.
+\]
+For a settled target with $0&lt;d_F(B,T)&lt;\infty$,
+\[
+0&lt;\rho_M^{\route}(B,T)\le1,
+\]
+with equality exactly when the returned route attains the intrinsic infimum \cite{UTGI}.
+
+This turns ``MAPQUEST quality&#x27;&#x27; into a geometric question: how closely does the realized route approximate the intrinsic proof geodesic? It is stronger than counting expansions, because a prover can explore an enormous irrelevant region and eventually output a geodesic proof; conversely it can search economically but return a costly proof. Route quality and search effort are distinct axes.
+
+\begin{definition}[Geodesic stretch and regret]
+For a returned route with positive finite intrinsic distance, define
+\[
+\sigma_M(B,T)=\frac{L_M^{\route}(B,T)}{d_F(B,T)}
+=\frac{1}{\rho_M^{\route}(B,T)}
+\]
+and
+\[
+R_M(B,T)=L_M^{\route}(B,T)-d_F(B,T).
+\]
+\end{definition}
+
+\begin{definition}[Heuristic tightness]
+If $h$ is admissible and $0&lt;d_F(B,T)&lt;\infty$, define
+\[
+\eta_h(B,T)=\frac{h(B)}{d_F(B,T)}.
+\]
+Then $0\le\eta_h(B,T)\le1$. A value near $1$ means the heuristic nearly saturates the true lower bound at $B$; a value near $0$ means it is safe but weak.
+\end{definition}
+
+This suggests a principled empirical program: measure not only whether MAPQUEST solves a target, but (i) the route efficiency $\rho$, (ii) search-expansion efficiency, (iii) heuristic tightness $\eta_h$, and (iv) calibration violations on held-out transitions. A navigation method that is strongly correlated with proof distance but occasionally overestimates may be useful as a ranking score, yet it is not an admissible A* heuristic unless the violations are removed or bounded.
+
+\section{A vector of distances, not one universal scalar}
+
+Universal Theorem Geometry I already proposes the partial signature
+\[
+\mathcal D^{\lambda}_{F,M}(B,T)
+=
+\Bigl(
+ d_F(B,T),
+ \MRTD^{\lambda_F}(B,T),
+ m_T(B),
+ L_M^{\route}(B,T),
+ \rho_M^{\route}(B,T)
+\Bigr),
+\]
+where $m_T(B)$ is a discrete missing-premise residual over the represented predecessor family \cite{UTGI}. Part II suggests adding at least two coordinates when a heuristic is calibrated:
+\[
+\mathcal D^{\lambda,h}_{F,M}(B,T)
+=
+\Bigl(
+ d_F,
+ \MRTD,
+ m_T,
+ h,
+ \eta_h,
+ L_M^{\route},
+ \rho_M^{\route}
+\Bigr).
+\]
+
+There is no contradiction if a target is close in one coordinate and far in another. A target may have a small address residual but a large intrinsic proof cost; it may be missing only one premise whose derivation is extremely expensive; it may have a near-perfect heuristic value but still incur huge search overhead because the state graph branches massively. These coordinates describe different geometric aspects of the same theorem problem.
+
+\section{Multi-resource theorem geometry}
+
+A single scalar edge cost can hide tradeoffs. Let each edge carry a resource vector
+\[
+\mathbf w_F(e)
+=
+\bigl(w_1(e),\dots,w_q(e)\bigr)\in[0,\infty)^q,
+\]
+for example
+\[
+\mathbf w_F(e)=
+(\text{transactions},\text{verification time},\text{certificate bytes},\text{memory}).
+\]
+A path then has vector cost
+\[
+\mathbf W_F(P)=\sum_{e\in P}\mathbf w_F(e).
+\]
+There need not be a unique minimum under the product order. The natural object is the Pareto frontier of nondominated proof routes.
+
+\begin{definition}[Pareto proof geodesic]
+A legal target route $P$ is Pareto-geodesic if there is no legal target route $Q$ with
+\[
+\mathbf W_F(Q)\le \mathbf W_F(P)
+\]
+coordinatewise and strict inequality in at least one coordinate.
+\end{definition}
+
+Scalarization by coefficients $a_i\ge0$,
+\[
+w^{(a)}_F(e)=\sum_i a_iw_i(e),
+\]
+selects one weighted geometry from the resource family, but different coefficients can select different geodesics. Universal theorem geometry therefore naturally accommodates a family of cost geometries rather than asking for one privileged scalar.
+
+\section{Cross-fiber geometry and transport of heuristics}
+
+Universal Theorem Geometry I proves that a proof-preserving translation with edge-simulation constant $K$ is Lipschitz on intrinsic proof distance:
+\[
+d_G(\widehat\tau(B),\widehat\tau(C))\le Kd_F(B,C),
+\]
+and that a reverse proof-preserving translation with constant $L$ supplies the lower comparison
+\[
+\frac1L d_F(B,C)
+\le d_G(\widehat\tau(B),\widehat\tau(C)).
+\]
+When $K=L=1$, the translated regions are isometric \cite{UTGI}. Thus simulation overhead becomes geometric distortion.
+
+The lower inequality also transports safe heuristics, but target distances require a target-set compatibility hypothesis in addition to state-to-state distortion.
+
+\begin{definition}[Target-compatible translated region]
+Let $X\subseteq S_F$ and $Y\subseteq S_G$. A bijection $\widehat\tau:X\to Y$ is target-compatible for $T$ and $\tau(T)$ when
+\[
+\widehat\tau\bigl(X\cap\mathcal T_F(T)\bigr)=Y\cap\mathcal T_G(\tau(T)).
+\]
+When the search problem is restricted to $X$ and $Y$, define the corresponding restricted target distances by taking the infimum only over these target subsets.
+\end{definition}
+
+\begin{proposition}[Transport of admissible heuristics]\label{prop:transport}
+Suppose $\widehat\tau:X\to Y$ is a target-compatible bijection whose inverse is induced by a proof-preserving reverse translation with finite constant $L&gt;0$. Assume the reverse distortion estimate
+\[
+d_F(B,C)\le L\,d_G(\widehat\tau(B),\widehat\tau(C))
+\]
+holds for all relevant $B,C\in X$. Then the restricted target distances satisfy
+\[
+\frac1L d_F^X(B,T)\le d_G^Y(\widehat\tau(B),\tau(T)).
+\]
+Consequently, if $h_F(B)\le d_F^X(B,T)$ is admissible on $X$, then
+\[
+h_G(\widehat\tau(B)):=\frac{1}{L}h_F(B)
+\]
+is admissible on $Y$.
+\end{proposition}
+
+\begin{proof}
+For every $C\in X\cap\mathcal T_F(T)$, target compatibility gives $\widehat\tau(C)\in Y\cap\mathcal T_G(\tau(T))$, and the reverse distortion inequality gives
+\[
+\frac1L d_F(B,C)\le d_G(\widehat\tau(B),\widehat\tau(C)).
+\]
+Taking the infimum over corresponding target states yields the restricted target-distance inequality. Admissibility in $F$ then gives
+\[
+\frac1L h_F(B)\le \frac1L d_F^X(B,T)\le d_G^Y(\widehat\tau(B),\tau(T)).
+\]
+\end{proof}
+
+\begin{remark}
+Without target compatibility, state-to-state bi-Lipschitz control on a translated region does not by itself control the global target distance in $G$: there may be additional target states outside $Y$ that are cheaper to reach. The proposition therefore states exactly the restricted setting in which the heuristic-transport conclusion is justified.
+\end{remark}
+
+This makes cross-system proof complexity operationally relevant to navigation. A calibrated compass in one fiber can, under controlled reverse distortion and target correspondence, yield a certified lower-bound compass in another.
+
+\section{Where the map analogy succeeds and fails}
+
+The analogy between proof search and road navigation is powerful if its correspondences remain typed.
+
+\subsection{Where it succeeds}
+A target can be treated as a destination set of states. Legal inference gives directionality. Weighted transitions give route lengths. A prover chooses a route. Search heuristics can be evaluated by whether they lower-bound remaining cost. Different formal systems can distort route lengths under translation. A verifier checks that every turn was legal. These are genuine mathematical correspondences, not decorative imagery.
+
+\subsection{Where it fails if pushed too far}
+There is no assumption of an ambient Euclidean space containing all proofs. Rule-arity charts are heterogeneous and tagged. WFF addresses are coding choices, not physical coordinates. Directed proof distance can be asymmetric and can take value $\infty$. Infima need not be attained. Re-addressing can distort navigation residuals without changing intrinsic proof distance. A Hilbert curve orders search locations inside a finite-resolution coordinate approximation; it does not generate theoremhood.
+
+The MAPQUEST rectilinear paper captures the crucial warning in another compact statement: arbitrarily fine local movement does not imply arbitrarily small endpoint distance \cite{MRTD}. In proof search, the ability to make tiny address-space moves says nothing by itself about remaining deductive cost.
+
+\section{The Weighted Universal MAPQUEST Principle}
+
+The combined architecture can be summarized as follows.
+
+\begin{principle}[Weighted Universal MAPQUEST Principle]
+A formal theorem problem determines a directed weighted proof-state geometry whose geodesic distance is the infimum of intrinsic costs of verified proofs. MAPQUEST equips that geometry with variable-dimensional premise-slot charts and an extrinsic rectilinear navigation residual that can guide movement toward target-closing inferences. BANK growth monotonically decreases that residual; under isolated addressing, reaching a witnessed doorway threshold establishes premise eligibility; verifier-gated inference converts eligibility and service into a certificate. A prover&#x27;s realized route can be measured against the intrinsic geodesic, while proof-preserving translations transport intrinsic distances with controlled distortion. If the MAPQUEST residual is separately calibrated to satisfy a consistent-potential inequality, it becomes a certified admissible heuristic for weighted geodesic search.
+\end{principle}
+
+This principle is stronger than the slogan that proving a theorem is ``like MapQuest.&#x27;&#x27; It says that theorem search admits a typed separation among the map, the road network, the costs, the destination, the navigator, and the optimal route. The analogy becomes mathematics only when those roles remain distinct.
+
+\section{Research program}
+
+The weighted formulation opens several concrete questions.
+
+\paragraph{Canonical calibration.}
+What structural restrictions on $\lambda_F$ and what transforms $f$ make $f(\MRTD)$ consistent for useful classes of proof systems without encoding theoremhood into the address map itself?
+
+\paragraph{Best safe scaling.}
+Can $\alpha_{\max}(D,T)$ be estimated from a frozen training region and then certified on a formally declared search domain or a held-out region? How much heuristic strength is lost when demanding proof-level admissibility rather than empirical correlation?
+
+\paragraph{Nonlinear potentials.}
+Linear scaling may be too crude. Piecewise-linear, concave, isotonic, or learned monotone functions can be considered, provided a formal edge-wise inequality can be verified.
+
+\paragraph{Vector and Pareto geodesics.}
+Which proof systems exhibit stable Pareto fronts across proof size, verifier time, memory, and transaction count? Can MAPQUEST approximate the frontier rather than one scalarized optimum?
+
+\paragraph{Curvature and bottlenecks.}
+Can branching, confluence, merge structure, and narrow target gateways be encoded by useful graph-geometric invariants rather than imported metaphors? This continues an explicit open direction from Part I \cite{UTGI}.
+
+\paragraph{Quotients and recoding invariance.}
+When does intrinsic weighted distance descend to quotient theorem spaces? Which address quantities survive recoding, and which should deliberately remain extrinsic?
+
+\paragraph{Empirical geodesic approximation.}
+On frozen benchmarks, compare MAPQUEST, Dijkstra, A*, and conventional ATP search using the same verifier, cost model, and target set. Measure route efficiency, expansion efficiency, heuristic tightness, and certificate replay cost separately.
+
+\section{Conclusion}
+
+The principal conclusion of Part II is that weighted proof search and MAPQUEST navigation fit together, but only after a strict separation of roles. Intrinsic proof geometry comes from legal state transitions and their declared costs. MAPQUEST&#x27;s address residual is extrinsic navigation information. The verifier decides legal arrival. The unit-cost shortest-path theorem becomes the equal-weight specialization of a broader weighted geodesic theory, while the executable weighted case requires effective successor generation and decidable path-cost comparison.
+
+The key new bridge is heuristic calibration. MRTD need not be proof distance and need not even be a lower bound on it. Yet if a transform of the residual satisfies a local consistency inequality against every legal edge cost in the declared search domain, telescoping converts that edgewise inequality into a global lower bound on remaining proof cost. Revision 2.0 further identifies $\alpha_{\max}(D,T)$ as the supremal safe linear scale whenever the residual is nonincreasing on every legal edge in that domain. That is exactly what is needed to turn MAPQUEST from an informed ordering policy into an A*-compatible geodesic navigator with optimality guarantees under standard search hypotheses.
+
+In this sense, proof complexity becomes geometry in a precise declared-cost sense. Different proof systems distort distances under simulation; different cost models produce different geodesics; different provers trace routes of measurable stretch and regret; and different address maps give different navigation charts without changing the intrinsic road network. Universal Theorem Geometry is therefore not one coordinate system and not one metric. It is a controlled family of formal geometries in which theorem proving can be studied simultaneously as derivation, navigation, optimization, and certification.
+
+\section*{Revision 2.0 theorem-audit note}
+Revision 2.0 preserves the central theory of Revision 1.0 but repairs its boundary conditions. In particular: (i) Dijkstra and A* are stated over effective successor enumerations and decidably comparable additive costs rather than arbitrary ``computable real&#x27;&#x27; weights; (ii) the unit-cost corollary explicitly recovers the locally finite, effectively enumerable scope of Theorem 6.9; (iii) linear calibration is global only when every legal edge in the declared search domain is included, yielding the maximal-safe-scale theorem; and (iv) cross-fiber heuristic transport now requires target-set compatibility, because state-to-state distortion alone does not control target states outside the translated image. No core theorem is withdrawn; the revisions make the hypotheses match the conclusions.
+
+\appendix
+\section{Synthesis note preceding this paper: full text}
+
+The following section preserves, in full substantive text, the synthesis that immediately preceded the request for this paper. Mathematical display formatting has been converted to LaTeX and source citations have been consolidated into this paper&#x27;s bibliography; no mathematical claim has been intentionally omitted.
+
+Taken together, the three documents give a much stronger picture than any one of them gives alone. The central conclusion is that \textbf{MAPQUEST is naturally a navigation algorithm on top of a weighted directed theorem geometry, not itself the theorem geometry}.
+
+The first document gives the discrete graph-theoretic backbone: a proof is a directed path through proof states, and Theorem 6.9 shows that with unit edge cost, shortest proof search is ordinary BFS and the predecessor map recovers the corresponding proof certificate. The Universal Theorem Geometry paper then generalizes this from unit cost to an arbitrary declared nonnegative edge cost $w_F(e)$, so that intrinsic proof distance becomes
+\[
+d_F(B,T)=\inf_{P:B\rightsquigarrow T}\sum_{e\in P}w_F(e).
+\]
+That is the actual \textbf{geodesic distance of proof}. The unit-cost theorem is therefore a special case of the weighted theory.
+
+The MAPQUEST rectilinear paper supplies a completely different quantity:
+\[
+\MRTD_{\lambda_F}(B,T),
+\]
+which measures how far the current BANK lies, in premise-slot address geometry, from a represented legal target-closing inference. As BANK grows, this residual cannot increase, and under isolated addressing, reaching zero means that all premises of a witnessed target-closing inference are actually present. From there bounded service plus verification produces a certificate of $T$.
+
+So the combined theory has \textbf{three distinct stages of geometry}:
+\[
+\boxed{\text{navigation geometry}\;\longrightarrow\;\text{proof geometry}\;\longrightarrow\;\text{certificate}.}
+\]
+More precisely, $\MRTD(B,T)$ answers \textbf{``where should MAPQUEST look?&#x27;&#x27;}; $d_F(B,T)$ answers \textbf{``what is the least intrinsic cost of actually proving $T$?&#x27;&#x27;}; and the realized route of MAPQUEST answers \textbf{``how efficiently did the prover navigate compared with the optimal proof?&#x27;&#x27;} The Universal Geometry paper explicitly makes this three-way distinction.
+
+That leads to what I think is the strongest combined conclusion:
+\[
+\boxed{\text{The theorem-proving problem is a weighted geodesic-navigation problem.}}
+\]
+A theorem is not merely a destination WFF. It determines a target subset of proof states. Legal inferences create the directed road network. Edge weights determine the actual cost structure. MAPQUEST&#x27;s Hilbert/address machinery supplies a coordinate system and a search policy over that network.
+
+This immediately explains something important about your earlier question concerning edge cost. \textbf{The ``shortest proof&#x27;&#x27; is not necessarily the proof having the fewest inference steps.} If
+\[
+w_F(e_1),w_F(e_2),\ldots
+\]
+are nonconstant but determinable, then a 7-step proof can be geometrically shorter than a 4-step proof:
+\[
+\sum_{e\in P_7}w_F(e)&lt;\sum_{e\in P_4}w_F(e).
+\]
+Thus Theorem 6.9&#x27;s minimum-edge path becomes the special unit-weight case of a \textbf{minimum-cost proof geodesic}.
+
+A second strong conclusion is that \textbf{there cannot generally be one scalar ``distance to a theorem.&#x27;&#x27;} The Universal Geometry paper proves that the intrinsic proof distance is invariant under mere re-addressing, while the MAPQUEST rectilinear residual generally changes when the addresses change. It therefore packages theorem geometry as a vector-valued signature rather than collapsing everything into one number.
+
+A natural combined signature is
+\[
+\mathcal D_{F,M}^{\lambda}(B,T)
+=
+\Bigl(d_F(B,T),\MRTD_{\lambda}(B,T),m_T(B),L_M^{\route}(B,T),\rho_M^{\route}(B,T)\Bigr).
+\]
+That means a target can simultaneously be close in MAPQUEST address space, far in actual proof cost, missing only one premise, and reached by an inefficient prover route. Those are not contradictions. They are different coordinates of the theorem&#x27;s geometry. The paper explicitly defines essentially this five-coordinate geometric signature.
+
+There is then a particularly useful new quantity from the combination:
+\[
+\rho_M^{\route}(B,T)=\frac{d_F(B,T)}{L_M^{\route}(B,T)}.
+\]
+It satisfies $0&lt;\rho_M^{\route}\le1$, and $\rho_M^{\route}=1$ exactly when MAPQUEST has found a geodesic---an intrinsically minimum-cost proof.
+
+So MAPQUEST performance can now be judged against an objective geometric benchmark:
+\[
+\boxed{\text{MAPQUEST quality}=\text{how closely its realized proof route approximates the intrinsic geodesic}.}
+\]
+That is much more meaningful than simply counting expansions.
+
+There is also an important restriction. \textbf{MRTD is not automatically an admissible A$^*$ heuristic.} The documents deliberately establish that address distance and proof distance can disagree; equal MAPQUEST residuals can even correspond to different intrinsic proof distances. Therefore you cannot simply declare
+\[
+h(B)=\MRTD(B,T)
+\]
+and assume
+\[
+h(B)\le d_F(B,T).
+\]
+You would need a separate calibration theorem. For example, if one could establish some monotone function $f$ satisfying
+\[
+f(\MRTD(B,T))\le d_F(B,T),
+\]
+then
+\[
+h(B)=f(\MRTD(B,T))
+\]
+would become an admissible heuristic. That would be an important MAPQUEST theorem because then A$^*$ could exploit Hilbert/address geometry while still guaranteeing a minimum-cost proof.
+
+The combination also gives a more precise interpretation of the Hilbert curves. They are \textbf{not the geometry of theoremhood}. They are local navigation devices inside the variable-dimensional inference charts. The positive dimension comes from rule arity; the WFF itself remains zero-dimensional. Universal Theorem Geometry explicitly describes the complete object as a fibered, tagged, variable-dimensional directed hypergraph with proof-state quasi-metrics, address charts, trajectories and cross-fiber morphisms.
+
+There is an even larger consequence across different proof systems. If a proof-preserving translation from $F$ to $G$ simulates every $F$-edge with at most $K$ times its cost, then
+\[
+d_G(\widehat\tau(B),\widehat\tau(C))\le K\,d_F(B,C).
+\]
+So the simulation overhead between formal systems literally becomes a \textbf{geometric distortion constant}. If translations exist in both directions, you can obtain bi-Lipschitz comparison; if both constants are $1$, the corresponding regions of theorem space are isometric.
+
+That suggests a rather deep interpretation of \textbf{Universal Theorem Geometry}:
+\[
+\boxed{\text{Proof complexity becomes geometry.}}
+\]
+A formal system with cheaper routes compresses geometric distances relative to another system. A simulation with overhead $K$ stretches them by at most $K$. Equivalent proof systems can therefore be compared not merely by whether they prove the same things, but by the geometric distortion required to transport proofs between them.
+
+So if I compress the combined result of all three documents into one statement, I would formulate it this way:
+
+\begin{quote}
+\textbf{Weighted Universal MAPQUEST Principle.} A formal theorem problem determines a directed weighted proof-state geometry whose geodesic distance is the minimum intrinsic cost of a verified proof. MAPQUEST equips that geometry with variable-dimensional premise-slot charts and an extrinsic rectilinear navigation residual that can guide movement toward target-closing inferences. BANK growth monotonically decreases this residual; under isolation, reaching the doorway threshold establishes premise eligibility; verifier-gated inference then converts arrival into a certificate. A prover&#x27;s success can therefore be measured by how closely its realized weighted route approximates the intrinsic proof geodesic, while proof-preserving translations between formal systems transport these distances with controlled geometric distortion.
+\end{quote}
+
+That is substantially stronger than ``theorem proving resembles MapQuest.&#x27;&#x27; It says there is now a coherent mathematical separation between \textbf{the map, the road network, the road costs, the destination, the navigator, and the optimal route}.
+
+And I think there is a fairly clear next paper hiding here: \textbf{Universal Theorem Geometry II: Weighted Geodesics and MAPQUEST Heuristics}---with the main new problem being the exact conditions under which MRTD, or a calibrated transformation of it, becomes an admissible lower bound for $d_F$.
+
+\section{Source note and verified public links}
+
+The paper was drafted from the three PDF manuscripts submitted in this session. A matching public GitHub copy was verified for \emph{Universal Theorem Geometry I}; the other two exact submitted editions were not located under matching filenames during this draft, so no exact GitHub URL is asserted for them. A newer related \emph{Depths} edition (Version 47) is public, but it is not treated as a substitute for the submitted Version 46.2 source.
+
+\begin{thebibliography}{9}
+\bibitem{Depths46}
+Brian Tenneson, \emph{Depths of Induction and Formalized Self-Awareness, Version 46.2, Theorem-Corrected Working Edition}, submitted working manuscript, 2026. Source used here: session PDF. Related later public edition: \href{https://github.com/btenneson/pub/blob/main/cs.LO_Logic_in_Computer_Science/Depths_of_Induction_ML_Guided_Proof_Search_and_Formalized_Self_Awareness_Version_47.pdf}{GitHub Version 47}.
+
+\bibitem{MRTD}
+Brian Tenneson, \emph{Rectilinear Target Distance in MAPQUEST: From Arbitrarily Fine Monotone Steps to a Geometric Distance from $B_0$ to $T$}, working note, September 2026. Source used here: session PDF. No exact matching public GitHub path was verified while preparing this draft.
+
+\bibitem{UTGI}
+Brian Tenneson, \emph{Universal Theorem Geometry I: Fibered Directed Multi-Geometry for Proof Search and MAPQUEST Navigation}, Revision 1.1, September 2026. Source used here: session PDF. Public copy: \href{https://github.com/btenneson/pub/blob/main/cs.LO_Logic_in_Computer_Science/Universal_Theorem_Geometry_I.pdf}{GitHub}.
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
