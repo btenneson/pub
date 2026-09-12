@@ -9,60 +9,60 @@ permissions:
   contents: write
 
 jobs:
-  reconstruct:
+  build-and-verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Reconstruct and verify corrected PDF
+
+      - name: Reconstruct and verify audited source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat staging/utg1/corrected_source.b64.00 staging/utg1/corrected_source.b64.01 staging/utg1/corrected_source.b64.02 \
+            | base64 -d | gzip -d > /tmp/Universal_Theorem_Geometry_I.tex
+          echo "4f8e1ee23afaa5cb03b6e9ac35ec6ad40661f476764f050de213b29b1bcaabf0  /tmp/Universal_Theorem_Geometry_I.tex" | sha256sum -c -
+          test "$(wc -c < /tmp/Universal_Theorem_Geometry_I.tex)" = "39396"
+
+      - name: Install minimal LaTeX and PDF audit tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-pictures
+          python -m pip install --quiet pymupdf==1.26.4
+
+      - name: Compile audited Revision 1.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/utg1-build
+          cp /tmp/Universal_Theorem_Geometry_I.tex /tmp/utg1-build/
+          cd /tmp/utg1-build
+          pdflatex -interaction=nonstopmode -halt-on-error Universal_Theorem_Geometry_I.tex >/tmp/utg1-pass1.log
+          pdflatex -interaction=nonstopmode -halt-on-error Universal_Theorem_Geometry_I.tex >/tmp/utg1-pass2.log
+
+      - name: Audit compiled publication
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import base64, gzip, hashlib
-
+          import fitz, hashlib
+          src = Path('/tmp/utg1-build/Universal_Theorem_Geometry_I.pdf')
+          doc = fitz.open(src)
+          text = '\n'.join(p.get_text() for p in doc)
+          assert len(doc) == 25, f'Expected 25 pages, got {len(doc)}'
+          assert 'Universal Theorem Geometry I' in doc[0].get_text()
+          quote = 'Universal theorem space is naturally a stratified, fibered, directed multi-geometry rather than a single metric space.'
+          assert quote in text, 'Exact card quote missing from compiled PDF'
+          assert 'Revision 1.1' in doc[0].get_text()
+          print('pages=', len(doc))
+          print('sha256=', hashlib.sha256(src.read_bytes()).hexdigest())
           out = Path('docs/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I.pdf')
           out.parent.mkdir(parents=True, exist_ok=True)
-          target_sha = '0a70d476d628791840fd5c2322ffb58526395919ae4c66ce6fb80aa4a92a8ce4'
-          target_size = 292199
-          parts = [Path(f'.build/utg1pdf/part{i:02d}.b64') for i in range(1, 11)]
-          texts = [''.join(p.read_text().split()) for p in parts]
-
-          def b64(s):
-              s = s.strip()
-              s += '=' * ((-len(s)) % 4)
-              return base64.b64decode(s, validate=False)
-
-          candidates = []
-          joined = ''.join(texts)
-          for name, s in [('joined', joined), ('joined-no-padding', joined.replace('=', ''))]:
-              try:
-                  candidates.append((name, b64(s)))
-              except Exception:
-                  pass
-          try:
-              candidates.append(('per-part', b''.join(b64(t) for t in texts)))
-          except Exception:
-              pass
-          try:
-              candidates.append(('per-part-no-padding', b''.join(b64(t.replace('=', '')) for t in texts)))
-          except Exception:
-              pass
-
-          for name, data in candidates:
-              for mode, payload in [('raw', data), ('gzip', None)]:
-                  if mode == 'gzip':
-                      try:
-                          payload = gzip.decompress(data)
-                      except Exception:
-                          continue
-                  sha = hashlib.sha256(payload).hexdigest()
-                  if len(payload) == target_size and sha == target_sha:
-                      out.write_bytes(payload)
-                      print(f'verified reconstruction: {name}/{mode}; size={len(payload)}; sha256={sha}')
-                      raise SystemExit(0)
-          raise SystemExit('No reconstruction variant matched the fixed corrected-PDF hash; refusing to publish.')
+          out.write_bytes(src.read_bytes())
           PY
+
       - name: Commit verified PDF to staging branch
         shell: bash
         run: |
@@ -71,5 +71,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I.pdf
           git diff --cached --quiet && exit 0
-          git commit -m "Stage verified UTG I corrected PDF"
+          git commit -m "Stage verified UTG I Revision 1.1 PDF"
           git push
