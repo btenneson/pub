@@ -43,7 +43,7 @@ jobs:
           s = s.replace(old_link, new_link, 1)
 
           marker = " print(f'Built {len(items)} publication cards and readers in {len({x[\"subject\"] for x in items})} subjects.')"
-          sweep = ''' # Keep legacy/historical reader pages consistent with the current fullscreen control.\n fullscreen_button='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\\\'.reader-frame\\\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'\n raw_fullscreen=re.compile(r'<a href="[^"]+\\.pdf" target="_blank" rel="noopener">Open full-screen reader</a>')\n for reader_page in DOCS.glob('*/*/index.html'):\n  legacy=reader_page.read_text(errors='replace')\n  repaired=raw_fullscreen.sub(fullscreen_button,legacy)\n  if repaired!=legacy:reader_page.write_text(repaired)\n'''
+          sweep = ''' # Keep legacy/historical reader pages consistent with the current fullscreen control.\n fullscreen_button='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\\\'.reader-frame\\\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'\n raw_fullscreen=re.compile(r'<a href="[^"]+\\.pdf" target="_blank" rel="noopener">Open full-screen reader</a>',re.I)\n for reader_page in DOCS.glob('*/*/index.html'):\n  legacy=reader_page.read_text(errors='replace')\n  repaired=raw_fullscreen.sub(fullscreen_button,legacy)\n  if repaired!=legacy:reader_page.write_text(repaired)\n'''
           if marker not in s:
               raise SystemExit('Build completion marker not found')
           s = s.replace(marker, sweep + marker, 1)
