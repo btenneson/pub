@@ -1,0 +1,127 @@
+name: Surgical fullscreen reader fix
+
+on:
+  push:
+    branches:
+      - fix-fullscreen-reader-surgical
+    paths:
+      - .github/workflows/fix_fullscreen_reader_surgical_once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix-fullscreen-reader-surgical
+          fetch-depth: 0
+
+      - name: Record protected publication-index fingerprint
+        run: |
+          sha256sum docs/search-index.json > /tmp/search-index.before
+          python - <<'PY'
+          import json
+          d=json.load(open('docs/search-index.json'))
+          assert d['count']==107, d['count']
+          assert len(d['items'])==107, len(d['items'])
+          print('Protected search index contains 107 publications.')
+          PY
+
+      - name: Patch generator and existing reader pages only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          builder=Path('scripts/build_publications.py')
+          s=builder.read_text()
+          old_css='.links a{padding:.5rem .7rem;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:650}.links a:hover,.links a:focus-visible{background:var(--tint)}'
+          new_css='.links a,.links button{padding:.5rem .7rem;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:650}.links button{cursor:pointer}.links a:hover,.links a:focus-visible,.links button:hover,.links button:focus-visible{background:var(--tint)}'
+          if old_css not in s:
+              raise SystemExit('Expected generator CSS not found')
+          s=s.replace(old_css,new_css,1)
+
+          old_link='''  p=url(x['pdf']);result+=('<a href="'+p+'" target="_blank" rel="noopener">Open full-screen reader</a>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
+'''
+          new_link='''  p=url(x['pdf']);result+=('<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\\'.reader-frame\\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
+'''
+          if old_link not in s:
+              raise SystemExit('Expected generator fullscreen link not found')
+          builder.write_text(s.replace(old_link,new_link,1))
+
+          css=Path('docs/publications.css')
+          c=css.read_text()
+          if old_css not in c:
+              raise SystemExit('Expected published CSS not found')
+          css.write_text(c.replace(old_css,new_css,1))
+
+          button='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\'.reader-frame\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'
+          pattern=re.compile(r'<a href="[^"]+\.pdf" target="_blank" rel="noopener">Open full-screen reader</a>',re.I)
+          changed=[]
+          for p in Path('docs').glob('*/*/index.html'):
+              text=p.read_text(errors='replace')
+              repaired,n=pattern.subn(button,text)
+              if n:
+                  p.write_text(repaired)
+                  changed.append((str(p),n))
+          if not changed:
+              raise SystemExit('No reader pages were changed')
+          print(f'Patched {len(changed)} existing reader pages.')
+          PY
+
+      - name: Verify publication index was untouched
+        run: |
+          sha256sum -c /tmp/search-index.before
+          python - <<'PY'
+          import json
+          d=json.load(open('docs/search-index.json'))
+          assert d['count']==107
+          assert len(d['items'])==107
+          print('Search index remains exactly 107 publications.')
+          PY
+
+      - name: Audit fullscreen reader behavior
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          readers=[]; bad=[]
+          for p in Path('docs').glob('*/*/index.html'):
+              text=p.read_text(errors='replace')
+              if 'Open full-screen reader' in text or ('Download PDF' in text and 'reader-frame' in text):
+                  readers.append(p)
+                  if 'Open full-screen reader</a>' in text:
+                      bad.append(str(p)+' still uses a raw-PDF anchor')
+                  if 'Open full-screen reader' in text and ('class="fullscreen-reader"' not in text or 'requestFullscreen' not in text):
+                      bad.append(str(p)+' lacks fullscreen iframe behavior')
+          if not readers:
+              raise SystemExit('No publication readers found')
+          if bad:
+              raise SystemExit('Fullscreen audit failed:\n'+'\n'.join(bad[:30]))
+          print(f'PASS: {len(readers)} reader pages checked; raw-PDF fullscreen links = 0.')
+          PY
+
+      - name: Confirm surgical scope
+        run: |
+          python - <<'PY'
+          import subprocess
+          allowed={'scripts/build_publications.py','docs/publications.css'}
+          changed=subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()
+          unexpected=[p for p in changed if p not in allowed and not (p.startswith('docs/') and p.endswith('/index.html'))]
+          if unexpected:
+              raise SystemExit('Unexpected changed files:\n'+'\n'.join(unexpected))
+          if 'docs/search-index.json' in changed:
+              raise SystemExit('search-index.json changed')
+          print(f'Surgical scope confirmed: {len(changed)} files; no catalog/search-index mutation.')
+          PY
+
+      - name: Commit fix and remove one-shot workflow
+        run: |
+          rm .github/workflows/fix_fullscreen_reader_surgical_once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Make fullscreen reader open embedded PDF viewer'
+          git push origin HEAD:fix-fullscreen-reader-surgical
