@@ -17,7 +17,7 @@ def quote_block(x):
 def links(x,reader=False):
  result='<a href="'+url(x['href'])+'">Read</a>' if not reader else '<a href="/pub/">All publications</a><a href="'+url(x['subject']+'/')+'">Subject</a>'
  if x.get('pdf'):
-  p=url(x['pdf']);result+=('<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\'.reader-frame\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
+  p=url(x['pdf']);result+=('<a href="'+p+'" target="_blank" rel="noopener">Open PDF</a>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
  if x.get('download'):result+='<a href="'+url(x['download'])+'" download>Download DOCX</a>'
  if x.get('source'):result+='<a href="'+url(x['source'])+'">Source</a>'
  return '<nav class="links" aria-label="Publication links">'+result+'</nav>'
@@ -55,12 +55,15 @@ def main():
   group=[x for x in items if x['subject']==subject];(DOCS/subject/'index.html').write_text(index(group,group[0]['category'],subject))
  DOCS.joinpath('search-index.json').write_text(json.dumps({'schema_version':1,'count':len(items),'items':items},ensure_ascii=False,indent=2)+'\n')
  DOCS.joinpath('404.html').write_text(shell('Publication moved','<main><h1>Find this publication</h1><p id="message">Checking the updated publication address…</p><a href="/pub/">Browse all publications</a></main><script>fetch("/pub/redirects.json").then(r=>r.json()).then(m=>{const p=decodeURIComponent(location.pathname.replace(/^\\/pub\\//,""));if(Object.prototype.hasOwnProperty.call(m,p)){location.replace("/pub/"+m[p]+location.search+location.hash)}else{document.getElementById("message").textContent="This address is no longer in the catalog. Search the publication library below."}}).catch(()=>{document.getElementById("message").textContent="Please open the publication library."});</script>'))
- # Keep legacy/historical reader pages consistent with the current fullscreen control.
- fullscreen_button='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\'.reader-frame\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'
- raw_fullscreen=re.compile(r'<a href="[^"]+\.pdf" target="_blank" rel="noopener">Open full-screen reader</a>',re.I)
+ # Repair pages produced during the fullscreen-button regression without changing publication content.
+ broken_button=re.compile(r'<button[^>]*class="fullscreen-reader"[^>]*>Open full-screen reader</button>',re.I)
  for reader_page in DOCS.glob('*/*/index.html'):
   legacy=reader_page.read_text(errors='replace')
-  repaired=raw_fullscreen.sub(fullscreen_button,legacy)
+  if not broken_button.search(legacy):continue
+  frame=re.search(r'<iframe class="reader-frame" src="([^"]+)"',legacy,re.I)
+  if not frame:continue
+  open_pdf='<a href="'+frame.group(1)+'" target="_blank" rel="noopener">Open PDF</a>'
+  repaired=broken_button.sub(open_pdf,legacy)
   if repaired!=legacy:reader_page.write_text(repaired)
  print(f'Built {len(items)} publication cards and readers in {len({x["subject"] for x in items})} subjects.')
 if __name__=='__main__':main()
