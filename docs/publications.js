@@ -1,1 +1,1 @@
-/mnt/data/pub_new/publications.js
+şiíıÖ­kúnnw°ş››–'¶*'²;
