@@ -1,0 +1,33 @@
+name: UTG I low-risk staging
+
+on:
+  push:
+    branches: [utg1-low-risk-stage]
+    paths: [.github/workflows/utg1_low_risk_stage.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  reconstruct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct and verify corrected PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_i_001
+          cat .build/utg1pdf/part{01..10}.b64 | tr -d '\r\n' | base64 -d | gzip -d > docs/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I.pdf
+          test "$(stat -c%s docs/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I.pdf)" = "292199"
+          echo "0a7011edeb67bbbc96d0540d0db9ff61380e5476ea1f25f266ec27d06f99dd85  docs/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I.pdf" | sha256sum -c -
+      - name: Commit verified PDF to staging branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_i_001/Universal_Theorem_Geometry_I.pdf
+          git diff --cached --quiet && exit 0
+          git commit -m "Stage verified UTG I corrected PDF"
+          git push
