@@ -33,6 +33,7 @@ jobs:
           if old_css not in s:
               raise SystemExit('Expected link CSS not found')
           s = s.replace(old_css, new_css, 1)
+
           old_link = '''  p=url(x['pdf']);result+=('<a href="'+p+'" target="_blank" rel="noopener">Open full-screen reader</a>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
           '''
           new_link = '''  p=url(x['pdf']);result+=('<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\\'.reader-frame\\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
@@ -40,6 +41,12 @@ jobs:
           if old_link not in s:
               raise SystemExit('Expected fullscreen reader link not found')
           s = s.replace(old_link, new_link, 1)
+
+          marker = " print(f'Built {len(items)} publication cards and readers in {len({x[\"subject\"] for x in items})} subjects.')"
+          sweep = '''  # Keep legacy/historical reader pages consistent with the current fullscreen control.\n  fullscreen_button='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\\\'.reader-frame\\\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'\n  raw_fullscreen=re.compile(r'<a href="[^"]+\\.pdf" target="_blank" rel="noopener">Open full-screen reader</a>')\n  for reader_page in DOCS.glob('*/*/index.html'):\n   legacy=reader_page.read_text(errors='replace')\n   repaired=raw_fullscreen.sub(fullscreen_button,legacy)\n   if repaired!=legacy:reader_page.write_text(repaired)\n'''
+          if marker not in s:
+              raise SystemExit('Build completion marker not found')
+          s = s.replace(marker, sweep + marker, 1)
           p.write_text(s)
           PY
 
@@ -49,7 +56,7 @@ jobs:
       - name: Audit publication catalog
         run: python scripts/audit_subject_catalog.py
 
-      - name: Verify fullscreen behavior in generated readers
+      - name: Verify fullscreen behavior in all PDF readers
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -67,7 +74,7 @@ jobs:
               raise SystemExit('No PDF reader pages found')
           if bad:
               raise SystemExit('Fullscreen audit failed:\n' + '\n'.join(bad[:20]))
-          print(f'Audited {len(readers)} PDF reader pages: fullscreen button is embedded-reader only.')
+          print(f'Audited {len(readers)} PDF reader pages: fullscreen button expands the embedded reader; raw-PDF fullscreen links = 0.')
           PY
 
       - name: Commit rebuilt site and remove one-shot workflow
