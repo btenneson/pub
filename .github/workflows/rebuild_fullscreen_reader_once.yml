@@ -2,9 +2,10 @@ name: Rebuild fullscreen reader once
 
 on:
   push:
-    branches: [fix-fullscreen-reader]
+    branches:
+      - fix-fullscreen-reader
     paths:
-      - '.github/workflows/rebuild_fullscreen_reader_once.yml'
+      - .github/workflows/rebuild_fullscreen_reader_once.yml
 
 permissions:
   contents: write
@@ -22,26 +23,25 @@ jobs:
         run: python -m pip install --quiet pymupdf
 
       - name: Repair fullscreen reader control
-        shell: python
         run: |
+          python - <<'PY'
           from pathlib import Path
           p = Path('scripts/build_publications.py')
           s = p.read_text()
-
           old_css = '.links a{padding:.5rem .7rem;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:650}.links a:hover,.links a:focus-visible{background:var(--tint)}'
           new_css = '.links a,.links button{padding:.5rem .7rem;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:650}.links button{cursor:pointer}.links a:hover,.links a:focus-visible,.links button:hover,.links button:focus-visible{background:var(--tint)}'
           if old_css not in s:
               raise SystemExit('Expected link CSS not found')
           s = s.replace(old_css, new_css, 1)
-
           old_link = '''  p=url(x['pdf']);result+=('<a href="'+p+'" target="_blank" rel="noopener">Open full-screen reader</a>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
-'''
+          '''
           new_link = '''  p=url(x['pdf']);result+=('<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\\'.reader-frame\\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
-'''
+          '''
           if old_link not in s:
               raise SystemExit('Expected fullscreen reader link not found')
           s = s.replace(old_link, new_link, 1)
           p.write_text(s)
+          PY
 
       - name: Rebuild publication site
         run: python scripts/build_publications.py
@@ -50,8 +50,8 @@ jobs:
         run: python scripts/audit_subject_catalog.py
 
       - name: Verify fullscreen behavior in generated readers
-        shell: python
         run: |
+          python - <<'PY'
           from pathlib import Path
           readers = []
           bad = []
@@ -68,6 +68,7 @@ jobs:
           if bad:
               raise SystemExit('Fullscreen audit failed:\n' + '\n'.join(bad[:20]))
           print(f'Audited {len(readers)} PDF reader pages: fullscreen button is embedded-reader only.')
+          PY
 
       - name: Commit rebuilt site and remove one-shot workflow
         run: |
