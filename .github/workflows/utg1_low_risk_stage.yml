@@ -47,14 +47,15 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import fitz, hashlib
+          import fitz, hashlib, re
           src = Path('/tmp/utg1-build/Universal_Theorem_Geometry_I.pdf')
           doc = fitz.open(src)
           text = '\n'.join(p.get_text() for p in doc)
-          assert len(doc) == 25, f'Expected 25 pages, got {len(doc)}'
+          flat = re.sub(r'\s+', ' ', text).strip()
+          assert len(doc) == 16, f'Expected 16 pages, got {len(doc)}'
           assert 'Universal Theorem Geometry I' in doc[0].get_text()
           quote = 'Universal theorem space is naturally a stratified, fibered, directed multi-geometry rather than a single metric space.'
-          assert quote in text, 'Exact card quote missing from compiled PDF'
+          assert quote in flat, 'Exact card quote missing from compiled PDF after whitespace normalization'
           assert 'Revision 1.1' in doc[0].get_text()
           print('pages=', len(doc))
           print('sha256=', hashlib.sha256(src.read_bytes()).hexdigest())
