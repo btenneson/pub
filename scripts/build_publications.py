@@ -5,6 +5,7 @@ import html,json,re,hashlib,shutil
 from urllib.parse import quote
 ROOT=Path(__file__).resolve().parents[1];DOCS=ROOT/'docs'
 SUBJECTS={'cs.LO':'Logic in Computer Science','cs.AI':'Artificial Intelligence','cs.LG':'Machine Learning','cs.CR':'Cryptography and Security','cs.CY':'Computers and Society','cs.CL':'Computation and Language','cs.CC':'Computational Complexity','math.LO':'Logic','q-bio.QM':'Quantitative Methods','stat.AP':'Applications of Statistics'}
+DIRECT_PDF_READER='cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_ii_weighted_geodesics_mapquest_heuristics'
 CSS='''*{box-sizing:border-box} :root{color-scheme:light dark;--bg:#f7f8fa;--panel:#fff;--ink:#18212b;--muted:#536170;--line:#d7dde4;--accent:#245d83;--tint:#eaf3f8} @media(prefers-color-scheme:dark){:root{--bg:#11161b;--panel:#182028;--ink:#eef4f8;--muted:#b6c1cb;--line:#33414c;--accent:#8bcdf7;--tint:#1d3341}}body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.55 system-ui,-apple-system,Segoe UI,sans-serif}a{color:var(--accent)}main{max-width:1180px;margin:auto;padding:24px}h1{font-size:clamp(1.6rem,4vw,2.5rem);line-height:1.2}h2{font-size:1.1rem;line-height:1.4;margin:0 0 .6rem}.muted,.meta,cite{color:var(--muted)}.meta,cite{font-size:.9rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1rem}.card{display:flex;flex-direction:column;padding:1.2rem;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow-wrap:anywhere}.card[hidden]{display:none}.links{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:auto}.links a,.links button{padding:.5rem .7rem;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:650}.links button{cursor:pointer}.links a:hover,.links a:focus-visible,.links button:hover,.links button:focus-visible{background:var(--tint)}blockquote{margin:1rem 0;padding:.75rem 1rem;border-left:3px solid var(--accent);background:var(--tint)}blockquote p{margin:0 0 .4rem}cite{font-style:normal}.controls{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:.6rem;margin:1.5rem 0 1rem}input,select,button{font:inherit;padding:.65rem;min-width:0;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px}.reader-header{padding:1rem 1.5rem;border-bottom:1px solid var(--line);background:var(--panel)}.reader-header h1{font-size:1.3rem;margin:.5rem 0}.reader-header blockquote{margin:.7rem 0;max-width:70rem}.reader-frame{display:block;width:100%;height:80vh;min-height:560px;border:0;background:white}.status{padding:1rem;border:1px solid var(--line);background:var(--tint)}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:1rem}.toplinks{display:flex;gap:1rem;flex-wrap:wrap}footer{margin:2rem 0;color:var(--muted)}@media(max-width:800px){main{padding:16px}.controls{grid-template-columns:1fr 1fr}.controls input{grid-column:1/-1}.reader-header{padding:1rem}}@media(max-width:480px){.controls{grid-template-columns:1fr}}'''
 def esc(s):return html.escape(str(s or ''),quote=True)
 def url(s):return '/pub/'+quote(s,safe='/._-')
@@ -17,7 +18,11 @@ def quote_block(x):
 def links(x,reader=False):
  result='<a href="'+url(x['href'])+'">Read</a>' if not reader else '<a href="/pub/">All publications</a><a href="'+url(x['subject']+'/')+'">Subject</a>'
  if x.get('pdf'):
-  p=url(x['pdf']);result+=('<a href="'+p+'" target="_blank" rel="noopener">Open PDF</a>' if reader else '')+'<a href="'+p+'" download>Download PDF</a>'
+  p=url(x['pdf'])
+  if reader:
+   if x['id']==DIRECT_PDF_READER:result+='<a href="'+p+'" target="_blank" rel="noopener">Open PDF</a>'
+   else:result+='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\'.reader-frame\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'
+  result+='<a href="'+p+'" download>Download PDF</a>'
  if x.get('download'):result+='<a href="'+url(x['download'])+'" download>Download DOCX</a>'
  if x.get('source'):result+='<a href="'+url(x['source'])+'">Source</a>'
  return '<nav class="links" aria-label="Publication links">'+result+'</nav>'
@@ -55,15 +60,12 @@ def main():
   group=[x for x in items if x['subject']==subject];(DOCS/subject/'index.html').write_text(index(group,group[0]['category'],subject))
  DOCS.joinpath('search-index.json').write_text(json.dumps({'schema_version':1,'count':len(items),'items':items},ensure_ascii=False,indent=2)+'\n')
  DOCS.joinpath('404.html').write_text(shell('Publication moved','<main><h1>Find this publication</h1><p id="message">Checking the updated publication address…</p><a href="/pub/">Browse all publications</a></main><script>fetch("/pub/redirects.json").then(r=>r.json()).then(m=>{const p=decodeURIComponent(location.pathname.replace(/^\\/pub\\//,""));if(Object.prototype.hasOwnProperty.call(m,p)){location.replace("/pub/"+m[p]+location.search+location.hash)}else{document.getElementById("message").textContent="This address is no longer in the catalog. Search the publication library below."}}).catch(()=>{document.getElementById("message").textContent="Please open the publication library."});</script>'))
- # Repair pages produced during the fullscreen-button regression without changing publication content.
- broken_button=re.compile(r'<button[^>]*class="fullscreen-reader"[^>]*>Open full-screen reader</button>',re.I)
+ # Keep legacy/historical reader pages consistent with the current fullscreen control.
+ fullscreen_button='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\'.reader-frame\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'
+ raw_fullscreen=re.compile(r'<a href="[^"]+\.pdf" target="_blank" rel="noopener">Open full-screen reader</a>',re.I)
  for reader_page in DOCS.glob('*/*/index.html'):
   legacy=reader_page.read_text(errors='replace')
-  if not broken_button.search(legacy):continue
-  frame=re.search(r'<iframe class="reader-frame" src="([^"]+)"',legacy,re.I)
-  if not frame:continue
-  open_pdf='<a href="'+frame.group(1)+'" target="_blank" rel="noopener">Open PDF</a>'
-  repaired=broken_button.sub(open_pdf,legacy)
+  repaired=raw_fullscreen.sub(fullscreen_button,legacy)
   if repaired!=legacy:reader_page.write_text(repaired)
  print(f'Built {len(items)} publication cards and readers in {len({x["subject"] for x in items})} subjects.')
 if __name__=='__main__':main()
