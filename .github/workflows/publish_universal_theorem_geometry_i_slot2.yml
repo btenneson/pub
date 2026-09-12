@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install PDF audit dependency
+        run: python -m pip install pymupdf==1.26.4
+
       - name: Stage Universal Theorem Geometry I under cs.LO subject folder
         shell: bash
         run: |
@@ -80,14 +83,12 @@ jobs:
           cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
 
           builder = root / 'scripts/build_publications_106.py'
-          s = builder.read_text()
-          s = s.replace('!= 107', '!= 108')
+          s = builder.read_text().replace('!= 107', '!= 108')
           builder.write_text(s)
           PY
 
       - name: Rebuild publication library and audit cards, quote, links, and PDFs
         run: |
-          python -m pip install pymupdf==1.26.4
           python scripts/build_publications_106.py
           python scripts/audit_subject_catalog_106.py
 
