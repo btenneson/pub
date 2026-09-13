@@ -11,9 +11,15 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+DOCS = ROOT / "docs"
 CATALOG = ROOT / "scripts" / "publications.json"
 ALIASES = ROOT / "scripts" / "publication_aliases.json"
 BUILDER = ROOT / "scripts" / "build_publications.py"
+
+# Keep the catalog's primary Read action independent of fragile embedded-PDF
+# iframe behavior. Publication detail pages remain available through titles,
+# while the Read button uses the browser's native direct-PDF viewer.
+RELIABLE_PUBLICATIONS_JS = r"""const q=document.getElementById('q'),kind=document.getElementById('kind'),cat=document.getElementById('cat'),sort=document.getElementById('sort'),grid=document.getElementById('grid');const cards=[...grid.children];const norm=s=>s.normalize('NFKD').toLowerCase();function makePdfReadsReliable(){for(const c of cards){const downloads=[...c.querySelectorAll('.links a[download]')];const pdf=downloads.find(a=>/\.pdf(?:$|[?#])/i.test(a.getAttribute('href')||''));if(!pdf)continue;const read=[...c.querySelectorAll('.links a')].find(a=>a.textContent.trim()==='Read');if(read){read.href=pdf.href;read.textContent='Read PDF';read.removeAttribute('download');read.setAttribute('aria-label','Read PDF directly');}}}function render(){let tokens=norm(q.value).trim().split(/\s+/).filter(Boolean),n=0;for(const c of cards){c.hidden=!(tokens.every(t=>norm(c.textContent).includes(t))&&(!kind.value||c.dataset.kind===kind.value)&&(!cat.value||c.dataset.subject===cat.value));if(!c.hidden)n++}const ordered=[...cards];if(sort.value==='title')ordered.sort((a,b)=>a.dataset.title.localeCompare(b.dataset.title));if(sort.value==='subject')ordered.sort((a,b)=>a.dataset.subject.localeCompare(b.dataset.subject)||a.dataset.title.localeCompare(b.dataset.title));ordered.forEach(c=>grid.appendChild(c));document.getElementById('count').textContent=n+' of '+cards.length+' publications';document.getElementById('empty').hidden=n!==0;}[q,kind,cat,sort].forEach(e=>e.addEventListener(e===q?'input':'change',render));document.getElementById('clear').onclick=()=>{q.value='';kind.value='';cat.value='';sort.value='default';render();q.focus()};makePdfReadsReliable();render();"""
 
 
 def expanded_catalog():
@@ -52,9 +58,10 @@ def main():
     try:
         expanded = expanded_catalog()
         if len(expanded["items"]) != 107:
-            raise SystemExit(f"Expected 106 cards after restoration, got {len(expanded['items'])}")
+            raise SystemExit(f"Expected 107 cards after restoration, got {len(expanded['items'])}")
         CATALOG.write_text(json.dumps(expanded, ensure_ascii=False, indent=2) + "\n")
         subprocess.run([sys.executable, str(BUILDER)], cwd=ROOT, check=True)
+        (DOCS / "publications.js").write_text(RELIABLE_PUBLICATIONS_JS)
     finally:
         CATALOG.write_bytes(original)
 
