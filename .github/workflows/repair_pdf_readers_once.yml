@@ -1,0 +1,29 @@
+name: Repair PDF readers once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair_pdf_readers_once.yml'
+permissions:
+  contents: write
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild all 107 publication readers
+        run: python scripts/build_publications_106.py
+      - name: Commit generated reader repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --cached --quiet; then
+            echo "No generated reader changes were needed."
+            exit 0
+          fi
+          git commit -m "Repair all publication PDF readers [skip ci]"
+          git push
