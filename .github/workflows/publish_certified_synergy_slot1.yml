@@ -1,0 +1,146 @@
+name: Publish Certified Synergy in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_certified_synergy_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LaTeX and PDF audit dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install pymupdf==1.26.4
+
+      - name: Reconstruct and compile the reviewed source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .build/certified_synergy
+          base64 -d incoming_publications/certified_synergy/source.tex.gz.b64 | gzip -d > .build/certified_synergy/source.tex
+          cd .build/certified_synergy
+          pdflatex -interaction=nonstopmode -halt-on-error source.tex
+          pdflatex -interaction=nonstopmode -halt-on-error source.tex
+          test -s source.pdf
+
+      - name: Stage PDF and source under the cs.LO subject folder
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCH='cs.LO_Logic_in_Computer_Science/certified_synergy_ten_paper_synthesis'
+          DOCS='docs/cs.LO_Logic_in_Computer_Science/certified_synergy_ten_paper_synthesis'
+          mkdir -p "$ARCH" "$DOCS"
+          cp .build/certified_synergy/source.pdf "$ARCH/Certified_Synergy_Ten_Paper_Synthesis.pdf"
+          cp .build/certified_synergy/source.tex "$DOCS/source.tex"
+
+      - name: Verify the PDF and insert it as publication card 1
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, re, fitz
+
+          root = Path('.')
+          pub_id = 'cs.LO_Logic_in_Computer_Science/certified_synergy_ten_paper_synthesis'
+          archive = root / pub_id / 'Certified_Synergy_Ten_Paper_Synthesis.pdf'
+          docs_source = root / 'docs' / pub_id / 'source.tex'
+          assert archive.is_file() and archive.stat().st_size > 0
+          assert docs_source.is_file() and docs_source.stat().st_size > 0
+
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          doc = fitz.open(archive)
+          pages = len(doc)
+          assert pages == 13, f'Expected 13 pages, got {pages}'
+          quote = 'propose freely, navigate intelligently, certify locally, transport with scope, and remember with provenance.'
+          page1 = re.sub(r'\s+', ' ', doc[0].get_text()).strip()
+          assert quote in page1, 'Card quote not found on PDF page 1'
+          assert all(doc[i].get_text().strip() for i in range(pages)), 'Unreadable or empty PDF page'
+
+          cat = root / 'scripts/publications.json'
+          data = json.loads(cat.read_text())
+          old = [x for x in data['items'] if x.get('id') != pub_id]
+          for x in old:
+              if isinstance(x.get('order'), int):
+                  x['order'] += 1
+
+          item = {
+              'title': 'Certified Synergy: Search, Awareness, Scope, Evidence, and Imagination — A Ten-Paper Cross-Domain Synthesis with Seventeen New Theorems',
+              'kind': 'Core paper',
+              'quote': quote,
+              'quote_page': 1,
+              'subject': 'cs.LO_Logic_in_Computer_Science',
+              'id': pub_id,
+              'href': pub_id + '/',
+              'pdf': pub_id + '/Certified_Synergy_Ten_Paper_Synthesis.pdf',
+              'archive_path': pub_id + '/Certified_Synergy_Ten_Paper_Synthesis.pdf',
+              'sha256': digest,
+              'pages': pages,
+              'order': 0,
+              'source': pub_id + '/source.html',
+              'authors': 'Brian Tenneson',
+              'source_file': pub_id + '/source.tex',
+              'classification_note': 'Cross-domain synthesis. Subject classification: cs.LO — Logic in Computer Science.'
+          }
+          data['items'] = [item] + old
+          cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+          wrapper = root / 'scripts/build_publications_106.py'
+          s = wrapper.read_text()
+          s2 = re.sub(r'if len\(expanded\["items"\]\) != \d+:', 'if len(expanded["items"]) != 108:', s)
+          assert s2 != s or '!= 108' in s, 'Could not update expected publication count'
+          wrapper.write_text(s2)
+          PY
+
+      - name: Rebuild the publication library and audit reader integrity
+        run: |
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from urllib.parse import quote
+
+          pub_id = 'cs.LO_Logic_in_Computer_Science/certified_synergy_ten_paper_synthesis'
+          reader = Path('docs') / pub_id / 'index.html'
+          html = reader.read_text()
+          pdf = '/pub/' + pub_id + '/Certified_Synergy_Ten_Paper_Synthesis.pdf'
+          expected = '/pub/pdf-reader.html?file=' + quote(pdf, safe='')
+          assert expected in html, 'Reader page does not point to shared PDF.js reader'
+          assert 'Download PDF' in html
+
+          index = Path('docs/index.html').read_text()
+          title = 'Certified Synergy: Search, Awareness, Scope, Evidence, and Imagination'
+          first_card = index.split('<article class="card"', 1)[1].split('</article>', 1)[0]
+          assert title in first_card, 'Certified Synergy is not publication slot #1'
+
+          search = json.loads(Path('docs/search-index.json').read_text())
+          assert search['count'] == 108, search['count']
+          assert search['items'][0]['id'] == pub_id
+          print('PASS: slot #1, 108 cards, shared PDF.js reader target verified.')
+          PY
+
+      - name: Remove one-time staging payload
+        run: rm -rf incoming_publications/certified_synergy
+
+      - name: Commit the tested publication
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Publish Certified Synergy as card 1 [skip ci]'
+            git push
+          fi
