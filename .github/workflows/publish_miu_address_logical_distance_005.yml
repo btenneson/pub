@@ -1,0 +1,129 @@
+name: Publish MIU Address and Logical Distance 005
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_miu_address_logical_distance_005.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PDF audit dependency
+        run: python -m pip install pymupdf==1.26.4
+
+      - name: Stage publication source and catalog entry
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/math.LO_Logic/miu_address_and_logical_distance
+          cp math.LO_Logic/miu_address_and_logical_distance/MIU_Address_and_Logical_Distance_Exact_Address_005.tex \
+             docs/math.LO_Logic/miu_address_and_logical_distance/source.tex
+
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, re, fitz
+
+          root = Path('.')
+          pub_id = 'math.LO_Logic/miu_address_and_logical_distance'
+          archive_rel = pub_id + '/MIU_Address_and_Logical_Distance_Exact_Address_005.pdf'
+          archive = root / archive_rel
+          assert archive.is_file() and archive.stat().st_size > 0, archive
+
+          doc = fitz.open(archive)
+          pages = len(doc)
+          assert pages > 0
+          assert all(doc[i].get_text().strip() for i in range(pages)), 'Unreadable or empty PDF page'
+
+          quote = 'This note develops a deliberately simple first geometry for the MIU formal system'
+          page1 = re.sub(r'\s+', ' ', doc[0].get_text()).strip()
+          assert quote in page1, 'Card quote not found on PDF page 1'
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+
+          cat = root / 'scripts/publications.json'
+          data = json.loads(cat.read_text())
+          existing = next((x for x in data['items'] if x.get('id') == pub_id), None)
+          old = [x for x in data['items'] if x.get('id') != pub_id]
+          if existing is None:
+              for x in old:
+                  if isinstance(x.get('order'), int):
+                      x['order'] += 1
+
+          item = {
+              'title': 'MIU Exact Address, Height Distance, and Logical Distance',
+              'kind': 'Core paper',
+              'quote': quote,
+              'quote_page': 1,
+              'subject': 'math.LO_Logic',
+              'id': pub_id,
+              'href': pub_id + '/',
+              'pdf': pub_id + '/MIU_Address_and_Logical_Distance_Exact_Address_005.pdf',
+              'archive_path': archive_rel,
+              'sha256': digest,
+              'pages': pages,
+              'order': 0,
+              'source': pub_id + '/source.html',
+              'authors': 'Brian Tenneson',
+              'source_file': pub_id + '/source.tex',
+              'classification_note': 'Rigorous Exact-Address Edition 005. Subject classification: math.LO — Logic.'
+          }
+          data['items'] = [item] + old
+          cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+          wrapper = root / 'scripts/build_publications_106.py'
+          s = wrapper.read_text()
+          s2 = re.sub(r'if len\(expanded\["items"\]\) != \d+:',
+                      'if len(expanded["items"]) != 109:', s)
+          s2 = re.sub(r'Expected \d+ cards after restoration',
+                      'Expected 109 cards after restoration', s2)
+          assert '!= 109' in s2, 'Could not update expected publication count'
+          wrapper.write_text(s2)
+          PY
+
+      - name: Rebuild and audit the publication library
+        run: |
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from urllib.parse import quote
+
+          pub_id = 'math.LO_Logic/miu_address_and_logical_distance'
+          reader = Path('docs') / pub_id / 'index.html'
+          assert reader.is_file(), reader
+          html = reader.read_text()
+          pdf = '/pub/' + pub_id + '/MIU_Address_and_Logical_Distance_Exact_Address_005.pdf'
+          expected_reader = '/pub/pdf-reader.html?file=' + quote(pdf, safe='')
+          assert expected_reader in html, 'Reader page does not point to shared PDF.js reader'
+          assert 'Download PDF' in html
+          assert 'Source' in html
+
+          source = Path('docs') / pub_id / 'source.html'
+          assert source.is_file(), source
+
+          search = json.loads(Path('docs/search-index.json').read_text())
+          assert search['count'] == 109, search['count']
+          assert search['items'][0]['id'] == pub_id
+          print('PASS: MIU paper is publication slot #1 with reader, PDF, and source; 109 catalog cards.')
+          PY
+
+      - name: Commit the tested publication
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Publish MIU Address and Logical Distance 005 [skip ci]'
+            git push
+          fi
