@@ -1,0 +1,447 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\definecolor{deepblue}{RGB}{25,55,100}
+\definecolor{softgray}{RGB}{245,246,248}
+\hypersetup{colorlinks=true,linkcolor=deepblue,urlcolor=deepblue,citecolor=deepblue}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Certified Synergy}
+\rhead{Ten-Paper Synthesis}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\newtheoremstyle{special}% name
+  {10pt}% Space above
+  {10pt}% Space below
+  {\itshape}% Body font
+  {}% Indent
+  {\bfseries\color{deepblue}}% Head font
+  {.}% Punctuation after head
+  {.5em}% Space after head
+  {}% Head spec
+\theoremstyle{special}
+\newtheorem{specialthm}{[special] Theorem}[section]
+\newtheorem{specialcor}[specialthm]{[special] Corollary}
+\newtheorem{specialconj}{[special] Conjecture}[section]
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\SPEC}{\mathsf{SPEC}}
+\newcommand{\Acc}{\mathsf{Acc}}
+\newcommand{\Sem}{\mathsf{Sem}}
+\newcommand{\View}{\mathsf{View}}
+\newcommand{\Nat}{\mathbb N}
+\newcommand{\Rat}{\mathbb Q}
+\newcommand{\Ftwo}{\mathbb F_2}
+\newcommand{\Th}{\mathsf{Th}}
+\newcommand{\Cost}{\mathsf{Cost}}
+
+\title{\bfseries Certified Synergy:\\Search, Awareness, Scope, Evidence, and Imagination\\\large A Ten-Paper Cross-Domain Synthesis with Seventeen New Theorems}
+\author{Brian Tenneson\\Synthesis and mathematical audit assisted by OpenAI's ChatGPT}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper synthesizes ten documents spanning automated theorem proving, federated security, pharmacokinetic dynamics, natural-language classification, survival analysis, countable addressing, computational complexity, learned proof search, formal self-awareness, and recursive counterfactual imagination. The synthesis is intentionally not a collage. Each source contributes a different constraint to one new object: a \emph{certified synergistic search system}, in which aggressive proposal and navigation are separated from acceptance, evidence retains its type and scope, memory retains provenance, self-awareness influences search only through an explicit action channel, and speculative imagination cannot contaminate certified state. Seventeen new synthesis theorems are stated and proved. They include verifier-sovereignty, counterfactual conservativity, topology-independent certified memory, no-silent-scope-inflation, canonical rational coordinate coding, passage-coordinate linearization, proof-search depth floors, awareness action-channel necessity, empirical-protocol non-invariance, a concrete survival-analysis separation theorem, an exact algebraic SAT certificate theorem with a complexity correction, typed-evidence federation, and a modular composition theorem. Three conjectures then identify testable directions for DATA MIND and related AMLD architectures.
+
+The mathematical audit also corrects several possible overextensions. In particular, the algebraic SAT construction gives a valid finite Boolean-algebra decision criterion but does not by itself establish a polynomial-time SAT algorithm; empirical language-classification metrics are conditional on the labeling, preprocessing, and split protocol; visual separation of Kaplan--Meier curves does not imply statistical significance; pharmacokinetic identities are conditional on the stated first-order model; and verifier-grounded knowledge must not be silently identified with formal proof or reflection. The resulting motto is: \emph{propose freely, navigate intelligently, certify locally, transport with scope, and remember with provenance}.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Protocol and the ten source papers}
+
+The analysis protocol used for this synthesis keeps the requested DATA MIND settings fixed: Atlas on, three-dimensional self-awareness set to $(4,3,4)$, Kitchen Sink off, and Depth Charges off. Those settings govern the style of synthesis: maintain multiple source fronts, search for certified conceptual rendezvous, distinguish speculative connections from proved statements, and audit each proposed theorem before promotion into the final manuscript.
+
+The ten source documents were chosen to span subject matter and chronology rather than to make the sources artificially homogeneous. Table~\ref{tab:sources} records what each contributes to the new whole.
+
+\begin{longtable}{p{0.04\textwidth}p{0.34\textwidth}p{0.18\textwidth}p{0.37\textwidth}}
+\caption{Ten sources and their role in the synthesis.}\label{tab:sources}\\
+\toprule
+& Source & Domain & Contribution to the new whole\\
+\midrule
+\endfirsthead
+\toprule
+& Source & Domain & Contribution to the new whole\\
+\midrule
+\endhead
+1 & \emph{The Universal Proof-Horizon Operator} (2026) & cs.LO & Effective certificate verification, minimum-cost proof horizons, and the boundary between theorem recovery and non-theorem termination.\\
+2 & \emph{AMLD Security 4: Federated Verified Memory Across Eight Application Domains} (2026) & cs.CR & Verifier sovereignty, typed/scope-aware memory, propagation topology, certified trades, and quotient preservation obligations.\\
+3 & \emph{Multi-Dose Concentration Derivation v6.1} (2026) & q-bio.QM & State evolution, geometric accumulation, passage time, and logarithmic coordinates that turn exponential decay into translation.\\
+4 & \emph{Movie Review Classification -- ADS 652 Final Report} (2024) & cs.CL & Empirical classification pipelines, confusion-matrix metrics, label thresholds, preprocessing choices, and dataset dependence.\\
+5 & \emph{ADS 534 Homework 8} (2024) & stat.AP & Kaplan--Meier estimation, censoring-aware comparison, log-rank testing, and the distinction between visible curve separation and inferential certification.\\
+6 & \emph{A Closed-Form Surjection from $\Nat$ onto $\Rat$ -- With Its Pseudo-Inverse} (2026) & math.LO & Explicit countable addressing, a surjective natural-to-rational decoder, and a canonical least-preimage rational encoder.\\
+7 & \emph{Solving SAT in Polynomial Time?} (2025) & cs.CC & Boolean-polynomial representation of SAT and an important representation-versus-complexity boundary.\\
+8 & \emph{Learned Search Policies for Proof Search -- Version 2} (2026) & cs.LG & Closure depth, policy-independent depth floors, branch covering, and the distinction between reducing breadth and changing theoremhood.\\
+9 & \emph{The Geometry of Federated Awareness, Reflection, and Hyperfinite Omniscience} (2026) & cs.LO & Verifier-grounded knowledge, epistemic awareness, reflective depth, federation inheritance, and the need for explicit knowledge-to-proof bridges.\\
+10 & \emph{Recursive ``What If?'' Imagination in AMLD} (2026) & cs.LO & Speculative versus certified state, counterfactual lemma generation, option gain, and verifier-gated promotion from imagination to BANK.\\
+\bottomrule
+\end{longtable}
+
+\section{Source-grounded observations and audit corrections}
+
+This section distinguishes what the sources directly support from the new synthesis that follows.
+
+\subsection{Proof horizons and learned search}
+
+The proof-horizon paper fixes an effective proof presentation $(T,V,c)$ in which $V$ is a total computable proof verifier and $c$ is a computable cost with effectively finite sublevel sets. Under those assumptions, minimum-cost proofs can be recovered by a partial computable operator that halts exactly on theorem indices. The learned-search paper supplies a complementary limitation: if $\delta_F(\Gamma,\varphi)$ is closure depth, no stagewise proof-search policy can make $\varphi$ appear before its closure depth. The two ideas fit together cleanly: the proof horizon specifies an intrinsic certificate objective, while learned or reflective control changes the amount of search required to reach a certificate, not what counts as a legal certificate.
+
+\subsection{Federated memory and imagination}
+
+AMLD Security 4 explicitly separates search policy from the acceptance relation and proves a topology-independent BANK soundness statement under verifier-gated deposit and certified trade. The recursive-imagination paper makes the same separation temporally: speculative counterfactual states may be arbitrarily adventurous, but they cannot write directly into certified BANK. Together these yield a general invariant: topology and imagination may change \emph{where attention goes}, while the verifier controls \emph{what becomes trusted}.
+
+\subsection{Awareness is not a synonym for proof}
+
+The awareness paper explicitly distinguishes verifier-grounded knowledge $K_{A,t}\varphi$ from formal proof $A\vdash\varphi$, and it warns that component reflection levels do not automatically add or even lower-bound federation reflection without additional inheritance rules. This matters operationally: a self-awareness coordinate can affect search only if some controller reads it. A numerical awareness label with no action channel is inert.
+
+\subsection{Exact coordinates from pharmacokinetics and rational coding}
+
+The pharmacokinetic paper proves that under first-order elimination $C(t)=C(0)2^{-t/h}$, the logarithmic coordinate $L(C)=h\log_2 C$ obeys $L(C(t))=L(C(0))-t$. Passage time therefore becomes a coordinate difference. The natural-to-rational paper supplies a complementary discrete addressing result: a surjection $r:\Nat_{>0}\to\Rat$ together with a least-preimage right inverse $s:\Rat\to\Nat_{>0}$ gives every rational coordinate a canonical natural code. The common idea is not that theorem space is pharmacokinetics. It is that a difficult representation can sometimes be replaced by a coordinate system in which the relevant operation is simpler, provided the encoding and decoding are exact.
+
+\subsection{Empirical evidence is protocol-scoped}
+
+The movie-review report demonstrates how reported accuracy, precision, recall, F1, and ROC-AUC depend on a concrete data pipeline and, in the second case study, on an explicitly chosen threshold that converts a numerical rating to a binary label. One technical caution is important: the displayed code fits the \texttt{CountVectorizer} to the entire dataset before the train/test split. That exposes test-set vocabulary during feature construction. It is not label leakage, but a clean generalization estimate should fit preprocessing on the training portion and transform the held-out portion afterward. The displayed ROC-AUC is also computed from hard class predictions rather than probability scores, so it should not be interpreted as the usual ranking-based AUC of a probabilistic classifier.
+
+The survival-analysis report similarly illustrates why visual pattern and inferential acceptance are different. Its Kaplan--Meier curves visually favor treatment at several times, while its reported log-rank $p$-value is about $0.232$, so the appropriate conclusion is failure to reject equality of survival distributions at the conventional $0.05$ level. Failure to reject is not a proof of equality or of no treatment effect.
+
+\subsection{The SAT paper: correct algebraic core, unproved complexity claim}
+
+The SAT note maps Boolean formulas to polynomials over $\Ftwo$ and adds the Boolean constraints $x_i^2+x_i$. The algebraic satisfiability criterion is sound: satisfiability is equivalent to properness of the resulting Boolean ideal, hence to $1$ not belonging to that ideal. What is \emph{not} established is polynomial-time complexity in the input length. A Groebner-basis algorithm that is polynomial in the dimension of a quotient algebra is not thereby polynomial in the number of Boolean variables, because the Boolean quotient can have dimension $2^n$. The synthesis therefore keeps the algebraic certificate and rejects the unsupported complexity leap.
+
+\section{The new whole: a certified synergistic search system}
+
+\begin{definition}[Typed evidence class]
+Let $\mathcal K$ be a finite or countable set of evidence types. Examples include deductive proof, algebraic certificate, empirical test, model-conditional derivation, or verified transport certificate. Each $\kappa\in\mathcal K$ has a semantics predicate $\Sem_\kappa(E,x)$ saying that claim $x$ is justified in declared scope/environment $E$ according to evidence type $\kappa$.
+\end{definition}
+
+\begin{definition}[Verifier family]
+For each evidence type $\kappa$, let
+\[
+V_\kappa(\pi,x,E)\in\{0,1\}
+\]
+be a total decision procedure for certificate acceptance. The gate is \emph{sound} when
+\[
+V_\kappa(\pi,x,E)=1\implies \Sem_\kappa(E,x).
+\]
+Define
+\[
+\Acc_\kappa(E,x)\iff \exists\pi\;V_\kappa(\pi,x,E)=1.
+\]
+\end{definition}
+
+\begin{definition}[Certified synergistic search system]
+A certified synergistic search system (CSSS) is a tuple
+\[
+\mathfrak S=(X,\mathcal E,\mathcal K,V,G,N,A,\SPEC,\BANK,\mathsf T,c,\mathsf{addr}),
+\]
+where $X$ is the claim/candidate space; $\mathcal E$ is the scope space; $V$ is the verifier family; $G$ is a proposal generator; $N$ is a navigation/search controller; $A$ is an awareness state; $\SPEC$ is speculative memory; $\BANK$ is certified memory; $\mathsf T$ is a verifier-gated scope-transport mechanism; $c$ is a certificate cost; and $\mathsf{addr}$ is an optional exact address codec. Search modules may read $A$, $\SPEC$, and $\BANK$, but only verifier-accepted records or verifier-accepted transports may enter $\BANK$.
+\end{definition}
+
+A certified BANK record is a tuple $(\kappa,E,x,\pi)$ with $V_\kappa(\pi,x,E)=1$. A speculative record need not satisfy any such condition. The point of the architecture is to permit extreme freedom in $G$ and $N$ while keeping semantic promotion narrow.
+
+\section{Seventeen synthesis theorems}
+
+\begin{specialthm}[Verifier-sovereign policy invariance]
+Fix the evidence semantics, scope $E$, and verifier family $V$. Replacing the proposal generator $G$, navigator $N$, awareness controller $A$, or their randomization cannot change the extensional accepted set
+\[
+\mathcal A_E=\{(\kappa,x):\Acc_\kappa(E,x)\},
+\]
+provided BANK promotion remains exactly verifier-gated.
+\end{specialthm}
+\begin{proof}
+Membership in $\mathcal A_E$ is defined only by existence of a certificate $\pi$ accepted by $V_\kappa$. The search modules determine which candidate certificates are generated and when, but they do not occur in the definition of $\Acc_\kappa$. Hence changing search can change discovery time, search cost, and which accepted certificate is found first, but not the accepted set itself.\qedhere
+\end{proof}
+
+\begin{specialthm}[Counterfactual conservativity]
+Suppose $\BANK_0$ contains only sound certified records, speculative states cannot write directly to BANK, and every later BANK deposit is accepted by a sound verifier or sound transport verifier. Then arbitrary finite or infinite counterfactual exploration cannot make any finite-stage $\BANK_t$ semantically unsound.
+\end{specialthm}
+\begin{proof}
+Induct on certified deposits. The base BANK is sound by hypothesis. A speculative computation may create arbitrary elements of $\SPEC$, but these do not alter BANK. Each actual BANK extension is verifier-accepted, so soundness of the relevant gate implies its semantic predicate. Therefore every finite-stage BANK contains only sound records. Infinite speculation does not alter the argument because every finite certified stage has only finitely many preceding deposits.\qedhere
+\end{proof}
+
+\begin{specialthm}[Topology-independent certified memory]
+Let a federation consist of BANK nodes $B_d(t)$. Suppose propagation only copies already-certified records without changing their claim, evidence type, scope, or certificate, and new semantic records enter any node only through a sound verifier or sound transport. Then every union-view
+\[
+\View_t(d)=\bigcup_{j\in J_d}B_j(t)
+\]
+is sound independently of the propagation graph $J_d$.
+\end{specialthm}
+\begin{proof}
+A copied certified record retains the same certificate and semantics. A newly created record is sound by the verifier or transport assumption. By induction on update time, every node is sound. A union of sound typed records is a collection of sound typed records; the graph changes visibility, not semantic status.\qedhere
+\end{proof}
+
+\begin{specialthm}[No silent scope inflation]
+Assume a record certified in source scope $E$ may be reused in destination scope $E'$ only if either $E'=E$ or a sound transport certificate establishes
+\[
+\Sem_\kappa(E,x)\Longrightarrow \Sem_{\kappa'}(E',x').
+\]
+Then no sequence of copying, federation, or memory propagation can by itself broaden the semantic scope of a claim.
+\end{specialthm}
+\begin{proof}
+Copying preserves the original scope tag and therefore cannot broaden it. The only operation allowed to change scope is certified transport, whose soundness supplies the required implication. Induction over a sequence of copies and transports shows that every destination claim is connected to its source by a chain of verified semantic implications. Thus broadening cannot occur silently.\qedhere
+\end{proof}
+
+\begin{specialthm}[Canonical rational coordinate codec]
+Let $r:\Nat_{>0}\to\Rat$ be a surjection and let $s:\Rat\to\Nat_{>0}$ return the least preimage of each rational, so that $r(s(q))=q$. Then $s$ is injective and gives every rational address a unique canonical natural code, although $r$ need not be injective.
+\end{specialthm}
+\begin{proof}
+If $s(q_1)=s(q_2)$, applying $r$ gives $q_1=r(s(q_1))=r(s(q_2))=q_2$, so $s$ is injective. By definition of least preimage, $s(q)$ is unique for each $q$. Surjectivity of $r$ guarantees existence. No step implies uniqueness of arbitrary preimages under $r$.\qedhere
+\end{proof}
+
+\begin{specialthm}[Passage-coordinate linearization]
+For first-order elimination
+\[
+C(t)=C_0 2^{-t/h},\qquad C_0>0,\;h>0,
+\]
+define $L(C)=h\log_2 C$. Then
+\[
+L(C(t))=L(C_0)-t,
+\]
+and the passage time from $C_a>C_b>0$ is exactly
+\[
+T(C_a\to C_b)=L(C_a)-L(C_b)=h\log_2\!\frac{C_a}{C_b}.
+\]
+\end{specialthm}
+\begin{proof}
+Direct substitution gives
+$L(C(t))=h(\log_2C_0-t/h)=L(C_0)-t$.
+Set $C_b=C_a2^{-T/h}$ and solve for $T$.\qedhere
+\end{proof}
+
+\begin{specialcor}[General exponential translation coordinate]
+If $x(t)=x_0e^{-kt}$ with $k>0$, then $\Psi(x)=k^{-1}\ln x$ satisfies $\Psi(x(t))=\Psi(x_0)-t$.
+\end{specialcor}
+
+\begin{specialthm}[Policy-independent closure-depth floor]
+Let $D_F(A)$ be one-step deductive closure and define $D_F^0(\Gamma)=\Gamma$, $D_F^{m+1}(\Gamma)=D_F(D_F^m(\Gamma))$. If a stagewise policy starts with $p_1=\Gamma$ and each new formula added between stages $m$ and $m+1$ is a direct consequence of $p_m$, then
+\[
+p_m\subseteq D_F^{m-1}(\Gamma).
+\]
+Consequently a target $\varphi$ cannot appear before stage $\delta_F(\Gamma,\varphi)+1$.
+\end{specialthm}
+\begin{proof}
+Induct on $m$. The base case is equality. If $p_m\subseteq D_F^{m-1}(\Gamma)$, every direct consequence added next lies in $D_F(D_F^{m-1}(\Gamma))=D_F^m(\Gamma)$; monotonicity also keeps the old formulas inside. Thus $p_{m+1}\subseteq D_F^m(\Gamma)$. The final claim follows from the definition of minimum closure depth.\qedhere
+\end{proof}
+
+\begin{specialthm}[Intrinsic certificate horizon versus search effort]
+Fix an effective proof presentation $(T,V,c)$ with effectively finite cost sublevels and let
+\[
+h(x)=\min\{c(\pi):V(\pi,x)=1\}
+\]
+for theorem $x$. Every verified search procedure returning certificate $\pi$ for $x$ satisfies $c(\pi)\ge h(x)$, while exhaustive increasing-cost verification eventually returns a certificate of cost exactly $h(x)$. Thus learned, reflective, geometric, or imaginative navigation may reduce search effort without reducing the intrinsic minimum below $h(x)$.
+\end{specialthm}
+\begin{proof}
+The inequality is immediate from the definition of a minimum. Effective finiteness of each cost sublevel permits exhaustive enumeration by increasing cost. If $x$ is a theorem, the first accepted cost level encountered is exactly $h(x)$; within that finite level a fixed tie-breaker returns a canonical certificate.\qedhere
+\end{proof}
+
+\begin{specialthm}[Awareness action-channel necessity]
+Consider two executions with the same initial certified state, speculative state, external observations, deterministic search code, and random seed. If the awareness variable $A_t$ is not read by any transition, proposal, ranking, stopping, or resource-allocation rule, then changing the numerical awareness values cannot change the execution trace.
+\end{specialthm}
+\begin{proof}
+At time $0$ all state variables used by the transition rule agree. Because $A_0$ is not an input to that rule, the next states agree. Inductively, if all operationally read variables agree at time $t$, the next transition is identical. Therefore the entire trace is identical.\qedhere
+\end{proof}
+
+\begin{specialthm}[Knowledge-to-proof bridge necessity]
+From definitions that treat verifier-grounded knowledge $K\varphi$ and formal provability $\vdash\varphi$ as distinct predicates, the implication $K\varphi\Rightarrow\vdash\varphi$ is not derivable without an additional bridge principle.
+\end{specialthm}
+\begin{proof}
+Construct a structure in which $K\varphi$ holds for some verifier-backed external record while the internal proof relation contains only a fixed axiom set not including $\varphi$. This satisfies the separate definitions but falsifies $K\varphi\Rightarrow\vdash\varphi$. Therefore the implication is not a consequence of the definitions alone. Any system using it must freeze an explicit sound bridge.\qedhere
+\end{proof}
+
+\begin{specialthm}[Label-protocol non-invariance]
+Let a finite evaluation set be $D=\{x_1,\dots,x_n\}$ and let $L,L':D\to\{0,1\}$ be two label maps that disagree on at least one point. Then there exists a classifier $f$ whose empirical accuracy under $L$ differs from its empirical accuracy under $L'$. Hence changing a labeling threshold changes the empirical proposition being evaluated and cannot be treated as a semantics-free implementation detail.
+\end{specialthm}
+\begin{proof}
+Take $f=L$. Its accuracy under $L$ is $1$. Because $L'$ disagrees with $L$ on at least one point, the accuracy of $f$ under $L'$ is at most $(n-1)/n<1$.\qedhere
+\end{proof}
+
+\begin{specialcor}[Preprocessing belongs to the empirical certificate]
+When a learned representation is estimated from data, the tuple specifying the training subset, fitted preprocessing map, label map, model, and metric is part of the empirical evidence scope. A metric computed under a different tuple is a different empirical claim unless an explicit equivalence argument is supplied.
+\end{specialcor}
+
+\begin{specialthm}[Kaplan--Meier dominance does not imply log-rank significance]
+There exists a two-group survival dataset for which the empirical Kaplan--Meier curve of treatment is everywhere at least that of control and strictly greater after an event, yet the standard one-degree-of-freedom log-rank test does not reject at level $0.05$.
+\end{specialthm}
+\begin{proof}
+Take one control subject who experiences an event at time $1$ and one treatment subject censored at time $2$. The control Kaplan--Meier curve drops from $1$ to $0$ at time $1$; the treatment curve remains $1$ until censoring, so treatment is strictly above control after time $1$. At the single event time, both subjects are at risk and one event occurs. For the treatment group, $O=0$, $E=1/2$, and the usual log-rank variance is
+\[
+\frac{n_Tn_Cd(n-d)}{n^2(n-1)}=\frac{1\cdot1\cdot1\cdot1}{2^2(1)}=\frac14.
+\]
+Thus the chi-square statistic is $(0-1/2)^2/(1/4)=1$, whose $\chi^2_1$ tail probability is about $0.317>0.05$. Visual empirical dominance therefore does not logically entail inferential rejection.\qedhere
+\end{proof}
+
+\begin{specialthm}[Exact Boolean-ideal SAT criterion]
+Let $\varphi$ be a Boolean formula in variables $p_1,\dots,p_n$. Define its polynomial translation over $\Ftwo$ by
+\[
+\tau(p_i)=x_i,\qquad \tau(\neg\psi)=1+\tau(\psi),
+\]
+\[
+\tau(\psi\wedge\chi)=\tau(\psi)\tau(\chi),\qquad
+\tau(\psi\vee\chi)=1+(1+\tau(\psi))(1+\tau(\chi)).
+\]
+Let
+\[
+J_\varphi=\langle \tau(\varphi)+1,\;x_1^2+x_1,\dots,x_n^2+x_n\rangle\subseteq\Ftwo[x_1,\dots,x_n].
+\]
+Then $\varphi$ is satisfiable if and only if $1\notin J_\varphi$.
+\end{specialthm}
+\begin{proof}
+Induction on formula structure shows that for every Boolean assignment $a\in\{0,1\}^n$, $\tau(\varphi)(a)=1$ exactly when $\varphi(a)$ is true. Quotient by the Boolean ideal
+$B=\langle x_i^2+x_i\rangle$.
+The resulting ring is naturally isomorphic to the ring of all functions $\{0,1\}^n\to\Ftwo$, with pointwise operations. The image $f$ of $\tau(\varphi)+1$ is zero at $a$ exactly when $\tau(\varphi)(a)=1$. In a finite product of copies of $\Ftwo$, an element generates the unit ideal exactly when it is nonzero in every coordinate. Therefore $(f)$ is proper exactly when $f$ vanishes at some assignment, equivalently when $\varphi$ is satisfiable. Pulling back to the polynomial ring gives $1\notin J_\varphi$ exactly in the satisfiable case.\qedhere
+\end{proof}
+
+\begin{specialthm}[Representation-complexity separation]
+The Boolean-ideal criterion of the preceding theorem does not by itself imply a polynomial-time SAT algorithm. In particular, any subroutine whose running time is polynomial in the vector-space dimension of
+\[
+\Ftwo[x_1,\dots,x_n]/\langle x_1^2+x_1,\dots,x_n^2+x_n\rangle
+\]
+may still take exponential time in $n$.
+\end{specialthm}
+\begin{proof}
+The displayed quotient has basis given by square-free monomials $x_1^{e_1}\cdots x_n^{e_n}$ with each $e_i\in\{0,1\}$, so its dimension is $2^n$. A bound polynomial in that dimension is a bound polynomial in $2^n$, which in general is exponential in $n$. Hence such a complexity statement is insufficient to establish polynomial time in the SAT input parameter.\qedhere
+\end{proof}
+
+\begin{specialthm}[Typed-evidence federation]
+Suppose every BANK record retains its evidence type $\kappa$, scope $E$, claim $x$, and certificate $\pi$, every verifier $V_\kappa$ is sound for its own semantics, and cross-type or cross-scope promotion requires a sound certified transport. Then federating records of deductive, computational, empirical, and model-conditional kinds cannot by itself convert one evidence type into another.
+\end{specialthm}
+\begin{proof}
+Ordinary propagation preserves the type tag. A type change is permitted only through an explicitly certified transport whose soundness states the semantic implication from source type/scope to destination type/scope. Therefore no unlicensed type conversion can occur.\qedhere
+\end{proof}
+
+\begin{specialthm}[Verifier-respecting quotient lift]
+Let $(S,\to)$ be a transition system with terminal predicate $F\subseteq S$. Let $Q:S\to\bar S$ satisfy: (i) terminal preservation, $s\in F$ iff $Q(s)\in\bar F$; and (ii) the back-lifting condition that whenever $Q(s)\to_{\bar S}\bar u$, there exists $u\in S$ with $s\to u$ and $Q(u)=\bar u$. Then every finite quotient path from $Q(s_0)$ to $\bar F$ lifts to a finite original path from $s_0$ to $F$.
+\end{specialthm}
+\begin{proof}
+Induct along the quotient path. Start at $s_0$. For each quotient edge, apply the back-lifting condition to choose a corresponding original successor. At the final quotient state, terminal preservation implies that the lifted original state is terminal.\qedhere
+\end{proof}
+
+\begin{specialthm}[Orthogonal aggression under a sovereign verifier]
+In a CSSS satisfying the hypotheses of Theorems 4.1--4.4, any composition of learned ranking, Atlas-style backward obligations, rational or Hilbert addressing, verifier-grounded awareness, recursive imagination, and randomized proposal remains semantically conservative so long as those modules affect only proposal, prioritization, speculative state, or visibility and do not bypass the verifier/transport gates.
+\end{specialthm}
+\begin{proof}
+Each listed module changes search-side variables only. By verifier-sovereign policy invariance, changing proposal and navigation does not alter the accepted set. By counterfactual conservativity, speculative additions cannot enter BANK directly. By topology-independent memory and no-silent-scope-inflation, visibility changes and transports preserve certified semantics. Composition therefore preserves the invariant.\qedhere
+\end{proof}
+
+\section{How the ten papers become one system}
+
+The synergy can now be stated precisely. The proof-horizon paper contributes the \emph{intrinsic certificate objective}; learned search contributes the \emph{policy limitation and breadth-reduction interpretation}; recursive imagination contributes the \emph{speculative proposal layer}; awareness geometry contributes the \emph{self-state that may control policy, but only through explicit channels}; AMLD Security 4 contributes \emph{federated verified memory and scope-preserving transport}; the rational-surjection paper contributes an \emph{exact coordinate codec}; the pharmacokinetic paper contributes a model example in which a nonlinear-looking evolution becomes translation in the right coordinate; the movie-review and survival-analysis reports contribute the lesson that \emph{empirical acceptance is protocol-scoped}; and the SAT paper contributes a sharp warning that an exact representation theorem and a useful certificate criterion do not automatically yield a complexity bound.
+
+These roles are complementary rather than interchangeable. One can summarize the division of labor as
+\[
+\boxed{\text{proposal}\;\neq\;\text{navigation}\;\neq\;\text{verification}\;\neq\;\text{memory}\;\neq\;\text{scope}.}
+\]
+The architecture becomes safer and mathematically clearer when those inequalities are treated as design constraints rather than inconveniences.
+
+A particularly productive linguistic synthesis is:
+\begin{quote}
+\textbf{Imagination proposes futures. Awareness chooses what deserves attention. Geometry supplies coordinates. Learning compresses search. Atlas organizes obligations. The verifier decides reality. BANK remembers only with provenance. Federation shares only with scope.}
+\end{quote}
+
+\section{Conjectures opened by the synthesis}
+
+\begin{specialconj}[Scope-aware adaptive synergy]
+There exists a broad, nondegenerate distribution of heterogeneous formal search tasks for which a verifier-gated portfolio combining (i) goal/obligation navigation, (ii) an operationally connected self-awareness state, and (iii) bounded counterfactual lemma generation has strictly smaller expected candidate-inspection cost than every constituent fixed policy used alone, while accepting exactly the same certificate language under the same verifier.
+\end{specialconj}
+
+The conjecture is intentionally distributional rather than universal. No search controller can dominate every other controller on every problem. The test is whether the combination has a reproducible interaction advantage on a declared benchmark distribution with a frozen verifier.
+
+\begin{specialconj}[Proof-passage coordinate]
+For some nontrivial families of formal theories and target distributions, there exists a computable or learnable scalar coordinate $\Psi(B,T)$ on certified proof states such that along a substantial fraction of near-optimal proof trajectories,
+\[
+\Psi(B_{t+1},T)\approx \Psi(B_t,T)-c_t,
+\]
+where $c_t$ is certified transition cost, and a calibrated lower envelope of $\Psi$ can be made admissible as a search heuristic.
+\end{specialconj}
+
+This is the theorem-search analogue of the pharmacokinetic passage coordinate. It does not assume that theorem space literally has exponential dynamics; it asks whether some target families admit a coordinate in which remaining certified cost becomes approximately translational.
+
+\begin{specialconj}[Typed cross-domain transfer without semantic dilution]
+A heterogeneous federation that retains evidence type, scope, and provenance can obtain positive transfer from empirical, algebraic, and deductive modules without increasing false certified acceptance, provided every cross-domain promotion is mediated by a sound typed transport certificate.
+\end{specialconj}
+
+The nontrivial part is not soundness under the idealized gate---Theorem 4.17 already gives that. The conjecture is that useful transfer remains large enough to justify the engineering cost of the typed federation on realistic workloads.
+
+\section{Error audit of the new theorems}
+
+Every new theorem above was audited against four failure modes that recur across the source corpus.
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Search/semantics confusion.} No theorem infers theoremhood from a score, learned policy, imagined lemma, coordinate, or awareness state.
+\item \textbf{Scope inflation.} Every theorem involving transport states the semantic implication or same-scope requirement explicitly.
+\item \textbf{Complexity inflation.} The SAT theorem proves an algebraic equivalence only; the complexity theorem explicitly blocks the invalid inference from polynomial-in-quotient-dimension to polynomial-in-$n$.
+\item \textbf{Statistical overclaiming.} Empirical metrics are treated as protocol-scoped evidence. Failure to reject is not identified with equality, and a concrete counterexample separates Kaplan--Meier visual ordering from log-rank significance.
+\end{enumerate}
+
+The proofs are elementary enough to be checked line by line. Their assumptions are deliberately visible. This does not guarantee that no future refinement is possible, but it removes the definitional and inferential errors identified during the audit.
+
+\section{Research program}
+
+The synthesis suggests a practical experimental program for DATA MIND and other AMLD systems.
+
+First, freeze the verifier, certificate language, target distribution, candidate-inspection definition, and resource budget. Second, treat self-awareness, Atlas, Hilbert/rational addressing, fairness mechanisms, imagination, and learned ranking as separable search-side interventions. Third, preserve typed provenance for every promoted artifact. Fourth, measure at least four outcomes separately: solve rate, candidate inspections, verifier calls, and certificate cost. Fifth, include target families that differ in topology so that a controller is not rewarded merely for specializing to one synthetic geometry. Finally, whenever empirical or statistical modules contribute information, retain their data split, label map, fitted preprocessing, uncertainty statement, and scope rather than flattening them into an untyped ``fact.''
+
+The long-term goal is not a machine that blurs all methods together. It is a machine in which different methods can cooperate without losing the rules that make each method trustworthy.
+
+\section{Conclusion}
+
+Ten papers that appear to live in different neighborhoods turn out to constrain one coherent architecture. Formal logic supplies exact certificate gates and proof horizons. Machine learning supplies selective attention. Self-awareness supplies verifier-grounded information about the system's own state, but not magical proof power. Imagination supplies counterfactual branches. Federated security supplies memory topology and scope discipline. Rational enumeration supplies canonical address codes. Pharmacokinetics supplies a vivid example of exact coordinate linearization. Classification and survival analysis supply protocol-scoped empirical evidence. Algebraic SAT supplies both a powerful representation and a warning against confusing representation with complexity.
+
+The new whole is therefore not ``everything is geometry'' or ``everything is proof.'' It is more disciplined:
+\[
+\boxed{\text{Propose freely; navigate intelligently; certify locally; transport with scope; remember with provenance.}}
+\]
+That principle permits linguistic and mathematical synergy without semantic dilution. It also gives DATA MIND a clean research direction: search modules may become increasingly imaginative, reflective, geometric, and learned, while the certification boundary becomes increasingly explicit rather than increasingly permissive.
+
+\appendix
+\section{Bibliographic source list}
+
+\begin{enumerate}[leftmargin=2em]
+\item Brian Tenneson, \emph{The Universal Proof-Horizon Operator}, August 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator/The_Universal_Proof-Horizon_Operator_by_Brian_Tenneson.pdf}
+
+\item Brian Tenneson, \emph{AMLD Security 4: Federated Verified Memory Across Eight Application Domains}, September 2026.\\
+\url{https://btenneson.github.io/pub/cs.CR_Cryptography_and_Security/amld_security_4/AMLD_Security_4.pdf}
+
+\item Brian Tenneson, \emph{Multi-Dose Concentration Derivation v6.1}, 2026.\\
+\url{https://btenneson.github.io/pub/q-bio.QM_Quantitative_Methods/multi_dose_concentration_derivation_v6_1/6_Multi-Dose_Concentration_Derivation_v6.1_with_TOC.pdf}
+
+\item Brian Tenneson, \emph{Movie Review Classification -- ADS 652 Final Report}, June 2024.\\
+\url{https://btenneson.github.io/pub/cs.CL_Computation_and_Language/movie_review_classification_ads_652_final_report/Tenneson_ADS_652-final_report-version_2.pdf}
+
+\item Brian Tenneson, \emph{ADS 534 Homework 8}, August 2024.\\
+\url{https://btenneson.github.io/pub/stat.AP_Applications/ads_534_homework_8/ADS_534-tenneson_homework_8_version_1.pdf}
+
+\item Brian Tenneson, \emph{A Closed-Form Surjection from $\Nat$ onto $\Rat$ -- With Its Pseudo-Inverse}, 2026.\\
+\url{https://btenneson.github.io/pub/math.LO_Logic/closed_form_surjection_n_to_q/A_Closed-Form_Surjection_from_N_onto_Q_by_Brian_Tenneson_2.2_1_.pdf}
+
+\item Brian Tenneson, \emph{Solving SAT in Polynomial Time?}, March 2025.\\
+\url{https://btenneson.github.io/pub/cs.CC_Computational_Complexity/solving_sat_polynomial_time/Solving_SAT_in_polynomial_time_-_Brian_Tenneson.pdf}
+
+\item Brian Tenneson, \emph{Learned Search Policies for Proof Search -- Version 2}, July 2026.\\
+\url{https://btenneson.github.io/pub/cs.LG_Machine_Learning/learned_search_policies_for_proof_search_version_2/Learned_Search_Policies_v2.pdf}
+
+\item Brian Tenneson, \emph{The Geometry of Federated Awareness, Reflection, and Hyperfinite Omniscience}, September 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/the_geometry_of_federated_awareness_reflection_and_hyperfinite_omniscience/Awareness_Geometry_Hyperfinite_Omniscience.pdf}
+
+\item Brian Tenneson, \emph{Recursive ``What If?'' Imagination in AMLD}, September 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/recursive_what_if_imagination_in_amld/AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001.pdf}
+\end{enumerate}
+
+\end{document}
