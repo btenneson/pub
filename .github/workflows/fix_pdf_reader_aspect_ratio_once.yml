@@ -1,0 +1,72 @@
+name: Fix PDF reader aspect ratio once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix_pdf_reader_aspect_ratio_once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install audit dependency
+        run: python -m pip install pymupdf==1.26.4
+
+      - name: Preserve PDF page aspect ratio
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          paths = [
+              Path('docs/pdf-reader.js'),
+              Path('scripts/build_publications_106.py'),
+          ]
+          old = "canvas.style.height=Math.floor(viewport.height)+'px';"
+          new = "canvas.style.height='auto';"
+
+          for p in paths:
+              text = p.read_text()
+              count = text.count(old)
+              assert count == 1, f'{p}: expected exactly one old height assignment, found {count}'
+              p.write_text(text.replace(old, new))
+              repaired = p.read_text()
+              assert old not in repaired
+              assert repaired.count(new) == 1
+              print(f'Repaired {p}')
+          PY
+
+      - name: Rebuild and audit publication readers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          js = Path('docs/pdf-reader.js').read_text()
+          assert "canvas.style.height='auto';" in js
+          assert "canvas.style.height=Math.floor(viewport.height)+'px';" not in js
+          html = Path('docs/pdf-reader.html').read_text()
+          assert '.stage canvas{display:block;max-width:100%;height:auto' in html
+          print('PASS: canvas width may shrink to fit, while height follows the PDF aspect ratio.')
+          PY
+
+      - name: Remove one-time workflow and commit tested repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/fix_pdf_reader_aspect_ratio_once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m 'Preserve PDF reader aspect ratio [skip ci]'
+          git push
