@@ -1,0 +1,95 @@
+name: Vendor and smoke-test PDF reader
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/vendor_and_smoke_test_pdf_reader.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reader-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vendor pinned PDF.js runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/vendor/pdfjs
+          curl -fL --retry 3 --retry-delay 2 \
+            https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js \
+            -o docs/vendor/pdfjs/pdf.min.js
+          curl -fL --retry 3 --retry-delay 2 \
+            https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js \
+            -o docs/vendor/pdfjs/pdf.worker.min.js
+          curl -fL --retry 3 --retry-delay 2 \
+            https://raw.githubusercontent.com/mozilla/pdf.js/v3.11.174/LICENSE \
+            -o docs/vendor/pdfjs/LICENSE
+          test "$(wc -c < docs/vendor/pdfjs/pdf.min.js)" -gt 100000
+          test "$(wc -c < docs/vendor/pdfjs/pdf.worker.min.js)" -gt 500000
+
+      - name: Make the reader self-contained
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('docs/pdf-reader.html')
+          s = html.read_text()
+          old = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+          new = '/pub/vendor/pdfjs/pdf.min.js'
+          if old in s:
+              s = s.replace(old, new)
+          assert new in s
+          html.write_text(s)
+
+          js = Path('docs/pdf-reader.js')
+          s = js.read_text()
+          old = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+          new = '/pub/vendor/pdfjs/pdf.worker.min.js'
+          if old in s:
+              s = s.replace(old, new)
+          assert new in s
+          js.write_text(s)
+          PY
+          ! grep -q 'cdnjs.cloudflare.com/ajax/libs/pdf.js' docs/pdf-reader.html
+          ! grep -q 'cdnjs.cloudflare.com/ajax/libs/pdf.js' docs/pdf-reader.js
+
+      - name: Browser smoke test the slot-1 PDF in the reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME"
+          rm -rf .reader-test
+          mkdir -p .reader-test
+          ln -s "$GITHUB_WORKSPACE/docs" .reader-test/pub
+          python -m http.server 8765 --directory .reader-test >/tmp/reader-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 2
+          URL='http://127.0.0.1:8765/pub/pdf-reader.html?file=%2Fpub%2Fcs.LO_Logic_in_Computer_Science%2Fcertified_synergy_ten_paper_synthesis%2FCertified_Synergy_Ten_Paper_Synthesis.pdf'
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --virtual-time-budget=10000 --dump-dom "$URL" > /tmp/reader-dom.html
+          grep -q 'Page 1 of 13' /tmp/reader-dom.html
+          ! grep -q 'Reader unavailable' /tmp/reader-dom.html
+          test -s docs/cs.LO_Logic_in_Computer_Science/certified_synergy_ten_paper_synthesis/Certified_Synergy_Ten_Paper_Synthesis.pdf
+          echo 'PASS: PDF.js rendered page 1 of 13 in headless Chrome.'
+
+      - name: Commit self-contained tested reader
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/pdf-reader.html docs/pdf-reader.js docs/vendor/pdfjs
+          if git diff --cached --quiet; then
+            echo 'Reader already matches the tested self-contained version.'
+          else
+            git commit -m 'Vendor PDF.js and smoke-test publication reader'
+            git push
+          fi
