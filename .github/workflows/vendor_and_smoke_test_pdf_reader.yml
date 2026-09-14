@@ -64,8 +64,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          python -m pip install --quiet selenium
           CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          CHROMEDRIVER="$(command -v chromedriver || true)"
           test -n "$CHROME"
+          test -n "$CHROMEDRIVER"
           rm -rf .reader-test
           mkdir -p .reader-test
           ln -s "$GITHUB_WORKSPACE/docs" .reader-test/pub
@@ -73,13 +76,44 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 2
-          URL='http://127.0.0.1:8765/pub/pdf-reader.html?file=%2Fpub%2Fcs.LO_Logic_in_Computer_Science%2Fcertified_synergy_ten_paper_synthesis%2FCertified_Synergy_Ten_Paper_Synthesis.pdf'
-          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-            --virtual-time-budget=10000 --dump-dom "$URL" > /tmp/reader-dom.html
-          grep -q 'Page 1 of 13' /tmp/reader-dom.html
-          ! grep -q 'Reader unavailable' /tmp/reader-dom.html
+          export CHROME CHROMEDRIVER
+          python - <<'PY'
+          import os
+          from selenium import webdriver
+          from selenium.webdriver.chrome.options import Options
+          from selenium.webdriver.chrome.service import Service
+          from selenium.webdriver.common.by import By
+          from selenium.webdriver.support.ui import WebDriverWait
+
+          url = ('http://127.0.0.1:8765/pub/pdf-reader.html?file='
+                 '%2Fpub%2Fcs.LO_Logic_in_Computer_Science%2Fcertified_synergy_ten_paper_synthesis%2F'
+                 'Certified_Synergy_Ten_Paper_Synthesis.pdf')
+          opts = Options()
+          opts.binary_location = os.environ['CHROME']
+          opts.add_argument('--headless=new')
+          opts.add_argument('--no-sandbox')
+          opts.add_argument('--disable-gpu')
+          opts.add_argument('--disable-dev-shm-usage')
+          service = Service(os.environ['CHROMEDRIVER'])
+          driver = webdriver.Chrome(service=service, options=opts)
+          try:
+              driver.get(url)
+              wait = WebDriverWait(driver, 25)
+              wait.until(lambda d: d.find_element(By.ID, 'pageInfo').text == 'Page 1 of 13')
+              canvas = driver.find_element(By.ID, 'page')
+              status = driver.find_element(By.ID, 'status')
+              width = driver.execute_script('return arguments[0].width', canvas)
+              height = driver.execute_script('return arguments[0].height', canvas)
+              hidden = driver.execute_script('return arguments[0].hidden', canvas)
+              status_hidden = driver.execute_script('return arguments[0].hidden', status)
+              assert width > 0 and height > 0, (width, height)
+              assert hidden is False
+              assert status_hidden is True
+              print(f'PASS: PDF.js rendered page 1 of 13; canvas={width}x{height}.')
+          finally:
+              driver.quit()
+          PY
           test -s docs/cs.LO_Logic_in_Computer_Science/certified_synergy_ten_paper_synthesis/Certified_Synergy_Ten_Paper_Synthesis.pdf
-          echo 'PASS: PDF.js rendered page 1 of 13 in headless Chrome.'
 
       - name: Commit self-contained tested reader
         shell: bash
