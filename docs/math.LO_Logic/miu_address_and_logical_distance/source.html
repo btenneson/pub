@@ -1,0 +1,718 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MIU Exact Address, Height Distance, and Logical Distance — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/math.LO_Logic/miu_address_and_logical_distance/">Back to publication</a><h1>MIU Exact Address, Height Distance, and Logical Distance</h1><a href="/pub/math.LO_Logic/miu_address_and_logical_distance/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\newtheorem{spthm}{[special] Theorem}
+\newtheorem*{remark}{Remark}
+\newcommand{\WMIU}{\mathcal W_{\mathrm{MIU}}}
+\newcommand{\dA}{d_A}
+\newcommand{\dE}{d_E}
+\newcommand{\dP}{d_P}
+\newcommand{\dQ}{d_Q}
+\title{\textbf{MIU Exact Address, Height Distance, and Logical Distance}\\\large Special Theorems on Identity Coordinates, Height Geometry, Proof Geometry, and Trading\\[0.4em]\normalsize Rigorous Exact-Address Edition 005}
+\author{Brian Tenneson}
+\date{September 14, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note develops a deliberately simple first geometry for the MIU formal system and then asks what survives when logical proof distance and consequence-preserving Trading are introduced. Every MIU WFF $g=M s_1\cdots s_n$ is first assigned an exact reversible binary address $A(g)$: encode $I$ by $0$, $U$ by $1$, prepend a leading $1$, and read the resulting binary word as a positive integer. Thus $A$ is a bijection from the MIU WFFs to $\mathbb N_{&gt;0}$ and its absolute difference $d_A$ is a genuine metric on WFF identity. Separately, the count-pair $w(g)=(i(g),u(g))$ may carry a chosen scalar height $E(w(g))$. The resulting height distance $d_E$ is kept distinct from both exact-address distance and directed logical proof distance $d_P$. Forty-six exploratory results labeled ``[special] Theorem&#x27;&#x27; study these typed structures, their calibration, and the effects of consequence-preserving Trading.
+\end{abstract}
+
+\section*{Corrections in this edition}
+This corrected edition preserves the structure and intent of the September 12, 2026 version, but makes the following repairs explicit inside the paper.
+\begin{enumerate}[leftmargin=1.7em]
+\item \textbf{Exact-address revision.} Definition 2 now gives an explicit reversible binary address $A(g)$ for every MIU WFF. The resulting $d_A(g,h)=|A(g)-A(h)|$ is a genuine metric on WFF identity. The count-pair map and scalar height are retained as separate coarse/count coordinates rather than being called exact addresses.
+\item \textbf{Count-coordinate simplification.} The previously proposed distinguished multiplicative count coordinate has been removed. The paper now keeps the count-pair $w(g)=(i(g),u(g))$ and an arbitrary chosen scalar height $E(w(g))$ without privileging an additional encoding.
+\item \textbf{Theorem 28} is corrected so that presentation-specific lower bounds are not incorrectly combined as though they all bounded the same logical distance. The corrected theorem distinguishes the minimum and maximum logical distances across presentations.
+\item \textbf{Theorems 32--35} are corrected because the exact residue $i(g)\bmod 3$ is not invariant under MIU Rule II. The actual classical obstruction is whether $3$ divides the number of I&#x27;s: the two-class predicate $3\mid i(g)$ versus $3\nmid i(g)$ is invariant along MIU derivations.
+\item \textbf{Theorem 44} is reworded to speak of tighter or looser calibration rather than statistical ``prediction,&#x27;&#x27; which had not been defined.
+\item \textbf{Theorem 45} uses the infimum of legal proof costs, matching Definition 6; under ordinary unit costs this infimum is a minimum whenever the target is reachable.
+\item The term \emph{address} is now typed explicitly: $A(g)$ is the reversible WFF identity address; $w(g)$ is the count-pair feature; and $E(w(g))$ is a chosen scalar height.
+\item \textbf{Rigorous-proof revision.} Every result labeled ``[special] Theorem&#x27;&#x27; now carries an explicit proof. The Trading Theorem used by the paper is stated and proved before its first application. The local-calibration statement is also sharpened to a restricted-path distance, eliminating a hidden assumption about paths leaving the calibrated region.
+\end{enumerate}
+
+\section{MIU, exact addresses, heights, and logical distance}
+The standard MIU system has alphabet $\{M,I,U\}$, axiom $MI$, and four rewrite rules:
+\[
+\begin{array}{rcl}
+\mathrm{I}:&amp;xI&amp;\to xIU,\\
+\mathrm{II}:&amp;Mx&amp;\to Mxx,\\
+\mathrm{III}:&amp;xIIIy&amp;\to xUy,\\
+\mathrm{IV}:&amp;xUUy&amp;\to xy.
+\end{array}
+\]
+Every MIU well-formed formula considered here begins with $M$ and is followed by a finite string over $\{I,U\}$.
+
+\textbf{Definition 1 (Count-pair).} For a MIU WFF $g$, define
+\[
+w(g)=(i(g),u(g)),
+\]
+where $i(g)$ is the number of occurrences of I in $g$ and $u(g)$ is the number of occurrences of U in $g$.
+
+\textbf{Definition 2 (Exact reversible MIU address).} Write a MIU WFF uniquely as
+\[
+g=M s_1s_2\cdots s_n,\qquad s_k\in\{I,U\}.
+\]
+Set
+\[
+b_k=\begin{cases}0,&amp;s_k=I,\\1,&amp;s_k=U,\end{cases}
+\]
+and define
+\[
+\boxed{A(g)=2^n+\sum_{k=1}^{n} b_k2^{\,n-k}.}
+\]
+Equivalently, $A(g)$ is the positive integer whose binary expansion is the word $1b_1b_2\cdots b_n$. For the empty suffix $g=M$, this gives $A(M)=1$.
+
+\textbf{Example.} For $g=MIUI$, the suffix $IUI$ becomes $010$, so the complete address word is $1010_2$ and
+\[
+A(MIUI)=10.
+\]
+Conversely, $10=1010_2$; deleting the leading $1$ gives $010$, which decodes to $IUI$, and restoring $M$ recovers $MIUI$.
+
+\textbf{Proposition (Exact decoding and bijection).} The map
+\[
+A:\WMIU\longrightarrow\mathbb N_{&gt;0}
+\]
+is a bijection. Its inverse is obtained by writing $m\ge1$ in binary, deleting the initial $1$, translating $0\mapsto I$ and $1\mapsto U$, and restoring the initial $M$.
+
+\textit{Proof.} Every positive integer has a unique binary expansion beginning with $1$. Deleting that initial digit leaves a unique finite bit string $b_1\cdots b_n$, which determines a unique MIU suffix by $0\mapsto I$ and $1\mapsto U$. Hence every $m\in\mathbb N_{&gt;0}$ has exactly one preimage under $A$, proving both surjectivity and injectivity. The stated decoding algorithm is therefore the two-sided inverse of $A$.\qed
+
+\textbf{Definition 3 (Exact-address distance).} For MIU WFFs $g,h$, define
+\[
+\boxed{\dA(g,h)=|A(g)-A(h)|.}
+\]
+
+\textbf{Proposition (Exact-address metric).} The function $d_A$ is a genuine metric on $\WMIU$.
+
+\textit{Proof.} Nonnegativity, symmetry, and the triangle inequality follow from the usual absolute-value metric on $\mathbb R$. If $d_A(g,h)=0$, then $A(g)=A(h)$; injectivity of $A$ from the preceding proposition gives $g=h$. Conversely $g=h$ plainly gives $d_A(g,h)=0$. Thus identity of indiscernibles also holds, so $d_A$ is a metric.\qed
+
+\textbf{Definition 4 (Scalar count height).} Let
+\[
+E:\mathbb N_0^2\to\mathbb R
+\]
+be a chosen function. The scalar count height of $g$ is
+\[
+h_E(g)=E(w(g)).
+\]
+\textbf{Definition 5 (Height distance).} For two MIU WFFs $g_1,g_2$, define
+\[
+\boxed{\dE(g_1,g_2)=|E(w(g_1))-E(w(g_2))|.}
+\]
+This is a one-dimensional distance induced by a count-based height. It is generally a pseudometric on WFFs because the count-pair forgets symbol order.
+
+\textbf{Definition 6 (Logical distance).} Fix a deductive presentation $P$ of MIU and a nonnegative proof-cost model. Define
+\[
+\dP(g_1,g_2)=\inf\{\operatorname{cost}_P(\pi):\pi:g_1\rightsquigarrow g_2\},
+\]
+with value $+\infty$ when $g_2$ is unreachable from $g_1$. Under ordinary unit rule cost, $\dP$ is the minimum number of legal MIU rule applications whenever $g_2$ is reachable from $g_1$.
+
+The three layers are deliberately typed separately. The exact address $A(g)$ records WFF identity; $E(w(g))$ records a chosen scalar feature of the count-pair; and $d_P$ measures legal deductive work in a chosen presentation. No numerical relation among them is assumed without proof.
+
+\section{Elementary exact-address and height geometry}
+\begin{spthm}[Height Pseudometric Theorem]
+For arbitrary $E$, the function
+\[
+\dE(g_1,g_2)=|E(w(g_1))-E(w(g_2))|
+\]
+is a pseudometric on the set of MIU WFFs.
+\end{spthm}
+\textit{Proof.} For any $g,h$, absolute value gives $\dE(g,h)\ge0$ and $\dE(g,h)=\dE(h,g)$. Also $\dE(g,g)=|E(w(g))-E(w(g))|=0$. For $g_1,g_2,g_3$, set $a=E(w(g_1))$, $b=E(w(g_2))$, and $c=E(w(g_3))$. The ordinary triangle inequality on $\mathbb R$ yields $|a-c|\le |a-b|+|b-c|$, which is exactly $\dE(g_1,g_3)\le\dE(g_1,g_2)+\dE(g_2,g_3)$. Identity of indiscernibles need not hold because distinct WFFs can have equal height. Hence $\dE$ is a pseudometric.\qed
+
+
+\begin{spthm}[Height-Quotient Metric Theorem]
+Define
+\[
+g_1\sim_E g_2\iff E(w(g_1))=E(w(g_2)).
+\]
+Then
+\[
+\bar d_E([g_1],[g_2])=|E(w(g_1))-E(w(g_2))|
+\]
+is a genuine metric on $\WMIU/\!\sim_E$.
+\end{spthm}
+\textit{Proof.} First, $\sim_E$ is an equivalence relation because equality of real numbers is reflexive, symmetric, and transitive. If $g_1\sim_E g_1&#x27;$ and $g_2\sim_E g_2&#x27;$, then $E(w(g_1))=E(w(g_1&#x27;))$ and $E(w(g_2))=E(w(g_2&#x27;))$, so the displayed value of $\bar d_E$ is independent of the chosen representatives; thus it is well defined. Nonnegativity, symmetry, and the triangle inequality descend from $\dE$. Finally, $\bar d_E([g_1],[g_2])=0$ iff $E(w(g_1))=E(w(g_2))$, which by definition is equivalent to $[g_1]=[g_2]$. Therefore $\bar d_E$ is a metric.\qed
+
+
+\begin{spthm}[Count-Injective Metric Theorem]
+If $E:\mathbb N_0^2\to\mathbb R$ is injective, then
+\[
+\dE(g_1,g_2)=0\iff w(g_1)=w(g_2).
+\]
+Thus only WFFs with the same I/U count-pair collapse to the same point.
+\end{spthm}
+\textit{Proof.} By definition, $\dE(g_1,g_2)=0$ iff $E(w(g_1))=E(w(g_2))$. If $E$ is injective on $\mathbb N_0^2$, this equality holds iff $w(g_1)=w(g_2)$. The converse is immediate because equal count-pairs have equal $E$-values. Thus the zero-distance classes are exactly the equal-count-pair classes.\qed
+
+
+\begin{spthm}[Scaling Invariance Theorem]
+Let $E&#x27;(w)=aE(w)+b$ with $a&gt;0$. Then
+\[
+d_{E&#x27;}(g_1,g_2)=a\dE(g_1,g_2).
+\]
+The additive constant $b$ has no effect on distance.
+\end{spthm}
+\textit{Proof.} Write $w_j=w(g_j)$. Then
+\[
+d_{E&#x27;}(g_1,g_2)=|aE(w_1)+b-aE(w_2)-b|=|a|\,|E(w_1)-E(w_2)|.
+\]
+Since $a&gt;0$, $|a|=a$, giving $d_{E&#x27;}=a\dE$. The constant $b$ cancels identically.\qed
+
+
+\section{How the MIU rules move the count-pair}
+Whenever the relevant syntactic pattern is actually present, the rules induce
+\[
+\begin{array}{rcl}
+\mathrm{I}:&amp;(i,u)&amp;\mapsto(i,u+1),\\
+\mathrm{II}:&amp;(i,u)&amp;\mapsto(2i,2u),\\
+\mathrm{III}:&amp;(i,u)&amp;\mapsto(i-3,u+1),\\
+\mathrm{IV}:&amp;(i,u)&amp;\mapsto(i,u-2).
+\end{array}
+\]
+These transformations do not by themselves determine rule applicability: the count-pair forgets symbol order. They do determine the count-level effect of every legal application.
+
+\begin{spthm}[Rule-I Height Displacement]
+Whenever Rule I is applicable,
+\[\Delta_I(i,u)=|E(i,u+1)-E(i,u)|.\]
+\end{spthm}
+\textit{Proof.} A legal Rule-I step replaces a terminal $I$ by $IU$. It leaves the number of $I$&#x27;s unchanged and increases the number of $U$&#x27;s by one, so $(i,u)\mapsto(i,u+1)$. The height displacement is therefore, by Definition 5, $|E(i,u+1)-E(i,u)|$.\qed
+
+\begin{spthm}[Rule-II Height Displacement]
+Whenever Rule II is applied,
+\[\Delta_{II}(i,u)=|E(2i,2u)-E(i,u)|.\]
+\end{spthm}
+\textit{Proof.} A legal Rule-II step has the form $Mx\to Mxx$. Every occurrence of $I$ and $U$ in $x$ is duplicated, hence $(i,u)\mapsto(2i,2u)$. Definition 5 then gives the stated displacement.\qed
+
+\begin{spthm}[Rule-III Height Displacement]
+For every legal Rule-III application,
+\[\Delta_{III}(i,u)=|E(i-3,u+1)-E(i,u)|.\]
+\end{spthm}
+\textit{Proof.} Rule III replaces one occurrence of $III$ by one $U$. Consequently the number of $I$&#x27;s decreases by $3$ and the number of $U$&#x27;s increases by $1$, so $(i,u)\mapsto(i-3,u+1)$. Substitution into Definition 5 gives the formula.\qed
+
+\begin{spthm}[Rule-IV Height Displacement]
+For every legal Rule-IV application,
+\[\Delta_{IV}(i,u)=|E(i,u-2)-E(i,u)|.\]
+\end{spthm}
+\textit{Proof.} Rule IV deletes one occurrence of $UU$. Thus $i$ is unchanged and $u$ decreases by $2$, so $(i,u)\mapsto(i,u-2)$. The claimed displacement follows from Definition 5.\qed
+
+
+\section{A general linear height experiment}
+One particularly transparent family of scalar count heights is
+\[E(i,u)=\alpha i+\beta u,\qquad \alpha,\beta\in\mathbb R.\]
+
+\begin{spthm}[Linear Rule-I Displacement]
+Every Rule-I step has constant height displacement $|\beta|$.
+\end{spthm}
+\textit{Proof.} Substitute $E(i,u)=\alpha i+\beta u$ into Theorem 5:
+\[
+|E(i,u+1)-E(i,u)|=|\alpha i+\beta(u+1)-\alpha i-\beta u|=|\beta|.
+\]
+This is independent of the state.\qed
+
+\begin{spthm}[Linear Rule-III Displacement]
+Every legal Rule-III application has displacement $|-3\alpha+\beta|$.
+\end{spthm}
+\textit{Proof.} By Theorem 7,
+\[
+\Delta_{III}=|\alpha(i-3)+\beta(u+1)-(\alpha i+\beta u)|=|-3\alpha+\beta|,
+\]
+which is constant across all legal Rule-III applications.\qed
+
+\begin{spthm}[Linear Rule-IV Displacement]
+Every legal Rule-IV application has displacement $2|\beta|$.
+\end{spthm}
+\textit{Proof.} By Theorem 8,
+\[
+\Delta_{IV}=|\alpha i+\beta(u-2)-(\alpha i+\beta u)|=|-2\beta|=2|\beta|.
+\]\qed
+
+\begin{spthm}[Rule-II Exceptional Scaling]
+For linear $E$,
+\[E(2i,2u)=2E(i,u),\qquad \Delta_{II}(i,u)=|E(i,u)|.\]
+Thus Rule II is geometrically different from Rules I, III, and IV: its displacement grows with present height unless the height is degenerate along the states considered.
+\end{spthm}
+\textit{Proof.} Linearity gives $E(2i,2u)=2\alpha i+2\beta u=2E(i,u)$. Hence, by Theorem 6,
+\[
+\Delta_{II}=|2E(i,u)-E(i,u)|=|E(i,u)|.
+\]
+Thus unlike Rules I, III, and IV, the displacement depends on the current height unless $E$ vanishes on the states under consideration.\qed
+
+
+\paragraph{Added consequence in this edition.}
+For every nonconstant linear height $E(i,u)=\alpha i+\beta u$, the Rule-II displacement is unbounded on states reachable from $MI$. If $\alpha\ne0$, repeated doubling of $MI$ gives $(i,u)=(2^k,0)$ and displacement $|\alpha|2^k$. If $\alpha=0$ and $\beta\ne0$, use Rule I once to reach $MIU$ and then repeatedly double, giving $(i,u)=(2^k,2^k)$ and displacement $|\beta|2^k$. Hence no nonconstant linear height admits a finite global one-step Lipschitz constant over the full reachable MIU system.
+
+\section{From height displacement to logical lower bounds}
+\begin{spthm}[Height-to-Logic Lower Bound]
+Assume there is a finite constant $L&gt;0$ such that every legal primitive unit-cost MIU step $g\to g&#x27;$ satisfies
+\[\dE(g,g&#x27;)\le L.\]
+Then whenever $g_2$ is reachable from $g_1$,
+\[\dP(g_1,g_2)\ge \frac{\dE(g_1,g_2)}{L}.\]
+\end{spthm}
+\textit{Proof.} Let $\pi:g_1=x_0\to x_1\to\cdots\to x_n=g_2$ be any legal unit-cost derivation. Repeated application of the triangle inequality for $\dE$ gives
+\[
+\dE(g_1,g_2)\le\sum_{j=0}^{n-1}\dE(x_j,x_{j+1})\le\sum_{j=0}^{n-1}L=nL.
+\]
+Thus every such derivation has length $n\ge \dE(g_1,g_2)/L$. Under unit cost, $d_P(g_1,g_2)$ is the least such integer length, so it satisfies the same lower bound.\qed
+
+
+\begin{spthm}[Integer Logical Lower Bound]
+Under unit rule cost and the hypotheses above,
+\[
+\dP(g_1,g_2)\ge\left\lceil\frac{\dE(g_1,g_2)}{L}\right\rceil.
+\]
+\end{spthm}
+\textit{Proof.} Theorem 13 gives $d_P(g_1,g_2)\ge \dE(g_1,g_2)/L$. Under unit cost and reachability, $d_P(g_1,g_2)$ is an integer. The least integer not smaller than a real number $x$ is $\lceil x\rceil$, hence $d_P(g_1,g_2)\ge\lceil\dE(g_1,g_2)/L\rceil$.\qed
+
+
+\begin{spthm}[Verified-Route Annulus Theorem]
+Suppose a verified derivation from $g$ to target $T$ has $m$ unit-cost steps, and let
+\[
+\ell(g,T)=\frac{\dE(g,T)}{L}.
+\]
+Then
+\[
+\lceil\ell(g,T)\rceil\le\dP(g,T)\le m.
+\]
+\end{spthm}
+\textit{Proof.} The lower inequality is Theorem 14. The existence of a verified $m$-step derivation gives an admissible path of cost $m$, so by the definition of shortest logical distance $d_P(g,T)\le m$. Combining the inequalities gives the claim.\qed
+
+
+\begin{spthm}[Exact Shortest-Proof Criterion]
+If a verified $m$-step derivation exists and
+\[
+m=\left\lceil\frac{\dE(g,T)}{L}\right\rceil,
+\]
+then $\dP(g,T)=m$.
+\end{spthm}
+\textit{Proof.} By Theorem 14, $d_P(g,T)\ge\lceil\dE(g,T)/L\rceil=m$. The verified $m$-step derivation gives $d_P(g,T)\le m$. Therefore $d_P(g,T)=m$.\qed
+
+
+\section{When a global calibration constant fails}
+\begin{spthm}[Global Bounded-Step Obstruction]
+If
+\[
+|E(2i,2u)-E(i,u)|
+\]
+is unbounded over reachable states, then no finite global constant $L$ can satisfy $\dE(g,g&#x27;)\le L$ for every primitive MIU edge. Consequently, the simple global inequality $\dP\ge \dE/L$ cannot be obtained from such an $L$.
+\end{spthm}
+\textit{Proof.} If a finite global $L$ bounded $\dE$ on every primitive edge, then in particular it would bound every Rule-II edge, so $|E(2i,2u)-E(i,u)|\le L$ on every reachable state at which Rule II is applied. This contradicts the assumed unboundedness. Therefore no such finite $L$ exists. Since Theorem 13 requires such an $L$, its particular global bound cannot be derived by that hypothesis.\qed
+
+
+\paragraph{Correction in this edition: Theorem 18.}
+A bound proved only for derivations that remain in $S_0$ need not lower-bound the unrestricted distance $d_P$, because a shorter derivation could leave $S_0$. Define the restricted logical distance
+\[
+d_P^{S_0}(g_1,g_2)=\inf\{\operatorname{cost}_P(\pi):\pi:g_1\rightsquigarrow g_2\text{ and every state of }\pi\text{ lies in }S_0\},
+\]
+with value $+\infty$ if no such derivation exists.
+
+\begin{spthm}[Corrected Local Calibration Theorem]
+Let $S_0$ be a subset of MIU states for which
+\[
+L_{S_0}=\sup\{\dE(g,g&#x27;):g\to g&#x27;,\ g,g&#x27;\in S_0\}&lt;\infty.
+\]
+Then, for $g_1,g_2\in S_0$,
+\[
+d_P^{S_0}(g_1,g_2)\ge\frac{\dE(g_1,g_2)}{L_{S_0}}.
+\]
+\end{spthm}
+\textit{Proof.} If no $S_0$-internal derivation exists, then $d_P^{S_0}=+\infty$ and the inequality is immediate. Otherwise let $\pi:g_1=x_0\to\cdots\to x_n=g_2$ be any $S_0$-internal unit-cost derivation. Every edge has both endpoints in $S_0$, so its displacement is at most $L_{S_0}$. Hence
+\[
+\dE(g_1,g_2)\le\sum_{j=0}^{n-1}\dE(x_j,x_{j+1})\le nL_{S_0}.
+\]
+Thus every allowed derivation has cost at least $\dE(g_1,g_2)/L_{S_0}$. Taking the infimum over exactly those derivations proves the result.\qed
+
+Thus a height geometry can fail global calibration while remaining useful on bounded or otherwise restricted regions.
+
+\section{Symmetric coordinate distances versus directed proof distance}
+\begin{spthm}[Symmetry Mismatch Theorem]
+For every pair of WFFs,
+\[\dA(g,h)=\dA(h,g),\qquad \dE(g,h)=\dE(h,g).\]
+By contrast, $d_P$ is a directed extended distance: if for some $g,h$ one has $g\rightsquigarrow h$ but $h\not\rightsquigarrow g$, then
+\[
+d_P(g,h)&lt;\infty=d_P(h,g).
+\]
+Thus symmetry of the exact-address and height distances does not imply symmetry of logical distance.
+\end{spthm}
+\textit{Proof.} The two symmetry assertions follow immediately from $|a-b|=|b-a|$. For the directed statement, if $g\rightsquigarrow h$, some finite $P$-derivation exists and therefore $d_P(g,h)&lt;\infty$. If simultaneously $h\not\rightsquigarrow g$, Definition 6 assigns $d_P(h,g)=+\infty$. Thus whenever one-way reachability occurs, logical distance is asymmetric, whereas both $d_A$ and $d_E$ remain symmetric.\qed
+
+
+\begin{spthm}[One-Way Isometry Obstruction]
+Suppose there are WFFs $g,h$ with $g\rightsquigarrow h$ but $h\not\rightsquigarrow g$. Then no symmetric metric on WFFs can agree with the full directed logical distance $\dP$ on every ordered pair.
+\end{spthm}
+\textit{Proof.} Assume for contradiction that a symmetric metric $d$ on WFFs agrees with $d_P$ on every ordered pair. From $g\rightsquigarrow h$ we have $d_P(g,h)&lt;\infty$, while $h\not\rightsquigarrow g$ gives $d_P(h,g)=+\infty$. Agreement would require $d(g,h)&lt;\infty$ and $d(h,g)=+\infty$, contradicting symmetry $d(g,h)=d(h,g)$.\qed
+
+
+\section{Target-relative logical height}
+Fix a target WFF $T$ and define
+\[V_T(g)=\dP(g,T).\]
+
+\begin{spthm}[Exact Logical Height Theorem]
+The function $H_T(g)=V_T(g)=\dP(g,T)$ is an exact target-relative logical height on the target-reachable states. If
+\[g\sim_T h\iff V_T(g)=V_T(h),\]
+then
+\[\rho_T([g],[h])=|V_T(g)-V_T(h)|\]
+is a genuine metric on the quotient and $[g]\mapsto V_T(g)$ is an isometry onto the realized set of target distances.
+\end{spthm}
+\textit{Proof.} On the target-reachable states, $V_T(g)=d_P(g,T)$ is finite by definition. The relation $\sim_T$ is equality of real values and hence an equivalence relation. If $g\sim_T g&#x27;$ and $h\sim_T h&#x27;$, then $V_T(g)=V_T(g&#x27;)$ and $V_T(h)=V_T(h&#x27;)$, so $\rho_T$ is well defined on equivalence classes. Absolute difference gives nonnegativity, symmetry, and the triangle inequality. Moreover $\rho_T([g],[h])=0$ iff $V_T(g)=V_T(h)$ iff $[g]=[h]$. Thus $\rho_T$ is a metric. Finally, for any classes $[g],[h]$, the distance between their images under $[x]\mapsto V_T(x)$ in $\mathbb R$ is $|V_T(g)-V_T(h)|=\rho_T([g],[h])$, so the map is an isometry onto its image.\qed
+
+
+\begin{spthm}[Exact Address, Count Height, and Logical Height]
+The quantities $A(g)$, $E(w(g))$, and $V_T(g)$ have different meanings. The first is an exact reversible identity address, the second is a chosen scalar height from count data, and the third is exact remaining logical cost in the presentation. Equality, proportionality, or any other numerical relationship among them requires a separate theorem or calibration argument.
+\end{spthm}
+\textit{Proof.} By Definition 2 and the exact-decoding proposition, $A(g)$ depends on the complete ordered MIU suffix and uniquely determines $g$. By Definition 4, $E(w(g))$ depends only on the count-pair and can therefore identify distinct WFFs having the same counts. By Definition 6, $V_T(g)=d_P(g,T)$ is defined through the costs of legal proof paths in the chosen presentation. These constructions use different data. For example, two distinct WFFs can have equal count height but unequal exact addresses, while a pure Trading transformation can change $V_T$ without changing either WFF identity or the chosen count height. Therefore no equality or proportionality follows from the definitions alone.\qed
+
+\section{Trading theorem used in this paper}
+Before Trading is used, we state the certificate-preserving form needed below.
+
+\textbf{Trading Theorem (certificate-preserving form).}
+Let $P$ and $Q$ be deductive presentations over state sets $S_P,S_Q$, and let $\Phi:S_P\to S_Q$ map corresponding formulas or proof states. Assume:
+\begin{enumerate}[label=(T\arabic*),leftmargin=2.5em]
+\item for every finite verified $P$-derivation $\pi:g\rightsquigarrow h$, there is an effectively checkable finite verified $Q$-derivation $\Phi_*(\pi):\Phi g\rightsquigarrow\Phi h$;
+\item for every finite verified $Q$-derivation $\sigma:\Phi g\rightsquigarrow\Phi h$ between corresponding states, there is an effectively checkable finite verified $P$-derivation $\Psi_*(\sigma):g\rightsquigarrow h$.
+\end{enumerate}
+Then, for corresponding states $g,h$,
+\[
+g\vdash_P h\quad\Longleftrightarrow\quad \Phi g\vdash_Q\Phi h.
+\]
+In particular, $P$ and $Q$ have the same consequence relation on the states identified by $\Phi$, even though path lengths, primitive step sets, and proof costs may differ.
+
+\textit{Proof.} If $g\vdash_P h$, there exists a finite verified $P$-derivation $\pi:g\rightsquigarrow h$. By (T1), $\Phi_*(\pi)$ is a finite verified $Q$-derivation from $\Phi g$ to $\Phi h$, so $\Phi g\vdash_Q\Phi h$. Conversely, if $\Phi g\vdash_Q\Phi h$, a finite verified $Q$-derivation $\sigma$ exists; by (T2), $\Psi_*(\sigma)$ is a finite verified $P$-derivation from $g$ to $h$. Therefore the two consequence relations agree on corresponding states. The hypotheses assert only existence and checkability of translated certificates, not equality of costs, so no metric conclusion follows without additional assumptions.\qed
+
+\begin{remark}
+A common special case is a macro trade: $Q$ adds an edge whose certificate is a finite verified $P$-path, while expansion of every macro edge back into that certificate supplies (T2). Then theoremhood is unchanged although a macro may be assigned a different search cost.
+\end{remark}
+
+\section{Trading and the two geometries}
+A consequence-preserving Trading transformation in the remainder of the paper means a transformation satisfying the Trading Theorem above (or a stated stronger special case). It may alter how deductive resources are represented while preserving theoremhood, and therefore may change the cost or granularity of proof routes.
+
+\begin{spthm}[Coordinate Invariance Under Pure Trading]
+Suppose a trade changes only the deductive presentation and leaves each WFF $g$, its count-pair $w(g)$, and the function $E$ unchanged. Then both the exact-address distance $\dA(g,h)$ and the height distance $\dE(g,h)$ are unchanged for every pair of WFFs.
+\end{spthm}
+\textit{Proof.} Because the endpoint WFFs themselves are unchanged, Definition 2 gives the same exact addresses $A(g)$ and $A(h)$ before and after the trade; hence their absolute difference $d_A(g,h)$ is unchanged. The same hypothesis leaves $w(g),w(h)$ and $E$ unchanged, so the endpoint heights $E(w(g))$ and $E(w(h))$ and therefore $d_E(g,h)$ are also unchanged. No property of proof-path costs is required.\qed
+
+\begin{spthm}[Trading Deformation Theorem]
+Under a pure trade as above it is possible for $\dE(g,h)$ to remain fixed while
+\[d_P(g,h)\ne d_Q(g,h).\]
+Thus Trading may deform logical geometry while both exact WFF addresses and the chosen height geometry remain fixed.
+\end{spthm}
+\textit{Proof.} It suffices to exhibit one certificate-preserving trade. In the primitive MIU presentation $P$, the derivation
+\[
+MI\xrightarrow{\mathrm I}MIU\xrightarrow{\mathrm{II}}MIUIU
+\]
+has cost $2$. There is no one-step primitive derivation from $MI$ to $MIUIU$: Rule I gives $MIU$, Rule II gives $MII$, and Rules III and IV are inapplicable to $MI$. Hence $d_P(MI,MIUIU)=2$. Let $Q$ add a certified macro edge $MI\Rightarrow MIUIU$ whose retained certificate is the displayed two-step $P$-path, and assign that macro cost $1$. Expanding the macro recovers the $P$-certificate, so the Trading Theorem applies and consequence is preserved. Yet $d_Q(MI,MIUIU)=1$. Because the WFFs and $E$ are unchanged, Theorem 23 gives the same $d_A$ and $d_E$ in both presentations. Thus such a deformation is possible.\qed
+
+
+\begin{spthm}[Cost-Preserving Trade Rigidity]
+Suppose a trade induces a bijective correspondence of relevant proof states and legal paths, and corresponding paths have exactly equal cost. Then
+\[d_P(g,h)=d_Q(\Phi g,\Phi h)\]
+for all corresponding states.
+\end{spthm}
+\textit{Proof.} Let $\mathcal P_P(g,h)$ be the set of legal $P$-paths from $g$ to $h$, and $\mathcal P_Q(\Phi g,\Phi h)$ the corresponding $Q$-paths. By hypothesis the path correspondence is bijective and preserves cost exactly. Therefore the two sets of attainable path costs are equal. Equal subsets of $[0,\infty]$ have equal infima, giving $d_P(g,h)=d_Q(\Phi g,\Phi h)$.\qed
+
+
+\begin{spthm}[Affine Trading Distortion]
+Suppose every $P$-path $\pi:g\rightsquigarrow h$ translates to a $Q$-path $\Phi\pi$ satisfying
+\[
+\operatorname{cost}_Q(\Phi\pi)\le a\operatorname{cost}_P(\pi)+b,
+\qquad a\ge1,\ b\ge0.
+\]
+Then
+\[d_Q(\Phi g,\Phi h)\le a d_P(g,h)+b.\]
+If a reverse translation has constants $c,d$, then also
+\[d_P(g,h)\le c d_Q(\Phi g,\Phi h)+d.\]
+\end{spthm}
+\textit{Proof.} If $d_P(g,h)=+\infty$, the forward inequality is automatic. Suppose it is finite. For every $\varepsilon&gt;0$, by the definition of infimum there is a $P$-path $\pi$ with $\operatorname{cost}_P(\pi)&lt;d_P(g,h)+\varepsilon$. Its translated path satisfies
+\[
+\operatorname{cost}_Q(\Phi\pi)\le a(d_P(g,h)+\varepsilon)+b.
+\]
+Taking the infimum over $Q$-paths gives $d_Q(\Phi g,\Phi h)\le a(d_P(g,h)+\varepsilon)+b$. Letting $\varepsilon\downarrow0$ yields the claimed inequality. The reverse inequality follows by the identical argument applied to the reverse translation with constants $c,d$.\qed
+
+
+\begin{spthm}[Trading-Stable Height Lower Bound]
+Suppose the same height distance $\dE$ is used in every traded presentation $P_j$, and presentation $P_j$ has certified one-step bound $L_j$. Then
+\[d_{P_j}(g,T)\ge\frac{\dE(g,T)}{L_j}.\]
+The numerator is presentation-stable; the calibration constant may change with the deductive road system.
+\end{spthm}
+\textit{Proof.} Fix $j$. In presentation $P_j$, every primitive unit-cost edge has height displacement at most $L_j$ by hypothesis. Applying Theorem 13 within that presentation gives $d_{P_j}(g,T)\ge \dE(g,T)/L_j$. Since the pure trade leaves $d_E$ unchanged, the numerator is common across all $j$; only the certified edge bound may vary.\qed
+
+
+\paragraph{Correction in this edition: Theorem 28.}
+The previous edition took the maximum of the presentation-specific lower bounds without first specifying which aggregate logical distance was being bounded. Since each bound applies to its own $d_{P_j}$, that statement was too strong. The corrected theorem is as follows.
+
+\begin{spthm}[Corrected Cross-Presentation Envelope Theorem]
+Let
+\[
+\ell_j(g,T)=\frac{\dE(g,T)}{L_j},\qquad
+D_{\min}(g,T)=\min_j d_{P_j}(g,T),\qquad
+D_{\max}(g,T)=\max_j d_{P_j}(g,T).
+\]
+Then
+\[
+D_{\min}(g,T)\ge\min_j\ell_j(g,T)
+\]
+and
+\[
+D_{\max}(g,T)\ge\max_j\ell_j(g,T).
+\]
+For a fixed presentation $P_j$, only $\ell_j$ is automatically certified as a lower bound for $d_{P_j}$.
+\end{spthm}
+\textit{Proof.} For every index $j$, Theorem 27 gives $d_{P_j}\ge\ell_j$. Taking minima of coordinatewise inequalities yields $\min_jd_{P_j}\ge\min_j\ell_j$. Because the family is finite, choose $j_*$ with $\ell_{j_*}=\max_j\ell_j$. Then $D_{\max}=\max_j d_{P_j}\ge d_{P_{j_*}}\ge\ell_{j_*}=\max_j\ell_j$. The final sentence follows because no inequality relating $d_{P_j}$ to $\ell_r$ for $r\ne j$ has been assumed.\qed
+
+
+\section{Macros as a visible trading effect}
+Suppose a verified primitive segment
+\[g\to h\to k\]
+is represented in a traded presentation by a macro edge $g\Rightarrow k$, with its primitive expansion retained as a certificate.
+
+\begin{spthm}[Macro Coordinate Rigidity]
+Introducing a macro edge between existing WFFs changes neither their exact addresses nor their count heights. Hence both $\dA(g,k)$ and $\dE(g,k)$ are unchanged.
+\end{spthm}
+\textit{Proof.} A macro edge changes only the available deductive transitions. It does not alter either endpoint WFF, so $A(g)$ and $A(k)$ remain fixed and therefore $d_A(g,k)$ is fixed. It also leaves the count-pairs and $E$ unchanged, so $E(w(g))$ and $E(w(k))$ remain fixed and therefore $d_E(g,k)$ is fixed.\qed
+
+\begin{spthm}[Unit-Macro Contraction]
+Assume $g\ne k$, every $Q$-edge has cost at least $1$, the original shortest $P$-route from $g$ to $k$ has cost $2$, and the certified macro edge $g\Rightarrow k$ is assigned cost $1$. Then
+\[d_Q(g,k)=1&lt;2=d_P(g,k).\]
+\end{spthm}
+\textit{Proof.} The macro itself is a $Q$-path from $g$ to $k$ of cost $1$, hence $d_Q(g,k)\le1$. Since $g\ne k$ and every $Q$-edge has cost at least $1$, every nonempty $Q$-path from $g$ to $k$ has cost at least $1$; thus $d_Q(g,k)\ge1$. Hence $d_Q(g,k)=1$. The hypothesis on the original shortest route gives $d_P(g,k)=2$, establishing the strict inequality.\qed
+
+
+\begin{spthm}[Expansion-Cost Preservation]
+Suppose every macro edge is assigned exactly the cost of its retained primitive expansion, every original primitive edge remains available, and expanding macros yields legal primitive paths. Then adding the macros leaves intrinsic primitive-cost distance unchanged:
+\[d_Q(g,h)=d_P(g,h).\]
+\end{spthm}
+\textit{Proof.} Every original primitive $P$-path is still a $Q$-path with the same cost, so $d_Q(g,h)\le d_P(g,h)$. Conversely, take any $Q$-path. Replace each macro edge by its retained primitive expansion. By hypothesis the result is a legal $P$-path and the replacement preserves total cost exactly. Thus every attainable $Q$-path cost is also attainable by a $P$-path, implying $d_P(g,h)\le d_Q(g,h)$. The two inequalities give equality.\qed
+
+
+\section{The MIU invariant as a different kind of coordinate}
+A classical MIU obstruction concerns divisibility of the number of I&#x27;s by $3$.
+
+\paragraph{Correction in this edition: Theorems 32--35.}
+The previous edition wrote $q(g)=i(g)\bmod3$ and called the exact residue an invariant. That is false because Rule II doubles the number of I&#x27;s, so residue $1$ may become residue $2$ and vice versa. What is invariant under all four MIU rules is the two-class distinction between multiples and nonmultiples of $3$.
+
+Define
+\[
+q_3(g)=
+\begin{cases}
+0,&amp;3\mid i(g),\\
+1,&amp;3\nmid i(g).
+\end{cases}
+\]
+Under Rule I and Rule IV, $i(g)$ is unchanged. Under Rule III it changes by $-3$. Under Rule II it doubles, and $3\mid 2i$ iff $3\mid i$. Hence $q_3$ is invariant along MIU derivations.
+
+\begin{spthm}[Corrected Quotient Coordinate Separation]
+The same count-pair $w(g)=(i,u)$ supports two different constructions:
+\[
+w(g)\mapsto E(i,u)
+\]
+produces a scalar height, while
+\[
+w(g)\mapsto q_3(g)=\mathbf 1_{3\nmid i(g)}
+\]
+produces an invariant two-class quotient label. The latter is not a metric merely because its values are numerical.
+\end{spthm}
+\textit{Proof.} The scalar-height map has codomain $\mathbb R$ and assigns $E(i,u)$ by definition. For the second map, check each MIU rule: Rules I and IV leave $i$ unchanged; Rule III changes $i$ to $i-3$, which preserves divisibility by $3$; Rule II changes $i$ to $2i$, and because $\gcd(2,3)=1$, $3\mid2i$ iff $3\mid i$. Hence $q_3$ is constant along every legal derivation. It is a two-class label. Numerical labels do not by themselves satisfy metric axioms on WFFs, and no distance function has been defined by $q_3$ alone, so the constructions are categorically distinct.\qed
+
+
+\begin{spthm}[Corrected Same-Height/Different-Invariant-Class Theorem]
+Noninjectivity of $E$ alone does not guarantee compatibility with the MIU divisibility invariant. In particular, there exist a noninjective height $E$ and MIU WFFs $g_1,g_2$ such that
+\[
+E(w(g_1))=E(w(g_2))
+\]
+while $3\mid i(g_1)$ and $3\nmid i(g_2)$. Hence a zero-height-distance class can merge different $q_3$ invariant classes.
+\end{spthm}
+\textit{Proof.} Take the noninjective height $E(i,u)=0$ for all $(i,u)$. Let $g_1=MIII$ and $g_2=MI$, both of which are syntactically valid MIU WFFs. Then $i(g_1)=3$ is divisible by $3$, while $i(g_2)=1$ is not, yet $E(w(g_1))=E(w(g_2))=0$. Therefore $d_E(g_1,g_2)=0$ while $q_3(g_1)\ne q_3(g_2)$. This proves the stated possibility and shows that noninjectivity alone gives no invariant compatibility.\qed
+
+
+\begin{spthm}[Corrected Invariant-Compatible Height Condition]
+Suppose $E$ satisfies
+\[
+E(i_1,u_1)=E(i_2,u_2)
+\implies
+\bigl(3\mid i_1\iff 3\mid i_2\bigr).
+\]
+Then every zero-distance equivalence class lies within a single $q_3$ invariant class.
+\end{spthm}
+\textit{Proof.} Let $[g]$ be a zero-distance class. If $g_1,g_2\in[g]$, then $d_E(g_1,g_2)=0$, hence $E(w(g_1))=E(w(g_2))$. By the displayed compatibility hypothesis, $3\mid i(g_1)$ iff $3\mid i(g_2)$, which is equivalent to $q_3(g_1)=q_3(g_2)$. Thus all members of the zero-distance class have the same invariant label.\qed
+
+
+\begin{spthm}[Count-Injectivity Implies Invariant Compatibility]
+If $E$ is injective on count-pairs, then the corrected invariant-compatibility condition above holds automatically.
+\end{spthm}
+\textit{Proof.} If $E(i_1,u_1)=E(i_2,u_2)$ and $E$ is injective, then $(i_1,u_1)=(i_2,u_2)$. In particular $i_1=i_2$, so $3\mid i_1$ iff $3\mid i_2$. This is exactly the compatibility condition of Theorem 34.\qed
+
+\section{Trading and quotienting together}
+\begin{spthm}[Trade--Coordinate Commutation]
+For a pure trade that leaves WFF identity and $E$ unchanged, Trading commutes both with the exact address $A$ and with the count-height coordinate $E\circ w$.
+\end{spthm}
+\textit{Proof.} A pure trade leaves each WFF $g$ unchanged, so $A(g)$ is unchanged by Definition 2. It also leaves $w(g)$ and $E$ unchanged, so $E(w(g))$ is unchanged. Thus applying either coordinate map before or after the trade correspondence gives the same value.\qed
+
+\begin{spthm}[Trade--Logic Noncommutation]
+The analogous statement need not hold for logical distance:
+\[d_P(g,T)\ne d_Q(g,T)\]
+may occur after a consequence-preserving trade.
+\end{spthm}
+\textit{Proof.} The macro construction in the proof of Theorem 24 is a consequence-preserving trade for which $d_P(MI,MIUIU)=2$ and $d_Q(MI,MIUIU)=1$. Hence equality of logical distances is not forced by consequence preservation. Therefore the logical-distance assignment need not commute with Trading.\qed
+
+
+\begin{spthm}[Isometric Trade Commutation]
+If the trade is cost-preserving and path-preserving, then the exact-address metric $\dA$, the height distance $\dE$, and logical distance are all preserved under the induced state correspondence.
+\end{spthm}
+\textit{Proof.} Coordinate preservation follows from Theorem 23 because the trade leaves WFFs and $E$ unchanged, hence both $d_A$ and $d_E$ are fixed. Logical-distance preservation follows from Theorem 25 because path correspondence and cost preservation are assumed. Thus all three structures are preserved under the induced state correspondence.\qed
+
+
+\section{Ratios and calibration slack}
+Whenever $0&lt;d_P(g,T)&lt;\infty$, define
+\[
+R_{E,P}(g,T)=\frac{\dE(g,T)}{d_P(g,T)}.
+\]
+
+\begin{spthm}[Height/Logic Ratio Bound]
+If every unit-cost logical edge has height displacement at most $L$, then
+\[R_{E,P}(g,T)\le L.\]
+\end{spthm}
+\textit{Proof.} Theorem 13 gives $d_E(g,T)\le Ld_P(g,T)$. Because $0&lt;d_P(g,T)&lt;\infty$, division by the positive denominator yields $d_E(g,T)/d_P(g,T)\le L$, which is the asserted bound.\qed
+
+
+\begin{spthm}[Trading Ratio Deformation]
+Under a pure trade leaving $\dE$ fixed, and whenever $0&lt;d_Q(g,T)&lt;\infty$,
+\[
+R_{E,Q}(g,T)=\frac{\dE(g,T)}{d_Q(g,T)}.
+\]
+Therefore shortening logical distance raises the ratio and lengthening logical distance lowers it, provided the numerator is nonzero.
+\end{spthm}
+\textit{Proof.} The formula for $R_{E,Q}$ is its definition in presentation $Q$, with the numerator unchanged by a pure trade. If $d_E(g,T)&gt;0$, the function $x\mapsto d_E(g,T)/x$ is strictly decreasing for $x&gt;0$. Therefore reducing the positive finite denominator increases the ratio, while increasing it decreases the ratio.\qed
+
+
+\begin{spthm}[Isometric-Trading Ratio Invariance]
+If a trade preserves logical distance exactly, then
+\[R_{E,P}(g,T)=R_{E,Q}(g,T).\]
+\end{spthm}
+\textit{Proof.} Under the hypotheses, $d_E$ is the same in both presentations and $d_P(g,T)=d_Q(g,T)$. Substituting these equalities into the definitions of $R_{E,P}$ and $R_{E,Q}$ gives equality of the ratios.\qed
+
+
+Assume now that a valid calibration constant $L&gt;0$ has been established. Define the calibration slack
+\[
+\varepsilon_{E,P}(g,T)=d_P(g,T)-\frac{\dE(g,T)}{L}.
+\]
+
+\begin{spthm}[Nonnegative Calibration Slack]
+Whenever $\dE(g,T)\le Ld_P(g,T)$, we have $\varepsilon_{E,P}(g,T)\ge0$.
+\end{spthm}
+\textit{Proof.} The assumption $d_E(g,T)\le Ld_P(g,T)$ and $L&gt;0$ imply $d_E(g,T)/L\le d_P(g,T)$. Subtracting the left-hand side from the right-hand side gives $\varepsilon_{E,P}(g,T)\ge0$.\qed
+
+
+\begin{spthm}[Perfect Pairwise Calibration]
+For a fixed pair $(g,T)$,
+\[
+\varepsilon_{E,P}(g,T)=0
+\iff
+\dE(g,T)=Ld_P(g,T).
+\]
+\end{spthm}
+\textit{Proof.} By definition, $\varepsilon_{E,P}=0$ iff $d_P-d_E/L=0$, which is equivalent to $d_P=d_E/L$. Multiplying by the positive constant $L$ gives $Ld_P=d_E$. Each algebraic step is reversible, proving the equivalence.\qed
+
+
+\paragraph{Correction in this edition: Theorem 44 wording.}
+The earlier phrase ``better or worse predictor&#x27;&#x27; suggested a statistical claim not established by the theorem. The corrected statement concerns only geometric tightness of the calibrated lower bound.
+
+\begin{spthm}[Trading Can Tighten or Loosen Calibration Without Moving Coordinates]
+Let $P$ and $Q$ be related by a pure trade that leaves $\dE$ fixed, and suppose the same constant $L&gt;0$ is a valid calibration constant for the pair $(g,T)$ in both presentations. Define
+\[
+\varepsilon_{E,P}=d_P(g,T)-\frac{\dE(g,T)}{L},\qquad
+\varepsilon_{E,Q}=d_Q(g,T)-\frac{\dE(g,T)}{L}.
+\]
+Then
+\[
+\varepsilon_{E,Q}-\varepsilon_{E,P}=d_Q(g,T)-d_P(g,T).
+\]
+Thus any change of logical distance changes the calibration slack by exactly the same amount while the height geometry remains fixed.
+\end{spthm}
+\textit{Proof.} Subtract the two displayed slack definitions. The common height term cancels:
+\[
+\varepsilon_{E,Q}-\varepsilon_{E,P}=\left(d_Q-\frac{d_E}{L}\right)-\left(d_P-\frac{d_E}{L}\right)=d_Q-d_P.
+\]
+Therefore if $d_Q&lt;d_P$, the slack decreases by exactly $d_P-d_Q$ and the lower bound is tighter relative to the new logical distance; if $d_Q&gt;d_P$, the slack increases by exactly $d_Q-d_P$ and is looser. No exact address or count-height coordinate moves because the trade is pure.\qed
+
+
+\section{Two central synthesis results}
+\paragraph{Correction in this edition: Theorem 45 terminology.}
+Definition 6 uses an infimum for arbitrary nonnegative proof-cost models. The theorem below now uses the same convention; under ordinary positive unit costs the infimum is a minimum whenever a proof exists.
+
+\begin{spthm}[Three-Geometries Principle for MIU]
+A MIU system equipped with the exact address $A$ and a scalar height $E$ naturally carries three distinct distance structures:
+\[
+\dA(g,h)=|A(g)-A(h)|,
+\]
+\[
+\dE(g,h)=|E(w(g))-E(w(h))|,
+\]
+and
+\[
+d_P(g,h)=\inf\{\operatorname{cost}_P(\pi):\pi:g\rightsquigarrow h\}.
+\]
+The first is a genuine metric on WFF identity, the second is generally a pseudometric induced by count data, and the third is directed and presentation-dependent. Trading may alter $d_P$ while leaving both $d_A$ and $d_E$ fixed. Therefore the ordered triple
+\[(\dA,\dE,d_P)\]
+contains typed information that no one component records alone.
+\end{spthm}
+\textit{Proof.} The exact-address proposition proves that $d_A$ is a metric because $A$ is injective on WFFs. Theorem 1 proves that $d_E$ is a pseudometric determined by $(E,w)$ and independent of proof costs. Definition 6 gives $d_P$ from legal $P$-paths and their costs; one-way reachability can make it asymmetric or infinite in one direction. Theorem 23 proves that a pure trade leaves both $d_A$ and $d_E$ unchanged, while Theorem 24 provides a certified example in which the corresponding logical distance changes. Hence the three structures have distinct mathematical roles, and recording the ordered triple retains identity location, count-height geometry, and presentation-dependent directed proof cost.\qed
+
+\begin{spthm}[Fixed Coordinates, Movable Roads]
+Suppose consequence-preserving Trading changes only the deductive roads and their costs, not the WFFs, their exact addresses, their count-pairs, or their heights. Then both $\dA(g,h)$ and $\dE(g,h)$ remain fixed, while it may still happen that
+\[d_P(g,h)\ne d_Q(g,h).\]
+Thus Trading can change the shortest logical route between two fixed WFF identity addresses without moving either exact address or count-height coordinate. If the trade is cost-preserving and path-preserving, then the road description changes but the logical geometry does not.
+\end{spthm}
+\textit{Proof.} Because WFFs, count-pairs, and $E$ are unchanged, Theorem 23 gives identical exact addresses and identical $d_A$ and $d_E$ before and after the trade. Theorem 24 shows by explicit certified macro trade that logical distance can nevertheless change, establishing the ``may&#x27;&#x27; clause. If, in addition, the trade is path-preserving and cost-preserving, Theorem 25 gives equality of logical distances. Thus both identity coordinates and the height landscape can remain fixed while the road system changes, and cost-preserving changes are logically isometric.\qed
+
+
+\section{Interpretation}
+The revised construction has three typed layers. First, every WFF has an exact reversible identity address
+\[
+A(g)\in\mathbb N_{&gt;0},
+\]
+whose binary digits recover the full ordered suffix and therefore the WFF itself. Second, the WFF supplies a count-pair $w(g)=(i(g),u(g))$, which may be mapped to a chosen scalar height $E(w(g))$. Such count-based heights deliberately forget symbol order. Third, logical distance asks how much legal deductive work is required to move through the MIU rule system.
+
+The resulting Atlas typing is
+\[
+\boxed{
+\text{WFF}
+\xleftrightarrow[\text{decode}]{A}
+\mathbb N_{&gt;0}
+\longrightarrow
+\text{exact-address metric }d_A
+}
+\]
+together with
+\[
+\boxed{
+\text{WFF}
+\longrightarrow
+(i,u)
+\longrightarrow
+E(i,u)
+\longrightarrow
+\text{height pseudometric }d_E
+}
+\]
+and independently
+\[
+\boxed{
+\text{WFF}
+\longrightarrow
+\text{legal verified rewrite paths}
+\longrightarrow
+\text{directed logical distance }d_P
+}.
+\]
+The exact address answers the identity question ``which WFF is this?&#x27;&#x27;; a chosen count height records a scalar feature of the count-pair; and logical distance answers the proof-geometric question ``how much verified deductive work separates these states in this presentation?&#x27;&#x27; Numerical closeness in either the exact-address metric or a chosen height geometry is not assumed to equal logical closeness. Trading acts primarily on the road system: it can leave the WFFs, exact addresses, and count heights fixed while changing proof costs.
+
+\section*{Source basis and status}
+The exact binary WFF address formalization in this edition is an elementary construction proved here. The standard MIU rule presentation and the distinction between proof cost and shortest proof are taken from \emph{The Universal Proof-Horizon Operator: From MIU and the nth Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders} (Brian Tenneson, 2026). The consequence-preserving Trading framework, proof-horizon distortion, quotient distance, path lifting, and verified macro viewpoint are taken from \emph{Trading Theorem 001: Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search} (Brian Tenneson, 2026). The results labeled ``[special] Theorem&#x27;&#x27; are exploratory consequences and extensions developed for the present MIU address/logical-distance investigation; they should not be read as theorem statements already appearing in those source papers.
+
+\end{document}
+</pre></main></body></html>
