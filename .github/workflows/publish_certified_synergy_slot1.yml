@@ -27,7 +27,20 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .build/certified_synergy
-          base64 -d incoming_publications/certified_synergy/source.tex.gz.b64 | gzip -d > .build/certified_synergy/source.tex
+          cat \
+            incoming_publications/certified_synergy/parts/part01 \
+            incoming_publications/certified_synergy/parts/part02 \
+            incoming_publications/certified_synergy/parts/part03 \
+            incoming_publications/certified_synergy/parts/part04 \
+            incoming_publications/certified_synergy/parts/part05 \
+            incoming_publications/certified_synergy/parts/part06 \
+            incoming_publications/certified_synergy/parts/part07 \
+            incoming_publications/certified_synergy/parts/part08 \
+            incoming_publications/certified_synergy/parts/part09 \
+            incoming_publications/certified_synergy/parts/part10 \
+            | base64 -d | gzip -d > .build/certified_synergy/source.tex
+          test "$(wc -c < .build/certified_synergy/source.tex)" -eq 38751
+          grep -q '\\end{document}' .build/certified_synergy/source.tex
           cd .build/certified_synergy
           pdflatex -interaction=nonstopmode -halt-on-error source.tex
           pdflatex -interaction=nonstopmode -halt-on-error source.tex
