@@ -1,0 +1,126 @@
+name: Publish Metalogical Cartography I
+
+on:
+  push:
+    branches:
+      - publish-metalogical-cartography-i-20260915
+    paths:
+      - '.github/workflows/publish_metalogical_cartography_i.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: publish-metalogical-cartography-i-20260915
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install catalog audit dependency
+        run: python -m pip install pymupdf==1.26.4
+
+      - name: Download exact audited source artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          dest='docs/cs.LO_Logic_in_Computer_Science/metalogical_cartography_i'
+          mkdir -p "$dest"
+          curl -L --fail --retry 3 -A 'Mozilla/5.0' \
+            'https://drive.usercontent.google.com/download?id=1Xj9Ky3i6rWjRuORmA9Gne9K_7JE4vM3D&export=download&confirm=t' \
+            -o "$dest/AMLD_Metalogical_Cartography_I_POST_AUDIT_002.pdf"
+          curl -L --fail --retry 3 -A 'Mozilla/5.0' \
+            'https://drive.usercontent.google.com/download?id=1ZQKHB_vpJC98opoj5fF1YZN-Un3c6p9x&export=download&confirm=t' \
+            -o "$dest/source.tex"
+          echo '131513c80e7e1226bae34e524634dcad2b0391f6bc4e77cc30b533597a34a14f  '"$dest/AMLD_Metalogical_Cartography_I_POST_AUDIT_002.pdf" | sha256sum -c -
+          echo '845991aad73e941213cecdf9cf2f5ecc0320e5948de30ec0a7ad8c5ecc6a32f6  '"$dest/source.tex" | sha256sum -c -
+
+      - name: Insert publication at slot one
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          root = Path('.')
+          manifest = root / 'scripts' / 'publications.json'
+          data = json.loads(manifest.read_text())
+          pub_id = 'cs.LO_Logic_in_Computer_Science/metalogical_cartography_i'
+          assert all(x.get('id') != pub_id for x in data['items']), 'publication already present'
+
+          card_text = "Metalogical Cartography I introduces a new framework inside Universal Theorem Geometry (UTG), a theory that treats formal proof systems as directed geometric spaces in which proofs are routes, inference rules are roads, and theorem difficulty can be studied in terms of distance and cost. Its main machine is an Automated Metalogical Decider (AMLD), built here from five cooperating automated theorem provers (ATPs), themselves modeled as Semi-Ideal Computers (SICs)—a proposed computational model intended as a simpler conceptual rival to the Turing machine while retaining equivalent computational power. Rather than asking only whether a statement can be proved, the five AMLD search fibers explore routes to four possible certified statuses: theoremhood, refutability, independence, and inconsistency. A typed, verifier-governed shared BANK allows certified mathematical work discovered by one search to become a legal shortcut for another, leading to the paper’s monotonicity, policy-dominance, and conditional strict-acceleration theorems."
+
+          item = {
+              'title': 'Metalogical Cartography I — AMLD-5, Verified BANK Geometry, and Settlement Acceleration',
+              'kind': 'Core paper',
+              'quote': 'This paper proposes metalogical cartography as a research program inside Universal Theorem Geometry (UTG).',
+              'quote_page': 1,
+              'card_text': card_text,
+              'subject': 'cs.LO_Logic_in_Computer_Science',
+              'id': pub_id,
+              'href': pub_id + '/',
+              'pdf': pub_id + '/AMLD_Metalogical_Cartography_I_POST_AUDIT_002.pdf',
+              'archive_path': 'docs/' + pub_id + '/AMLD_Metalogical_Cartography_I_POST_AUDIT_002.pdf',
+              'sha256': '131513c80e7e1226bae34e524634dcad2b0391f6bc4e77cc30b533597a34a14f',
+              'pages': 26,
+              'order': -2,
+              'source': pub_id + '/source.html',
+              'authors': 'Brian Tenneson',
+              'source_file': pub_id + '/source.tex',
+              'classification_note': 'Post-Audit Revised Edition. Subject classification: cs.LO — Logic in Computer Science.'
+          }
+          data['items'].insert(0, item)
+          manifest.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+          builder = root / 'scripts' / 'build_publications.py'
+          text = builder.read_text()
+          old = "+'</div>'+quote_block(x)+('<p class=\"status\">'"
+          new = "+'</div>'+('<p>'+esc(x['card_text'])+'</p>' if x.get('card_text') else quote_block(x))+('<p class=\"status\">'"
+          assert old in text, 'card renderer signature changed'
+          builder.write_text(text.replace(old, new, 1))
+
+          wrapper = root / 'scripts' / 'build_publications_106.py'
+          text = wrapper.read_text()
+          assert 'len(expanded["items"]) != 110' in text, 'restored catalog count signature changed'
+          text = text.replace('len(expanded["items"]) != 110', 'len(expanded["items"]) != 111', 1)
+          text = text.replace('Expected 110 cards after restoration', 'Expected 111 cards after restoration', 1)
+          wrapper.write_text(text)
+          PY
+
+      - name: Rebuild and audit publication site
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          data=json.loads(Path('docs/search-index.json').read_text())
+          assert data['count'] == 111, data['count']
+          first=data['items'][0]
+          assert first['id'] == 'cs.LO_Logic_in_Computer_Science/metalogical_cartography_i'
+          expected="Metalogical Cartography I introduces a new framework inside Universal Theorem Geometry (UTG), a theory that treats formal proof systems as directed geometric spaces in which proofs are routes, inference rules are roads, and theorem difficulty can be studied in terms of distance and cost. Its main machine is an Automated Metalogical Decider (AMLD), built here from five cooperating automated theorem provers (ATPs), themselves modeled as Semi-Ideal Computers (SICs)—a proposed computational model intended as a simpler conceptual rival to the Turing machine while retaining equivalent computational power. Rather than asking only whether a statement can be proved, the five AMLD search fibers explore routes to four possible certified statuses: theoremhood, refutability, independence, and inconsistency. A typed, verifier-governed shared BANK allows certified mathematical work discovered by one search to become a legal shortcut for another, leading to the paper’s monotonicity, policy-dominance, and conditional strict-acceleration theorems."
+          assert first['card_text'] == expected
+          home=Path('docs/index.html').read_text()
+          first_article=home.split('<article class="card"',2)[1]
+          assert expected.replace('&','&amp;')[:80] in first_article or expected[:80] in first_article
+          PY
+
+      - name: Commit finished publication and remove staging workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/publish_metalogical_cartography_i.yml
+          git add scripts/publications.json scripts/build_publications.py scripts/build_publications_106.py docs
+          git commit -m 'Publish Metalogical Cartography I as library slot 1'
+          git push origin HEAD:publish-metalogical-cartography-i-20260915
