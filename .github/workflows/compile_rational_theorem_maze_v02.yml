@@ -115,7 +115,7 @@ jobs:
           cp "$SRC" "math.CO_Combinatorics/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_v0_2/$NAME"
 
       - name: Commit PDFs and line-wrap fixes
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

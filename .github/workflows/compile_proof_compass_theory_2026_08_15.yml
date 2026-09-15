@@ -40,7 +40,7 @@ jobs:
           path: cs.LO_Logic_in_Computer_Science/proof_compass/Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.pdf
 
       - name: Commit compiled PDF
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
           ROOT='cs.LO_Logic_in_Computer_Science/proof_compass'
           PDF='Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.pdf'

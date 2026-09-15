@@ -44,7 +44,7 @@ jobs:
           if-no-files-found: error
 
       - name: Commit compiled PDF to main
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
           set -euo pipefail

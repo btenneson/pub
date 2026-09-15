@@ -40,7 +40,7 @@ jobs:
           path: cs.LO_Logic_in_Computer_Science/proof_compass/Compass_Theorems_and_Physics_Density_Limits_v0_1.pdf
 
       - name: Commit compiled PDF
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
           ROOT='cs.LO_Logic_in_Computer_Science/proof_compass'
           PDF='Compass_Theorems_and_Physics_Density_Limits_v0_1.pdf'

@@ -39,7 +39,7 @@ jobs:
           path: cs.LO_Logic_in_Computer_Science/search_dynamics_v03/From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Addendum_v0_3.pdf
 
       - name: Commit compiled PDF
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
           ROOT='cs.LO_Logic_in_Computer_Science/search_dynamics_v03'
           NAME='From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Addendum_v0_3.pdf'
