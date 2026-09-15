@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - '.github/workflows/compile_search_dynamics_abel_experimental_design_v04.yml'
-      - 'cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_Abel_Experimental_Design_v0_4/**.tex'
-      - 'cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_Abel_Experimental_Design_v0_4/README.md'
+      - 'cs.LO_Logic_in_Computer_Science/search_dynamics_v04/**.tex'
+      - 'cs.LO_Logic_in_Computer_Science/search_dynamics_v04/README.md'
 
 permissions:
   contents: write
@@ -24,7 +24,7 @@ jobs:
 
       - name: Compile integrated v0.4 PDF
         run: |
-          ROOT='cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_Abel_Experimental_Design_v0_4'
+          ROOT='cs.LO_Logic_in_Computer_Science/search_dynamics_v04'
           NAME='From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Abel_Experimental_Design_v0_4.pdf'
           cd "$ROOT"
           pdflatex -interaction=nonstopmode -halt-on-error main.tex
@@ -36,11 +36,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Abel_Experimental_Design_v0_4
-          path: cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_Abel_Experimental_Design_v0_4/From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Abel_Experimental_Design_v0_4.pdf
+          path: cs.LO_Logic_in_Computer_Science/search_dynamics_v04/From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Abel_Experimental_Design_v0_4.pdf
 
       - name: Commit compiled PDF
+        if: github.ref == 'refs/heads/main'
         run: |
-          ROOT='cs.LO_Logic_in_Computer_Science/From_Search_Dynamics_to_SICs_Rational_Weighted_Theorem_Mazes_and_Reflective_ATPs_Discovery_Abel_Experimental_Design_v0_4'
+          ROOT='cs.LO_Logic_in_Computer_Science/search_dynamics_v04'
           NAME='From_Search_Dynamics_to_Semi-Ideal_Computers_Discovery_Abel_Experimental_Design_v0_4.pdf'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

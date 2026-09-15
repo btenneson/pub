@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/compile_compass_theorems_physics_density_v0_1.yml'
-      - 'cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/Compass_Theorems_and_Physics_Density_Limits_v0_1.tex'
+      - 'cs.LO_Logic_in_Computer_Science/proof_compass/Compass_Theorems_and_Physics_Density_Limits_v0_1.tex'
   workflow_dispatch:
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
 
       - name: Compile compass theorem note
         run: |
-          ROOT='cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory'
+          ROOT='cs.LO_Logic_in_Computer_Science/proof_compass'
           TEX='Compass_Theorems_and_Physics_Density_Limits_v0_1.tex'
           PDF='Compass_Theorems_and_Physics_Density_Limits_v0_1.pdf'
           cd "$ROOT"
@@ -37,11 +37,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Compass_Theorems_and_Physics_Density_Limits_v0_1
-          path: cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/Compass_Theorems_and_Physics_Density_Limits_v0_1.pdf
+          path: cs.LO_Logic_in_Computer_Science/proof_compass/Compass_Theorems_and_Physics_Density_Limits_v0_1.pdf
 
       - name: Commit compiled PDF
+        if: github.ref == 'refs/heads/main'
         run: |
-          ROOT='cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory'
+          ROOT='cs.LO_Logic_in_Computer_Science/proof_compass'
           PDF='Compass_Theorems_and_Physics_Density_Limits_v0_1.pdf'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

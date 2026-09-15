@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/build_data_4_2_pdf.yml'
-      - 'cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.tex'
+      - 'cs.LO_Logic_in_Computer_Science/proof_compass/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.tex'
   workflow_dispatch:
 
 permissions:
@@ -27,12 +27,12 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.tex
-          working_directory: cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory
+          working_directory: cs.LO_Logic_in_Computer_Science/proof_compass
           args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode
 
       - name: Verify compiled PDF
         run: |
-          PDF='cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.pdf'
+          PDF='cs.LO_Logic_in_Computer_Science/proof_compass/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.pdf'
           test -s "$PDF"
           file "$PDF"
 
@@ -40,14 +40,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1
-          path: cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.pdf
+          path: cs.LO_Logic_in_Computer_Science/proof_compass/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.pdf
           if-no-files-found: error
 
       - name: Commit compiled PDF to main
+        if: github.ref == 'refs/heads/main'
         shell: bash
         run: |
           set -euo pipefail
-          PDF='cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.pdf'
+          PDF='cs.LO_Logic_in_Computer_Science/proof_compass/DATA_4_2_Quotient_Density_Compass_and_Conservative_Fallback_v0_1.pdf'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add "$PDF"
