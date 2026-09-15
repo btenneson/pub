@@ -102,9 +102,12 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-          import json, re
+          import json, re, unicodedata
           from urllib.parse import quote
           import fitz
+
+          def norm(s):
+              return re.sub(r'\s+', ' ', unicodedata.normalize('NFKC', s or '')).strip().replace('- ', '')
 
           pub_id = 'cs.LO_Logic_in_Computer_Science/semi_ideal_computers_in_proof_fiber_geometry'
           pdf_rel = pub_id + '/Semi_Ideal_Computers_in_Proof_Fiber_Geometry_POST_AUDIT_002.pdf'
@@ -132,8 +135,7 @@ jobs:
           # Section 9 theorem-difficulty quote is really on PDF page 8.
           doc = fitz.open(pdf_path)
           assert len(doc) == 13
-          page8 = ' '.join(doc[7].get_text().split())
-          assert ' '.join(quote_text.split()) in page8
+          assert norm(quote_text) in norm(doc[7].get_text())
 
           # Every page preserves the portrait Letter page geometry.
           target_ratio = 612.0 / 792.0
