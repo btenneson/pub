@@ -1,0 +1,692 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Semi-Ideal Computers in Proof-Fiber Geometry: Machine-Accessible Geodesics, Exact Distance Certification, and Computational Regret — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/semi_ideal_computers_in_proof_fiber_geometry/">Back to publication</a><h1>Semi-Ideal Computers in Proof-Fiber Geometry: Machine-Accessible Geodesics, Exact Distance Certification, and Computational Regret</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/semi_ideal_computers_in_proof_fiber_geometry/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Proofs}{\operatorname{Proofs}}
+\newcommand{\Drect}{D_{\mathrm{rect}}}
+\newcommand{\len}{\operatorname{Len}}
+\newcommand{\distA}{d_A}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Fib}{\mathcal F}
+\newcommand{\Run}{\mathcal E}
+\newcommand{\Reg}{\operatorname{Reg}}
+
+\title{\textbf{Semi-Ideal Computers in Proof-Fiber Geometry}\\
+\large Machine-Accessible Geodesics, Exact Distance Certification, and Computational Regret}
+\author{Brian Tenneson\\Framework synthesis and formalization assisted by OpenAI&#x27;s ChatGPT}
+\date{September 14, 2026\\Post-Audit Revised Edition}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper develops a SIC-centered geometry of theorem proving.  Fix a formal system, trusted base $B$, verifier, and proof-cost model.  The full proof fiber $\Fib_B(A)$ consists of all verifier-valid proofs with endpoint $A$, while a transaction-logged semi-ideal computer (SIC) $M=(C,H)$ determines a machine-accessible subfiber $\Fib_B^M(A)$.  Their horizons satisfy
+\[
+h_B(A)\le h_B^M(A)\le C_M(A),
+\]
+when the accessible minimum is attained and $C_M(A)$ is the cost of a proof realized by one execution.  This separates intrinsic theorem difficulty, architectural accessibility, and run-level inefficiency.  The resulting geodesic regret $\Reg_M(A)=C_M(A)-h_B(A)$ can be bounded, and sometimes determined exactly, from certified lower and upper horizon bounds even before an optimal proof witness is discovered.  The canonical breadth-first SIC from the earlier SIC theory appears as the zero-regret unit-cost case under the cost-preserving theorem-graph correspondence of Theorem~6.9.
+
+A second geometry is retained on the space of proofs themselves.  If two proofs admit a verifier-valid coordinatewise monotone rectilinear realization with cost equal to their $L^1$ displacement, then the intrinsic proof-to-proof geodesic distance is at most that rectilinear length.  A shortcut gap measures the discrepancy.  Discrete-spectrum annular collapse, exact quotient lifting, and multi-scout lower-bound fusion provide certificate-based routes to exact distance values without requiring prior discovery of a minimizing path.  Finally, under explicit monotonicity and freeze-on-settlement hypotheses, a scheduled SIC federation admits a conditional global-SIC representation, suggesting settlement fibers as a broader class of certified computational fibers.
+\end{abstract}
+
+\section{Purpose and theorem status}
+
+Earlier rectilinear MAPQUEST work deliberately kept positive address-space displacement separate from formal proof distance.  In particular, a positive coordinate residual was treated as a navigation quantity unless an additional theorem connected it to the intrinsic proof geometry.  The present note supplies one such connection, but only after changing the object of study.
+
+Here the relevant space is not the set of WFF addresses and not the distance from an initial BANK state to a target doorway.  Instead, for a fixed theorem $A$, we study a space $\Proofs(A)$ whose points are verifier-valid proofs of $A$.  Distances are induced by verifier-valid transformations between proofs.  Under an explicit realizability hypothesis, an $L^1$ rectilinear route becomes one admissible proof-space route.  Once that bridge is made, the upper-bound theorem follows directly from the definition of geodesic distance.
+
+\medskip
+\noindent\textbf{SIC compatibility.}  The proof geometry in this paper can be read computationally through the semi-ideal-computer (SIC) framework.  A SIC is a staged machine $M=(C,H)$ whose state $C(\Gamma,m)$ grows monotonically until its halting observation freezes the computation.  An ATP is a SIC specialized to theorem enumeration or target search.  In the theorem-graph formulation of the SIC theory, a proof state is a possible SIC state and an inference edge is a proof-search transaction.  Thus the geometric object studied here is not external to the SIC theory: it is the intrinsic geometry through which a proof-search SIC moves.  The SIC terminology introduced below is used only when the run is transaction-logged strongly enough that verifier-valid certificates can be extracted; numerical search effort is never silently identified with proof cost.
+
+\medskip
+\noindent\textbf{Status.} The Rectilinear Upper-Bound Theorem below is rigorous under its stated hypotheses.  The exact-isometry statement is also rigorous but requires an additional lower-bound hypothesis.  No claim is made that arbitrary MAPQUEST address distance already satisfies these hypotheses.
+
+\section{Proof space and intrinsic distance}
+
+\begin{definition}[Verifier-valid proof space]
+Fix a formal system $F$ with a sound verifier and a theorem $A$.  Let
+\[
+\Proofs_F(A)
+\]
+be a specified class of finite verifier-valid proofs of $A$.  When the formal system is fixed, write simply $\Proofs(A)$.
+\end{definition}
+
+The word ``space&#x27;&#x27; is used operationally: one must also specify which proof-to-proof transformations are admissible.  Examples could include certified local rewrites, macro expansion or contraction, proof normalization steps, rule-preserving substitutions, or other transformations whose validity is independently checkable.
+
+\begin{definition}[Admissible proof path]
+For $P,Q\in\Proofs(A)$, an admissible path from $P$ to $Q$ is a finite or rectifiable sequence of verifier-valid proof transformations
+\[
+\gamma:P\leadsto Q.
+\]
+Let $\Gamma_A(P,Q)$ denote the set of all admissible paths from $P$ to $Q$.
+\end{definition}
+
+\begin{definition}[Path length and geodesic distance]
+Assume every admissible path $\gamma$ has a nonnegative length $\len(\gamma)$.  Define
+\[
+\boxed{
+\distA(P,Q)
+:=
+\inf_{\gamma\in\Gamma_A(P,Q)}\len(\gamma)
+}
+\]
+whenever $\Gamma_A(P,Q)\neq\varnothing$.
+This is the intrinsic geodesic distance associated with the declared proof-transformation cost model.
+\end{definition}
+
+The definition is deliberately relative to the proof system, admissible transformations, and path cost.  If these change, the geodesic can change.
+
+\section{Proof fibers and SIC-accessible subfibers}
+
+Fix a trusted base $B$.  Let $\Proofs_B$ denote the declared class of finite verifier-valid proof objects from $B$, and define the endpoint map
+\[
+\operatorname{end}_B:\Proofs_B\longrightarrow \mathrm{WF},
+\qquad
+\operatorname{end}_B(\pi)=\text{the final theorem certified by }\pi.
+\]
+
+\begin{definition}[Proof fiber]
+For a theorem $A$, the proof fiber over $A$ is the literal set-theoretic fiber
+\[
+\boxed{
+\Fib_B(A):=\operatorname{end}_B^{-1}(\{A\}).
+}
+\]
+Thus $\Fib_B(A)$ is the set of verifier-valid proofs from $B$ whose endpoint is $A$.
+\end{definition}
+
+Two geometries must remain distinct.  The quantity $d_A(P,Q)$ used later is a proof-to-proof transformation distance between two proof objects $P,Q\in\Fib_B(A)$.  By contrast, a certificate cost $c(\pi)$ measures a proof object as a route from the trusted base to endpoint $A$.  They coincide only when an explicit cost-preserving correspondence is supplied.
+
+\begin{definition}[Transaction-logged SIC execution]
+Let $M=(C,H)$ be a rule-driven target-search SIC over an inference-closed formula domain $Y$.  A transaction-logged execution records, for each novelty added to the SIC state, the verifier-accepted rule tag, premises, and conclusion responsible for that addition.  Let $\Run_M(B)$ be the declared family of allowed executions on input $B$; this may encode randomized seeds, permitted schedulers, or nondeterministic branch policies.
+\end{definition}
+
+A single execution may support more than one extracted proof after irrelevant transactions are discarded, so extraction is treated as set-valued.
+
+\begin{definition}[Execution extraction and SIC-accessible proof subfiber]
+For an allowed logged execution $e\in\Run_M(B)$, let
+\[
+\operatorname{Ext}_A(e)\subseteq\Fib_B(A)
+\]
+be the set of verifier-valid $A$-proofs extractable from its transaction log.  Define
+\[
+\boxed{
+\Fib_B^M(A):=\bigcup_{e\in\Run_M(B)}\operatorname{Ext}_A(e).
+}
+\]
+\end{definition}
+
+\begin{proposition}[Computational access is a subfiber]\label{prop:subfiber}
+For every transaction-logged rule-driven target-search SIC,
+\[
+\boxed{\Fib_B^M(A)\subseteq\Fib_B(A).}
+\]
+\end{proposition}
+
+\begin{proof}
+Every member of $\Fib_B^M(A)$ belongs to $\operatorname{Ext}_A(e)$ for some allowed logged execution $e$.  By definition of extraction, it is a verifier-valid proof from $B$ with endpoint $A$, hence a member of $\Fib_B(A)$.
+\end{proof}
+
+This inclusion separates three questions: whether a proof exists, whether a machine architecture can access one, and which proof a particular run actually realizes.
+
+Let $c(\pi)\ge0$ be the declared intrinsic certificate cost.  Define
+\[
+h_B(A):=\inf_{\pi\in\Fib_B(A)}c(\pi),
+\qquad
+h_B^M(A):=\inf_{\pi\in\Fib_B^M(A)}c(\pi),
+\]
+with infimum $\infty$ for an empty set.
+
+\begin{corollary}[Intrinsic and machine-accessible horizons]\label{cor:sic-access-horizon}
+\[
+\boxed{h_B(A)\le h_B^M(A).}
+\]
+If both infima are attained, equality holds exactly when $\Fib_B^M(A)$ contains at least one minimum-cost proof from the full fiber.
+\end{corollary}
+
+\begin{proof}
+The inequality is monotonicity of infimum under restriction to a subset, using Proposition~\ref{prop:subfiber}.  Under attainment, equality is equivalent to an accessible proof attaining the full-fiber minimum.
+\end{proof}
+
+When both values are finite, define the \emph{architectural accessibility gap}
+\[
+\boxed{G_M(A):=h_B^M(A)-h_B(A)\ge0.}
+\]
+It measures a limitation of the declared architecture rather than the quality of one particular run.
+
+\subsection*{Stage--cost bifiltration}
+Let $\Fib_B^{M,\le m}(A)$ be the proofs extractable from allowed executions by SIC stage $m$.  Then
+\[
+\Fib_B^{M,\le m}(A)\subseteq\Fib_B^{M,\le m+1}(A).
+\]
+For $R\ge0$, define
+\[
+\boxed{
+\Fib_B^M(A;m,R):=
+\{\pi\in\Fib_B^{M,\le m}(A):c(\pi)\le R\}.
+}
+\]
+If $m\le n$ and $R\le S$, then
+\[
+\Fib_B^M(A;m,R)\subseteq\Fib_B^M(A;n,S).
+\]
+Thus machine stage and intrinsic proof cost define a two-parameter filtration inside a single proof fiber.
+
+The stage coordinate is machine-relative: stage $100$ in one SIC need not represent the same operational effort as stage $100$ in another.  Cross-machine experiments should therefore normalize the first coordinate to a shared transaction count or another declared operational unit.
+
+\subsection*{Bounded-cost fiber coverage}
+For counting statements, one must first fix what counts as the same proof.  The default may be literal verifier certificates, normalized proof DAGs, or equivalence classes under a declared proof-preserving relation; the choice must be held fixed across machines.  Assume locally that for every finite $R$ the bounded-cost set
+\[
+\{\pi\in\Fib_B(A):c(\pi)\le R\}
+\]
+is finite.  Whenever the denominator is nonzero, define
+\[
+\boxed{
+\chi_M(A;R):=
+\frac{|\Fib_B^M(A)\cap\{\pi:c(\pi)\le R\}|}
+{|\Fib_B(A)\cap\{\pi:c(\pi)\le R\}|}.
+}
+\]
+This statistic measures bounded-cost proof-fiber accessibility, not merely successful theorem settlement.
+
+\subsection*{Geodesic stratum}
+When the full-fiber minimum is attained, define
+\[
+\mathcal G_B(A):=\{\pi\in\Fib_B(A):c(\pi)=h_B(A)\}.
+\]
+Under accessible attainment,
+\[
+G_M(A)=0
+\quad\Longleftrightarrow\quad
+\Fib_B^M(A)\cap\mathcal G_B(A)\ne\varnothing.
+\]
+Thus an architecture can be capable of an optimal proof even if a particular execution fails to select one.
+
+\section{Rectilinear realization inside $\Proofs(A)$}
+
+Suppose a coordinate map
+\[
+x:\Proofs(A)\longrightarrow \R^d
+\]
+is chosen for a region of proof space.  For proofs $P,Q$, define their coordinate rectilinear displacement by
+\[
+\boxed{
+\Drect(P,Q)
+:=
+\|x(Q)-x(P)\|_1
+=
+\sum_{i=1}^d |x_i(Q)-x_i(P)|.
+}
+\]
+
+The crucial hypothesis is not merely that these coordinates exist.  The coordinate displacement must be \emph{realizable as an admissible proof-space route under the same cost convention}.
+
+\begin{definition}[Admissible rectilinear realization]
+A pair $P,Q\in\Proofs(A)$ has an admissible rectilinear realization if there exists
+\[
+\gamma_{\mathrm{rect}}\in\Gamma_A(P,Q)
+\]
+such that the coordinate trajectory $x\circ\gamma_{\mathrm{rect}}$ is coordinatewise monotone and
+\[
+\len(\gamma_{\mathrm{rect}})
+=
+\|x(Q)-x(P)\|_1.
+\]
+\end{definition}
+
+This is precisely the bridge that was absent when a raw address residual was compared directly with proof length.  Without this hypothesis, the two numerical quantities need not be comparable.
+
+\section{Main theorem: rectilinear distance is an upper bound}
+
+\begin{theorem}[Rectilinear Upper-Bound Theorem for $\Proofs(A)$]\label{thm:upper}
+Let $P,Q\in\Proofs(A)$ and assume $\Gamma_A(P,Q)\neq\varnothing$.  If $P$ and $Q$ admit an admissible rectilinear realization $\gamma_{\mathrm{rect}}$ satisfying
+\[
+\len(\gamma_{\mathrm{rect}})=\Drect(P,Q),
+\]
+then
+\[
+\boxed{
+\distA(P,Q)\le \Drect(P,Q).
+}
+\]
+\end{theorem}
+
+\begin{proof}
+By definition,
+\[
+\distA(P,Q)
+=
+\inf_{\gamma\in\Gamma_A(P,Q)}\len(\gamma).
+\]
+Since $\gamma_{\mathrm{rect}}\in\Gamma_A(P,Q)$ is one admissible path,
+\[
+\distA(P,Q)
+\le
+\len(\gamma_{\mathrm{rect}}).
+\]
+The admissible-rectilinear-realization hypothesis gives
+\[
+\len(\gamma_{\mathrm{rect}})=\Drect(P,Q),
+\]
+and therefore
+\[
+\distA(P,Q)\le\Drect(P,Q).
+\]
+\end{proof}
+
+The theorem formalizes the intended use of the word \emph{overestimate}: the rectilinear route can be longer than the shortest verifier-valid route, but need not be the longest route.
+
+\begin{remark}[Upper bound is not maximum]
+The theorem does \emph{not} imply
+\[
+\len(\gamma)\le\Drect(P,Q)
+\quad\text{for all }\gamma\in\Gamma_A(P,Q).
+\]
+Proof paths may wander, backtrack, loop, or take unnecessary detours.  Thus one may have
+\[
+\distA(P,Q)
+&lt;
+\Drect(P,Q)
+&lt;
+\len(\gamma_{\mathrm{detour}}).
+\]
+Accordingly, ``upper bound on geodesic distance&#x27;&#x27; and ``overestimate of the geodesic&#x27;&#x27; are appropriate; ``maximum path length&#x27;&#x27; generally is not.
+\end{remark}
+
+\section{Shortcut gap and equality}
+
+\begin{definition}[Rectilinear shortcut gap]
+Under the hypotheses of Theorem~\ref{thm:upper}, define
+\[
+\boxed{
+S_A(P,Q)
+:=
+\Drect(P,Q)-\distA(P,Q).
+}
+\]
+\end{definition}
+
+\begin{corollary}[Nonnegative Shortcut Gap]\label{cor:gap}
+Under the hypotheses of Theorem~\ref{thm:upper},
+\[
+\boxed{S_A(P,Q)\ge0.}
+\]
+Moreover,
+\[
+S_A(P,Q)&gt;0
+\]
+if and only if some admissible proof path from $P$ to $Q$ is strictly shorter than the rectilinear route.
+\end{corollary}
+
+\begin{proof}
+The nonnegativity is Theorem~\ref{thm:upper} rearranged.  If $S_A(P,Q)&gt;0$, then
+\[
+\distA(P,Q)&lt;\Drect(P,Q).
+\]
+By the defining property of the infimum, there must exist admissible paths with length below $\Drect(P,Q)$; in particular, one can choose a path whose length lies strictly between the infimum and $\Drect(P,Q)$.  Conversely, if an admissible path $\gamma$ has
+\[
+\len(\gamma)&lt;\Drect(P,Q),
+\]
+then
+\[
+\distA(P,Q)\le\len(\gamma)&lt;\Drect(P,Q),
+\]
+so $S_A(P,Q)&gt;0$.
+\end{proof}
+
+The quantity $S_A(P,Q)$ measures the amount of shortcut structure available in the intrinsic proof geometry relative to the canonical rectilinear route.
+
+\begin{theorem}[Rectilinear-Geodesic Equality Criterion]\label{thm:eqcrit}
+Under the hypotheses of Theorem~\ref{thm:upper}, the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+\item $\distA(P,Q)=\Drect(P,Q)$;
+\item $S_A(P,Q)=0$;
+\item no admissible path $\gamma\in\Gamma_A(P,Q)$ has length strictly less than $\Drect(P,Q)$;
+\item the admissible rectilinear route is geodesic.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The equivalence of (i) and (ii) is the definition of $S_A$.  Statement (i) says that the infimum of all admissible path lengths equals the rectilinear path length, which is equivalent to (iii).  Since the rectilinear route itself is admissible and has length $\Drect(P,Q)$, (i) is equivalent to saying that this route realizes the intrinsic minimum, namely (iv).
+\end{proof}
+
+\section{When rectilinear distance recovers the intrinsic metric exactly}
+
+The upper-bound theorem uses only one admissible route.  Exact recovery requires a converse inequality.
+
+\begin{theorem}[Exact Rectilinear Isometry Under Endpoint Lower Bound]\label{thm:isometry}
+Assume the hypotheses of Theorem~\ref{thm:upper}.  Suppose in addition that every admissible path $\gamma\in\Gamma_A(P,Q)$ satisfies
+\[
+\len(\gamma)
+\ge
+\|x(Q)-x(P)\|_1.
+\]
+Then
+\[
+\boxed{
+\distA(P,Q)=\Drect(P,Q).
+}
+\]
+\end{theorem}
+
+\begin{proof}
+The additional hypothesis implies
+\[
+\distA(P,Q)
+=
+\inf_{\gamma\in\Gamma_A(P,Q)}\len(\gamma)
+\ge
+\Drect(P,Q).
+\]
+Theorem~\ref{thm:upper} gives the reverse inequality
+\[
+\distA(P,Q)\le\Drect(P,Q).
+\]
+Hence equality holds.
+\end{proof}
+
+\begin{remark}[Interpretation]
+Theorem~\ref{thm:isometry} is stronger than the upper-bound result.  It says that the coordinate chart does not merely provide an admissible canonical route; it reproduces the intrinsic proof-space metric exactly on the pair under consideration.  Establishing such a lower-bound property for a nontrivial proof coordinate system is therefore a substantive future problem, not something assumed by the earlier MAPQUEST address construction.
+\end{remark}
+
+\section{Connection with monotone $L^1$ path invariance}
+
+The rectilinear MAPQUEST paper proves the ordinary geometric fact that every continuous coordinatewise monotone path between fixed endpoints in an $L^1$ cube has total $L^1$ length
+\[
+\sum_i |b_i-a_i|,
+\]
+independent of how finely the route is subdivided.  Consequently, once a monotone proof-space coordinate route is known to be admissible and cost-compatible, refinement of that rectilinear route cannot lower its total length.
+
+This yields a useful separation:
+\[
+\boxed{
+\begin{array}{c}
+\text{refining the same monotone rectilinear route}
+\\[2mm]
+\text{does not shorten its }L^1\text{ length},
+\\[4mm]
+\text{but enlarging the admissible proof-path class}
+\\[2mm]
+\text{may reveal a shorter geodesic.}
+\end{array}}
+\]
+
+Thus the potential strict inequality
+\[
+\distA(P,Q)&lt;\Drect(P,Q)
+\]
+does not contradict monotone $L^1$ path invariance.  It means that the intrinsic proof geometry contains a shortcut not represented by the restricted monotone rectilinear family.
+
+\section{Relation to theorem difficulty}
+
+If one elects to define a target-relative notion of theorem difficulty by an intrinsic geodesic in a declared proof geometry, then the preceding theorem gives a principled upper bound whenever a compatible rectilinear realization exists.
+
+For example, let $\mathcal S_A$ be a designated starting region and $\mathcal C_A$ a designated target region in an appropriate proof-state or proof-object space, and define
+\[
+D_F(A)
+:=
+\inf_{P\in\mathcal S_A,\,Q\in\mathcal C_A}
+\distA(P,Q).
+\]
+If every relevant pair admits a compatible rectilinear realization, one may similarly define a rectilinear candidate
+\[
+R_F(A)
+:=
+\inf_{P\in\mathcal S_A,\,Q\in\mathcal C_A}
+\Drect(P,Q).
+\]
+Under pairwise compatibility sufficient to compare the same pairs,
+\[
+\boxed{D_F(A)\le R_F(A).}
+\]
+This is the theorem-level form of the statement that a rectilinear construction may overestimate intrinsic difficulty.  The precise meaning of $D_F(A)$ remains relative to the selected formal system, admissible transformations, start/target regions, and path cost.
+
+When the target-relative state geometry and proof-fiber cost are related by a cost-preserving proof/path correspondence, this theorem difficulty is the proof horizon
+\[
+D_F(A)=h_B(A)=\inf_{\pi\in\Fib_B(A)}c(\pi).
+\]
+This is the precise sense in which intrinsic theorem difficulty is the length or cost of an extremal/geodesic proof, when the infimum is attained.
+
+\section{SIC realization cost, accessibility, and geodesic regret}
+
+Let $M$ be a transaction-logged target-search SIC that reaches $A$, and let $\pi_M\in\Fib_B^M(A)$ be a proof extracted from one declared execution.  Write
+\[
+C_M(A):=c(\pi_M)
+\]
+for the intrinsic cost of the realized proof.  This is a proof-object cost, not CPU time or the number of search expansions.
+
+Whenever the relevant quantities are finite and the accessible minimum is attained,
+\[
+\boxed{
+h_B(A)\le h_B^M(A)\le C_M(A).
+}
+\]
+The first inequality is architectural; the second compares one run with the best proof available to that architecture.
+
+\begin{definition}[SIC geodesic regret]
+Assuming $h_B(A)&lt;\infty$, define
+\[
+\boxed{\Reg_M(A):=C_M(A)-h_B(A).}
+\]
+When $h_B(A)&gt;0$, define the multiplicative stretch
+\[
+\rho_M(A):=\frac{C_M(A)}{h_B(A)}.
+\]
+\end{definition}
+
+\begin{proposition}[Regret decomposition and nonnegativity]\label{prop:sic-regret}
+If $h_B^M(A)$ is finite, then
+\[
+\boxed{
+\Reg_M(A)=\bigl(C_M(A)-h_B^M(A)\bigr)+\bigl(h_B^M(A)-h_B(A)\bigr).
+}
+\]
+Hence $\Reg_M(A)\ge0$.  The two summands are respectively run-level navigation excess and architectural accessibility gap.
+\end{proposition}
+
+\begin{proof}
+Add and subtract $h_B^M(A)$.  Both terms are nonnegative because $h_B(A)\le h_B^M(A)\le C_M(A)$.
+\end{proof}
+
+\begin{theorem}[Certified SIC-regret interval]\label{thm:sic-regret-interval}
+Suppose certified bounds satisfy
+\[
+L_A\le h_B(A)\le U_A
+\]
+and one execution realizes a proof of cost $C_M(A)$.  Then
+\[
+\boxed{
+\max\{0,C_M(A)-U_A\}
+\le\Reg_M(A)\le
+C_M(A)-L_A.
+}
+\]
+If certified reasoning identifies $h_B(A)=r$ exactly, then
+\[
+\boxed{\Reg_M(A)=C_M(A)-r}
+\]
+even if no proof of cost $r$ has yet been discovered by the search procedure.
+\end{theorem}
+
+\begin{proof}
+Substitute $\Reg_M=C_M-h_B$ into $L_A\le h_B\le U_A$ and use Proposition~\ref{prop:sic-regret} for nonnegativity.  Exact identification of $h_B=r$ gives the last equality directly.
+\end{proof}
+
+The theorem is an \emph{external certification} statement.  It does not by itself imply formal internal self-knowledge by the SIC.  To promote the certificate to internal SIC self-awareness, the relevant bound certificate and its verification would have to be represented in the machine&#x27;s formal language or state and the corresponding regret assertion would have to be derived or recognized there.
+
+\begin{proposition}[Theorem 6.9 as the zero-regret unit-cost SIC case]\label{prop:bf-zero-regret}
+Assume the state theorem graph is finite or locally finite and effectively enumerable, every theorem-graph edge has unit cost, and graph edges correspond cost-preservingly to the proof-cost convention used to define $h_B(A)$.  Then the canonical breadth-first target-search SIC reaches $A$ with minimum proof cost and
+\[
+\boxed{C_{\mathrm{BF}}(A)=h_B(A),\qquad \Reg_{\mathrm{BF}}(A)=0.}
+\]
+\end{proposition}
+
+\begin{proof}
+Theorem~6.9 of the SIC theory is the standard breadth-first shortest-path theorem applied to the state theorem graph: the first reached target has minimum unit edge distance, and a predecessor map reconstructs the route.  Under the stated cost-preserving proof/path correspondence, that graph distance equals the present intrinsic proof cost.
+\end{proof}
+
+\section{Exact distance certification without prior witness discovery}
+
+The ATLAS viewpoint supplies certified lower and upper bounds rather than requiring every scout to search directly for a minimizing route.  The following statements are purely certificate-theoretic; they do not assert a complexity separation between value certification and witness discovery.
+
+\begin{lemma}[Discrete path costs force attainment]\label{lem:discrete-attainment}
+Assume $P$ can reach $Q$ and every admissible proof-transformation path length belongs to $\delta\mathbb N_0$ for some $\delta&gt;0$.  Then
+\[
+d_A(P,Q)\in\delta\mathbb N_0
+\]
+and some admissible path attains this value.
+\end{lemma}
+
+\begin{proof}
+The nonempty set of path lengths is a subset of the well-ordered set $\delta\mathbb N_0$, so it has a least element.  The infimum is therefore a minimum in the same lattice.
+\end{proof}
+
+\begin{theorem}[Discrete-spectrum geodesic collapse]\label{thm:discrete-collapse}
+Let $D_A\subseteq[0,\infty)$ be a known set containing every admissible value of $d_A(P,Q)$.  If certified bounds satisfy
+\[
+L_A(P,Q)\le d_A(P,Q)\le U_A(P,Q)
+\]
+and
+\[
+[L_A(P,Q),U_A(P,Q)]\cap D_A=\{r\},
+\]
+then
+\[
+\boxed{d_A(P,Q)=r.}
+\]
+No path of length $r$ need have been discovered at the time the conclusion is certified.
+\end{theorem}
+
+\begin{proof}
+The unknown distance belongs both to the certified interval and to $D_A$, hence to their singleton intersection.
+\end{proof}
+
+For lattice costs $D_A=\delta\mathbb N_0$, one convenient sufficient condition is
+\[
+\boxed{
+\left\lceil\frac{L_A}{\delta}\right\rceil
+=
+\left\lfloor\frac{U_A}{\delta}\right\rfloor
+=k
+\Longrightarrow d_A(P,Q)=k\delta.
+}
+\]
+By Lemma~\ref{lem:discrete-attainment}, in this setting a geodesic witness exists mathematically even if the search has not yet located it.  Thus the exact geodesic \emph{value} can be certified without prior discovery of a minimizing witness; no claim of computational strict-easiness is made.
+
+\begin{corollary}[Exact shortcut-gap determination]
+Under the hypotheses of the Rectilinear Upper-Bound Theorem, if certified reasoning identifies $d_A(P,Q)=r$, then
+\[
+\boxed{S_A(P,Q)=D_{\mathrm{rect}}(P,Q)-r.}
+\]
+\end{corollary}
+
+\begin{proof}
+Substitute the certified value into the definition of the shortcut gap.
+\end{proof}
+
+\begin{corollary}[Multi-scout lower-bound fusion]
+If certified channels satisfy $h_i(P,Q)\le d_A(P,Q)$ for $1\le i\le m$, then
+\[
+L_A(P,Q):=\max_i h_i(P,Q)
+\]
+is also a certified lower bound.  Dually, the minimum cost among verified routes is a certified upper bound.
+\end{corollary}
+
+\begin{proof}
+A common upper bound for all $h_i$ is an upper bound for their maximum.  Every verified route cost upper-bounds the infimum, so their minimum does also.
+\end{proof}
+
+\begin{proposition}[Exact quotient transfer]\label{prop:exact-quotient}
+Let $q:\Proofs(A)\to Q_A$ be a quotient map such that every original admissible transformation projects to a quotient edge of no greater cost and every quotient path from $q(P)$ to $q(Q)$ lifts to an original admissible path of exactly the same cost.  Then
+\[
+\boxed{d_{Q_A}(q(P),q(Q))=d_A(P,Q).}
+\]
+\end{proposition}
+
+\begin{proof}
+Projection gives $d_{Q_A}\le d_A$.  Exact cost-preserving path lifting gives $d_A\le d_{Q_A}$.  Combining yields equality.
+\end{proof}
+
+\begin{conjecture}[ATLAS Early-Collapse Conjecture]
+For broad natural families of verifier-valid proof transformations, there exist certified lower-bound channels whose combined annulus reaches a unique admissible geodesic value with substantially less search effort than uninformed exhaustive shortest-path enumeration.
+\end{conjecture}
+
+This conjecture is intentionally empirical and falsifiable.  It is where a genuine computational advantage would have to be established rather than inferred from the certificate theorems alone.
+
+\section{Conditional global-SIC representation of SIC federations}
+
+\begin{proposition}[Global-SIC encoding principle]\label{prop:global-sic}
+Fix a finite or effectively scheduled federation of SIC agents, a verifier-gated shared BANK, and a settlement condition.  Suppose the global state is encoded as an append-only tagged history, the settlement flag is persistent, and after settlement the encoded state is frozen.  Then the scheduled federation can be represented as a SIC
+\[
+M_{\mathrm{global}}=(C_{\mathrm{global}},H_{\mathrm{settle}})
+\]
+on the tagged global state space.
+\end{proposition}
+
+\begin{proof}
+The append-only history makes $C_{\mathrm{global}}$ monotone in stage.  Persistence of settlement gives monotonicity of $H_{\mathrm{settle}}$, and the freeze condition gives the SIC post-halting state condition.  Initialization supplies the initial-state axiom.  These are exactly the structural SIC conditions needed for the representation.
+\end{proof}
+
+For a certified settlement verdict $\sigma$, define the conditional settlement fiber
+\[
+\mathcal S_B(\sigma):=
+\{e:e\text{ is an allowed verifier-valid global execution ending with verdict }\sigma\}.
+\]
+For theorem settlement, certificate extraction projects such executions into an ordinary proof fiber $\Fib_B(A)$.  Other certified verdicts project into their corresponding certificate fibers.  This extends proof-fiber geometry toward a more general geometry of certified computational histories without asserting that every mutable multi-agent implementation is automatically a SIC.
+
+\section{Research consequences}
+
+The combined SIC/fiber/geodesic framework suggests the following concrete problems.
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{SIC-accessibility problem.} For fixed $A$, how large is $G_M(A)=h_B^M(A)-h_B(A)$, and which policy changes enlarge $\Fib_B^M(A)$ enough to close it?
+\item \textbf{Fiber-coverage problem.} After fixing a proof-identity convention, how does $\chi_M(A;R)$ vary across SIC architectures, seeds, schedulers, and ATP addons?
+\item \textbf{Regret-certification problem.} Can certified lower-bound channels identify $h_B(A)$ early enough that $\Reg_M(A)$ becomes exact before an optimal witness is found?
+\item \textbf{Internal-awareness problem.} What additional representation and derivation conditions are sufficient for an externally certified regret statement to become a theorem internally recognized by the SIC?
+\item \textbf{Shortcut problem.} For natural proof corpora, how often is $S_A(P,Q)&gt;0$, and can detected shortcut structure guide verifier-safe search below the canonical rectilinear route?
+\item \textbf{Exactness problem.} Which nontrivial proof regions admit endpoint lower bounds making the chosen coordinate chart isometric?
+\item \textbf{Settlement-fiber problem.} Which proof-fiber invariants survive when theoremhood is generalized to verifier-certified settlement verdicts of a globally encoded SIC federation?
+\end{enumerate}
+
+\section{Conclusion}
+
+The central SIC/proof-fiber relation is
+\[
+\boxed{
+h_B(A)\le h_B^M(A)\le C_M(A),
+}
+\]
+under the stated attainment and extraction hypotheses.  The three terms answer different questions: the intrinsic optimum asks how difficult $A$ is in the declared formal proof geometry; the machine-accessible optimum asks what the SIC architecture can reach; and the realized cost asks what one execution actually produced.  Their differences separate architectural limitation from run-level navigation excess.
+
+Theorem~\ref{thm:sic-regret-interval} shows that run-level regret can be externally bounded, and sometimes exactly certified, from horizon information even before an optimal witness is discovered.  This is deliberately weaker than claiming that the SIC internally knows its regret; internal self-knowledge requires an additional formal representation-and-derivation layer.
+
+The proof-to-proof geometry supplies a complementary structure.  Rectilinear realizations give certified upper bounds, shortcut gaps quantify non-rectilinear improvement, and discrete-spectrum annuli or exact quotients can certify exact distance values.  What has been proved is a separation between \emph{value certification} and \emph{prior witness discovery}, not a computational complexity separation; the latter is isolated as the ATLAS Early-Collapse Conjecture.
+
+Finally, SIC theory affects the study of proof fibers themselves.  A proof fiber is no longer only a static collection of proofs: it admits architecture-dependent accessible subfibers, geodesic strata, stage--cost bifiltrations, and bounded-cost coverage profiles.  Under explicit global monotonicity conditions, the same viewpoint extends from ATPs to SIC federations and settlement fibers.  This gives a unified computational geometry in which proofs, search machines, and certified settlement histories can be compared without collapsing intrinsic proof cost into operational search effort.
+
+\begin{thebibliography}{9}
+\bibitem{TennesonMRTD}
+B. Tenneson, \emph{Rectilinear Target Distance in MAPQUEST: From Arbitrarily Fine Monotone Steps to a Geometric Distance from $B_0$ to $T$}, corrected and strengthened edition, September 2026.
+
+\bibitem{TennesonHyperdistance}
+B. Tenneson, \emph{Rectilinear Hyperdistance with Arbitrarily Fine Monotone Steps}, working note, September 2026.
+
+\bibitem{TennesonDepths}
+B. Tenneson, \emph{Depths of Induction and Formalized Self-Awareness}, Version 46.2, theorem-corrected working edition, especially Sections 2, 5, and 6 (SICs, proof-search policies, theorem graphs, and Theorem 6.9), 2026.
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
