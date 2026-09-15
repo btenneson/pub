@@ -1,0 +1,166 @@
+st equality directly.
+\end{proof}
+
+The theorem is an \emph{external certification} statement.  It does not by itself imply formal internal self-knowledge by the SIC.  To promote the certificate to internal SIC self-awareness, the relevant bound certificate and its verification would have to be represented in the machine's formal language or state and the corresponding regret assertion would have to be derived or recognized there.
+
+\begin{proposition}[Theorem 6.9 as the zero-regret unit-cost SIC case]\label{prop:bf-zero-regret}
+Assume the state theorem graph is finite or locally finite and effectively enumerable, every theorem-graph edge has unit cost, and graph edges correspond cost-preservingly to the proof-cost convention used to define $h_B(A)$.  Then the canonical breadth-first target-search SIC reaches $A$ with minimum proof cost and
+\[
+\boxed{C_{\mathrm{BF}}(A)=h_B(A),\qquad \Reg_{\mathrm{BF}}(A)=0.}
+\]
+\end{proposition}
+
+\begin{proof}
+Theorem~6.9 of the SIC theory is the standard breadth-first shortest-path theorem applied to the state theorem graph: the first reached target has minimum unit edge distance, and a predecessor map reconstructs the route.  Under the stated cost-preserving proof/path correspondence, that graph distance equals the present intrinsic proof cost.
+\end{proof}
+
+\section{Exact distance certification without prior witness discovery}
+
+The ATLAS viewpoint supplies certified lower and upper bounds rather than requiring every scout to search directly for a minimizing route.  The following statements are purely certificate-theoretic; they do not assert a complexity separation between value certification and witness discovery.
+
+\begin{lemma}[Discrete path costs force attainment]\label{lem:discrete-attainment}
+Assume $P$ can reach $Q$ and every admissible proof-transformation path length belongs to $\delta\mathbb N_0$ for some $\delta>0$.  Then
+\[
+d_A(P,Q)\in\delta\mathbb N_0
+\]
+and some admissible path attains this value.
+\end{lemma}
+
+\begin{proof}
+The nonempty set of path lengths is a subset of the well-ordered set $\delta\mathbb N_0$, so it has a least element.  The infimum is therefore a minimum in the same lattice.
+\end{proof}
+
+\begin{theorem}[Discrete-spectrum geodesic collapse]\label{thm:discrete-collapse}
+Let $D_A\subseteq[0,\infty)$ be a known set containing every admissible value of $d_A(P,Q)$.  If certified bounds satisfy
+\[
+L_A(P,Q)\le d_A(P,Q)\le U_A(P,Q)
+\]
+and
+\[
+[L_A(P,Q),U_A(P,Q)]\cap D_A=\{r\},
+\]
+then
+\[
+\boxed{d_A(P,Q)=r.}
+\]
+No path of length $r$ need have been discovered at the time the conclusion is certified.
+\end{theorem}
+
+\begin{proof}
+The unknown distance belongs both to the certified interval and to $D_A$, hence to their singleton intersection.
+\end{proof}
+
+For lattice costs $D_A=\delta\mathbb N_0$, one convenient sufficient condition is
+\[
+\boxed{
+\left\lceil\frac{L_A}{\delta}\right\rceil
+=
+\left\lfloor\frac{U_A}{\delta}\right\rfloor
+=k
+\Longrightarrow d_A(P,Q)=k\delta.
+}
+\]
+By Lemma~\ref{lem:discrete-attainment}, in this setting a geodesic witness exists mathematically even if the search has not yet located it.  Thus the exact geodesic \emph{value} can be certified without prior discovery of a minimizing witness; no claim of computational strict-easiness is made.
+
+\begin{corollary}[Exact shortcut-gap determination]
+Under the hypotheses of the Rectilinear Upper-Bound Theorem, if certified reasoning identifies $d_A(P,Q)=r$, then
+\[
+\boxed{S_A(P,Q)=D_{\mathrm{rect}}(P,Q)-r.}
+\]
+\end{corollary}
+
+\begin{proof}
+Substitute the certified value into the definition of the shortcut gap.
+\end{proof}
+
+\begin{corollary}[Multi-scout lower-bound fusion]
+If certified channels satisfy $h_i(P,Q)\le d_A(P,Q)$ for $1\le i\le m$, then
+\[
+L_A(P,Q):=\max_i h_i(P,Q)
+\]
+is also a certified lower bound.  Dually, the minimum cost among verified routes is a certified upper bound.
+\end{corollary}
+
+\begin{proof}
+A common upper bound for all $h_i$ is an upper bound for their maximum.  Every verified route cost upper-bounds the infimum, so their minimum does also.
+\end{proof}
+
+\begin{proposition}[Exact quotient transfer]\label{prop:exact-quotient}
+Let $q:\Proofs(A)\to Q_A$ be a quotient map such that every original admissible transformation projects to a quotient edge of no greater cost and every quotient path from $q(P)$ to $q(Q)$ lifts to an original admissible path of exactly the same cost.  Then
+\[
+\boxed{d_{Q_A}(q(P),q(Q))=d_A(P,Q).}
+\]
+\end{proposition}
+
+\begin{proof}
+Projection gives $d_{Q_A}\le d_A$.  Exact cost-preserving path lifting gives $d_A\le d_{Q_A}$.  Combining yields equality.
+\end{proof}
+
+\begin{conjecture}[ATLAS Early-Collapse Conjecture]
+For broad natural families of verifier-valid proof transformations, there exist certified lower-bound channels whose combined annulus reaches a unique admissible geodesic value with substantially less search effort than uninformed exhaustive shortest-path enumeration.
+\end{conjecture}
+
+This conjecture is intentionally empirical and falsifiable.  It is where a genuine computational advantage would have to be established rather than inferred from the certificate theorems alone.
+
+\section{Conditional global-SIC representation of SIC federations}
+
+\begin{proposition}[Global-SIC encoding principle]\label{prop:global-sic}
+Fix a finite or effectively scheduled federation of SIC agents, a verifier-gated shared BANK, and a settlement condition.  Suppose the global state is encoded as an append-only tagged history, the settlement flag is persistent, and after settlement the encoded state is frozen.  Then the scheduled federation can be represented as a SIC
+\[
+M_{\mathrm{global}}=(C_{\mathrm{global}},H_{\mathrm{settle}})
+\]
+on the tagged global state space.
+\end{proposition}
+
+\begin{proof}
+The append-only history makes $C_{\mathrm{global}}$ monotone in stage.  Persistence of settlement gives monotonicity of $H_{\mathrm{settle}}$, and the freeze condition gives the SIC post-halting state condition.  Initialization supplies the initial-state axiom.  These are exactly the structural SIC conditions needed for the representation.
+\end{proof}
+
+For a certified settlement verdict $\sigma$, define the conditional settlement fiber
+\[
+\mathcal S_B(\sigma):=
+\{e:e\text{ is an allowed verifier-valid global execution ending with verdict }\sigma\}.
+\]
+For theorem settlement, certificate extraction projects such executions into an ordinary proof fiber $\Fib_B(A)$.  Other certified verdicts project into their corresponding certificate fibers.  This extends proof-fiber geometry toward a more general geometry of certified computational histories without asserting that every mutable multi-agent implementation is automatically a SIC.
+
+\section{Research consequences}
+
+The combined SIC/fiber/geodesic framework suggests the following concrete problems.
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{SIC-accessibility problem.} For fixed $A$, how large is $G_M(A)=h_B^M(A)-h_B(A)$, and which policy changes enlarge $\Fib_B^M(A)$ enough to close it?
+\item \textbf{Fiber-coverage problem.} After fixing a proof-identity convention, how does $\chi_M(A;R)$ vary across SIC architectures, seeds, schedulers, and ATP addons?
+\item \textbf{Regret-certification problem.} Can certified lower-bound channels identify $h_B(A)$ early enough that $\Reg_M(A)$ becomes exact before an optimal witness is found?
+\item \textbf{Internal-awareness problem.} What additional representation and derivation conditions are sufficient for an externally certified regret statement to become a theorem internally recognized by the SIC?
+\item \textbf{Shortcut problem.} For natural proof corpora, how often is $S_A(P,Q)>0$, and can detected shortcut structure guide verifier-safe search below the canonical rectilinear route?
+\item \textbf{Exactness problem.} Which nontrivial proof regions admit endpoint lower bounds making the chosen coordinate chart isometric?
+\item \textbf{Settlement-fiber problem.} Which proof-fiber invariants survive when theoremhood is generalized to verifier-certified settlement verdicts of a globally encoded SIC federation?
+\end{enumerate}
+
+\section{Conclusion}
+
+The central SIC/proof-fiber relation is
+\[
+\boxed{
+h_B(A)\le h_B^M(A)\le C_M(A),
+}
+\]
+under the stated attainment and extraction hypotheses.  The three terms answer different questions: the intrinsic optimum asks how difficult $A$ is in the declared formal proof geometry; the machine-accessible optimum asks what the SIC architecture can reach; and the realized cost asks what one execution actually produced.  Their differences separate architectural limitation from run-level navigation excess.
+
+Theorem~\ref{thm:sic-regret-interval} shows that run-level regret can be externally bounded, and sometimes exactly certified, from horizon information even before an optimal witness is discovered.  This is deliberately weaker than claiming that the SIC internally knows its regret; internal self-knowledge requires an additional formal representation-and-derivation layer.
+
+The proof-to-proof geometry supplies a complementary structure.  Rectilinear realizations give certified upper bounds, shortcut gaps quantify non-rectilinear improvement, and discrete-spectrum annuli or exact quotients can certify exact distance values.  What has been proved is a separation between \emph{value certification} and \emph{prior witness discovery}, not a computational complexity separation; the latter is isolated as the ATLAS Early-Collapse Conjecture.
+
+Finally, SIC theory affects the study of proof fibers themselves.  A proof fiber is no longer only a static collection of proofs: it admits architecture-dependent accessible subfibers, geodesic strata, stage--cost bifiltrations, and bounded-cost coverage profiles.  Under explicit global monotonicity conditions, the same viewpoint extends from ATPs to SIC federations and settlement fibers.  This gives a unified computational geometry in which proofs, search machines, and certified settlement histories can be compared without collapsing intrinsic proof cost into operational search effort.
+
+\begin{thebibliography}{9}
+\bibitem{TennesonMRTD}
+B. Tenneson, \emph{Rectilinear Target Distance in MAPQUEST: From Arbitrarily Fine Monotone Steps to a Geometric Distance from $B_0$ to $T$}, corrected and strengthened edition, September 2026.
+
+\bibitem{TennesonHyperdistance}
+B. Tenneson, \emph{Rectilinear Hyperdistance with Arbitrarily Fine Monotone Steps}, working note, September 2026.
+
+\bibitem{TennesonDepths}
+B. Tenneson, \emph{Depths of Induction and Formalized Self-Awareness}, Version 46.2, theorem-corrected working edition, especially Sections 2, 5, and 6 (SICs, proof-search policies, theorem graphs, and Theorem 6.9), 2026.
+\end{thebibliography}
+
+\end{document}
