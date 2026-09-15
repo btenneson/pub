@@ -60,6 +60,13 @@ def main():
                 assert parent, ("missing alias canonical", x["id"], alias_of)
                 assert parent.get("pdf"), ("alias canonical has no PDF", alias_of)
                 assert parent.get("sha256") == digest, ("alias PDF differs from canonical", x["id"], alias_of)
+            elif x.get("shared_pdf_of"):
+                # Reviewed editions can converge to the same repaired PDF.
+                # Keep their established URLs, but require an explicit owner.
+                parent = by_id.get(x["shared_pdf_of"])
+                assert parent and parent["id"] != x["id"], ("invalid shared PDF owner", x["id"])
+                assert not parent.get("shared_pdf_of") and not parent.get("catalog_alias_of"), ("shared PDF owner must be canonical", x["id"])
+                assert parent.get("sha256") == digest, ("shared PDF differs from owner", x["id"])
             else:
                 assert digest not in canonical_sha, ("undeclared duplicate PDF card", x["title"])
                 canonical_sha.add(digest)

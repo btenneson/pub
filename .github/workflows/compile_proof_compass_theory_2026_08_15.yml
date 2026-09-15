@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/compile_proof_compass_theory_2026_08_15.yml'
-      - 'cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.tex'
+      - 'cs.LO_Logic_in_Computer_Science/proof_compass/Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.tex'
   workflow_dispatch:
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
 
       - name: Compile proof compass report
         run: |
-          ROOT='cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory'
+          ROOT='cs.LO_Logic_in_Computer_Science/proof_compass'
           TEX='Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.tex'
           PDF='Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.pdf'
           cd "$ROOT"
@@ -37,11 +37,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15
-          path: cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory/Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.pdf
+          path: cs.LO_Logic_in_Computer_Science/proof_compass/Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.pdf
 
       - name: Commit compiled PDF
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
-          ROOT='cs.LO_Logic_in_Computer_Science/Proof_Compass_Theory'
+          ROOT='cs.LO_Logic_in_Computer_Science/proof_compass'
           PDF='Proof_Compass_Theory_Learnability_Shrinkage_and_Control_2026_08_15.pdf'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

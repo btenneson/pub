@@ -2,6 +2,11 @@ name: Detailed PDF bounds audit
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '**/*.pdf'
+      - 'docs/search-index.json'
+      - '.github/workflows/detailed_pdf_bounds_audit.yml'
   push:
     branches: [main]
     paths:
