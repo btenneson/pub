@@ -1,0 +1,979 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,multirow}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\hypersetup{colorlinks=false,pdfborder={0 0 0},pdftitle={AMLD Metalogical Cartography I - Post-Audit Revised Edition},pdfauthor={Brian Tenneson}}
+\graphicspath{{figures/}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setstretch{1.03}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{AMLD Metalogical Cartography I}
+\fancyhead[R]{Brian Tenneson}
+\fancyfoot[C]{\thepage}
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.65em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.65em}{}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{principle}[definition]{Principle}
+\newtheorem{hypothesis}[definition]{Research Hypothesis}
+
+\newcommand{\BANK}{\mathbb{B}}
+\newcommand{\WFF}{\mathrm{WFF}}
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\Th}{\operatorname{Th}}
+\newcommand{\MRTD}{\operatorname{MRTD}}
+\newcommand{\IND}{\mathrm{IND}}
+\newcommand{\THM}{\mathrm{THM}}
+\newcommand{\REF}{\mathrm{REF}}
+\newcommand{\INC}{\mathrm{INC}}
+\newcommand{\View}{\operatorname{View}}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries Metalogical Cartography I}\\[0.35em]
+{\Large AMLD-5, Verified BANK Geometry, and Settlement Acceleration}\\[0.45em]
+{\large A cornerstone framework within Universal Theorem Geometry}\\[0.30em]
+{\normalsize Post-Audit Revised Edition}\\[0.85em]
+{\large Brian Tenneson}\\[0.25em]
+{\normalsize Framework synthesis, technical organization, and audit assistance by OpenAI's ChatGPT}\\[0.25em]
+{\normalsize September 15, 2026}\\[0.75em]
+\end{center}
+
+\begin{abstract}
+This paper proposes \emph{metalogical cartography} as a research program inside Universal Theorem Geometry (UTG). Ordinary proof cartography maps possible routes to a fixed theorem. Metalogical cartography instead maps routes to the \emph{status} of a statement relative to a formal environment. The principal machine studied here is AMLD-5, a five-channel settlement architecture with proving, refuting, two independence/consistency channels, and a contradiction channel. Each channel may run a full MAPQUEST search, but the five maps remain typed and distinct. Their interaction is mediated by a verifier-gated shared BANK.
+
+The BANK is developed as a mathematical object rather than an implementation convenience. A BANK record carries a statement or certificate object together with scope, environment, provenance, dependencies, origin, and timing data. Deposit is monotone, withdrawal is non-consuming read access, and cross-channel transport is permitted only when the original certificate remains valid in the receiving environment. This yields a bank-monotonicity theorem for intrinsic settlement horizons: adding admissible certified information cannot increase the least legal cost to a fixed certificate region.
+
+The paper then formalizes what can and cannot be proved about the claim that a BANK accelerates AMLD settlement relative to strict round robin with no shared BANK. The unconditional slogan is false: a large shared store can impose retrieval overhead or distract a search policy. Under a trace-coupled, optional-import, quota-preserving model, the \emph{best achievable} settlement time in the shared-BANK policy space weakly dominates the corresponding no-BANK round-robin policy space, because every no-BANK policy remains available by ignoring the BANK. This is an architectural set-inclusion result, not evidence that an arbitrary BANK-aware controller will be faster. Strict acceleration follows under stronger timing hypotheses when a compatible foreign deposit is already available without extra bottleneck work and removes positive-cost rederivation on every lane determining the baseline settlement time. A charged-overhead theorem includes additional production, distribution, retrieval, and import costs explicitly. The resulting theory joins UTG's directed proof geometry, MAPQUEST navigation, proof-cartographic epistemic separation, and AMLD settlement into one typed geometric framework while explicitly distinguishing this proposal from earlier blackboard systems, cooperating theorem provers, portfolio SAT clause sharing, and trusted-kernel architectures.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Scope: what ``metalogical cartography'' is meant to name}
+
+This paper uses the term \emph{metalogical cartography} for a proposed research program, not as a claim that shared-memory reasoning, cooperative theorem proving, or geometric search was previously absent from computer science. The proposed object is more specific: a verifier-governed family of proof-search fibers whose destination is not merely a formula but one of several formally certified settlement classes.
+
+The motivating distinction is:
+\begin{center}
+\fbox{\parbox{0.72\linewidth}{\centering proof cartography maps routes to statements}}\\[0.45em]
+whereas\\[0.45em]
+\fbox{\parbox{0.72\linewidth}{\centering metalogical cartography maps routes to the status of statements.}}
+\end{center}
+
+The intended setting is Universal Theorem Geometry. A legal inference route is part of an intrinsic directed proof geometry; an address chart or Hilbert traversal is an extrinsic navigation device; a verifier determines which proposed transitions are actually legal; and a proof certificate records the accepted route. MAPQUEST already separates address geometry from proof distance and uses target-conditioned navigation, backward obligations, fair recurrence, and verifier-gated BANK growth. Proof Cartography in Semi-Ideal Computation then makes the epistemic split explicit by separating a trusted WFF bank from a cartographic/control state. The present paper lifts that separation to a federation of settlement searches.
+
+\subsection{Journalistic-neutrality convention}
+
+The paper distinguishes four kinds of statement:
+\begin{enumerate}[label=(\roman*)]
+\item source-derived definitions or design rules already present in the AMLD/MAPQUEST manuscripts;
+\item standard mathematical consequences proved here from stated assumptions;
+\item proposed definitions introduced to make the combined theory precise; and
+\item empirical hypotheses that require experiments rather than proof.
+\end{enumerate}
+No runtime advantage is claimed without scheduler and cost assumptions.
+
+\section{Background layers: UTG, MAPQUEST, and proof cartography}
+
+\subsection{UTG: roads and intrinsic cost}
+
+Fix a formal environment
+\[
+F=(\Sigma,\Gamma,R,V),
+\]
+where $\Sigma$ determines syntax, $\Gamma$ is the admitted base, $R$ is a finitary inference system, and $V$ is a declared verifier or checker. A trusted proof state is a bank $B$ of certified formulas together with the provenance needed to replay their derivations.
+
+In weighted UTG \cite{UTGII}, a legal transition $e:B\to B'$ receives a nonnegative cost $w_F(e)$. The intrinsic directed proof distance to a target region $\mathcal T$ is
+\[
+d_F(B,\mathcal T)
+=
+\inf\left\{\sum_{e\in\pi} w_F(e):\pi\text{ is a legal directed path from }B\text{ into }\mathcal T\right\}.
+\]
+This is road geometry, not address geometry.
+
+\subsection{MAPQUEST: addresses and navigation}
+
+MAPQUEST \cite{MQFair,MQRect,MQCert} assigns exact addresses to formulas and rule-dependent coordinates to premise slots. For a $k$-ary rule, its premise-selection component is $k$-dimensional in the ambient-coordinate sense. Hilbert traversals may order finite address boxes, while fairness across address resolution and later BANK epochs prevents an inference from being lost merely because it was first visited before all of its premises were available.
+
+For target-facing search, MAPQUEST uses predecessor frames and unresolved obligations. If
+\[
+q=(P_1,\ldots,P_k\Rightarrow G)
+\]
+is a legal candidate frame, then its missing-premise set at bank $B_t$ is
+\[
+U_t(q)=\{P_i:P_i\notin B_t\},
+\qquad
+m_t(q)=|U_t(q)|.
+\]
+A waiting frame with $m_t(q)=0$ is ready for verification. This is a rigorous local notion of ``near the target'' that does not identify rational address proximity with proof distance.
+
+\subsection{Proof cartography: map state versus trusted state}
+
+The post-audit proof-cartography formalism \cite{ProofCartography} separates a trusted bank from advisory map information. A cartographic state is
+\[
+S_t=(B_t,K_t),
+\]
+where $B_t$ contains only certificate-backed WFFs and $K_t$ may contain addresses, predicted routes, uncertainty, ACO pheromones, learned scores, failed-search records, or other non-deductive information. A map can be imaginative; theoremhood remains conservative.
+
+The present paper retains that discipline at the AMLD level. No metalogical prediction becomes a settlement certificate merely because it was produced by a metalogical cartographer.
+
+\section{AMLD-5: from theorem proving to settlement}
+
+\subsection{The five channels}
+
+Following the AMLD-5 working architecture \cite{AMLD5}, for a target $T$, define
+\[
+\operatorname{AMLD}_5(F,T)=(P,R,I^+,I^-,C).
+\]
+The intended terminal objectives are summarized in Table~\ref{tab:roles}.
+
+\begin{table}[h]
+\centering
+\caption{The five AMLD-5 settlement channels.}
+\label{tab:roles}
+\small
+\begin{tabular}{@{}p{0.09\textwidth}p{0.57\textwidth}p{0.25\textwidth}@{}}
+\toprule
+Channel & Objective & Settlement contribution \\
+\midrule
+$P$ & certificate of $F\vdash T$ & THEOREM \\
+$R$ & certificate of $F\vdash\neg T$ & REFUTABLE \\
+$I^+$ & $M$-validated certificate of $\Con(F+T)$ or an equivalent declared meta-object & positive half of INDEPENDENT \\
+$I^-$ & $M$-validated certificate of $\Con(F+\neg T)$ or an equivalent declared meta-object & negative half of INDEPENDENT \\
+$C$ & certificate of $F\vdash\bot$ & INCONSISTENT \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The independence channels require particular care. A consistency certificate is a metalogical object. It may be a relative-consistency proof, an accepted model certificate in a sound metatheory, or another explicitly declared certificate form. The paper does \emph{not} assume that $F+T$ internally proves its own consistency. Let $M$ denote the metatheory or external certificate framework used to validate $I^+$ and $I^-$. Thus the formal targets of those channels live in a different certificate environment from the object-level $P$, $R$, and $C$ searches.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.98\textwidth]{figure1_amld5_architecture_4k.png}
+\caption{AMLD-5 as five settlement searches connected through a verifier-gated shared BANK. The arrows from the BANK back to the roles are imports, not automatic axioms: compatibility and certificate scope must be checked. Original image is 3840 by 2160 pixels, black and white.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Settlement semantics}
+
+Let $\mathcal C_P,\mathcal C_R,\mathcal C_+,\mathcal C_-,\mathcal C_C$ be the accepted certificate sets for the five roles. A simple settlement semantics is
+\[
+\mathcal C_P\neq\varnothing\Rightarrow\THM,
+\qquad
+\mathcal C_R\neq\varnothing\Rightarrow\REF,
+\]
+\[
+\mathcal C_+\neq\varnothing\ \wedge\ \mathcal C_-\neq\varnothing\Rightarrow\IND,
+\qquad
+\mathcal C_C\neq\varnothing\Rightarrow\INC.
+\]
+If sound certificates for both $F\vdash T$ and $F\vdash\neg T$ are present, they compose to a contradiction certificate in classical settings with the expected contradiction rule. The contradiction channel therefore has priority over incompatible simultaneous status reports.
+
+Failure to find a proof is not a consistency certificate. In particular, ``$P$ failed under this budget'' is not evidence for $I^-$, and ``$R$ failed'' is not evidence for $I^+$. This negative rule is fundamental to AMLD safety.
+
+The label INDEPENDENT needs an explicit metatheoretic soundness condition. Throughout this paper, an accepted $I^+$ or $I^-$ object means that the external metatheory/certificate framework $M$ has validated the corresponding consistency assertion, and that $M$ is assumed sound for this class of assertions. We also assume the ordinary contradiction behavior of negation: if $F\vdash T$, then $F+\neg T\vdash\bot$, and if $F\vdash\neg T$, then $F+T\vdash\bot$.
+
+\begin{proposition}[Paired consistency certificates imply syntactic independence]
+Under the preceding soundness and contradiction assumptions, if $M$ validly certifies both
+\[
+\Con(F+T)
+\qquad\text{and}\qquad
+\Con(F+\neg T),
+\]
+then
+\[
+F\nvdash T
+\qquad\text{and}\qquad
+F\nvdash\neg T.
+\]
+Thus the pair is a sound certificate of syntactic independence of $T$ from $F$ in the declared sense.
+\end{proposition}
+\begin{proof}
+If $F\vdash T$, then the extension $F+\neg T$ derives both $T$ and $\neg T$, hence $\bot$, contradicting the certified consistency of $F+\neg T$. Therefore $F\nvdash T$. The second conclusion is symmetric: $F\vdash\neg T$ would make $F+T$ inconsistent.
+\end{proof}
+
+Without a consistency assumption on $F$, the labels THEOREM and REFUTABLE are certificate labels rather than mutually exclusive semantic classes: an inconsistent $F$ may derive both $T$ and $\neg T$. The declared terminal policy must therefore specify whether contradiction checking has priority, or whether a prior consistency assumption on $F$ is part of the benchmark contract.
+
+\subsection{Terminal-policy parameter}
+
+Different implementations can stop at the first accepted status, continue a contradiction guard for a declared interval, or require a precondition such as known consistency of $F$ before reporting THEOREM or REFUTABLE. To avoid smuggling one engineering choice into the mathematics, let
+\[
+\Pi_{\mathrm{term}}
+\]
+denote the declared terminal policy. Every settlement-time theorem below is relative to the same $\Pi_{\mathrm{term}}$ in both systems being compared.
+
+\section{Definition of AMLD Metalogical Cartography}
+
+\begin{definition}[Role fiber]
+For each $j\in J=\{P,R,I^+,I^-,C\}$, a \emph{role fiber} $\mathfrak F_j$ consists of a declared certificate environment $E_j$, a trusted local BANK $B_t^j$, a target certificate region $\mathcal T_j$, a legal transition system, a cost model, and a cartographic state $\mathcal M_t^j$.
+\end{definition}
+
+A role's cartographic state may be written
+\[
+\mathcal M_t^j=
+\bigl(V_t^j,E_{t,\mathrm{cert}}^j,E_{t,\mathrm{heur}}^j,
+\Lambda_t^j,\kappa_t^j,\Delta_t^j,U_t^j,\partial_t^j\bigr),
+\]
+with the same epistemic distinction used in proof cartography: verified roads are not merged with predicted roads, and exact or certified bounds are not merged with heuristic scores.
+
+\begin{definition}[AMLD metalogical cartography]
+An \emph{AMLD metalogical cartography} for $(F,T)$ is a tuple
+\[
+\operatorname{MC}(F,T)=
+\left(
+J,\{\mathfrak F_j\}_{j\in J},\BANK,\rightsquigarrow,
+\mathcal S,\Pi_{\mathrm{term}},\mathcal A
+\right),
+\]
+where:
+\begin{enumerate}[label=(\alph*)]
+\item $J$ is the role set;
+\item $\mathfrak F_j$ are the typed role fibers;
+\item $\BANK$ is the global verified BANK trajectory;
+\item $\rightsquigarrow$ is the declared certificate-preserving transport relation between environments;
+\item $\mathcal S=\{\THM,\REF,\IND,\INC\}$ is the settlement label set;
+\item $\Pi_{\mathrm{term}}$ is the terminal policy; and
+\item $\mathcal A$ is a scheduler/resource allocator.
+\end{enumerate}
+\end{definition}
+
+The global map is not one Euclidean or Hilbert cube. It is a tagged family
+\[
+\mathfrak M_{F,T}=\bigsqcup_{j\in J}\mathcal M^j
+\]
+plus certified transport links through the BANK. A coordinate in the $P$ fiber does not acquire a metric relation to a numerically equal coordinate in $I^-$. Cross-fiber comparison requires explicitly calibrated quantities such as predicted remaining work, certificate probability, or normalized regret.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.98\textwidth]{figure4_metalogical_fibers_4k.png}
+\caption{Metalogical cartography as a tagged family of proof and metaproof fibers. The meta-cartographer compares settlement-facing information while keeping the local coordinate systems typed. Original image is 3840 by 2160 pixels, black and white.}
+\label{fig:fibers}
+\end{figure}
+
+\subsection{Metalogical residual vectors}
+
+Each role may expose a cartographic residual $\rho_j(t)$, for example MRTD, an unresolved-obligation score, a calibrated UTG heuristic, or another declared quantity. Define the typed vector
+\[
+\boldsymbol\rho(t)=
+\bigl(\rho_P(t),\rho_R(t),\rho_{I^+}(t),\rho_{I^-}(t),\rho_C(t)\bigr).
+\]
+This is a record of five quantities, not automatically a point in one metric space. Comparisons such as ``$R$ is closer than $I^+$'' are meaningful only after the quantities have compatible semantics or are transformed into a common cost prediction.
+
+\subsection{Intrinsic settlement horizons}
+
+Let
+\[
+h_j(B)=d_j(B,\mathcal T_j)
+\]
+be the intrinsic least legal cost from trusted bank $B$ to channel $j$'s certificate region, using that fiber's declared UTG cost. When exact computation is unavailable, a cartographer may maintain an estimate $\widehat h_j$ together with its epistemic status.
+
+For single-certificate outcomes, define
+\[
+H_{\THM}=h_P,
+\qquad
+H_{\REF}=h_R,
+\qquad
+H_{\INC}=h_C.
+\]
+Independence requires both halves. If the resource measure is total service work,
+\[
+H_{\IND}^{\mathrm{work}}=h_{I^+}+h_{I^-}.
+\]
+If the two channels run at full speed in parallel and elapsed time is the resource,
+\[
+H_{\IND}^{\parallel}=\max\{h_{I^+},h_{I^-}\}.
+\]
+This distinction is not cosmetic: the geometry of settlement depends on the resource model.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.98\textwidth]{figure5_settlement_horizons_4k.png}
+\caption{Four settlement outcomes assembled from five local horizons. Independence is inherently a two-lane settlement condition. Original image is 3840 by 2160 pixels, black and white.}
+\label{fig:horizons}
+\end{figure}
+
+\section{The BANK as a primary mathematical object}
+
+The BANK is one of the main reasons to use AMLD rather than five isolated ATPs. It is not merely a cache. It is the trusted shared boundary through which one search can turn another search's completed work into an already-verified road.
+
+\subsection{A typed BANK record}
+
+\begin{definition}[BANK record]
+A BANK record is a tuple
+\[
+b=
+(\mathrm{id},\mathrm{kind},\mathrm{payload},\mathrm{scope},\mathrm{env},
+\mathrm{deps},\mathrm{cert},\mathrm{origin},\mathrm{time},\mathrm{cost},
+\mathrm{utility},\mathrm{parents}).
+\]
+The fields have the following intended roles:
+\begin{itemize}
+\item $\mathrm{payload}$ is the mathematical or certificate object;
+\item $\mathrm{scope}$ records the assumptions under which it is valid;
+\item $\mathrm{env}$ identifies the verifier/formal environment;
+\item $\mathrm{deps}$ and $\mathrm{parents}$ record finite provenance;
+\item $\mathrm{cert}$ is the replayable certificate or verifier receipt;
+\item $\mathrm{origin}$ records which role first produced it without restricting later admissible use;
+\item $\mathrm{time}$ is the deposit time; and
+\item $\mathrm{cost}$ and $\mathrm{utility}$ contain optional accounting and retrieval metadata.
+\end{itemize}
+\end{definition}
+
+The exact schema is extensible. The non-negotiable fields are enough to decide what the item means, where it is valid, and how its validity can be checked.
+
+\subsection{Shared but typed}
+
+The global BANK at time $t$ is
+\[
+\BANK_t=\bigsqcup_{\sigma\in\mathcal S_{\mathrm{scope}}}\BANK_t^{\sigma},
+\]
+where scope tags may distinguish base-theory theorems, $F+T$ results, $F+\neg T$ results, metatheoretic certificates, and cartographic certificates such as proved lower bounds or checked target suffixes.
+
+``Shared'' means every role may inspect the BANK. It does not mean every record is a legal premise in every role. Origin and admissibility are separate questions.
+
+\begin{principle}[Origin neutrality]
+If admissibility of a BANK record is determined by its kind, scope, environment, dependencies, and certificate, then its role of origin does not by itself restrict later use.
+\end{principle}
+
+Thus a lemma first found by $R$ may help $P$, and a base-valid lemma first encountered by an independence search may help $C$. The final stance of a role does not infect intermediate mathematics.
+
+\begin{definition}[Role-visible BANK projection]
+For role $j$, let
+\[
+\View_j(\BANK_t)
+=
+\{b\in\BANK_t:\ b\text{ is admissible in }E_j\text{ under the declared transport and scope rules}\}.
+\]
+Only the payloads/certificates in $\View_j(\BANK_t)$ may be treated as trusted imported premises or metapremises by role $j$. Records outside the projection remain inspectable metadata but are not legal inputs to that role's certificate search.
+\end{definition}
+
+Because the global BANK is deposit-only and admissibility is determined by persistent record metadata rather than by origin, the role-visible projection is monotone whenever the environment and transport rules are held fixed:
+\[
+\BANK_t\subseteq\BANK_{t+1}
+\quad\Longrightarrow\quad
+\View_j(\BANK_t)\subseteq\View_j(\BANK_{t+1}).
+\]
+This projection is the formal device that prevents the later horizon theorems from accidentally treating extension-scoped or metatheoretic records as object-level premises.
+
+\subsection{Deposit-only growth and non-consuming withdrawal}
+
+The BANK trajectory is monotone:
+\[
+\BANK_t\subseteq\BANK_{t+1}
+\]
+until terminal freezing, if the implementation freezes after settlement. ``Withdrawal'' means reading or importing a finite compatible set; it does not remove the original records. One turn can therefore be represented as
+\[
+\begin{aligned}
+\BANK_t
+&\longrightarrow \text{read compatible records}
+\longrightarrow \text{search/propose}\\
+&\longrightarrow \text{verify}
+\longrightarrow \text{deposit at most one new trusted record}.
+\end{aligned}
+\]
+The ``at most one'' convention is convenient for atomic accounting; batching can be modeled as several atomic deposits.
+
+\subsection{Logical BANK, cartographic BANK, and verifier history}
+
+For safety and analysis it is useful to distinguish
+\[
+\BANK_t^{\mathrm{logic}}
+\qquad\text{from}\qquad
+K_t^{\mathrm{cart}}
+\qquad\text{and}\qquad
+H_t^V.
+\]
+The logical BANK stores admitted or certified reusable content. The cartographic state may store heuristics and predictions. The verifier history may record rejected, malformed, duplicated, or expensive proposals. A rejected proposal may teach the search system something, but it does not become a theorem.
+
+\begin{theorem}[Verifier-gated noncontamination]
+Assume (i) $\BANK_0^{\mathrm{logic}}$ contains only admitted seed records and valid certified imports, (ii) every derived logical deposit is accepted by a sound verifier for its declared environment and scope, and (iii) neither cartographic state nor verifier history can bypass the admission gate. Then every finite $\BANK_t^{\mathrm{logic}}$ contains only admitted or validly certified records of their declared types and scopes.
+\end{theorem}
+\begin{proof}
+Induct on deposit steps. The base case is assumption (i). A rejected, speculative, or merely cartographic item does not change the logical BANK by assumption (iii). Any new logical entry is certified by assumption (ii). Hence the invariant is preserved.
+\end{proof}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.98\textwidth]{figure6_bank_lifecycle_4k.png}
+\caption{The lifecycle of a BANK record. Search proposals and verified deposits are deliberately separated. Original image is 3840 by 2160 pixels, black and white.}
+\label{fig:lifecycle}
+\end{figure}
+
+\subsection{Scope transport}
+
+\begin{definition}[Certificate-preserving transport]
+For certificate environments $E$ and $E'$, write
+\[
+E\rightsquigarrow E'
+\]
+when a declared transport procedure converts every eligible BANK certificate from $E$ into a certificate accepted in $E'$ without strengthening its conclusion beyond the recorded scope.
+\end{definition}
+
+For ordinary object-level theorem extension, a theorem proved from base $F$ is typically usable in $F+T$ and $F+\neg T$. The reverse direction is not automatic. A lemma proved only under assumption $T$ may not be imported into the base $F$-BANK unless it is independently discharged or re-certified there.
+
+\begin{theorem}[No-backflow soundness]
+Let $b$ certify $F+T\vdash L$. If no certificate for $F\vdash L$ is available and no declared discharge rule transforms the first certificate into the second, then depositing $L$ into the base $F$-BANK is not justified by $b$ alone.
+\end{theorem}
+\begin{proof}
+The certificate's recorded assumption set contains $T$. A base-bank deposit would assert validity from a strictly weaker scope. Removing an undischarged assumption is not licensed merely by reuse. Therefore the original certificate does not establish the required base judgment.
+\end{proof}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.98\textwidth]{figure2_typed_bank_transport_4k.png}
+\caption{A schematic transport discipline. Base-valid material can usually flow into extensions; extension-specific results do not silently flow back into the base. Original image is 3840 by 2160 pixels, black and white.}
+\label{fig:transport}
+\end{figure}
+
+\subsection{BANK--SIC bridge}
+
+The BANK can be represented as a SIC-like monotone computation once its record metadata are projected to a declared content language; this formalizes the BANK--SIC bridge developed in the settlement manuscript \cite{VerifiedSettlement}.
+
+\begin{proposition}[BANK--SIC representation]
+Assume a BANK trajectory $\BANK_0,\BANK_1,\ldots$ satisfies: (B1) seed correctness $\operatorname{cont}(\BANK_0)=\Gamma$; (B2) monotone deposit $\BANK_m\subseteq\BANK_{m+1}$ before terminalization; (B3) a persistent terminal flag; and (B4) terminal freezing. Define, for $m\ge1$,
+\[
+C_D(\Gamma,m)=\operatorname{cont}(\BANK_{m-1}),
+\]
+and let $H_D(\Gamma,m)=1$ exactly when settlement has already occurred by BANK stage $m-1$. Then $(C_D,H_D)$ satisfies the SIC seed, monotonicity, persistent-halting, and frozen-after-halting axioms over the declared content language. Verifier gating is an additional semantic invariant ensuring that the monotone content is certified rather than arbitrary.
+\end{proposition}
+\begin{proof}
+(B1) gives $C_D(\Gamma,1)=\Gamma$. By (B2), content is monotone. By (B3), once $H_D$ becomes $1$ it remains $1$, and by (B4) the BANK content thereafter freezes. These are the corresponding SIC structural axioms. Verifier gating is not needed for the set-theoretic SIC shape, but supplies the intended logical meaning of BANK growth.
+\end{proof}
+
+\section{BANK geometry: why certified accumulation can shorten settlement}
+
+\subsection{Monotonicity of intrinsic horizon}
+
+\begin{definition}[Role horizon from a BANK]
+For a role $j$ and trusted bank $B$, let
+\[
+h_j(B)=\inf\{\cost_j(\pi):\pi\text{ is a legal certificate-producing route from }B\text{ into }\mathcal T_j\}.
+\]
+Set $h_j(B)=\infty$ if the target certificate region is unreachable.
+\end{definition}
+
+\begin{theorem}[BANK horizon monotonicity]
+Suppose $B\subseteq B'$ and the proof system is monotone in admitted premises: every legal route available from $B$ remains legal from $B'$. Then
+\[
+\boxed{h_j(B')\le h_j(B).}
+\]
+\end{theorem}
+\begin{proof}
+Every legal route from $B$ is also a legal route from $B'$. Therefore the set over which the infimum defining $h_j(B')$ is taken contains the set used for $h_j(B)$. Infimizing over a superset cannot increase the value.
+\end{proof}
+
+This theorem is geometric, not yet algorithmic. It says that certified accumulation cannot make the \emph{best legal route} intrinsically longer. It does not say a particular search implementation will find that route faster. It also uses the standard ``free starting information'' convention: the cost of having already acquired the enlarged bank is not included in the remaining horizon.
+
+\begin{corollary}[Global BANK monotonicity through typed visibility]
+Fix role $j$ and its environment/transport rules. If $\BANK_t\subseteq\BANK_{t+1}$, then
+\[
+h_j\!\left(\View_j(\BANK_{t+1})\right)
+\le
+h_j\!\left(\View_j(\BANK_t)\right).
+\]
+\end{corollary}
+\begin{proof}
+The role-visible projections are monotone, and BANK horizon monotonicity applies to those trusted role-local premise sets.
+\end{proof}
+
+\begin{definition}[Settlement-horizon gain of a deposit]
+For a compatible verified record $L$, define
+\[
+G_j(L\mid B)=h_j(B)-h_j(B\cup\{L\}).
+\]
+A record is a \emph{strict shared-road shortcut} for role $j$ at $B$ if $G_j(L\mid B)>0$.
+\end{definition}
+
+Raw horizon gain is not an amortized speedup measure, because it starts after $L$ is already available. If acquiring, certifying, distributing, and importing $L$ costs $c_{\mathrm{acq}}(L)$ in the comparison being made, an acquisition-aware scalar can be defined by
+\[
+G_j^{\mathrm{net}}(L\mid B)=G_j(L\mid B)-c_{\mathrm{acq}}(L).
+\]
+Unlike raw horizon gain, $G_j^{\mathrm{net}}$ need not be nonnegative.
+
+\begin{corollary}[Nonnegative intrinsic BANK gain]
+Under the hypotheses of BANK horizon monotonicity,
+\[
+G_j(L\mid B)\ge0
+\]
+for every admissible deposit $L$.
+\end{corollary}
+
+\subsection{Why this is not yet a runtime theorem}
+
+A larger BANK can increase retrieval cost, indexing cost, or branching if every stored formula is indiscriminately injected into the active search frontier. Therefore
+\[
+h_j(B\cup\{L\})\le h_j(B)
+\]
+does not imply
+\[
+\tau_j(B\cup\{L\})\le \tau_j(B)
+\]
+for an arbitrary implementation.
+
+To prove a runtime statement, the BANK interface must be specified. The next sections do that.
+
+\section{The round-robin no-BANK baseline}
+
+The comparison requested in this paper is not ``BANK versus every possible non-BANK algorithm.'' It is a controlled architectural comparison.
+
+\begin{definition}[RR0: strict round robin, no shared BANK]
+RR0 is an AMLD-5 execution with five private role banks $B_t^j$ and a fixed cyclic scheduler
+\[
+P,R,I^+,I^-,C,P,R,I^+,I^-,C,\ldots
+\]
+Each service tick gives one role one atomic unit of search work. A certified lemma produced by one role remains private unless it belongs to the common initial seed. No foreign intermediate certificate may be imported by another role.
+\end{definition}
+
+\begin{definition}[RRB: trace-coupled round robin with verified BANK]
+RRB has the same role implementations, initial states, terminal policy, random seeds, and service-slot order as RR0, but additionally maintains a global verified BANK. RRB satisfies:
+\begin{enumerate}[label=(R\arabic*)]
+\item \textbf{Optionality:} a role may ignore any BANK record and reproduce its RR0 action sequence.
+\item \textbf{Compatibility:} only scope-compatible verifier-certified records may be imported.
+\item \textbf{Quota preservation:} BANK presence does not remove or delay any role's scheduled service slot.
+\item \textbf{Passive indexing:} a deposit does not automatically expand the receiving role's active frontier; it is imported only by an explicit query or matching doorway.
+\item \textbf{Side-band base theorem:} for the first dominance theorem, lookup and import do not consume the role-service slots used to define RR0 time. A charged-cost version follows later.
+\end{enumerate}
+\end{definition}
+
+Conditions (R1)--(R4) are not merely conveniences. They isolate the question ``what does reusable verified information buy?'' from unrelated scheduler changes and from the known possibility that an unfiltered lemma library can hurt search.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.98\textwidth]{figure3_bank_acceleration_4k.png}
+\caption{The comparison underlying the acceleration theorem. RR0 repeats private derivations. RRB allows a compatible certified lemma to be derived once and reused. Original image is 3840 by 2160 pixels, black and white.}
+\label{fig:acceleration}
+\end{figure}
+
+\section{The BANK helps AMLD reach settlement faster: precise theorems}
+
+The informal sentence ``the BANK helps AMLDs reach settlement faster than round robin no bank'' needs hypotheses and a precise meaning of ``helps.'' Without them it is false. A BANK-aware controller can make bad choices, and a large store can impose overhead. The clean mathematical statement is first a \emph{policy-space} theorem: optional access to verified shared information enlarges the set of available strategies, so the best achievable settlement time cannot become worse. A second theorem gives conditions for strict improvement.
+
+\subsection{Rolewise coupling and policy classes}
+
+For role $j$, let $N_j^0(t)$ be the number of RR0 service quanta received by global tick $t$, and $N_j^B(t)$ the corresponding number in RRB. Quota preservation gives
+\[
+N_j^B(t)=N_j^0(t)
+\]
+for all $j,t$.
+
+Let $\mathfrak P_0$ be the class of admissible control policies for RR0 under the fixed cyclic service order, and let $\mathfrak P_B$ be the corresponding class for RRB. Exogenous randomness is coupled: one may either fix the same seed in both systems or include the seed in the policy/state so that the emulation below is pointwise. Condition (R1) gives an embedding
+\[
+e:\mathfrak P_0\hookrightarrow\mathfrak P_B
+\]
+obtained by ignoring all foreign BANK records. If $\pi$ is a policy, write $\tau_0(\pi,T)$ or $\tau_B(\pi,T)$ for its settlement tick, with value $\infty$ when it does not settle. Define the best achievable times
+\[
+\tau_0^*(T)=\inf_{\pi\in\mathfrak P_0}\tau_0(\pi,T),
+\qquad
+\tau_B^*(T)=\inf_{\pi\in\mathfrak P_B}\tau_B(\pi,T).
+\]
+For discrete scheduler ticks, a finite infimum is a minimum whenever some policy settles.
+
+\begin{lemma}[Baseline emulation]
+For every $\pi\in\mathfrak P_0$, the embedded policy $e(\pi)$ can reproduce the RR0 execution under the same initial states, seeds, service quotas, and terminal policy. Hence
+\[
+\tau_B(e(\pi),T)=\tau_0(\pi,T)
+\]
+when BANK operations are side-band as in (R5).
+\end{lemma}
+\begin{proof}
+The policy $e(\pi)$ never imports a foreign BANK record and chooses exactly the RR0 action on each scheduled role turn. Conditions (R2)--(R5) ensure that the existence of the BANK neither changes the trusted premises used by this emulation nor removes a scheduled service slot. Induction over global scheduler ticks therefore gives the same private role states and the same first terminal event.
+\end{proof}
+
+\begin{theorem}[Round-Robin BANK Policy-Space Dominance]
+Under (R1)--(R5), sound verification, and the same monotone terminal policy,
+\[
+\boxed{\tau_B^*(T)\le \tau_0^*(T).}
+\]
+Thus optional verified sharing cannot worsen the \emph{best achievable} settlement time under the matched round-robin service model.
+\end{theorem}
+
+\begin{proof}
+The embedded set $e(\mathfrak P_0)$ is a subset of $\mathfrak P_B$, and the Baseline Emulation Lemma preserves the settlement time of every RR0 policy. Therefore
+\[
+\inf_{\pi_B\in\mathfrak P_B}\tau_B(\pi_B,T)
+\le
+\inf_{\pi_0\in\mathfrak P_0}\tau_B(e(\pi_0),T)
+=
+\inf_{\pi_0\in\mathfrak P_0}\tau_0(\pi_0,T).
+\]
+This is the stated inequality.
+\end{proof}
+
+This theorem is deliberately about architectural capability, not about every BANK-aware controller. Mathematically it is a policy-set inclusion result: because ``ignore the BANK'' remains an admissible action, the optimum over the larger policy class cannot be worse. It is therefore a useful safety baseline but not, by itself, evidence of practical speedup. A particular heuristic controller can still be slower than a particular no-BANK controller; that remains an empirical and algorithm-design question.
+
+\subsection{Strict speedup from a shared road}
+
+Weak policy-space dominance is not yet the stronger intuition. Strict acceleration requires a BANK deposit that produces an actually shorter settlement witness.
+
+\begin{definition}[Bottleneck lane of a settlement witness]
+For THEOREM, REFUTABLE, or INCONSISTENT settlement, the certificate-producing role is the bottleneck lane. For INDEPENDENT under parallel elapsed time, a bottleneck lane is an independence role whose completion time realizes
+\[
+\max\{\tau_{I^+},\tau_{I^-}\}.
+\]
+If the two lanes tie, both are bottlenecks.
+\end{definition}
+
+\begin{definition}[Baseline-free available deposit]
+Relative to a coupled RR0/RRB comparison and witness $w_0$, a shared record $L$ is \emph{baseline-free available by tick $t$} if some producer role derives and deposits $L$ by tick $t$ while following service work that is already present in its coupled RR0 trace up to that point. Thus making $L$ shareable requires no extra producer service quantum before $t$ beyond the matched baseline work; distribution/import cost is handled separately.
+\end{definition}
+
+\begin{theorem}[Strict shared-road acceleration from an available deposit]
+Assume RR0 has a fastest settlement witness $w_0$ at time $\tau_0^*(T)<\infty$. Suppose a compatible record $L$ is baseline-free available in RRB before each affected consumer would begin the baseline derivation segment that $L$ replaces. Suppose further that, on every lane determining the final elapsed-time bottleneck of $w_0$, importing $L$ deletes at least one positive number of scheduled role-service quanta, leaves all certificate dependencies valid, has zero role-service import cost under (R5), and creates no new unreduced bottleneck of equal or greater completion time. Then
+\[
+\boxed{\tau_B^*(T)<\tau_0^*(T).}
+\]
+\end{theorem}
+
+\begin{proof}
+Because $L$ is baseline-free available, the producer does not consume extra pre-deposit service relative to the coupled RR0 trace. Replacing the designated consumer derivation segments therefore yields a valid RRB witness $w_B$ in which every lane attaining the baseline elapsed-time maximum completes after strictly fewer of its own scheduled quanta. No unchanged or newly burdened lane reaches the old maximum by hypothesis. Under the same cyclic scheduler, the terminal certificate is consequently assembled at a strictly earlier global tick. Hence
+\[
+\tau_B^*(T)\le \tau_B(w_B,T)<\tau_0(w_0,T)=\tau_0^*(T).
+\]
+\end{proof}
+
+\begin{corollary}[Five-tick effect for a one-lane unit-cost witness]
+In strict five-role cyclic scheduling with zero side-band import cost, if a baseline-free available shared certificate removes $s$ scheduled service quanta from the unique bottleneck role of a fastest one-lane RR0 witness, does not alter the schedule phase, and settlement is recorded immediately when that role's certificate is accepted, then the constructed RRB witness completes exactly $5s$ global scheduler ticks earlier.
+\end{corollary}
+
+\subsection{Charged BANK overhead}
+
+The side-band assumption isolates the value of reusable mathematics, but real systems pay for serialization, indexing, verification, transmission, retrieval, and replay. Those costs can be charged explicitly.
+
+Let $w_0$ be a fixed RR0 settlement witness. Suppose a derivation segment of cost $a_{jL}>0$ in consumer role $j$ can be replaced by importing compatible record $L$. Let
+\[
+\iota_{jL}\ge0
+\]
+be the consumer's import/replay cost. Let $\delta_L\ge0$ be the one-time BANK serialization, indexing, and distribution cost. Let $p_L\ge0$ be an upper bound on any \emph{additional producer work} required in RRB to obtain $L$ that is not already present in the coupled RR0 witness. For a baseline-free available record, $p_L=0$.
+
+\begin{theorem}[Charged BANK Work-Savings Theorem]
+Let $\mathcal U$ be a set of nonoverlapping consumer-record substitutions that transforms a valid RR0 witness $w_0$ into a valid RRB witness $w_B$. Then
+\[
+W(w_B)
+\le
+W(w_0)
+-
+\sum_{(j,L)\in\mathcal U}a_{jL}
++
+\sum_{(j,L)\in\mathcal U}\iota_{jL}
++
+\sum_{L\in\operatorname{used}(\mathcal U)}(\delta_L+p_L).
+\]
+Consequently, if
+\[
+\boxed{
+\sum_{(j,L)\in\mathcal U}(a_{jL}-\iota_{jL})
+>
+\sum_{L\in\operatorname{used}(\mathcal U)}(\delta_L+p_L),
+}
+\]
+then $W(w_B)<W(w_0)$. If $w_0$ is a minimum-work RR0 settlement witness, the best achievable RRB work is strictly smaller than the best achievable RR0 work.
+\end{theorem}
+
+\begin{proof}
+Begin with $w_0$. For each pair $(j,L)\in\mathcal U$, delete the designated nonoverlapping baseline segment of cost $a_{jL}$ and substitute its certified import/replay operation of cost $\iota_{jL}$. Add each one-time sharing cost $\delta_L$ and each additional production cost $p_L$ once. Every other part of the settlement witness is unchanged, so the displayed upper bound is obtained by direct accounting. The strict inequality follows when the net saving is positive. If $w_0$ is minimum-work for RR0, the existence of the cheaper valid RRB witness implies strict policy-space work improvement.
+\end{proof}
+
+This theorem formalizes a \emph{shared lemma economy}: one verified derivation is computationally advantageous when the duplicate certified work it replaces exceeds any extra production cost plus the cost of making that derivation reusable.
+
+\subsection{What has and has not been proved}
+
+The theorems do not say that every BANK implementation or every BANK-aware heuristic beats every no-BANK execution. They establish three narrower facts:
+\begin{enumerate}[label=(\arabic*)]
+\item the shared-BANK architecture contains the no-BANK policy space, so its best achievable matched-schedule settlement time is no worse;
+\item a baseline-free compatible shared road gives strict earlier settlement when it is available before use, shortens every elapsed-time bottleneck of a fastest no-BANK witness, and creates no replacement bottleneck; and
+\item after explicit acquisition and sharing costs are charged, strict work savings occur whenever avoided certified rederivation exceeds additional production, import, and distribution overhead along the constructed witness.
+\end{enumerate}
+Actual heuristic speedup on benchmark families remains a falsifiable experimental claim, addressed below.
+
+\section{Metalogical rendezvous and BANK-mediated meeting regions}
+
+Ordinary proof cartography uses obligation regions
+\[
+C_O=\{B:O\subseteq B\}
+\]
+for a finite obligation set $O$. A backward search need not invert proof edges; it can identify conditions sufficient to activate a checked suffix.
+
+In AMLD, each role has such target-facing regions. The BANK creates an additional mechanism: an obligation can be closed by a lemma discovered in a different role and transported legally into the receiving environment.
+
+\begin{definition}[Cross-role rendezvous]
+A \emph{cross-role rendezvous} occurs when role $k$ deposits a record $L$ into the global BANK, $E_k\rightsquigarrow E_j$ permits its transport to role $j$, and importing $L$ causes $B_t^j$ to enter a certified obligation region $C_O^j$ that it had not previously reached.
+\end{definition}
+
+This is stronger than ``two searches both looked near the same address.'' The meeting is defined by a certificate-preserving logical event.
+
+For independence, settlement itself is a paired rendezvous:
+\[
+\mathcal T_{\IND}=\mathcal T_{I^+}\times\mathcal T_{I^-}.
+\]
+The two channels need not meet in one proof graph. They meet at the settlement layer when both required metacertificates exist.
+
+\section{AMLD scheduling as metalogical navigation}
+
+Let
+\[
+a_P(t)+a_R(t)+a_{I^+}(t)+a_{I^-}(t)+a_C(t)=1,
+\qquad a_j(t)\ge0,
+\]
+represent a normalized resource allocation at time $t$. A fairness floor can require
+\[
+a_j\ge\varepsilon>0
+\]
+over declared service windows, preventing a cartographic prediction from starving a genuinely necessary lane.
+
+A metalogical cartographer may use:
+\begin{itemize}
+\item local residuals $\rho_j(t)$ and their recent improvements;
+\item certified horizon bounds $L_j\le h_j\le U_j$;
+\item BANK deposits and foreign-deposit utilization;
+\item waiting-frame counts and doorway closure rates;
+\item bottlenecks and proof-horizon regret;
+\item verifier load and certificate replay cost;
+\item uncertainty and calibration quality; and
+\item stagnation or depth-charge triggers.
+\end{itemize}
+
+The scheduler's output is not a theorem. It is a decision about where the next unit of search work should be spent.
+
+\begin{definition}[Metalogical cartographic control state]
+A convenient control record is
+\[
+K_t^{\mathrm{AMLD}}
+=
+\left(
+\{\mathcal M_t^j\}_{j\in J},
+\boldsymbol\rho(t),
+\widehat{\mathbf h}(t),
+\BANK_t,
+\mathbf a(t),
+U_t^{\mathrm{meta}}
+\right).
+\]
+\end{definition}
+
+\begin{principle}[Metalogical noninheritance]
+No residual, ranking, predicted outcome, pheromone value, scheduler decision, or cartographic horizon becomes a settlement certificate merely by occurring in $K_t^{\mathrm{AMLD}}$.
+\end{principle}
+
+\section{Prior art and the boundary of the proposed field}
+
+Metalogical cartography has recognizable ancestors. They should be stated plainly.
+
+\subsection{Blackboard systems}
+
+Blackboard architectures predate AMLD by decades. HEARSAY-II and later blackboard systems organize multiple knowledge sources around a shared evolving data structure and a control/scheduling mechanism \cite{Nii}. The AMLD BANK is therefore not historically novel merely because it is shared. The difference claimed here is its use as a \emph{typed, certificate-governed proof and metaproof memory} embedded in a settlement geometry.
+
+\subsection{Cooperating and parallel theorem provers}
+
+Automated deduction has a substantial literature on parallel inference systems and cooperating theorem provers. Denzinger and Dahn's ``Cooperating Theorem Provers'' is explicit prior art for coordination among theorem-proving processes \cite{DenzingerDahn}. LEO-II is documented as pioneering cooperative higher-order--first-order proof automation \cite{LEOII}.
+
+The present framework does not claim to invent cooperation. It adds a particular typed settlement decomposition, UTG distance structure, MAPQUEST cartography, and explicit terminal semantics.
+
+\subsection{Portfolio and distributed SAT clause sharing}
+
+Modern parallel and distributed SAT solving provides especially close computational prior art for the BANK speedup idea. Portfolio solvers can share learned clauses, and proof-producing work has shown how provenance/dependency information from distributed clause sharing can be composed into independently checkable unsatisfiability proofs \cite{Michaelson2025}. Gimsatul is also explicit prior art for aggressive clause sharing together with proof production \cite{Gimsatul}. These results support the plausibility of a shared-lemma economy but do not prove the AMLD theorems, whose conclusions depend on the explicit typed, trace-coupled model defined here.
+
+\subsection{Trusted kernels and certificate boundaries}
+
+LCF-style theorem proving is close prior art for the distinction between aggressive search and conservative logical admission \cite{GordonLCF}. AMLD's cartographic and scheduling layers can be heuristic because the BANK's trusted portion remains verifier-gated.
+
+\subsection{Novelty claim}
+
+The proposed research contribution is organizational and geometric, not atomistic. Metalogical cartography combines:
+\begin{enumerate}[label=(\roman*)]
+\item a five-fiber settlement architecture aimed at theoremhood, refutability, independence, and inconsistency;
+\item UTG-style intrinsic directed distances inside each legal certificate fiber;
+\item MAPQUEST-style addresses, target cones, waiting frames, and cartographic residuals;
+\item a shared but typed, provenance-preserving BANK with explicit cross-environment transport;
+\item metalogical residual and settlement-horizon constructions; and
+\item theorems that distinguish intrinsic BANK monotonicity from runtime acceleration under a specified scheduler model.
+\end{enumerate}
+The term \emph{metalogical cartography} is proposed here for that combined research object. Historical priority beyond this exact formulation would require a broader literature and patent review.
+
+\section{Research program}
+
+A cornerstone paper should leave testable questions rather than only terminology.
+
+\subsection{BANK ablation experiment}
+
+Use the same AMLD-5 implementation, target set, verifier, seeds, budgets, and strict round-robin schedule. Compare:
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Condition & Five lanes & Shared BANK & Purpose \\
+\midrule
+A1 & yes & no & round-robin no-BANK baseline \\
+A2 & yes & yes, side-band indexed & isolate reuse benefit \\
+A3 & yes & yes, charged costs & realistic sharing cost \\
+A4 & yes & yes, unfiltered & measure distraction/indexing failure mode \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Primary quantities should include settlement rate, wall-clock time, total expansions, service quanta per role, number of foreign deposits used in the winning certificate, BANK retrieval cost, proof/certificate size, and replay time.
+
+\begin{hypothesis}[Shared-BANK effect]
+On some nontrivial benchmark families with reusable intermediate lemmas, A2 settles more targets per fixed service budget or reaches settlement in fewer service ticks than A1.
+\end{hypothesis}
+
+\begin{hypothesis}[Net-reuse predictor]
+The measured quantity
+\[
+\widehat{\Delta W}
+=
+\sum(a_{jL}-\iota_{jL})-\sum(\delta_L+p_L)
+\]
+will predict the sign of realized BANK benefit more reliably than raw BANK size or raw MRTD reduction.
+\end{hypothesis}
+
+\begin{hypothesis}[Typed filtering beats unfiltered injection]
+A3 will outperform A4 on sufficiently large BANKs because scope-aware, query-based retrieval avoids turning logically valid but irrelevant information into branching overhead.
+\end{hypothesis}
+
+\subsection{Cartographic questions}
+
+Several mathematical questions follow naturally.
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+\item Under what conditions can a local MAPQUEST residual be calibrated into an admissible lower bound on a role's UTG horizon?
+\item Can cross-role BANK transport be represented as a nonexpansive map between formal-system fibers?
+\item Is there a useful curvature or bottleneck invariant for settlement regions that predicts the value of lemma sharing?
+\item How should BANK resolution be allocated: high provenance detail everywhere, or target-relative detail concentrated near likely cross-role doorways?
+\item Can a learned meta-cartographer predict which role will produce the next high-gain BANK deposit without encoding theoremhood in its features?
+\item What is the optimal tradeoff between BANK sharing frequency and communication/replay overhead in distributed AMLD implementations?
+\end{enumerate}
+
+\section{Cornerstone theorem summary}
+
+The theory developed here can be compressed into the following chain.
+
+\begin{enumerate}[label=\textbf{T\arabic*.}]
+\item \textbf{Verifier-gated noncontamination.} Trusted BANK content remains certified when speculative state cannot bypass verification.
+\item \textbf{No-backflow soundness.} Extension-scoped certificates do not silently become base-theory certificates.
+\item \textbf{BANK horizon monotonicity.} Enlarging a trusted premise bank cannot increase the intrinsic least legal cost to a fixed certificate region in a monotone proof system.
+\item \textbf{Round-Robin BANK Policy-Space Dominance.} Optional, verifier-gated sharing enlarges the matched round-robin policy space, so the best achievable BANK settlement time is no worse than the best achievable no-BANK time.
+\item \textbf{Strict shared-road acceleration.} A baseline-free compatible certified shortcut yields a strictly faster witness when it is available before use, removes positive work from every elapsed-time bottleneck of a fastest no-BANK witness, and creates no new bottleneck.
+\item \textbf{Charged BANK work savings.} With explicit acquisition and sharing costs, a constructed BANK witness is cheaper when the certified rederivation it avoids exceeds additional production, import, and distribution overhead.
+\end{enumerate}
+
+The main conceptual claim is therefore not that ``more lemmas always make a prover faster.'' They do not. The stronger and defensible statement is:
+\[
+\boxed{
+\begin{minipage}{0.82\linewidth}
+A verifier-gated, typed, optionally queried shared BANK is a geometric shortcut mechanism. It cannot increase the intrinsic best legal settlement horizon, and its policy space contains the matched no-BANK round-robin policy space. It gives strict acceleration under explicit availability and bottleneck hypotheses, and strict work savings when avoided certified rederivation exceeds all counted additional production and sharing costs.
+\end{minipage}}
+\]
+
+\section{Conclusion}
+
+Metalogical cartography treats conjecture settlement as a family of coupled but nonidentical navigation problems. $P$ maps routes to a proof of $T$; $R$ maps routes to a proof of $\neg T$; $I^+$ and $I^-$ map routes to the two metacertificates needed for independence; and $C$ maps routes to inconsistency. UTG supplies the intrinsic road geometry. MAPQUEST supplies addressable navigation, target cones, waiting frames, and fair search. Proof cartography supplies the epistemic boundary between maps and proofs. AMLD supplies the settlement semantics.
+
+The BANK is the connective tissue. It makes verified mathematical work reusable across search roles without turning those roles into one undifferentiated prover. The BANK's scope tags preserve the fact that $F$, $F+T$, $F+\neg T$, and the metatheory are not the same environment. Its provenance preserves replayability. Its monotone deposits accumulate roads that need not be rebuilt. Its optional retrieval interface turns sharing into a potential shortcut rather than mandatory search clutter; whether a practical controller realizes that potential is an algorithmic and empirical question.
+
+The resulting research program sits at the intersection of mathematical logic, automated deduction, distributed reasoning, search theory, and discrete geometry. Its central object is neither a proof graph alone nor a multi-agent system alone, but a typed geometric atlas of possible settlement together with a certificate-regulated economy of shared roads.
+
+\appendix
+\section{Notation table}
+
+\begin{longtable}{@{}p{0.20\textwidth}p{0.73\textwidth}@{}}
+\toprule
+Symbol & Meaning \\
+\midrule
+$F=(\Sigma,\Gamma,R,V)$ & Object-level formal environment. \\
+$M$ & Declared metatheory or certificate framework used by consistency/independence channels. \\
+$J$ & $\{P,R,I^+,I^-,C\}$. \\
+$B_t^j$ & Trusted local BANK for role $j$. \\
+$\BANK_t$ & Global typed verified BANK. \\
+$\View_j(\BANK_t)$ & Scope- and environment-compatible projection visible to role $j$. \\
+$\mathcal M_t^j$ & Cartographic state for role $j$. \\
+$\rho_j(t)$ & Role-specific cartographic residual. \\
+$h_j(B)$ & Intrinsic least legal cost from $B$ to role $j$'s certificate region. \\
+$G_j(L\mid B)$ & Intrinsic horizon gain produced by admissible record $L$. \\
+$\rightsquigarrow$ & Declared certificate-preserving environment transport relation. \\
+$\Pi_{\mathrm{term}}$ & Declared terminal/priority policy. \\
+RR0 & Strict round robin, no shared BANK. \\
+RRB & Trace-coupled strict round robin with shared verified BANK. \\
+$a_{jL}$ & Baseline derivation work avoided in consumer $j$ by record $L$. \\
+$\iota_{jL}$ & Import/replay cost of $L$ in role $j$. \\
+$\delta_L$ & One-time BANK serialization/indexing/distribution overhead for $L$. \\
+$p_L$ & Additional producer work needed to obtain $L$ beyond the coupled RR0 witness. \\
+\bottomrule
+\end{longtable}
+
+\section{Source and audit notes}
+
+The AMLD-5 role decomposition, shared verified BANK, residual vector, no-free-parallelism warning, protected-emulation idea, shared-road shortcut, independence parallelism, and experimental ablation structure are developed from the working AMLD-5 settlement manuscript. The BANK--SIC bridge and its seed/monotonicity/verifier/freezing axioms are developed from the Verified Settlement Search manuscript. The distinction between trusted WFF bank and cartographic/control state, together with certified handoff and obligation regions, follows the post-audit Proof Cartography paper. MAPQUEST source manuscripts supply Hilbert-fair recurrence, target cones, waiting frames, verifier-gated BANK growth, target certification, and the warning that address residual is not automatically proof distance. UTG II supplies the weighted directed proof-distance language and the map/road/cost distinction.
+
+This post-audit edition makes several technical repairs explicit. First, $I^+$ and $I^-$ are metatheoretic certificate channels, and paired consistency certificates imply syntactic independence only under a stated soundness/contradiction discipline. Second, global BANK contents are filtered through a role-visible admissibility projection before they can affect a role horizon. Third, raw horizon gain is distinguished from acquisition-aware gain. Fourth, strict shared-road acceleration now requires a deposit to be available without hidden extra producer work before it is used, while the charged work theorem explicitly includes any extra production cost $p_L$. Finally, the source package now includes the six referenced 3840-by-2160 grayscale figures so that the LaTeX is reproducible. The paper retains the countervailing fact that a badly indexed or mandatory shared memory can slow search.
+
+\begin{thebibliography}{99}
+
+\bibitem{AMLD5}
+B. Tenneson, ``AMLD-5: Five-MAPQUEST Settlement System,'' working research note, 2026.
+
+\bibitem{VerifiedSettlement}
+B. Tenneson, ``Verified Settlement Search,'' Version 2.5, working manuscript, 2026.
+
+\bibitem{ProofCartography}
+B. Tenneson, ``Proof Cartography in Semi-Ideal Computation: Resolution, Difficulty, Direction, Certified Handoff, and Deterministic/Nondeterministic Proof Search,'' Post-Audit Formal Edition, 2026.
+
+\bibitem{MQFair}
+B. Tenneson, ``MAPQUEST: Hilbert-Fair Navigation -- From Addressable Inferences to a Verified Target,'' working research draft, 2026.
+
+\bibitem{MQCert}
+B. Tenneson, ``MAPQUEST III: Target Certification -- When Reaching $T$ Becomes a Verified Proof,'' working research draft, 2026.
+
+\bibitem{MQRect}
+B. Tenneson, ``Rectilinear Target Distance in MAPQUEST,'' corrected and strengthened edition, 2026.
+
+\bibitem{UTGII}
+B. Tenneson, ``Universal Theorem Geometry II: Weighted Geodesics, Heuristic Calibration, and MAPQUEST Navigation,'' Version 2.0, 2026.
+
+\bibitem{Nii}
+H. P. Nii, ``Blackboard Systems,'' Stanford Computer Science Report STAN-CS-86-1123, 1986.
+
+\bibitem{DenzingerDahn}
+J. Denzinger and I. Dahn, ``Cooperating Theorem Provers,'' in W. Bibel and P. H. Schmitt (eds.), \emph{Automated Deduction -- A Basis for Applications}, Applied Logic Series 9, pp. 383--416, Springer, 1998.
+
+\bibitem{GordonLCF}
+M. J. C. Gordon, R. Milner, and C. P. Wadsworth, \emph{Edinburgh LCF: A Mechanised Logic of Computation}, Lecture Notes in Computer Science 78, Springer, 1979.
+
+\bibitem{Bundy}
+A. Bundy, ``The Use of Explicit Plans to Guide Inductive Proofs,'' in \emph{CADE-9}, Lecture Notes in Computer Science 310, pp. 111--120, Springer, 1988.
+
+\bibitem{Michaelson2025}
+D. Michaelson, D. Schreiber, M. J. H. Heule, B. Kiesl-Reiter, et al., ``Producing Proofs of Unsatisfiability with Distributed Clause-Sharing SAT Solvers,'' \emph{Journal of Automated Reasoning} 69, article 12, 2025. doi:10.1007/s10817-025-09725-w.
+
+\bibitem{Gimsatul}
+M. Fleury and A. Biere, ``Scalable Proof Producing Multi-Threaded SAT Solving with Gimsatul through Sharing instead of Copying Clauses,'' arXiv:2207.13577, 2022.
+
+\bibitem{LEOII}
+C. Benzm\"uller, N. Sultana, L. C. Paulson, and F. Thei\ss, ``The Higher-Order Prover Leo-II," \emph{Journal of Automated Reasoning} 55(4), 389--404, 2015. doi:10.1007/s10817-015-9348-y.
+
+\end{thebibliography}
+
+\end{document}
