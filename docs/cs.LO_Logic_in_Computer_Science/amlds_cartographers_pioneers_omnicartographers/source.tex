@@ -1,0 +1,1302 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs,array,longtable,tabularx}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{principle}[definition]{Principle}
+\newtheorem{warning}[definition]{Limitation}
+
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\Ind}{\operatorname{Ind}}
+\newcommand{\Dep}{\operatorname{Dep}}
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\AMLD}{\mathrm{AMLD}}
+\newcommand{\Omni}{\Omega}
+\newcommand{\Sett}{\Sigma}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\src}{\operatorname{src}}
+\newcommand{\Safe}{\operatorname{Safe}}
+\newcommand{\Haz}{\operatorname{Haz}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\CnEq}{\equiv_{\mathrm{Cn}}}
+
+\setlength{\headheight}{14pt}
+\setlength{\emergencystretch}{3em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{AMLD Cartography, Pioneers, and Omnicartographers}
+\rhead{Post-Audit Consolidated Synthesis 004}
+\cfoot{\thepage\ of \pageref{LastPage}}
+
+\title{\textbf{AMLDs as Cartographers, Pioneers, and Omnicartographers}\\
+\large Five-ATP Settlement, Shared-BANK Geometry, Pioneer Horizons,\\
+Consequence-Preserving Trading, One-Step Oracle Induction, Handoff Safety,\\
+Semigroup Time, and Increasing Map Resolution\\[1mm]
+\normalsize Post-Audit Consolidated Synthesis 004}
+\author{Brian Tenneson\\[2mm]
+\small Formalization, proof development, audit, and editorial assistance: ChatGPT (OpenAI)}
+\date{September 16, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This post-audit document constitutes the previously frozen AMLD/cartographer/pioneer synthesis and its Omnicartographer extension into one self-contained source. An automated metalogical decider (AMLD) is treated as five ATP channels---prover $P$, refuter $R$, dependence prover $D$, independence prover $I$, and contradiction prover $C$---sharing a verifier-governed typed BANK. The original results on conservative BANK growth, cross-channel pioneering, proof horizons, provenance, cooperative contribution, and consequence-preserving trading are retained. The Omnicartographer extension then develops verifier-gated one-step geodesic advice, strong induction for ATPs and AMLDs, listening Pioneer policies, handoff safety for identity-local feedback hazards, a semigroup/semiflow time model, and nested increases in cartographic resolution.
+
+The Omnicartographer discussion is also given a plain-language operational interpretation. A listening Pioneer AMLD may carry formal reflective, epistemic, and operational self-models without any phenomenological claim: these are machine-representable properties of the search state, not claims of consciousness. The target is a goal for search, not a truth value the system is entitled to force. The Omnicartographer supplies local route information one accepted step at a time; the Pioneer still performs the derivation work, and the verifier remains sovereign.
+
+The audit preserves the substantive material while strengthening several hypotheses. In particular, cooperative AMLD horizon descent now explicitly assumes path persistence under conservative BANK enlargement; the discrete successor is defined on a realized trajectory with settlement made absorbing before semigroup language is used; nonunique oracle choices are distinguished from a unique predetermined route; cartographic resolution complexity is allowed to be infinite; and the handoff analysis states the immediate-hazard boundary at $k=1$. Claims imported from the earlier SIC and Trading Theorem documents are identified as dependencies rather than independently re-proved here.
+\end{abstract}
+
+\section*{Post-audit status}
+\addcontentsline{toc}{section}{Post-audit status}
+No substantive section from the Frozen Synthesis 001 or Omnicartographer Extension 002 has been intentionally removed. The original development is reconstituted below in editable LaTeX and the extension follows as Sections 21 onward. Audit changes strengthen assumptions or clarify scope rather than weakening verifier sovereignty. The main corrections are recorded again in Appendix D.
+
+\tableofcontents
+\newpage
+
+\section*{Part I: Frozen Synthesis 001 reconstituted}
+\addcontentsline{toc}{section}{Part I: Frozen Synthesis 001 reconstituted}
+\textit{Original title: ``AMLDs as Cartographers and Pioneers: Five-ATP Settlement, Shared-BANK Geometry, Pioneer Horizons, and Consequence-Preserving Trading.'' The mathematical and expository content is preserved here in editable form.}
+
+\subsection*{Original abstract}
+This document freezes and formalizes a discourse in which an automated metalogical decider (AMLD) is treated not as a monolithic proof-search machine but as a coordinated system of five automated theorem provers (ATPs) sharing a verifier-governed BANK. The five channels are a prover $P$, refuter $R$, dependence prover $D$, independence prover $I$, and contradiction prover $C$. The central new distinction is between cartography, which identifies promising roles, obligations, regions, or presentations, and pioneering, in which an ATP actually derives verifier-certified intermediate results and deposits them into the shared BANK. This yields a Conservative BANK Theorem, the Pioneer Horizon Theorem, cross-channel pioneer corollaries, provenance and cooperative-degree measures, and a five-front settlement geometry. The document then compares this framework with the consequence-preserving Trading Theorem. The two are compatible: verified pioneer deposits can alter the explicit search geometry and weakly decrease intrinsic proof horizons without changing the underlying consequence closure, while trading changes the representation and reuse of those deductive resources. The distinction between gross horizon gain and net computational gain is made explicit. The resulting picture is of an AMLD as a cooperative search ecology in which up to four ATPs may contribute verified infrastructure to the prover's eventual proof.
+
+\section{Status and scope}
+This document is a frozen synthesis of the AMLD/BANK/cartographer/pioneer discussion and its comparison with the Trading Theorem. It is intended to preserve the whole technical development in one place while placing the central claims into theorem--proof form.
+
+The underlying ATP notion is inherited from the previously developed SIC framework: an ATP is a semi-ideal computer intended to enumerate theorems or search for designated targets, and a target-search ATP is required to halt on a target whenever that target is provable from its input. The present document does not replace those definitions. It uses them to define a higher-level coordinated object.
+
+The term decider is architectural rather than a claim that every unrestricted AMLD halts on every conjecture. \textsc{Budget Exhausted} and \textsc{Unknown} remain operational possibilities. Every mathematical settlement discussed below is certificate-bearing and verifier-gated.
+
+\section{Formal setting}
+Fix a formal system $F$ with formula set $Y$. If $B\subseteq Y$ and $\psi\in Y$, write
+\[
+B\vdash_F\psi
+\]
+when $\psi$ has a formal proof from $B$ in $F$. Define the consequence closure
+\[
+\Con_F(B):=\{\psi\in Y:B\vdash_F\psi\}.
+\]
+We assume the ordinary structural properties used throughout the earlier framework:
+\begin{enumerate}[label=(\roman*)]
+\item extensiveness: $B\subseteq\Con_F(B)$;
+\item monotonicity: $B\subseteq B'\Rightarrow\Con_F(B)\subseteq\Con_F(B')$;
+\item idempotence: $\Con_F(\Con_F(B))=\Con_F(B)$.
+\end{enumerate}
+Let $\bot$ denote contradiction. For a target $T$, write
+\[
+\lVert T\rVert_F(B):=\min\{\lvert\pi\rvert:\pi\text{ is an $F$-proof of $T$ from $B$}\},
+\]
+with value $\infty$ if no such proof exists. A more general verifier-respecting cost horizon will later be denoted $H_F(B,T)$.
+
+\begin{remark}[Audit clarification on proof length]
+The quantity $\lVert T\rVert_F(B)$ is a shortest-proof horizon relative to the \emph{currently explicit} premise set $B$. When a previously derived lemma is promoted to a BANK premise or macro, it may shorten this unexpanded horizon. If every macro is recursively expanded back to primitive derivations from $B_0$, the corresponding primitive-certificate length is a different cost measure and need not decrease. This clarification preserves the original theorem statements while making the cost convention explicit.
+\end{remark}
+
+\section{Automated Metalogical Deciders}
+\begin{definition}[Automated Metalogical Decider]
+Let $B_0$ be a verifier-trusted initial BANK and let $T$ be a conjecture. An automated metalogical decider, abbreviated AMLD, for $(F,B_0,T)$ is a coordinated system
+\[
+\mathcal A=(P,R,D,I,C;B,V)
+\]
+consisting of five ATP channels, a shared BANK $B$, and a verifier $V$.
+\end{definition}
+At stage $k$, the current verified BANK is $B_k$, with
+\[
+B_0\subseteq B_1\subseteq B_2\subseteq\cdots.
+\]
+The five channels have the following settlement objectives:
+\begin{align*}
+P &: B_k\vdash_F T,\\
+R &: B_k\vdash_F\neg T,\\
+D &: \Dep_{F,B_k}(T),\\
+I &: \Ind_{F,B_k}(T),\\
+C &: B_k\vdash_F\bot,
+\end{align*}
+where
+\[
+\Dep_{F,B}(T)\Longleftrightarrow(B\vdash_FT)\lor(B\vdash_F\neg T)
+\]
+and
+\[
+\Ind_{F,B}(T)\Longleftrightarrow(B\nvdash_FT)\land(B\nvdash_F\neg T).
+\]
+Here $P$ is the prover, $R$ the refuter, $D$ the dependence prover, $I$ the independence prover, and $C$ the contradiction prover.
+
+The channels $P,R,C$ may operate directly in the object system $F$. Since $D$ and $I$ make statements about provability and nonprovability, they operate in an explicitly specified metatheory strong enough to represent the needed proof-theoretic claims. Their certificates are checked by the appropriate verifier.
+
+\begin{definition}[Typed BANK]
+For type safety, write
+\[
+B=B^{\mathrm{obj}}\sqcup B^{\mathrm{meta}}.
+\]
+Object-level formulas and metalogical certificates are stored separately. A metalogical certificate does not become an object-level premise merely because it is available in the same AMLD.
+\end{definition}
+
+\begin{definition}[Verifier-gated deposit]
+If an ATP channel proposes an object-level formula $\lambda$ together with certificate $\pi_\lambda$, then an accepted deposit has the form
+\[
+V(\pi_\lambda,\lambda)=1\Longrightarrow B_{k+1}=B_k\cup\{\lambda\}.
+\]
+No speculative or unverified formula enters the trusted BANK.
+\end{definition}
+
+\paragraph{Operational outcomes.} If a mathematical settlement certificate is not obtained, a run may terminate with \textsc{Budget Exhausted} or report \textsc{Unknown}. Neither is itself a mathematical settlement of $T$. It is useful to regard the logical status and run status as distinct coordinates, for example
+\[
+(\textsc{Unknown},\textsc{Budget Exhausted}).
+\]
+
+\section{Immediate consequences of the five-channel definition}
+\begin{proposition}[Dependence and independence]
+In ordinary classical metalogic,
+\[
+\Ind_{F,B}(T)\Longleftrightarrow\neg\Dep_{F,B}(T).
+\]
+\end{proposition}
+\begin{proof}
+By definition,
+\[
+\neg[(B\vdash_FT)\lor(B\vdash_F\neg T)]
+\]
+is classically equivalent to
+\[
+(B\nvdash_FT)\land(B\nvdash_F\neg T).
+\]
+\end{proof}
+This logical complement relation is not an algorithmic equivalence. A proof that one predicate is the negation of the other does not supply an efficient independence certificate.
+
+\begin{proposition}[Dependence is a settlement superclass]
+If $P$ or $R$ succeeds, then $D$ is true:
+\[
+P\lor R\Longrightarrow D.
+\]
+If a dependence certificate is constructive enough to contain the witnessing proof or refutation, then the dependence result immediately refines to $P$ or $R$.
+\end{proposition}
+Thus dependence is a useful fifth search channel but not a fifth irreducible truth value. It may function as a waypoint settlement: the conjecture is known to be decided by the BANK even before the object-level proof or refutation has been exposed by the ordinary channels.
+
+\begin{proposition}[Contradiction from simultaneous proof and refutation]
+Assume the background calculus admits the ordinary contradiction inference from $T$ and $\neg T$. Then
+\[
+P+R\Longrightarrow C.
+\]
+\end{proposition}
+In an explosive classical logic, $C$ is diagnostically prior to ordinary $P$ or $R$ reporting, because once $B\vdash_F\bot$, arbitrary formulas and their negations may become derivable. The AMLD should therefore record inconsistency explicitly rather than report an isolated proof from an inconsistent BANK as though the surrounding theory were healthy.
+
+\begin{proposition}[BANK-expansion asymmetry]
+Let $B\subseteq B'$. Then, under a monotone consequence relation,
+\[
+P_B\Rightarrow P_{B'},\qquad R_B\Rightarrow R_{B'},\qquad D_B\Rightarrow D_{B'},\qquad C_B\Rightarrow C_{B'}.
+\]
+However,
+\[
+I_B\nRightarrow I_{B'}.
+\]
+\end{proposition}
+\begin{proof}
+The first four implications follow from monotonicity of provability. Independence can fail after BANK enlargement because a newly introduced axiom or non-conservative resource may make $T$ or $\neg T$ provable.
+\end{proof}
+The final qualification is essential. Under the conservative deposit policy developed below, derived lemmas do not change the consequence closure, so previously certified independence relative to the same formal system is preserved. Independence is non-monotone only for arbitrary BANK expansion, not for every verified conservative enrichment.
+
+\section{Use of the definition: five ATPs and one BANK}
+Suppose the prover $P$ is trying to prove $T$. If $P$ were an ordinary ATP working alone, its accessible verified state would consist of the initial base together with its own verified discoveries. Inside an AMLD, its usable object-level BANK may instead have the form
+\[
+B_k^{\mathcal A}=B_0\cup B_k^P\cup B_k^R\cup B_k^D\cup B_k^I\cup B_k^C.
+\]
+Only deposits of the appropriate logical type are usable as object-level premises. A pure independence certificate from $I$, for example, is not automatically an object-level premise in a proof of $T$. But ordinary lemmas discovered by $I$ while pursuing independence may be verified and deposited in $B^{\mathrm{obj}}$. The same is true for $R,D,$ and $C$. Consequently, $P$ may search with verified contributions from as many as four other ATPs.
+
+\section{Conservative BANK growth}
+\begin{theorem}[Conservative BANK Theorem]
+Assume every object-level BANK deposit is verifier-certified as derivable from the BANK that existed immediately before the deposit. Then for every stage $k$,
+\[
+B_k\subseteq\Con_F(B_0)
+\]
+and
+\[
+\Con_F(B_k)=\Con_F(B_0).
+\]
+\end{theorem}
+\begin{proof}
+Proceed by induction on BANK updates. At stage $0$, $B_0\subseteq\Con_F(B_0)$ by extensiveness. Suppose $B_k\subseteq\Con_F(B_0)$ and the next accepted deposit is $\lambda$ with $B_k\vdash_F\lambda$. Then $\lambda\in\Con_F(B_k)$. By monotonicity and the induction hypothesis,
+\[
+\Con_F(B_k)\subseteq\Con_F(\Con_F(B_0))=\Con_F(B_0),
+\]
+so $\lambda\in\Con_F(B_0)$ and therefore $B_{k+1}\subseteq\Con_F(B_0)$. Hence the first claim holds for all $k$.
+
+Now $B_0\subseteq B_k$, so monotonicity yields $\Con_F(B_0)\subseteq\Con_F(B_k)$. The first claim gives $B_k\subseteq\Con_F(B_0)$, hence
+\[
+\Con_F(B_k)\subseteq\Con_F(\Con_F(B_0))=\Con_F(B_0).
+\]
+Thus equality holds.
+\end{proof}
+
+\begin{remark}[Landscape without new theoremhood]
+The theorem formalizes the statement that AMLD pioneers can change the explicit landscape without changing what is ultimately provable from the initial BANK. They construct roads, bridges, and landmarks through territory that was deductively present all along.
+\end{remark}
+
+\section{Cartographers and pioneers}
+A cartographer supplies navigational information: a promising role, obligation, representation, target region, or route. A pioneer performs proof work that reaches a verified intermediate formula and deposits it in the BANK. Schematically, a pioneer step is
+\[
+B_k\xrightarrow[\text{proof work}]{M_j}\lambda\xrightarrow{\text{verifier}}B_k\cup\{\lambda\},
+\qquad M_j\in\{P,R,D,I,C\}.
+\]
+The combined control loop is therefore
+\[
+\begin{aligned}
+\text{cartography}&\to\text{role assignment}\to\text{pioneering ATP}\\
+&\to\text{verification}\to\text{shared BANK}\to\text{new cartography}.
+\end{aligned}
+\]
+The AMLD has five possible pioneer fronts rather than one monolithic search front.
+
+\subsection{A losing ATP can help the winning ATP}
+Suppose $R$ searches for $\neg T$ and never settles that target. During the failed search it nevertheless proves a useful lemma $\lambda$ and deposits it in the BANK. If $P$ later obtains
+\[
+B_k\cup\{\lambda\}\vdash_FT,
+\]
+then $R$ has failed locally while contributing globally. Thus
+\[
+\text{local failure does not imply global uselessness.}
+\]
+This is the key distinction between five independent ATPs racing and five ATPs cooperating through a shared BANK.
+
+\section{Provenance and cooperative contribution}
+\begin{definition}[Provenance-bearing BANK entry]
+A verified BANK entry may be stored as
+\[
+(\lambda,\pi_\lambda,\operatorname{source}(\lambda)),
+\]
+where $\pi_\lambda$ is an expandable verifier certificate and
+\[
+\operatorname{source}(\lambda)\in\{P,R,D,I,C\}
+\]
+records the channel that discovered the result.
+\end{definition}
+
+\begin{definition}[Cooperative degree]
+For a final prover certificate $\pi_P$, define
+\[
+\operatorname{Contrib}_P(\pi_P)=\{M\in\{R,D,I,C\}:\pi_P\text{ uses a BANK deposit originating with }M\}
+\]
+and
+\[
+\kappa_P(\pi_P)=|\operatorname{Contrib}_P(\pi_P)|\in\{0,1,2,3,4\}.
+\]
+Thus $\kappa_P=0$ means the final proof uses no contribution originating in another AMLD channel, while $\kappa_P=4$ means the final proof uses verified discoveries originating in all four other channels.
+\end{definition}
+
+\begin{proposition}[Proof expansion and attribution]
+Assume every BANK macro or referenced lemma carries an expandable certificate ultimately rooted in $B_0$. Then any collaborative proof assembled from BANK references can be expanded into an ordinary proof from $B_0$.
+\end{proposition}
+\begin{proof}
+Replace each referenced BANK lemma by its stored proof certificate. Recursively expand any earlier BANK references appearing inside those certificates. Since deposits were verifier-gated and each deposit is rooted in an earlier BANK stage, the stage order is well-founded and the expansion eventually reaches the initial BANK. The result is an ordinary proof from $B_0$.
+\end{proof}
+Hence
+\[
+\text{AMLD collaboration compresses search and proof state, not logical justification.}
+\]
+
+\section{Pioneer horizons}
+\begin{theorem}[Pioneer Horizon Theorem]
+Let $F$ be a formal system, let $B$ be a verified BANK, let $T$ be a target formula, and let $\lambda$ be a verifier-certified formula deposited into the BANK. Set $B'=B\cup\{\lambda\}$. Then
+\[
+\lVert T\rVert_F(B')\le\lVert T\rVert_F(B).
+\]
+Thus a verified BANK deposit can never increase the intrinsic shortest-proof horizon of $T$. It either leaves that horizon unchanged or shortens it. If moreover $B\vdash_F\lambda$, then
+\[
+\Con_F(B')=\Con_F(B).
+\]
+Therefore the pioneer has not enlarged the deductive power of the BANK. It has changed only the explicit starting state from which future proof search proceeds.
+\end{theorem}
+\begin{proof}
+Since $B\subseteq B'$, every proof of $T$ from $B$ is also a proof of $T$ from $B'$. Therefore $\lVert T\rVert_F(B')\le\lVert T\rVert_F(B)$. Now suppose $B\vdash_F\lambda$. Then $\lambda\in\Con_F(B)$, so $B'\subseteq\Con_F(B)$. By monotonicity,
+\[
+\Con_F(B')\subseteq\Con_F(\Con_F(B))=\Con_F(B).
+\]
+Conversely, $B\subseteq B'$ implies $\Con_F(B)\subseteq\Con_F(B')$. Hence the closures are equal.
+\end{proof}
+
+\begin{definition}[Gross pioneer gain]
+Whenever both proof horizons are finite, define
+\[
+G_{\mathrm{gross}}(\lambda;B,T)=\lVert T\rVert_F(B)-\lVert T\rVert_F(B\cup\{\lambda\}).
+\]
+Then $G_{\mathrm{gross}}\ge0$. If $G_{\mathrm{gross}}>0$, call $\lambda$ a strict pioneer deposit for $T$.
+\end{definition}
+
+\begin{corollary}[Cross-Channel Pioneer Corollary]
+A verified intermediate result discovered by any AMLD module $M\in\{P,R,D,I,C\}$ may weakly decrease the proof horizon of a target pursued by any other module $N$, provided the result is an admissible premise for $N$. A module may fail to achieve its own settlement objective while nevertheless making a strict positive contribution to the eventual settlement obtained by another module.
+\end{corollary}
+For example, it is possible that $R$ never refutes $T$ while $G_{R\to P}(\lambda;B,T)>0$. This is the precise reason AMLD modules may be called pioneers rather than merely competitors.
+
+\begin{corollary}[Multi-Pioneer Horizon]
+Let $\Lambda=\{\lambda_R,\lambda_D,\lambda_I,\lambda_C\}$ be admissible verifier-certified deposits originating in the four channels other than $P$. Then
+\[
+\lVert T\rVert_F(B\cup\Lambda)\le\lVert T\rVert_F(B).
+\]
+Thus, when $P$ searches for a proof inside an AMLD, it may begin from a verified landscape jointly pioneered by as many as four other ATPs. Those contributions cannot worsen $P$'s explicit-premise shortest-proof horizon, although they need not improve it strictly.
+\end{corollary}
+
+\subsection{Heuristic runtime is not intrinsic horizon}
+The Pioneer Horizon Theorem is an intrinsic statement relative to the declared proof-horizon convention. An actual heuristic prover may become slower after receiving more formulas because the enlarged explicit BANK can increase branching, premise-selection burden, duplicate work, indexing cost, or memory pressure. If a prover is permitted to ignore irrelevant BANK deposits and otherwise reproduce its stand-alone policy, then its optimal achievable performance cannot be worsened by the availability of extra verified premises. This is weaker than saying that a particular implementation automatically runs faster.
+
+\section{Five-front Atlas geometry}
+The five AMLD channels induce five role-relative search fronts. Schematically define
+\[
+H_P(B,T),\ H_R(B,T),\ H_D(B,T),\ H_I(B,T),\ H_C(B,T),
+\]
+where the $D$ and $I$ horizons live in a metalogical search geometry appropriate to their certificate languages. When these horizons are comparable under a declared cost model, the AMLD settlement horizon may be written schematically as
+\[
+H_{\AMLD}(B,T)=\min\{H_P,H_R,H_D,H_I,H_C\}.
+\]
+This is not a claim that the five geometries are automatically identical. It is a role-decomposition of the settlement problem.
+
+In Atlas mode, the cartographic oracle has at least two conceptually distinct decisions:
+\[
+\Omega_{\mathrm{role}}(B,T)\in\{P,R,D,I,C\}
+\]
+and then
+\[
+\Omega_{\mathrm{obl}}(B,T,M)=O,
+\]
+where $O$ is a promising obligation, region, or waypoint for the selected role $M$. Thus knowing that a role is promising is weaker than knowing which obligation region that role should pursue, and both are weaker than actually pioneering the verified route.
+
+\section{Discovery can cross logical direction}
+The opposed settlement targets of $P$ and $R$ do not imply that their intermediate discoveries have opposed mathematical content. While searching for $\neg T$, the refuter may prove ordinary lemmas $L_1,L_2,L_3,\ldots$ that shorten the route to $T$. Likewise, the prover may discover material later used by the refuter. The correct distinction is therefore
+\[
+\text{opposed settlement objectives}\qquad\text{versus}\qquad\text{shareable intermediate consequences}.
+\]
+The shared BANK is mathematically important precisely because it allows useful consequences to cross role boundaries.
+
+\section{Trading Theorem compatibility}
+The Trading Theorem framework separates deductive content from deductive presentation. Consequence-equivalent presentations may derive exactly the same formulas while possessing different proof horizons and different search behavior. This is the same structural distinction exploited by pioneering: a derived formula can be moved from implicit consequence closure into explicit BANK availability without changing theoremhood.
+
+Let a presentation be written $\mathcal P=(x,y,A,R)$, and let $\mathcal P_1\CnEq\mathcal P_2$ mean that their consequence closures agree on all admissible hypotheses.
+
+\subsection{Pioneer Horizon as a dynamic trading statement}
+If $B\vdash_F\lambda$, the transition
+\[
+B\rightsquigarrow B\cup\{\lambda\}
+\]
+can be read as a conservative change of deductive presentation. The content of $\lambda$ was already present in the closure; pioneering makes it explicit.
+
+The Trading Theorem's verified-lemma macro result states the corresponding operational fact: an already verified derivation may be represented as a reusable BANK macro, theoremhood is unchanged, and the shortest proof horizon cannot increase. The Pioneer Horizon Theorem is the dynamic, multi-agent form of the same principle.
+
+\begin{theorem}[Trading-Compatible Pioneer Horizon]
+Let $B$ be a verified BANK, $T$ a target, and $\lambda$ a verifier-certified formula satisfying $B\vdash_F\lambda$. Set $B'=B\cup\{\lambda\}$. Then
+\[
+\Con_F(B')=\Con_F(B)
+\]
+and, for every verifier-respecting proof cost whose original proofs remain available after the deposit,
+\[
+H_F(B',T)\le H_F(B,T).
+\]
+\end{theorem}
+\begin{proof}
+Closure equality is the Pioneer Horizon Theorem. For the horizon inequality, every proof available from $B$ remains an admissible proof after the conservative enlargement to $B'$. Taking the infimum over the enlarged candidate set cannot increase the minimum cost.
+\end{proof}
+
+\section{Gross and net pioneer gain}
+The Trading framework makes an important accounting distinction unavoidable. A shorter horizon after a deposit is not the same as a lower total cost of discovering, verifying, storing, and exploiting the deposit.
+
+\begin{definition}[Net pioneer gain]
+Under a common additive cost model, let $C_{\mathrm{pioneer}}(\lambda)$ be the cost of discovering, verifying, and depositing $\lambda$. Define
+\[
+G_{\mathrm{net}}(\lambda;B,T)=G_{\mathrm{gross}}(\lambda;B,T)-C_{\mathrm{pioneer}}(\lambda).
+\]
+The theorem gives $G_{\mathrm{gross}}\ge0$ but does not imply $G_{\mathrm{net}}\ge0$.
+\end{definition}
+A refuter may spend a million expansions discovering a lemma that saves the prover only a few proof steps. That is a positive local horizon contribution without necessarily being a positive serial-compute trade.
+
+Parallelism introduces another distinction. A deposit may improve wall-clock settlement time while increasing total processor work. Experiments should therefore report at least:
+\begin{enumerate}
+\item total expansions across all channels;
+\item wall-clock time;
+\item verifier operations;
+\item BANK insertions and hits;
+\item memory;
+\item per-channel pioneer cost;
+\item gross and net horizon gain when measurable.
+\end{enumerate}
+
+\section{Reuse changes the economics}
+Suppose a verified derivation segment $D$ establishes $\lambda$ at primitive cost $m$, while a BANK reference to $\lambda$ has operational cost $b\le m$. If a proof would otherwise rederive $D$ in $r$ disjoint places, replacing those segments by BANK references yields a certified proof-cost bound of the form
+\[
+L-r(m-b).
+\]
+This is the key reason a pioneer result may be valuable even when its first use does not repay its discovery cost. A BANK entry can be infrastructure.
+
+This motivates a distinction between single-target gain $G_1(\lambda)$ and cumulative portfolio gain $G_{\mathrm{portfolio}}(\lambda)$, which measures the future value of a verified deposit across multiple settlement problems, channels, or traded presentations.
+
+\section{Five-channel settlement invariance under trading}
+The Trading Theorem preserves the familiar four syntactic settlement statuses determined by whether $T$ and $\neg T$ are theorems. Once the dependence channel $D$ is made explicit, the result extends immediately.
+
+\begin{theorem}[Five-Channel AMLD Trading Invariance]
+Let $\mathcal P_1\CnEq\mathcal P_2$ be consequence-equivalent presentations over the same formula language and let $T$ be a conjecture. Then the truth of each AMLD settlement predicate $P,R,D,I,C$ is invariant under passage between $\mathcal P_1$ and $\mathcal P_2$.
+\end{theorem}
+\begin{proof}
+Consequence equivalence preserves whether $T$ is derivable and whether $\neg T$ is derivable. Hence it preserves $P$ and $R$. Since $D\Longleftrightarrow P\lor R$ and $I\Longleftrightarrow\neg(P\lor R)$, it preserves $D$ and $I$. Finally, consequence equivalence preserves whether $\bot$ is derivable, so it preserves $C$.
+\end{proof}
+Thus trading may change the search geometry, proof horizon, branching structure, quotient visibility, and BANK macro opportunities while leaving the five-channel settlement situation unchanged.
+
+\section{Cross-presentation pioneering}
+Suppose
+\[
+\mathcal P_1\CnEq\cdots\CnEq\mathcal P_m
+\]
+are certified consequence-equivalent presentations. If an AMLD channel working in presentation $\mathcal P_i$ proves a formula $\lambda$, then cross-presentation BANK soundness allows the theorem to be reused in every equivalent presentation, provided the equivalence certificates and proof provenance are retained. This statement presumes a common formula language; if presentations use different languages, a certified translation carrying $\lambda$ and its proof obligations is additionally required.
+
+One pioneer result may therefore propagate in two independent dimensions:
+\[
+\text{across AMLD roles}\qquad\text{and}\qquad\text{across traded presentations}.
+\]
+Conceptually this produces a search array
+\[
+\begin{array}{ccccc}
+P_1&R_1&D_1&I_1&C_1\\
+P_2&R_2&D_2&I_2&C_2\\
+\vdots&\vdots&\vdots&\vdots&\vdots\\
+P_m&R_m&D_m&I_m&C_m
+\end{array}
+\]
+feeding one verifier-gated, provenance-bearing BANK.
+
+\section{The Pioneer Trade Principle}
+\begin{proposition}[Pioneer Trade Principle]
+Let $\lambda$ be a verifier-certified AMLD discovery derived conservatively from the current BANK. Then $\lambda$ may be represented operationally as an explicit BANK resource or expandable macro. This transformation preserves deductive content while weakly decreasing, or leaving unchanged, any proof horizon whose original proof paths remain available.
+\end{proposition}
+The corresponding research loop is
+\[
+\text{discover}\to\text{verify}\to\text{deposit}\to\text{trade into shortcut}\to\text{reuse}.
+\]
+In the combined interpretation:
+\begin{itemize}
+\item the cartographer chooses promising territory;
+\item the pioneer reaches it;
+\item the verifier certifies it;
+\item the BANK preserves it;
+\item the Trading Theorem licenses consequence-preserving operational reuse.
+\end{itemize}
+
+\section{Atlas-mode conclusions}
+The combined AMLD and Trading perspective supports the following conclusions.
+\begin{description}[leftmargin=1.2cm,style=nextline]
+\item[A1.] \textbf{AMLD search is cooperative, not merely competitive.} Five channels can pursue different settlement objectives while depositing reusable intermediate mathematics into a common verified landscape.
+\item[A2.] \textbf{A losing channel may still be globally decisive.} Failure to achieve a channel's own settlement objective does not imply that the channel's verified intermediate discoveries were useless.
+\item[A3.] \textbf{The prover may have up to four contributors.} The eventual $P$ certificate may depend on verified lemmas pioneered by $R,D,I,$ and $C$, and this contribution can be measured by $\kappa_P$.
+\item[A4.] \textbf{Pioneering is conservative when deposits are derived.} Under verifier-gated conservative deposition, explicit BANK growth changes the presentation of the search state while preserving the original consequence closure.
+\item[A5.] \textbf{Pioneer progress is directional.} A verified deposit can be strictly useful to a target different from the discoverer's own target, including the logically opposite settlement channel.
+\item[A6.] \textbf{Cartography and pioneering are distinct.} An oracle may identify a role or obligation without deriving it; a pioneer produces the verified formula that becomes new shared infrastructure.
+\item[A7.] \textbf{Trading and pioneering compose.} A pioneer may work in whichever certified equivalent presentation makes the needed structure easiest to discover, then transport the resulting theorem or obstruction through the shared BANK.
+\item[A8.] \textbf{Horizon gain is not automatically runtime gain.} Gross horizon improvement is guaranteed by monotonic availability; net computational improvement remains an empirical or policy-dependent matter once discovery cost, verifier cost, memory, and search branching are counted.
+\item[A9.] \textbf{Reuse is where pioneer value can compound.} A costly lemma may become highly valuable when reused across many later proofs, channels, targets, or presentations.
+\end{description}
+
+\section{Audit consequences for the Oracle Cartography paper}
+With AMLD now defined as five ATPs sharing a verified BANK, the earlier Oracle Cartography architecture remains compatible but should be expanded in several places.
+\begin{enumerate}
+\item Insert the formal AMLD definition near the first BANK discussion and explicitly identify $P,R,D,I,C$.
+\item Distinguish object-level and metalogical BANK entries.
+\item Replace abstract role omniscience by $\Omega_{\mathrm{role}}(B,T)\in\{P,R,D,I,C\}$.
+\item Add an ``AMLDs as Cartographers and Pioneers'' section containing the Conservative BANK Theorem and Pioneer Horizon Theorem.
+\item State explicitly that verified intermediate discoveries from one channel may be consumed by another channel.
+\item Preserve provenance on every deposit and measure $\kappa_P$ on final certificates.
+\item Add an ablation comparing $P$ alone with $P$ embedded in a five-channel AMLD sharing verified deposits.
+\item Report system-wide computation separately from local proof-horizon improvement.
+\item Add the Trading-compatible form of the Pioneer Horizon Theorem and distinguish gross from net pioneer gain.
+\end{enumerate}
+The substantive conclusion of the re-audit is not that the oracle construction was wrong. It is that the term AMLD carries more structure than the earlier paper was exploiting. Once the five ATPs and shared BANK are made explicit, the system is simultaneously a navigation architecture and a cooperative theorem-construction architecture.
+
+\section{Compact theorem summary}
+The principal relations developed in this frozen synthesis can be summarized as follows:
+\[
+P+R\Rightarrow C,\qquad P\lor R\Rightarrow D,\qquad I\Longleftrightarrow\neg D.
+\]
+Under conservative verified BANK growth,
+\[
+\Con_F(B_k)=\Con_F(B_0).
+\]
+For every admissible verified deposit,
+\[
+\lVert T\rVert_F(B\cup\{\lambda\})\le\lVert T\rVert_F(B).
+\]
+For a multi-pioneer deposit set $\Lambda$,
+\[
+\lVert T\rVert_F(B\cup\Lambda)\le\lVert T\rVert_F(B).
+\]
+Under consequence-equivalent trading, the five settlement predicates are invariant:
+\[
+(P,R,D,I,C)_{\mathcal P_1}=(P,R,D,I,C)_{\mathcal P_2}.
+\]
+The conceptual synthesis is
+\begin{quote}
+Pioneering changes where verified search can start; trading changes how pioneered content can be represented and reused.
+\end{quote}
+Both preserve the underlying mathematics when their verification hypotheses hold.
+
+\section*{A Terminology for non-specialist readers}
+\addcontentsline{toc}{section}{A Terminology for non-specialist readers}
+\begin{longtable}{>{\bfseries}p{0.20\textwidth}p{0.72\textwidth}}
+\toprule
+Term & Plain-language meaning\\
+\midrule
+ATP & A theorem-search machine. It tries to derive a designated target or enumerate consequences of a formal system.\\
+AMLD & Five coordinated ATP channels that accept several kinds of certified settlement: proof, refutation, dependence, independence, or contradiction.\\
+BANK & The shared collection of verifier-trusted formulas and certificates available to the AMLD.\\
+Verifier & The trust gate. A proposed proof or deposit is not accepted merely because a search module claims it; the certificate must pass verification.\\
+Cartographer & A component that identifies promising roles, obligations, regions, representations, or routes.\\
+Pioneer & A search module that actually derives a verified intermediate result and adds it to the usable landscape.\\
+Proof horizon & The minimum proof cost or proof length from the currently available verified starting state.\\
+Pioneer gain & The decrease in a target's proof horizon after a verified deposit is made explicit in the BANK.\\
+Trading & Re-expressing deductive resources in a consequence-preserving way, such as making a proved lemma available as an expandable macro.\\
+Consequence equivalence & Two presentations have the same derivable content even if they organize axioms, rules, macros, or search states differently.\\
+\bottomrule
+\end{longtable}
+
+\section*{B Source relationship}
+\addcontentsline{toc}{section}{B Source relationship}
+This synthesis depends on two pre-existing documents supplied in the working discourse:
+\begin{enumerate}
+\item \emph{Depths of Induction and Formalized Self-Awareness, Version 46}, which supplies the underlying formal-system, consequence-closure, SIC, and ATP definitions used here.
+\item \emph{Trading Theorem 001: Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search}, which supplies the consequence-equivalent presentation viewpoint, settlement preservation, cross-presentation BANK soundness, verified-lemma macro shortcut result, and the warning that proof-horizon improvement does not by itself prove runtime improvement.
+\end{enumerate}
+No claim of literature novelty is made merely because the present document assigns names such as Pioneer Horizon Theorem, Cooperative degree, or Pioneer Trade Principle. The mathematical claims are that the conclusions follow from the stated assumptions. Novelty relative to prior literature is a separate question.
+
+\begin{remark}[Audit scope]
+The two dependency documents are not contained in the uploaded package audited here. Accordingly, this consolidation checks the internal use of the stated imported assumptions but does not independently verify the complete SIC framework or the earlier Trading Theorem from their original sources.
+\end{remark}
+
+\section*{C Frozen closing formulation}
+\addcontentsline{toc}{section}{C Frozen closing formulation}
+\begin{quote}
+An AMLD is not merely five ATPs asking five different questions. Once they share a verifier-governed BANK, they become five search fronts constructing a common verified landscape. The cartographer indicates where an expedition should go. The pioneers actually build the route. A prover attempting to settle $T$ may therefore stand on verified infrastructure discovered by as many as four other ATPs. Conservative deposits do not change what follows from the original BANK, but they can shorten the explicit route by which later searches reach their targets. The Trading Theorem then explains how that pioneered content may be represented and reused without changing the underlying settlement question.
+\end{quote}
+
+\newpage
+\section*{Part II: Omnicartographer--Pioneer Induction Extension 002, post-audit}
+\addcontentsline{toc}{section}{Part II: Omnicartographer--Pioneer Induction Extension 002, post-audit}
+\subsection*{Extension abstract}
+This extension preserves the preceding frozen synthesis and develops a stronger oracle-guided theory of ATPs and AMLDs. The central object is an \emph{Omnicartographer}: an oracle that, at accepted pioneer stage $h$, knows a verifier-admissible next location that lies one accepted step farther along a geodesic toward a nearest certified settlement region. A \emph{listening Pioneer} is an ATP or AMLD that consumes this advice but remains verifier-gated: the oracle supplies cartography, while the Pioneer performs or reconstructs the proof work and the verifier alone authorizes BANK growth. This distinction yields exact induction theorems for single ATPs and five-channel AMLDs, a finite settlement bound in accepted pioneer steps, a dynamic rerouting theorem when other channels improve the shared BANK, and a two-dimensional ``zoom-and-step'' induction in time and map resolution.
+
+The discrete oracle-guided successor structure generates a semigroup after a realized trajectory is fixed and settlement is made absorbing. A continuous coordinate $0\le t\le M$ is then introduced carefully by suspension: noninteger times represent computation or transit between verifier-accepted states rather than new trusted logical states. The extension also formalizes the handoff idea for avoiding a class of oracle self-reference hazards. A successor oracle may copy the predecessor's informational state before a critical time, while provenance preserves the fact that the successor did not issue the original disclosure. This blocks identity-local feedback hazards under stated assumptions, but does not solve information-extensional paradoxes; that limitation is stated explicitly.
+
+Finally, ``increasing the resolution of a map'' is developed as a nested refinement of cartographic partitions, from coarse role choice through settlement region, obligation, waypoint, edge, and certificate. Refinement shrinks the set of actions compatible with oracle advice. In finite branching, sufficiently separating refinement eventually identifies a unique next move whenever the optimum is isolated. This creates a formal notion of cartographic resolution complexity and a natural two-axis geometry: advance in pioneer time, or zoom in until the next safe geodesic step is determined.
+
+
+\section{Conceptual orientation: the hill, the crew, and the radio}
+
+Before the formal definitions, it is useful to state the intended operational picture in ordinary language. A Pioneer may be an AMLD: five coordinated ATP channels sharing a verifier-governed BANK and trying to reach a certified settlement of a target $T$. Such a system may also be equipped with formal self-models---including $\omega$-reflective self-awareness, epistemic self-awareness, and unknown operational self-awareness in the terminology of the surrounding SIC/AMLD program. These phrases are used only in a formal computational sense. They describe information the machine can represent about its own proof state, knowledge state, limits, or operation. They are not phenomenological predicates and do not assert that an AMLD is conscious.
+
+The target is a goal of search, not a command to make a proposition true. If $T$ is in fact derivable, one relevant settlement region contains a verifier-accepted proof of $T$. If $\neg T$ is derivable, another settlement region contains a verifier-accepted refutation. The AMLD architecture also admits certified dependence, independence, and contradiction outcomes. Thus the Pioneer is trying to reach whichever certified settlement the formal system actually supports; neither the Pioneer nor the Omnicartographer is permitted to choose theoremhood by preference.
+
+The word ``oracle'' can sound more exotic than the intended mechanism requires. A useful analogy is a climber who has already gone over the next rise and radios directions to a five-person crew following behind. The climber ahead can see a route feature that the crew cannot yet see, but the crew must still climb the ground, build the trail, and test each foothold. In the AMLD interpretation, the five trailing members are the channels $P,R,D,I,C$; the shared BANK is their common trail infrastructure; and the verifier is the rule deciding whether a proposed foothold actually counts as part of the certified route.
+
+The Omnicartographer's advice is deliberately local. At accepted stage $h$, it answers a question of the form: if the Pioneer is to take one verifier-admissible step along a geodesic toward a nearest relevant settlement region, where should the next accepted state $X_{h+1}$ be? The Pioneer need not receive the whole route in advance. It realizes or reconstructs the advised transition, submits the corresponding certificate, and---only upon verifier acceptance---moves to $X_{h+1}$. The question is then posed again from the new state. This repeated one-step guidance is what turns the cartographic idea into an induction rather than a single prediction.
+
+This analogy also keeps the division of labor sharp:
+\[
+\text{Omnicartographer: where next?}\qquad
+\text{Pioneer: do the proof work}\qquad
+\text{Verifier: does the step count?}
+\]
+The oracle may know the road without being the component that constructs the certified road.
+
+\section{From cartographer to Omnicartographer}
+
+The frozen synthesis distinguishes a cartographer, who indicates promising territory, from a pioneer, who actually reaches verifier-certified intermediate results and deposits them into the shared BANK. The Omnicartographer is a strong oracle version of the cartographer. Its defining power is not merely to say that a role, region, or obligation looks promising. At accepted pioneer stage $h$, it knows where the Pioneer would be after one more accepted move if that move advanced along a shortest verifier-valid route toward a nearest settlement region.
+
+That wording contains three ideas that should be separated:
+\begin{enumerate}[label=(\roman*)]
+\item \emph{location knowledge}: knowing the next state or waypoint;
+\item \emph{edge knowledge}: knowing that an admissible verifier-respecting transition reaches it;
+\item \emph{certificate production}: actually producing the derivation that allows the verifier to accept the transition.
+\end{enumerate}
+The Omnicartographer need possess only the first two as oracle information. The Pioneer remains the component that performs the proof work. This preserves the cartographer/pioneer distinction instead of turning the oracle into a hidden theorem prover.
+
+\begin{remark}[Formal self-awareness is not consciousness]
+Nothing in the Omnicartographer--Pioneer architecture requires a phenomenological interpretation of self-awareness terminology. If a Pioneer carries reflective, epistemic, or operational self-models, those are formal state variables or certified propositions about the machine's own search, knowledge, or limitations. The results below depend only on those formal interfaces when invoked; they do not depend on, or imply, subjective experience.
+\end{remark}
+
+\begin{definition}[Accepted pioneer state]
+An accepted pioneer state is a typed state
+\[
+X_h=(B_h,\mathcal M_h,\Pi_h),
+\]
+where $B_h$ is the verifier-trusted BANK available after $h$ accepted pioneer transitions, $\mathcal M_h$ records the active AMLD role and metalogical state when needed, and $\Pi_h$ is the provenance record of accepted certificates. The index $h$ counts accepted logical transitions, not raw CPU steps, wall-clock time, or unverified guesses.
+\end{definition}
+
+\begin{remark}
+This indexing convention makes induction mathematically clean. A listening Pioneer may spend arbitrarily much computation between $X_h$ and $X_{h+1}$. The theorem below concerns the sequence of accepted states, not a runtime guarantee unless an additional bound on the cost of realizing oracle advice is supplied.
+\end{remark}
+
+\section{Settlement regions for a five-channel AMLD}
+
+Let the five AMLD roles be $P,R,D,I,C$ as in the frozen synthesis. To speak about ``nearest settlement'', each role must be represented by a set of typed accepted states.
+
+\begin{definition}[Typed settlement regions]
+For a target $T$, define the following regions in the accepted state space:
+\begin{align*}
+\Sett_P(T)&=\{X: B_X\vdash_F T\text{ with accepted certificate}\},\\
+\Sett_R(T)&=\{X: B_X\vdash_F \neg T\text{ with accepted certificate}\},\\
+\Sett_D(T)&=\{X: \Dep_{F,B_X}(T)\text{ has an accepted metalogical certificate}\},\\
+\Sett_I(T)&=\{X: \Ind_{F,B_X}(T)\text{ has an accepted metalogical certificate}\},\\
+\Sett_C(T)&=\{X: B_X\vdash_F\bot\text{ with accepted certificate}\}.
+\end{align*}
+The total AMLD settlement region is the typed union
+\[
+\Sett_{\AMLD}(T)=\Sett_P(T)\sqcup\Sett_R(T)\sqcup\Sett_D(T)\sqcup\Sett_I(T)\sqcup\Sett_C(T).
+\]
+The disjoint-union notation emphasizes that object-level proof, refutation, dependence, independence, and contradiction certificates need not live in the same certificate language.
+\end{definition}
+
+\begin{remark}[The ``$T$ and $\neg T$'' region]
+If the calculus admits contradiction from simultaneous derivability of $T$ and $\neg T$, then a state containing accepted certificates for both lies in the contradiction channel after the corresponding contradiction certificate is checked. It is useful operationally to retain the stronger provenance fact ``both were obtained'', even if the settlement classifier records $C$.
+\end{remark}
+
+\begin{proposition}[Negation symmetry of independence in classical systems]
+Assume the metalogic validates $\neg\neg T\leftrightarrow T$ at the relevant level of derivability. Then
+\[
+\Ind_{F,B}(T)\quad\Longleftrightarrow\quad \Ind_{F,B}(\neg T).
+\]
+\end{proposition}
+\begin{proof}
+By definition,
+\[
+\Ind_{F,B}(T)\iff (B\nvdash_F T)\wedge(B\nvdash_F\neg T).
+\]
+Meanwhile
+\[
+\Ind_{F,B}(\neg T)\iff(B\nvdash_F\neg T)\wedge(B\nvdash_F\neg\neg T).
+\]
+Under the stated double-negation equivalence, the second nonderivability condition is equivalent to $B\nvdash_F T$. The conjunctions therefore agree.
+\end{proof}
+
+\begin{remark}
+Thus the informal alternatives ``$T$ is independent'' and ``$\neg T$ is independent'' describe the same symmetric status in the classical setting used by the frozen synthesis. In nonclassical logics this equivalence must not be assumed without proof.
+\end{remark}
+
+\section{Nearest settlement requires a declared geometry}
+
+The frozen synthesis correctly warns that the five role-relative horizons need not automatically be comparable. The phrase ``nearest settlement region'' is therefore meaningful only after a common cost geometry has been declared.
+
+\begin{definition}[Common settlement geometry]
+Let $\mathcal X$ be the accepted-state space and let $E\subseteq\mathcal X\times\mathcal X$ be the verifier-admissible transition relation. Assign every admissible edge $e$ a positive cost $w(e)>0$. The directed path distance is
+\[
+d(X,Y)=\inf\left\{\sum_{e\in\pi}w(e):\pi\text{ is an admissible path from }X\text{ to }Y\right\}.
+\]
+For a settlement region $\Sett$, define
+\[
+d(X,\Sett)=\inf_{Y\in\Sett}d(X,Y).
+\]
+If the infimum is attained, a minimizing path is called a settlement geodesic.
+\end{definition}
+
+\begin{definition}[Nearest typed settlement]
+When the five settlement distances are expressed in a common declared cost model, define
+\[
+H(X;T)=\min_{M\in\{P,R,D,I,C\}} d\bigl(X,\Sett_M(T)\bigr).
+\]
+Any region attaining this minimum is a nearest settlement region at $X$.
+\end{definition}
+
+\begin{remark}
+If the role costs are not commensurable, no canonical ``nearest'' region exists. One may instead retain a vector horizon $(H_P,H_R,H_D,H_I,H_C)$ or use a declared normalization. The Omnicartographer must never hide this modeling choice.
+\end{remark}
+
+\section{The Omnicartographer oracle}
+
+\begin{definition}[One-step Omnicartographer]
+Fix a target $T$ and a common settlement geometry. At every nonsettled accepted state $X_h$ for which a settlement geodesic exists, the Omnicartographer returns advice
+\[
+\Omni(X_h,T)=(M_h,\Sett_h,Y_{h+1},\mathsf{edge}_h),
+\]
+where:
+\begin{enumerate}[label=(\alph*)]
+\item $M_h\in\{P,R,D,I,C\}$ is a role whose settlement region is nearest at $X_h$;
+\item $\Sett_h=\Sett_{M_h}(T)$;
+\item $Y_{h+1}$ is the endpoint of an admissible next transition lying on at least one geodesic from $X_h$ to $\Sett_h$;
+\item $\mathsf{edge}_h$ describes an admissible proof obligation, action, or certificate interface by which a Pioneer can attempt to realize $X_h\to Y_{h+1}$.
+\end{enumerate}
+The oracle is allowed to identify the next location without itself depositing anything into the BANK.
+\end{definition}
+
+\begin{definition}[Listening Pioneer]
+A listening Pioneer is an ATP or AMLD controller that receives $\Omni(X_h,T)$, attempts to realize the indicated edge, submits the resulting certificate to the verifier, and updates its trusted state only if verification succeeds. Thus the control loop is
+\[
+\text{oracle advice}\to\text{pioneer proof work}\to\text{verifier}\to\text{accepted state}\to\text{new oracle advice}.
+\]
+\end{definition}
+
+\begin{principle}[Verifier sovereignty]
+Oracle omniscience does not override verification. Advice is not a BANK deposit. A claimed location $Y_{h+1}$ becomes part of the trusted trajectory only after the Pioneer supplies the appropriate certificate and the verifier accepts it.
+\end{principle}
+
+\subsection{``Closer to a geodesic'' versus ``along a geodesic''}
+The phrase ``one step closer to the geodesic'' has a weak and a strong reading. The weak reading says only that the next state is nearer to some preferred route. That does not by itself imply a one-step decrease in distance to settlement. The strong reading says that the next accepted transition is itself an edge of a settlement geodesic. The induction theorems below use the strong reading. If the weak reading is intended, a separate approach-to-route potential must be added.
+
+\section{Strong induction for a single ATP}
+
+We begin with the simplest case: one ATP, one target region, and unit-cost accepted transitions.
+
+\begin{theorem}[Oracle-guided ATP induction]
+Let $A$ be a verifier-gated ATP with accepted states $X_0,X_1,\dots$. Let $\Sett$ be its target settlement region. Assume:
+\begin{enumerate}[label=(\roman*)]
+\item $M=d(X_0,\Sett)<\infty$ and a geodesic of $M$ unit-cost accepted transitions exists;
+\item whenever $X_h\notin\Sett$ and $h<M$, the Omnicartographer identifies an admissible successor $Y_{h+1}$ lying on a geodesic from $X_h$ to $\Sett$;
+\item the listening ATP eventually realizes the advised transition and the verifier accepts it, so $X_{h+1}=Y_{h+1}$.
+\end{enumerate}
+Then for every $k\in\{0,1,\dots,M\}$,
+\[
+d(X_k,\Sett)=M-k.
+\]
+In particular, $X_M\in\Sett$.
+\end{theorem}
+\begin{proof}
+Induct on $k$. For $k=0$, the statement is the definition of $M$. Suppose $d(X_k,\Sett)=M-k>0$. By hypothesis, the accepted successor $X_{k+1}$ is one unit-cost edge along a geodesic from $X_k$ to $\Sett$. Removing that first edge from the geodesic leaves a path of length $M-k-1$, so
+\[
+d(X_{k+1},\Sett)\le M-k-1.
+\]
+If the distance were strictly smaller, prepending the accepted unit edge $X_k\to X_{k+1}$ would produce a path from $X_k$ to $\Sett$ shorter than $M-k$, contradicting the induction hypothesis. Hence equality holds. At $k=M$, the distance is zero, so $X_M\in\Sett$.
+\end{proof}
+
+\begin{corollary}[Accepted-step settlement bound]
+Under the hypotheses above, the ATP settles in exactly $M$ accepted pioneer transitions. This is not, by itself, a bound of $M$ machine instructions, expansions, seconds, or verifier operations.
+\end{corollary}
+
+\begin{remark}[Positional versus operational omniscience]
+If the oracle only knows $Y_{h+1}$ but the ATP is not guaranteed to find a proof of the indicated edge, the induction gives a conditional route, not guaranteed progress. Completeness of the ATP for each advised local obligation is one sufficient realization hypothesis. Alternatively, the oracle may provide a certificate skeleton whose missing pieces are guaranteed to be filled by the Pioneer.
+\end{remark}
+
+\section{Strong induction for AMLDs}
+
+The five-channel AMLD gives induction more structure because each accepted state may contain discoveries from several search fronts.
+
+\begin{definition}[Listening-Pioneer AMLD]
+A listening-Pioneer AMLD is a five-channel system $(P,R,D,I,C;B,V)$ together with an Omnicartographer interface. At stage $h$ the oracle may specify:
+\[
+(M_h,\text{settlement region},\text{obligation region},\text{waypoint},\text{next edge}).
+\]
+The selected channel acts as the immediate Pioneer, but every channel may continue depositing independently verified, type-correct consequences into the shared BANK.
+\end{definition}
+
+\begin{theorem}[Oracle-guided AMLD induction]
+Assume a common unit-cost settlement geometry on accepted AMLD states and let
+\[
+M=H(X_0;T)=d(X_0,\Sett_{\AMLD}(T))<\infty.
+\]
+Suppose that before settlement, at each accepted stage $h$:
+\begin{enumerate}[label=(\roman*)]
+\item the Omnicartographer observes the current shared BANK and typed AMLD state;
+\item it selects a currently nearest settlement region and an admissible successor on a geodesic to that region;
+\item the designated Pioneer channel eventually realizes that successor and the verifier accepts it;
+\item all concurrent BANK deposits remain verifier-gated and conservative in the sense of the frozen Conservative BANK Theorem;
+\item the accepted-state geometry is \emph{path-persistent under conservative enlargement}: every admissible continuation available before a concurrent conservative BANK enlargement can be lifted from the enlarged state with no greater remaining cost.
+\end{enumerate}
+Then after $k$ oracle-following accepted transitions,
+\[
+H(X_k;T)\le M-k
+\]
+for every $0\le k\le M$, until settlement occurs. Hence settlement occurs no later than the $M$th accepted oracle-following transition.
+\end{theorem}
+\begin{proof}
+At stage $k$, the advised accepted edge lies on a geodesic to a settlement region that is nearest in the geometry observed at that stage. If no other deposits changed the horizon, the same argument as in the single-ATP theorem reduces the current horizon by exactly one. Concurrent conservative deposits can expose additional verified starting resources and can therefore create a strictly shorter route in the explicit accepted-state geometry. By the path-persistence hypothesis, they cannot force the listening Pioneer to lose the already available advised continuation: the old route lifts to the enlarged state with no greater remaining cost. Consequently the recomputed minimum settlement horizon after the update is at most the previous horizon minus one. Induction yields
+\[
+H(X_k;T)\le H(X_0;T)-k=M-k.
+\]
+When $k=M$, the right side is zero, so settlement must already have occurred.
+\end{proof}
+
+\begin{corollary}[AMLD induction can be strictly faster than a fixed geodesic]
+If another AMLD channel makes a strict pioneer deposit that shortens the nearest settlement horizon by more than the unit cost of the selected step, then
+\[
+H(X_{h+1};T)<H(X_h;T)-1.
+\]
+The Omnicartographer may then reroute at stage $h+1$. Thus the relevant induction is over a sequence of re-optimized geodesics rather than commitment to one immutable route chosen at stage $0$.
+\end{corollary}
+
+\begin{remark}[Why this is stronger for AMLDs]
+For a stand-alone ATP, the oracle guides one search front. In an AMLD, the listening Pioneer is moving through a landscape whose explicit geometry can be improved by up to four other channels. The induction invariant is therefore not merely ``the selected channel took the correct step'' but ``the shared verified settlement horizon decreased by at least one accepted unit''. This is the natural induction invariant for cooperative five-ATP search.
+\end{remark}
+
+\section{Induction across the five roles}
+
+A useful way to organize the induction is to make the stage invariant typed.
+
+\begin{definition}[Stage invariant]
+For $h<M$, define $\mathcal I(h)$ to be the conjunction:
+\begin{enumerate}[label=(\alph*)]
+\item $X_h$ is verifier-trusted;
+\item every object-level BANK entry is conservatively rooted in the initial BANK;
+\item provenance identifies the source channel of every accepted deposit;
+\item no mathematical settlement has yet been accepted;
+\item $H(X_h;T)\le M-h$;
+\item the Omnicartographer can identify at least one geodesic-successor obligation for stage $h+1$.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}[Typed induction step]
+Assume $\mathcal I(h)$ and successful realization of the oracle-advised edge. Then either a settlement certificate is accepted at stage $h+1$, or $\mathcal I(h+1)$ holds.
+\end{proposition}
+\begin{proof}
+Verifier gating preserves trust; conservative deposition preserves rooting in the initial BANK; provenance is appended rather than discarded. If the new certificate settles, the first alternative holds. Otherwise the AMLD remains unsettled. The preceding AMLD induction theorem gives the horizon inequality, and the oracle hypothesis supplies a next geodesic-successor obligation whenever the new horizon is positive.
+\end{proof}
+
+This formulation makes the induction modular: $P,R,D,I,$ or $C$ may be the active Pioneer at different values of $h$. Induction is on the shared accepted state, not on one fixed channel identity.
+
+\section{The role of the BANK in oracle-guided induction}
+
+The shared BANK changes the meaning of ``where the Pioneer is''. A Pioneer is not located only at its private search node. Its effective accepted location includes the verified infrastructure available to all channels.
+
+\begin{definition}[Cooperative location]
+The cooperative location at stage $h$ is the equivalence class of accepted AMLD states having the same type-correct usable BANK, settlement certificates, and provenance-relevant search resources under the declared geometry. The Omnicartographer reads this cooperative location when selecting the next route.
+\end{definition}
+
+\begin{proposition}[Foreign deposits can advance an oracle-guided Pioneer]
+Let $N$ be the channel selected to pioneer at stage $h$. If another channel $M\ne N$ deposits a verifier-certified lemma $\lambda$ that is admissible for $N$, then the newly recomputed horizon for $N$ cannot exceed the horizon available before the deposit, under any cost model satisfying the frozen Pioneer Horizon hypotheses.
+\end{proposition}
+
+The important conceptual point is that the Pioneer can be advanced by infrastructure it did not personally build. Therefore ``the Pioneer's next position'' should be understood in the shared-state geometry, not as a private transcript of one ATP.
+
+\section{Discrete time and semigroup coordinates}
+
+The oracle-guided sequence naturally lives at integer stages
+\[
+h\in\{0,1,2,\dots,M\}.
+\]
+There is an automatic semigroup here, but it is discrete.
+
+\begin{definition}[Trajectory successor operator]
+Fix one realized oracle-following trajectory $X_0,X_1,\dots,X_m$, where $X_m$ is its first settlement state. Define
+\[
+S(X_h)=X_{h+1}\quad(h<m),\qquad S(X_m)=X_m.
+\]
+The second clause makes settlement absorbing. If a globally defined deterministic successor is desired beyond this realized orbit, an explicit tie-breaking and execution policy must be declared whenever the Omnicartographer or Pioneer has more than one admissible choice.
+\end{definition}
+
+\begin{theorem}[Discrete semigroup induction]
+On the realized trajectory with absorbing settlement, the iterates satisfy
+\[
+S^{m+n}=S^m\circ S^n,\qquad S^0=\id,
+\]
+so $\{S^k:k\in\mathbb N_0\}$ is a monogenic transformation monoid on that trajectory. Under the hypotheses of the oracle-guided AMLD theorem, before settlement,
+\[
+X_k=S^k(X_0),\qquad H(S^kX_0;T)\le M-k.
+\]
+After settlement, $S$ fixes the terminal state.
+\end{theorem}
+
+\subsection{Embedding the stages into $0\le t\le M$}
+A continuous interval does not follow automatically from a discrete proof system. A continuous-time semigroup extension $\Phi_t$ with $\Phi_1=S$ is additional structure and need not exist on the original discrete state space. There is, however, a canonical way to add a transit coordinate without pretending that noninteger points are new verified theorems.
+
+\begin{definition}[Suspended pioneer flow]
+Replace each pre-settlement accepted transition $X_k\to X_{k+1}$ by a unit strip of transit states $(X_k,s)$ with $0\le s<1$, identifying $(X_k,1)$ with $(X_{k+1},0)$. At the settlement state attach an absorbing ray, so time translation after settlement leaves the logical state fixed. Along the pre-settlement portion, the coordinate
+\[
+t=k+s\in[0,M]
+\]
+records continuous progress through the $k$th computation interval. Integer times are verifier-accepted logical states; noninteger times are computational/cartographic transit states.
+\end{definition}
+
+\begin{proposition}[Semigroup law for suspended time]
+Time translation on the suspended trajectory defines a semiflow $\{\Phi_t:t\ge0\}$ satisfying
+\[
+\Phi_{s+t}=\Phi_s\circ\Phi_t,\qquad \Phi_0=\id.
+\]
+Moreover, for every integer $k$ before settlement,
+\[
+\Phi_k(X_0,0)=(X_k,0),
+\]
+and after settlement the accepted logical component is fixed. In particular, the requested interval $0\le t\le M$ is embedded in this semiflow.
+\end{proposition}
+
+\begin{remark}
+This gives the requested interval $0\le t\le M$ while preserving the logical distinction between ``computation is in progress'' and ``a new BANK state has been verifier accepted''. The semigroup coordinate is therefore a geometry of the process, not permission to treat every real time as a new theorem state.
+\end{remark}
+
+
+\section{Why disclosed oracle advice can become paradoxical}
+
+The reason a handoff mechanism is needed is the standard self-reference problem created when a predictor discloses a prediction to an agent that can condition its behavior on that very disclosure. In its simplest form, suppose an oracle announces, ``your next move will be left'', while the recipient is permitted to adopt the policy ``if the oracle says left, go right; if it says right, go left.'' The problem is not merely that the oracle might guess badly. The disclosure has become an input to the process whose output it was supposed to predict. Under a requirement of perfect disclosed prediction and unrestricted contrary reaction, no stable announced answer need exist.
+
+This is a diagonal or self-defeating-prediction pattern: the prediction is fed back into the mechanism selecting the predicted action. In an Omnicartographer architecture, the analogous danger arises when advice issued at stage $h$ remains attributed to, remembered by, and later acted upon by the same oracle identity in a way that closes a forbidden feedback loop at a later stage $h+k$.
+
+The Handoff Theorem below addresses a specific version of that problem. It does not erase the earlier information. Instead, it separates \emph{informational continuity} from \emph{identity continuity}. A successor oracle may inherit the predecessor's map, memories, and cartographic state while immutable provenance continues to record that the successor did not issue the earlier disclosure. If the threatened paradox requires one and the same oracle identity to be both the earlier issuer and the later closer of the loop, a correctly timed handoff can break exactly that identity condition while preserving the useful map.
+
+The hill analogy is again helpful. Imagine that the climber ahead radios a direction that, because of the guide's own future reaction to having issued that message, would later create a forbidden feedback condition. Before the critical stage, the guide can pass the map and radio duty to a successor and stop acting. The successor knows the route history but is not the historical speaker of the old transmission. The theorem formalizes when that change of provenance is enough.
+
+\section{Handoff architecture and paradox avoidance}
+
+The handoff argument is central when oracle information can participate in future self-reference. The safe version must name exactly what kind of paradox or illegal state is being blocked.
+
+\begin{definition}[Disclosure provenance]
+Every oracle disclosure is stored with immutable provenance
+\[
+\delta=(\text{content},\text{issuer-id},\text{issue-time},\text{recipient},\text{target-stage}).
+\]
+Copying an oracle's informational state does not rewrite the issuer-id of past disclosures.
+\end{definition}
+
+\begin{definition}[Identity-local feedback hazard]
+An identity-local hazard is a forbidden condition of the form
+\[
+\Haz(O,\delta,t)=1
+\]
+that requires the same oracle identity $O$ both to have issued disclosure $\delta$ and later, at or before a critical stage, to occupy a role that closes a prohibited self-referential feedback loop involving that disclosure.
+\end{definition}
+
+\begin{definition}[Precritical handoff]
+Suppose oracle $O_j$ issues advice at stage $h$ and a possible identity-local hazard could arise at stage $h+k$, with $k>1$. Choose a handoff stage $s$ satisfying
+\[
+h<s<h+k.
+\]
+At $s$, construct a fresh oracle identity $O_{j+1}$ whose informational state copies the permitted internal memory of $O_j$. Then deactivate $O_j$ before the critical stage. Past disclosures retain $\src(\delta)=O_j$; the successor's new disclosures have source $O_{j+1}$.
+\end{definition}
+
+\begin{theorem}[Provenance-severing handoff principle]
+Assume:
+\begin{enumerate}[label=(\roman*)]
+\item the only prohibited feedback condition is identity-local in the sense above;
+\item the handoff occurs strictly before the critical stage;
+\item the predecessor oracle is unable to act after deactivation;
+\item copying informational state does not copy the historical issuer identity of earlier disclosures;
+\item the successor has not itself issued the predecessor's earlier disclosure.
+\end{enumerate}
+Then the specific feedback loop requiring one oracle identity to be both the original issuer and the later closing agent cannot occur after handoff.
+\end{theorem}
+\begin{proof}
+The original disclosure has issuer $O_j$. After the handoff, $O_j$ is inactive and cannot occupy the later closing role. The active oracle is $O_{j+1}$, but by provenance $O_{j+1}$ is not the issuer of the original disclosure. Hence no active identity simultaneously satisfies both roles required by the identity-local hazard predicate.
+\end{proof}
+
+\begin{warning}[What handoff does not prove]
+Handoff is not a universal paradox dissolver. If the illegal state depends only on information content, world state, logical equivalence, or causal consequences that survive copying -- rather than on sameness of oracle identity or disclosure provenance -- then a fresh identity may inherit the same dangerous configuration. In that case handoff changes the actor but not the paradox-generating information. A separate consistency argument is required.
+\end{warning}
+
+\begin{principle}[Handoff before hazard, not after]
+If a disclosure at stage $h$ can create a forbidden identity-local cycle at $h+k$, the transfer must occur at some $s<h+k$. The earliest simple choice when $k>1$ is $s=h+1$. A handoff at or after the critical stage cannot be used to justify safety at that stage.
+\end{principle}
+
+\begin{remark}[Immediate-hazard boundary]
+If the first possible hazard is already at $h+1$, there is no integer accepted stage strictly between issuance at $h$ and the critical stage. A handoff performed only after the disclosure therefore cannot establish the provenance-severing theorem for that immediate hazard. Safety must instead come from a handoff before issuance, withholding or changing the disclosure, or a separate consistency mechanism.
+\end{remark}
+
+\section{Oracle generations and inductive continuity}
+
+A sequence of handoffs creates oracle generations
+\[
+O_0\rightsquigarrow O_1\rightsquigarrow O_2\rightsquigarrow\cdots.
+\]
+The Pioneer need not care which generation supplies advice, provided the interface and provenance discipline remain invariant.
+
+\begin{definition}[Handoff invariant]
+At every handoff stage, require:
+\begin{enumerate}[label=(\alph*)]
+\item accepted BANK state unchanged;
+\item verifier state unchanged;
+\item target and cost geometry unchanged unless a declared update occurs;
+\item oracle memory needed for future cartography copied;
+\item historical disclosure provenance preserved;
+\item predecessor deactivated before any identity-local critical stage.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Induction survives safe handoff]
+Suppose the oracle-guided AMLD induction hypotheses hold on each interval between handoffs, and every handoff preserves the handoff invariant. Then the settlement-horizon induction
+\[
+H(X_k;T)\le M-k
+\]
+continues across oracle generations. The proof depends on accepted AMLD states and valid next-step advice, not on persistence of one oracle identity.
+\end{theorem}
+\begin{proof}
+The induction state is $X_k$, not the private identity of the cartographic oracle. By the handoff invariant, $X_k$ and all verifier-trusted resources survive unchanged. The successor oracle receives the cartographic memory required to produce the next admissible geodesic advice. Therefore the induction hypothesis and step remain available after handoff.
+\end{proof}
+
+This yields a useful architectural separation: \emph{logical continuity is carried by the verifier and BANK; cartographic continuity may be carried by copying; identity continuity is optional and, in the handoff design, deliberately broken.}
+
+\section{Increasing the resolution of a map}
+
+The phrase ``increase the resolution of the map'' can be made precise without confusing address coordinates with intrinsic proof geometry. Resolution is about how finely the cartographer distinguishes possible next actions or regions.
+
+\begin{definition}[Cartographic map at resolution $r$]
+For an accepted state $X$, let $\mathcal A(X)$ be the set of admissible next pioneer actions. A resolution-$r$ cartographic map is a partition
+\[
+\mathcal P_r(X)=\{C^{(r)}_\alpha\}_\alpha
+\]
+of $\mathcal A(X)$ into cells of actions that the map does not yet distinguish. Resolution increases when
+\[
+\mathcal P_{r+1}(X)\preceq \mathcal P_r(X),
+\]
+meaning every cell at level $r+1$ lies inside a cell at level $r$.
+\end{definition}
+
+A natural qualitative hierarchy is:
+\[
+\begin{aligned}
+\boxed{\text{role}}&\to\boxed{\text{settlement region}}\to\boxed{\text{obligation region}}\\
+&\to\boxed{\text{waypoint}}\to\boxed{\text{next admissible edge}}\\
+&\to\boxed{\text{certificate-level instruction}}.
+\end{aligned}
+\]
+At low resolution the map may say only ``the refuter front is promising''. At higher resolution it may specify a backward obligation. Higher still, a precise verified waypoint. At maximal operational resolution, it identifies the exact next admissible edge or certificate interface.
+
+\begin{definition}[Oracle-compatible action cell]
+Let $a^*(X)$ be an oracle-selected geodesic action. Let $C_r^*(X)$ denote the unique cell of $\mathcal P_r(X)$ containing $a^*(X)$. Define the cartographic ambiguity
+\[
+U_r(X)=|C_r^*(X)|
+\]
+when finite, or more generally its diameter under an action metric.
+\end{definition}
+
+\begin{theorem}[Resolution refinement theorem]
+If $\mathcal P_{r+1}(X)$ refines $\mathcal P_r(X)$, then
+\[
+C_{r+1}^*(X)\subseteq C_r^*(X).
+\]
+Consequently finite ambiguity satisfies
+\[
+U_{r+1}(X)\le U_r(X),
+\]
+and metric cell diameter is nonincreasing.
+\end{theorem}
+\begin{proof}
+By refinement, the level-$(r+1)$ cell containing $a^*$ lies inside the level-$r$ cell containing the same action. Cardinality and diameter therefore cannot increase.
+\end{proof}
+
+\begin{theorem}[Finite-branching resolution completeness]
+Assume $\mathcal A(X)$ is finite and the nested family of partitions separates distinct actions: for every $a\ne b$ there exists a resolution $r$ at which $a$ and $b$ lie in different cells. Then for every isolated oracle action $a^*(X)$ there exists a finite $r^*$ such that
+\[
+C_{r^*}^*(X)=\{a^*(X)\}.
+\]
+\end{theorem}
+\begin{proof}
+For each competing action $b\ne a^*$ choose a resolution $r_b$ separating $b$ from $a^*$. Since there are finitely many competitors, $r^*=\max_b r_b$ is finite. Refinement then keeps every competitor outside the cell containing $a^*$.
+\end{proof}
+
+\begin{definition}[Cartographic resolution complexity]
+Define
+\[
+R_{\Omni}(X)=\min\{r: C_r^*(X)\text{ contains only geodesic-safe next actions}\},
+\]
+with the convention $R_{\Omni}(X)=\infty$ if no such resolution exists. This measures how much ``zoom'' is required before the map is sufficiently precise to guide a safe geodesic step. It is a property of the map/action representation and oracle interface, not identical to theorem difficulty.
+\end{definition}
+
+\section{The zoom-and-step protocol}
+
+Increasing map resolution suggests a second induction coordinate. Pioneer time advances horizontally; cartographic resolution advances vertically.
+
+\begin{definition}[Zoom-and-step state]
+A zoom-and-step state is $(h,r,X_h)$, where $h$ is the accepted pioneer stage and $r$ is the current map resolution. The protocol has two moves:
+\begin{align*}
+\textsc{Zoom: }&(h,r,X_h)\to(h,r+1,X_h),\\
+\textsc{Step: }&(h,r_h,X_h)\to(h+1,r_0,X_{h+1}),
+\end{align*}
+where $r_h$ is sufficient to identify a geodesic-safe action and $r_0$ is a chosen coarse resolution for the next stage.
+\end{definition}
+
+\begin{theorem}[Two-dimensional induction]
+Assume every unsettled accepted state has finite cartographic resolution complexity and that every selected geodesic-safe action is eventually realized and verified. Then the zoom-and-step protocol cannot be permanently trapped at a fixed accepted stage $h$: after finitely many zoom refinements it executes an accepted step. If the initial settlement horizon is $M$, at most $M$ accepted Step moves are required for settlement under the hypotheses of the AMLD induction theorem.
+\end{theorem}
+\begin{proof}
+At fixed $h$, finite $R_{\Omni}(X_h)$ implies that repeated Zoom moves reach a resolution sufficient for a safe action in finitely many refinements. The realization hypothesis then yields a verified Step to $h+1$. The AMLD induction theorem bounds the number of accepted Step moves by $M$.
+\end{proof}
+
+\begin{remark}[Map resolution can increase without changing mathematics]
+A finer map can expose more detail about which verified move is useful without changing the consequence closure of the BANK. This is analogous to the frozen distinction between deductive content and deductive presentation: cartographic resolution changes navigational information, not theoremhood.
+\end{remark}
+
+\section{Resolution, horizons, and information value}
+
+A high-resolution map is not automatically cheap. The oracle may spend more effort to distinguish among actions than the Pioneer saves by following the resulting advice. This motivates a cartographic analogue of gross versus net pioneer gain.
+
+\begin{definition}[Gross resolution gain]
+Let $Q_r(X)$ be a declared measure of expected continuation cost when advice is supplied only to resolution $r$. Define
+\[
+G^{\mathrm{res}}_{r\to r'}(X)=Q_r(X)-Q_{r'}(X),\qquad r'<\infty,\ r'>r.
+\]
+When positive, the finer map reduces the continuation burden under that model.
+\end{definition}
+
+\begin{definition}[Net resolution gain]
+If $C_{r\to r'}^{\mathrm{map}}(X)$ is the cost of computing or communicating the refinement, define
+\[
+G^{\mathrm{res,net}}_{r\to r'}(X)
+=G^{\mathrm{res}}_{r\to r'}(X)-C_{r\to r'}^{\mathrm{map}}(X).
+\]
+A finer map can therefore be epistemically better while computationally worse.
+\end{definition}
+
+This parallels the frozen gross/net pioneer distinction and gives experiments a natural new ablation: compare coarse oracle advice, medium-resolution obligation advice, exact waypoint advice, and exact edge advice while separately reporting map-construction cost and pioneer savings.
+
+\section{Omnicartographer advice as a hierarchy}
+
+The oracle can be viewed as answering a nested sequence of questions:
+\begin{enumerate}[label=\textbf{Level \arabic*:}, leftmargin=2.1cm]
+\item Which settlement role is nearest: $P,R,D,I,$ or $C$?
+\item Which certified settlement region within that role should be approached?
+\item Which obligation region is a useful doorway?
+\item Which waypoint should be reached next?
+\item Which admissible edge advances toward that waypoint?
+\item Which proof obligation realizes that edge?
+\item Which certificate object should the verifier receive?
+\end{enumerate}
+This hierarchy clarifies what ``omniscient cartography'' could mean at different strengths. A role-only oracle is powerful but coarse. A certificate-level oracle risks collapsing the cartographer into a prover. For preserving the pioneer concept, the most natural strong oracle identifies a verifier-admissible next edge and target location while leaving derivation construction to the Pioneer.
+
+\section{Pioneers as AMLDs that listen}
+
+There is no need to define ``Pioneer'' as a separate sixth machine class. A Pioneer can be an AMLD equipped with a listening policy.
+
+\begin{definition}[Pioneer policy]
+A Pioneer policy $\mathfrak P$ maps current accepted state and oracle advice to resource allocation among $P,R,D,I,C$, proof-search tactics, and a verifier submission policy. It is \emph{faithful} if, whenever the oracle supplies a realizable admissible geodesic edge, the policy eventually devotes sufficient complete search to realize that edge unless settlement is reached earlier.
+\end{definition}
+
+\begin{corollary}[Listening AMLD settlement]
+An AMLD with a faithful Pioneer policy and an exact one-step Omnicartographer satisfies the accepted-step settlement bound whenever the initial nearest settlement horizon is finite and attained.
+\end{corollary}
+
+The phrase ``the Pioneer listens'' should therefore mean something stronger than ``the oracle's advice is one heuristic feature among many''. For the induction theorem, listening means the advised geodesic obligation is eventually honored or superseded by an earlier settlement.
+
+\section{What the Omnicartographer knows at times $0,1,\dots,M$}
+
+Let $M=H(X_0;T)$ in the unit-cost setting. The strongest finite-horizon statement is:
+\[
+\forall h\in\{0,1,\dots,M-1\},\qquad
+\Omni(X_h,T)\text{ knows an admissible geodesic successor }X_{h+1}.
+\]
+At $h=0$ the oracle knows the Pioneer's present accepted location and its first geodesic-successor location. At $h=1$ it knows the newly accepted location and the next. Inductively this continues until a settlement certificate is accepted. There is no need for the oracle at time $0$ to emit the whole route at once; its power may be expressed recursively, one stage ahead.
+
+\begin{proposition}[One-step omniscience determines a realized finite route under faithful realization]
+Under the ATP or AMLD induction hypotheses, repeated one-step Omnicartographer calls determine the successive states of the realized accepted geodesic-guided orbit
+\[
+X_0,X_1,\dots,X_m
+\]
+until the first settlement stage $m\le M$.
+\end{proposition}
+\begin{proof}
+The base state $X_0$ is given. One-step advice plus faithful realization produces the realized successor $X_1$. Reapplying the rule at $X_1$ produces $X_2$, and so on. Finite induction gives every state of that realized route up to settlement. If advice or realization is nonunique, this need not define a unique counterfactual route unless a tie-breaking policy is added.
+\end{proof}
+
+This is the exact place where induction becomes conceptually stronger than a single oracle call: omniscience is not merely a snapshot. It is a recursively reusable one-step principle.
+
+\section{Interaction with the Pioneer Horizon Theorem}
+
+The frozen Pioneer Horizon Theorem says that a verified BANK deposit cannot increase the intrinsic shortest-proof horizon for a target when the original proofs remain available. The present oracle theory adds a control law:
+\[
+\text{observe current horizon}\to
+\text{choose geodesic step}\to
+\text{verify deposit}\to
+\text{recompute horizon}.
+\]
+Thus the older theorem supplies monotonic infrastructure, while the Omnicartographer supplies direction.
+
+\begin{theorem}[Directed pioneer horizon descent]
+Under the oracle-guided AMLD hypotheses, let $H_h=H(X_h;T)$. Then before settlement
+\[
+H_{h+1}\le H_h-1.
+\]
+Hence $(H_h)$ is a strictly descending sequence of nonnegative integers in the unit-cost model.
+\end{theorem}
+
+\begin{corollary}[No accepted-stage cycling]
+Under exact unit-cost oracle guidance, the accepted AMLD orbit cannot cycle before settlement, because the integer-valued potential $H_h$ strictly decreases at every accepted oracle-following step.
+\end{corollary}
+
+This gives a simple Lyapunov-style potential for the accepted dynamics: the nearest settlement horizon.
+
+\section{A resolution-sensitive potential}
+
+The two-dimensional zoom-and-step process suggests the lexicographic potential
+\[
+\Psi(h,r)=\bigl(H(X_h;T),\ R_{\Omni}(X_h)-r\bigr),
+\]
+ordered lexicographically among nonnegative pairs whenever $r\le R_{\Omni}(X_h)$. A Zoom move decreases the second coordinate; a Step move decreases the first coordinate. This prevents infinite stalling provided both coordinates are finite in the relevant sense.
+
+\begin{theorem}[Lexicographic termination of zoom-and-step]
+Assume integer-valued finite horizon and finite resolution complexity at each unsettled state. Under faithful realization, the zoom-and-step protocol terminates in a settlement state after finitely many Zoom and Step moves.
+\end{theorem}
+\begin{proof}
+At a fixed horizon, only finitely many Zoom moves are needed to reach sufficient resolution. A Step then strictly decreases the horizon. A nonnegative integer horizon can decrease only finitely many times.
+\end{proof}
+
+\section{Experimental consequences}
+
+The theory suggests experiments that distinguish oracle power, AMLD cooperation, and map resolution instead of conflating them. A minimal factorial design can vary:
+\begin{enumerate}
+\item single ATP versus five-channel AMLD;
+\item no oracle versus role-only oracle versus obligation oracle versus exact-edge Omnicartographer;
+\item private search state versus shared verifier-gated BANK;
+\item fixed route versus dynamic rerouting after each accepted deposit;
+\item handoff disabled versus provenance-preserving precritical handoff in synthetic self-reference tests.
+\end{enumerate}
+Report total expansions, wall time, verifier operations, BANK deposits, cross-channel BANK hits, gross and net pioneer gain, number of oracle calls, map-refinement cost, required resolution $R_{\Omni}$, and the accepted horizon sequence $H_0,H_1,\dots$.
+
+A particularly revealing ablation is
+\[
+P\text{ alone}
+\quad\text{vs.}\quad
+P\text{ in AMLD}
+\quad\text{vs.}\quad
+P\text{ in listening AMLD + Omnicartographer}.
+\]
+The first isolates ordinary theorem proving, the second isolates shared-BANK pioneering, and the third adds exact cartographic direction.
+
+\section{Compact new theorem summary}
+
+The extension can be compressed into the following statements.
+
+\begin{enumerate}[label=\textbf{O\arabic*.}]
+\item \textbf{One-step ATP induction.} If every accepted oracle-guided move lies on a unit-cost geodesic, then distance to settlement decreases exactly by one per accepted step.
+\item \textbf{Five-channel AMLD induction.} With shared conservative BANK growth and dynamic rerouting, the nearest settlement horizon decreases by at least one per accepted oracle-following step.
+\item \textbf{Finite accepted-step bound.} If the initial horizon is $M<\infty$, settlement occurs no later than accepted step $M$.
+\item \textbf{Dynamic rerouting.} Cross-channel deposits may shorten the horizon by more than one and may change which settlement region is nearest.
+\item \textbf{Discrete semigroup.} On a realized trajectory with settlement made absorbing, the successor transformation generates $S^k$ with $S^{m+n}=S^m\circ S^n$.
+\item \textbf{Continuous suspension.} A coordinate $0\le t\le M$ can represent computation between accepted stages without treating noninteger times as trusted logical states.
+\item \textbf{Handoff safety.} Provenance-preserving precritical handoff blocks identity-local issuer/closer feedback loops under explicit assumptions.
+\item \textbf{Handoff limitation.} Copying cannot by itself resolve information-extensional paradoxes whose hazard survives a change of identity.
+\item \textbf{Resolution monotonicity.} Nested map refinement shrinks the set of actions compatible with the oracle-selected move.
+\item \textbf{Finite-branching resolution completeness.} A separating refinement hierarchy eventually singles out an isolated optimal action.
+\item \textbf{Two-dimensional induction.} Finite resolution complexity plus finite settlement horizon gives finite zoom-and-step termination.
+\end{enumerate}
+
+\section{Closing synthesis}
+
+The cartographer/pioneer picture becomes sharper when one asks what an ideal cartographer would know. The intended Pioneer may carry formal reflective, epistemic, and operational self-models, but none of the architecture requires consciousness: these are computational and proof-theoretic notions only. In the simplest operational analogy, the Omnicartographer is the climber ahead with the radio, the AMLD is the five-person crew following behind, and the verifier decides which footholds count as certified progress.
+
+The cartographer/pioneer picture becomes sharper in the formal model when one asks what an ideal cartographer would know. The Omnicartographer knows the next verifier-admissible location on a shortest route to a nearest certified settlement region. The Pioneer is not replaced by that knowledge. It listens, performs the proof work, and asks the verifier to convert advice into accepted mathematical state. At the next accepted stage, the process repeats.
+
+This recursive one-step structure is precisely what makes induction natural. For a stand-alone ATP, the induction follows one target horizon. For an AMLD, the induction follows a shared five-front settlement horizon that can improve because other ATPs are building verified roads at the same time. The Pioneer need not stay on the geodesic selected at stage zero; it can replan after every accepted deposit. Omniscient cartography plus cooperative pioneering therefore describes a dynamically re-geodesized process.
+
+The same picture explains why ``increasing the resolution of the map'' is more than a metaphor. A coarse map names a role. A finer map names a settlement region. Finer still: an obligation, waypoint, edge, and certificate interface. Resolution refinement reduces ambiguity until a safe next move can be singled out. The resulting protocol alternates between zooming and stepping, giving a second induction coordinate alongside pioneer time.
+
+Finally, the handoff architecture separates three things that should not be conflated: the logical state is carried by the verifier and BANK; useful oracle memory can be copied; oracle identity can be deliberately broken. When the threatened paradox is specifically an identity-local feedback condition, a precritical handoff with immutable disclosure provenance prevents the same oracle from being both the source of the dangerous disclosure and the later agent that closes the loop. Where the hazard is instead carried by the information itself, the handoff is not enough. Stating that boundary makes the handoff argument stronger, not weaker, because it identifies exactly what is being proved safe.
+
+
+\section*{D Post-audit record}
+\addcontentsline{toc}{section}{D Post-audit record}
+The consolidation audit made the following substantive clarifications while preserving the development.
+\begin{enumerate}
+\item \textbf{AMLD horizon descent:} conservative BANK growth was supplemented by an explicit path-persistence/lifting hypothesis. Closure preservation alone does not imply that an arbitrary state-space geometry preserves old continuation paths or their costs.
+\item \textbf{Proof-horizon convention:} the shortest-proof horizon after a BANK deposit is explicitly an unexpanded horizon relative to currently available premises/macros. Fully expanded primitive-certificate cost is a distinct measure.
+\item \textbf{Semigroup statement:} the successor is defined on a realized trajectory and the settlement state is absorbing. This makes iteration closed and avoids treating a nondeterministic oracle relation as though it were automatically a global function.
+\item \textbf{Continuous time:} the suspended process is a semiflow on transit states; noninteger times are not verifier-accepted theorem states.
+\item \textbf{Nonunique advice:} repeated one-step advice determines a realized finite route. A unique counterfactual route requires explicit tie-breaking if multiple geodesic actions or realizations are possible.
+\item \textbf{Handoff boundary:} the provenance-severing argument requires a handoff strictly before the critical stage. For an immediate hazard at $h+1$, a post-disclosure integer-stage handoff cannot fit between issuance and hazard.
+\item \textbf{Resolution complexity:} $R_{\Omni}(X)$ is permitted to be $\infty$ when no finite map refinement isolates only geodesic-safe actions.
+\item \textbf{Cross-presentation reuse:} reuse of the same formula is immediate only for a common formula language; otherwise a certified translation is needed.
+\item \textbf{External dependencies:} the earlier SIC and Trading Theorem documents were not present in this package, so imported results are treated as declared dependencies rather than independently re-audited here.
+\end{enumerate}
+
+\paragraph{Audit conclusion.} Subject to the stated assumptions, the core architecture is internally coherent: verifier-gated conservative BANK growth supports cooperative pioneering; exact one-step Omnicartographer advice supports accepted-stage induction; path persistence supports the stronger AMLD horizon descent claim; handoff proves only identity-local provenance safety; and map refinement supplies a separate resolution coordinate rather than changing theoremhood. The remaining strongest assumptions---oracle exactness, realizability of advised edges, finite attained horizons, and finite resolution when termination is claimed---are assumptions of the idealized model, not conclusions derived from ordinary ATP behavior.
+
+\end{document}
