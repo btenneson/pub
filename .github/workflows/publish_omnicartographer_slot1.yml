@@ -27,7 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .build/omnicartographer
-          base64 -d incoming_publications/omnicartographer/source.tex.gz.b64 | gzip -d > .build/omnicartographer/source.tex
+          cat incoming_publications/omnicartographer/parts/part* | base64 -d | gzip -d > .build/omnicartographer/source.tex
           test "$(wc -c < .build/omnicartographer/source.tex)" -eq 93456
           test "$(sha256sum .build/omnicartographer/source.tex | awk '{print $1}')" = "18803583942431735b79fb7325401484841d626e9b91e79b9ce0b22c361e6030"
           grep -q '\\end{document}' .build/omnicartographer/source.tex
