@@ -1,0 +1,74 @@
+name: Promote Trading Theorem 003 to slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/promote_trading_theorem_003_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install catalog audit dependency
+        run: python -m pip install pymupdf==1.26.4
+
+      - name: Move Trading Theorem 003 to first catalog slot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          path = Path('scripts/publications.json')
+          data = json.loads(path.read_text())
+          target_id = 'cs.LO_Logic_in_Computer_Science/trading_theorem_003'
+          items = data['items']
+          matches = [x for x in items if x.get('id') == target_id]
+          assert len(matches) == 1, f'Expected exactly one Trading Theorem item, got {len(matches)}'
+          target = matches[0]
+          rest = [x for x in items if x.get('id') != target_id]
+          numeric_orders = [x['order'] for x in rest if isinstance(x.get('order'), int)]
+          target['order'] = (min(numeric_orders) - 1) if numeric_orders else -1
+          data['items'] = [target] + rest
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+          print('Trading Theorem 003 promoted to canonical catalog position 1 with order', target['order'])
+          PY
+
+      - name: Rebuild and audit publication library
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          target = 'cs.LO_Logic_in_Computer_Science/trading_theorem_003'
+          catalog = json.loads(Path('scripts/publications.json').read_text())
+          search = json.loads(Path('docs/search-index.json').read_text())
+          assert catalog['items'][0]['id'] == target, catalog['items'][0]['id']
+          assert search['items'][0]['id'] == target, search['items'][0]['id']
+          assert Path('docs/cs.LO_Logic_in_Computer_Science/trading_theorem_003/index.html').is_file()
+          print('PASS: Trading Theorem 003 is slot 1 in canonical catalog and generated site.')
+          PY
+
+      - name: Commit slot-1 promotion
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/publications.json docs
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Promote Trading Theorem 003 to slot 1 [skip ci]'
+            git push
+          fi
