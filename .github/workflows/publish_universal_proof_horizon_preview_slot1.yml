@@ -1,0 +1,139 @@
+name: Publish Universal Proof-Horizon Operator preview to slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_universal_proof_horizon_preview_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build and audit dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-pictures texlive-fonts-recommended lmodern latexmk
+          python -m pip install pymupdf==1.26.4
+
+      - name: Restore manuscript and compile PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          ID='cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1'
+          ROOT_DIR="$ID"
+          DOCS_DIR="docs/$ID"
+          mkdir -p "$ROOT_DIR" "$DOCS_DIR" .build/uph_compile
+          cat .build/universal_proof_horizon_preview/source.tex.gz.b64.* > .build/uph_compile/source.tex.gz.b64
+          base64 -d .build/uph_compile/source.tex.gz.b64 | gzip -dc > "$ROOT_DIR/Universal_Proof_Horizon_Tenneson_v1_1.tex"
+          cp "$ROOT_DIR/Universal_Proof_Horizon_Tenneson_v1_1.tex" "$DOCS_DIR/source.tex"
+          cp "$ROOT_DIR/Universal_Proof_Horizon_Tenneson_v1_1.tex" .build/uph_compile/Universal_Proof_Horizon_Tenneson_v1_1.tex
+          cd .build/uph_compile
+          latexmk -pdf -interaction=nonstopmode -halt-on-error Universal_Proof_Horizon_Tenneson_v1_1.tex
+          cd ../..
+          cp .build/uph_compile/Universal_Proof_Horizon_Tenneson_v1_1.pdf "$ROOT_DIR/Universal_Proof_Horizon_Tenneson_v1_1.pdf"
+          test -s "$ROOT_DIR/Universal_Proof_Horizon_Tenneson_v1_1.pdf"
+
+      - name: Add preview card at slot 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import json
+          import fitz
+
+          path = Path('scripts/publications.json')
+          data = json.loads(path.read_text())
+          target_id = 'cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1'
+          items = [x for x in data['items'] if x.get('id') != target_id]
+          numeric_orders = [x['order'] for x in items if isinstance(x.get('order'), int)]
+          order = (min(numeric_orders) - 1) if numeric_orders else -1
+          pdf = Path(target_id) / 'Universal_Proof_Horizon_Tenneson_v1_1.pdf'
+          digest = hashlib.sha256(pdf.read_bytes()).hexdigest()
+          pages = len(fitz.open(pdf))
+          target = {
+            'title': 'The Universal Proof-Horizon Operator — From MIU and the nth Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders',
+            'kind': 'Core paper',
+            'quote': 'proof recovery is universal on theorems, while termination on non-theorems is not guaranteed.',
+            'quote_page': 4,
+            'card_text': 'A research monograph connecting MIU, effective Gödel-coded enumeration, minimum-cost proof search, the SIC Proof-Horizon framework, theorem-space growth, Predator, and automated logical deciders. Its central theorem identifies a partial computable operator that returns a canonical minimum-cost proof for an enumerated theorem under a fixed effective proof calculus and an effectively proper computable cost; on non-theorems it may diverge. The manuscript explicitly does not claim to decide ZFC or evade Church-style undecidability or Gödel–Rosser incompleteness, and treats proof navigation, verification, and logical status as distinct problems.',
+            'status': 'UNCUT · UNAUDITED · PREVIEW EDITION — Early public research release. Presented without a fresh independent audit or editorial cut; claims, citations, and scope should be checked against the manuscript and sources before relying on them.',
+            'subject': 'cs.LO_Logic_in_Computer_Science',
+            'id': target_id,
+            'href': target_id + '/',
+            'pdf': target_id + '/Universal_Proof_Horizon_Tenneson_v1_1.pdf',
+            'archive_path': str(pdf).replace('\\', '/'),
+            'sha256': digest,
+            'pages': pages,
+            'order': order,
+            'source': target_id + '/source.html',
+            'authors': 'Brian Tenneson',
+            'source_file': target_id + '/source.tex',
+            'classification_note': 'Uncut · unaudited · preview edition. Version 1.1, dated September 13, 2026; posted as an early public research release without a fresh independent audit or editorial cut. Subject classification: cs.LO — Logic in Computer Science.'
+          }
+          data['items'] = [target] + items
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+          print('Universal Proof-Horizon preview inserted at canonical slot 1 with order', order)
+          print('Compiled PDF:', pages, 'pages; sha256', digest)
+          PY
+
+      - name: Rebuild and audit publication library
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp scripts/build_publications_106.py /tmp/build_publications_106.py
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/build_publications_106.py')
+          s = p.read_text()
+          old = 'if len(expanded["items"]) != 114:'
+          new = 'if len(expanded["items"]) != 115:'
+          assert old in s, 'Expected catalog-size guard not found'
+          p.write_text(s.replace(old, new, 1))
+          PY
+          python scripts/build_publications_106.py
+          cp /tmp/build_publications_106.py scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          target = 'cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1'
+          catalog = json.loads(Path('scripts/publications.json').read_text())
+          search = json.loads(Path('docs/search-index.json').read_text())
+          assert catalog['items'][0]['id'] == target, catalog['items'][0]['id']
+          assert search['items'][0]['id'] == target, search['items'][0]['id']
+          assert len(search['items']) == 115, len(search['items'])
+          for p in (
+              Path('docs') / target / 'index.html',
+              Path('docs') / target / 'source.html',
+              Path('docs') / target / 'source.tex',
+              Path('docs') / target / 'Universal_Proof_Horizon_Tenneson_v1_1.pdf',
+          ):
+              assert p.is_file(), p
+          home = Path('docs/index.html').read_text()
+          assert 'UNCUT · UNAUDITED · PREVIEW EDITION' in home
+          assert 'The Universal Proof-Horizon Operator' in home
+          print('PASS: Universal Proof-Horizon Operator is slot 1 with reader, PDF, source, and preview disclaimer.')
+          PY
+
+      - name: Commit publication and clean staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          ID='cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1'
+          rm -rf .build/universal_proof_horizon_preview .build/uph_compile
+          git rm -f .github/workflows/publish_universal_proof_horizon_preview_slot1.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A .build .github/workflows scripts/publications.json docs "$ID"
+          git commit -m 'Publish Universal Proof-Horizon preview in slot 1 [skip ci]'
+          git push
