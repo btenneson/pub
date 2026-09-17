@@ -1,0 +1,950 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trading Theorem 003 — Mutual Reproducibility, Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/trading_theorem_003/">Back to publication</a><h1>Trading Theorem 003 — Mutual Reproducibility, Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/trading_theorem_003/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{longtable}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{researchnote}[theorem]{Research Note}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Cn}{\operatorname{Cn}}
+\newcommand{\Th}{\operatorname{Th}}
+\newcommand{\Proof}{\operatorname{Proof}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\Inst}{\operatorname{Inst}}
+\newcommand{\Int}{\operatorname{Int}}
+\newcommand{\BANK}{\textsc{Bank}}
+\newcommand{\QH}{\textsc{QH}}
+\newcommand{\equivCn}{\equiv_{\mathrm{Cn}}}
+
+\title{\textbf{Trading Theorem 003}\\[0.4em]
+\large Mutual Reproducibility, Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search}
+\author{Brian Tenneson\\[0.4em]\small Formalization, proof development, and editorial assistance: ChatGPT (OpenAI)}
+\date{September 17, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper develops a consequence-preserving ``Trading Theorem&#x27;&#x27; viewpoint for formal systems and connects it to automated theorem proving and verified conjecture settlement. The central theorem is stated in terms of \emph{mutual reproducibility}: two families of deductive resources may be traded when every primitive use of either family can be replaced, in the same admissible proof context, by a finite derivation using the other. Under this condition the two presentations have the same consequence closure for every hypothesis bank. The familiar trade between an initial hypothesis and a zero-premise rule becomes an immediate corollary. A rule-to-axiom trade is obtained only when both forward simulation and reverse recoverability are established; for conditionalizable rules this yields an exact internalization theorem, with ordinary mathematical induction as a standard example.
+
+The paper then develops verifier-safe consequences for search. Verified intermediate states may be promoted to checkpoint banks without changing ultimate deductive power; mutually reconstructible banks may even replace one another. Consequence-preserving translations support one-way handoff, while bounded transition simulation supports finite continuation without restarting. Trading is combined with quotient search, abstraction-derived lower bounds, exact congruence reduction, reusable \BANK{} macros, and portfolios over consequence-equivalent presentations. The MIU system supplies a small worked quotient example. Runtime speedups remain empirical: the theorems certify preservation, pruning, lower bounds, proof-cost distortion, and scheduling guarantees, not universal wall-clock improvement.
+\end{abstract}
+
+\section{Status, scope, and contribution}
+The purpose of this paper is to isolate a mathematically correct trading principle and then ask what it licenses inside verifier-gated proof search. The guiding distinction is between \emph{deductive content} and \emph{deductive presentation}: an axiom, a rule, a proved lemma, a macro rule, or a verified checkpoint may encode overlapping deductive power even though the operational search spaces look very different.
+
+Several components have classical relatives. Consequence relations, derivable and admissible rules, and rule schemes are standard proof-theoretic notions; see Iemhoff~\cite{Iemhoff2016}. Equivalence between suitable induction rules and induction axioms is standard in sequent-calculus treatments; see Buss~\cite{Buss1998}. Relative proof-system efficiency and proof simulation have a long history, including Cook and Reckhow~\cite{CookReckhow1979}. Abstraction-derived lower bounds and pruning are classical in heuristic search~\cite{Hart1968,MostowPrieditis1989,Holte1996}. The present contribution is therefore not a claim that mutual derivability, rule admissibility, proof simulation, or abstraction search is new. The research direction pursued here is their combination with SIC-style proof states, verifier-gated theorem settlement, a shared theorem \BANK{}, presentation search, and a dedicated Quotient Hunter.
+
+No theorem name in this paper should be read as a novelty claim. A theorem name identifies a role inside this framework; originality is a separate prior-art question.
+
+\section{Formal presentations and consequence closure}
+The earlier SIC notation writes a formal system as
+\[
+F=(x,y,z),
+\]
+where $x$ is an alphabet, $y$ is a set of well-formed formulas, and $z$ is a collection of inference resources. Because trading distinguishes initial resources from inferential resources, it is convenient to expose the axiom coordinate.
+
+\begin{definition}[Presentation]
+A presentation is a tuple
+\[
+P=(x,y,A,R),
+\]
+where $A\subseteq y$ is an axiom set or axiom schema and $R$ is a family of finitary rule schemata, including any side conditions attached to those rules. For an additional hypothesis bank $\Gamma\subseteq y$, define
+\[
+\Cn_P(\Gamma)
+\]
+to be the set of formulas derivable by finite $P$-proofs from $A\cup\Gamma$ using $R$. The theorem set is
+\[
+\Th(P)=\Cn_P(\varnothing).
+\]
+\end{definition}
+
+We assume the ordinary closure properties induced by finite derivability: extensivity, monotonicity, and idempotence,
+\[
+\Gamma\subseteq\Cn_P(\Gamma),\qquad
+\Gamma\subseteq\Delta\Rightarrow\Cn_P(\Gamma)\subseteq\Cn_P(\Delta),\qquad
+\Cn_P(\Cn_P(\Gamma))=\Cn_P(\Gamma).
+\]
+These are the closure-operator form of familiar consequence-relation principles such as reflexivity, weakening, and cut/transitivity~\cite{Iemhoff2016}.
+
+\begin{definition}[Consequence equivalence]
+Two presentations over the same formula language are consequence equivalent, written
+\[
+P_1\equivCn P_2,
+\]
+when
+\[
+\Cn_{P_1}(\Gamma)=\Cn_{P_2}(\Gamma)
+\]
+for every admissible hypothesis bank $\Gamma$.
+\end{definition}
+
+\begin{definition}[Proof horizon]
+Let $C_P(\pi)\ge 0$ be a verifier-respecting proof cost, such as primitive inference steps or weighted verifier operations. Define
+\[
+H_P(\varphi)=\inf\{C_P(\pi):\pi\in\Proof_P(\varphi)\},
+\]
+with $H_P(\varphi)=\infty$ if no proof exists.
+\end{definition}
+
+Consequence equivalence preserves whether the horizon is finite. It need not preserve its numerical value. That gap is where presentation changes can alter proof geometry without changing theoremhood.
+
+\section{Mutual reproducibility and the Trading Theorem}
+
+\subsection{Deductive resources}
+A primitive deductive resource is most safely represented as a finitary rule over \emph{proof judgments},
+\[
+\frac{J_1\qquad\cdots\qquad J_k}{J},
+\]
+where a judgment records a formula together with whatever open-assumption, dependency, discharge, typing, or other proof-state data the calculus treats as logically relevant. In Hilbert-style systems, and in other settings where no such extra judgment structure is needed, this specializes to the familiar formula-level notation
+\[
+\frac{\Delta}{\psi},
+\]
+with $\Delta$ a finite set or finite list of premises. A zero-premise resource $\varnothing/J$ (or $\varnothing/\psi$ in the formula-level special case) is axiom-like. Freshness, eigenvariable restrictions, substitution conditions, discharge restrictions, typing constraints, and similar requirements are part of the resource, not optional annotations. In particular, an assumption-discharge rule is not silently identified with an ordinary list of formula premises.
+
+Fix a background presentation $B$. If $\mathcal U$ is an additional family of deductive resources, write $B+\mathcal U$ for the corresponding extension.
+
+\begin{definition}[Contextual simulation]
+Let $\mathcal U$ and $\mathcal V$ be resource families over the same object language and compatible proof judgments. We write
+\[
+\mathcal U\preceq_B\mathcal V
+\]
+when every admissible primitive use of a resource in $\mathcal U$ can be replaced by a finite $B+\mathcal V$ derivation with the same conclusion judgment, no additional open assumptions or dependencies beyond those permitted by the source use and ambient context, and all source side conditions preserved. The replacement must be valid in every context in which the source resource is admissible.
+\end{definition}
+
+This definition is deliberately proof-local. It says exactly what is needed to splice a replacement derivation into a larger proof.
+
+\begin{theorem}[Mutual Reproducibility Trading Theorem]\label{thm:mutual}
+Let $B$ be a background presentation and let $\mathcal U,\mathcal V$ be additional resource families. If
+\[
+\mathcal U\preceq_B\mathcal V
+\qquad\text{and}\qquad
+\mathcal V\preceq_B\mathcal U,
+\]
+then
+\[
+B+\mathcal U\equivCn B+\mathcal V.
+\]
+Equivalently, for every admissible $\Gamma$,
+\[
+\Cn_{B+\mathcal U}(\Gamma)=\Cn_{B+\mathcal V}(\Gamma).
+\]
+\end{theorem}
+
+\begin{proof}
+Take a finite $B+\mathcal U$ derivation of $\theta$ from $\Gamma$. Induct on the derivation. Background steps remain unchanged. Whenever the final step uses a resource from $\mathcal U$, replace that primitive use by the finite $B+\mathcal V$ derivation supplied by $\mathcal U\preceq_B\mathcal V$, after translating the already-derived premises by the induction hypothesis. Thus every $B+\mathcal U$ proof compiles to a $B+\mathcal V$ proof with the same open hypotheses and conclusion, proving
+\[
+\Cn_{B+\mathcal U}(\Gamma)\subseteq\Cn_{B+\mathcal V}(\Gamma).
+\]
+The reverse inclusion follows symmetrically from $\mathcal V\preceq_B\mathcal U$.
+\end{proof}
+
+The theorem gives a precise version of the informal principle
+\[
+\boxed{\text{deductive resources are exactly tradeable when they can locally reproduce one another.}}
+\]
+
+\subsection{The original hypothesis/zero-premise trade}
+For $a\in y$, let
+\[
+r_a=\frac{}{a}.
+\]
+
+\begin{corollary}[Basic Trading Theorem]\label{cor:basic}
+Let $P=(x,y,A,R)$ and let $A_0\subseteq y$. Define
+\[
+P&#x27;=(x,y,A,R\cup\{r_a:a\in A_0\}).
+\]
+Then for every $\Gamma\subseteq y$,
+\[
+\Cn_P(\Gamma\cup A_0)=\Cn_{P&#x27;}(\Gamma).
+\]
+\end{corollary}
+
+\begin{proof}
+An initial use of $a\in A_0$ can be replaced by the zero-premise step $r_a$, and every use of $r_a$ can be replaced by initial availability of $a$. All other proof steps are unchanged. This is the simplest mutually reproducible trade.
+\end{proof}
+
+Thus the original Trading Theorem is not lost; it becomes the first concrete corollary of the more general theorem.
+
+\subsection{Rule internalization without quantifying over formula metavariables}
+Let $\rho$ be a finitary rule schema. Write $\Inst(\rho)$ for its admissible object-level instances, including all side conditions. For an instance
+\[
+r=\frac{\phi_1,\ldots,\phi_k}{\psi},\qquad k\ge 1,
+\]
+define its conditional internalization
+\[
+\Int(r)=\bigl(\phi_1\land\cdots\land\phi_k\bigr)\to\psi.
+\]
+The internalization schema is
+\[
+H_\rho=\{\Int(r):r\in\Inst(\rho)\}.
+\]
+This formulation keeps formula metavariables at the metalevel and avoids writing object-language quantifiers over formulas.
+
+\begin{definition}[Forward internalization]
+$H_\rho$ forward-internalizes $\rho$ over a background $B$ when every admissible instance of $\rho$ can be simulated from its premises and the corresponding member of $H_\rho$ using only $B$.
+\end{definition}
+
+Forward internalization alone proves only one inclusion. Exact trading requires recoverability.
+
+\begin{theorem}[Recoverability Criterion]\label{thm:recoverability}
+Let
+\[
+P=B+\{\rho\},\qquad Q=B+H_\rho,
+\]
+and suppose $H_\rho$ forward-internalizes $\rho$ over $B$. Then
+\[
+P\equivCn Q
+\quad\Longleftrightarrow\quad
+H_\rho\subseteq\Th(P).
+\]
+\end{theorem}
+
+\begin{proof}
+Forward internalization gives, for every $\Gamma$,
+\[
+\Cn_P(\Gamma)\subseteq\Cn_Q(\Gamma).
+\]
+If $P\equivCn Q$, then with $\Gamma=\varnothing$ every $h\in H_\rho$, being an axiom of $Q$, belongs to $\Th(Q)=\Th(P)$.
+
+Conversely, suppose $H_\rho\subseteq\Th(P)$. In any $Q$-proof from $\Gamma$, replace each initial use of $h\in H_\rho$ by a fixed $P$-proof of $h$ from no additional hypotheses. Background steps are already available in $P$. Hence
+\[
+\Cn_Q(\Gamma)\subseteq\Cn_P(\Gamma).
+\]
+Together with the forward inclusion, this yields consequence equivalence.
+\end{proof}
+
+This theorem isolates the missing half of an exact rule-to-axiom trade:
+\[
+\boxed{\text{forward simulation}+\text{recoverability}=\text{exact trading}.}
+\]
+
+\begin{definition}[Conditionalizable rule]
+A finitary rule schema $\rho$ is conditionalizable over $B$ when the background calculus supports the required conjunction introduction/elimination and implication introduction/elimination, the rule may be applied under the temporary assumption used in conditional proof, and all of its side conditions survive that embedding.
+\end{definition}
+
+\begin{corollary}[Conditionalizable Rule Trading]\label{cor:conditional}
+If $\rho$ is conditionalizable over $B$, then
+\[
+B+\{\rho\}\equivCn B+H_\rho.
+\]
+\end{corollary}
+
+\begin{proof}
+To simulate an instance of $\rho$ using $\Int(r)$, conjoin its premises and use implication elimination. Conversely, to derive $\Int(r)$ using $\rho$, temporarily assume $\phi_1\land\cdots\land\phi_k$, extract the premises, apply $\rho$, and discharge the temporary assumption. Thus each side contextually simulates the other, and Theorem~\ref{thm:mutual} applies.
+\end{proof}
+
+\begin{remark}
+A bare implication is not automatically a faithful replacement for a metalogical rule. Rules with eigenvariable, freshness, discharge, typing, or other side conditions may fail to be conditionalizable unless the translation explicitly preserves those conditions.
+\end{remark}
+
+\subsection{Compact notation and a theorem-set saturation endpoint}
+The compact notation motivating this program must distinguish an \emph{emptied resource slot} from the literal absence of all inferential machinery. A consequence-equivalent trade may be written schematically as
+\[
+T_1(x,y,t(z),z)\equivCn T_2(x,y,h(z),\varnothing),
+\]
+when $h(z)$ is a retained representation of the removed resource family and the resources encoded by $h(z)$ and $z$ are mutually reproducible over the fixed background. If $h(z)$ is absorbed into the notation for that background, one may abbreviate the right-hand side by $T_2(x,y,\varnothing)$, but the abbreviation must not be read as saying that the destination literally has no rules or other deductive kernel. The symbol $\equivCn$, not literal equality of tuples, is essential.
+
+There is also a mathematically valid but computationally uninformative endpoint in which all rules are literally removed. Its guarantee is only theorem-set preservation.
+
+\begin{theorem}[Theorem-Set Saturation Endpoint (Rule-Free)]\label{thm:saturation}
+Let $P=(x,y,A,R)$ and define
+\[
+A^\star=\Th(P),\qquad P^\star=(x,y,A^\star,\varnothing).
+\]
+Then
+\[
+\Th(P^\star)=\Th(P).
+\]
+\end{theorem}
+
+\begin{proof}
+With no inference rules, the theorem set of $P^\star$ is exactly its axiom set $A^\star$, which was defined to be $\Th(P)$.
+\end{proof}
+
+\begin{remark}[Why this is not consequence equivalence]
+In general $P^\star\not\equivCn P$. For example, let $P$ contain modus ponens and let $p,q$ be propositional atoms. From the hypothesis bank
+\[
+\Gamma=\{p,\ p\to q\}
+\]
+one has $q\in\Cn_P(\Gamma)$. If $q\notin\Th(P)$, then the literal rule-free presentation $P^\star$ cannot combine the two hypotheses by modus ponens, so $q\notin\Cn_{P^\star}(\Gamma)$. Equality of theorem sets at the empty bank is therefore strictly weaker than equality of consequence closure for every bank.
+\end{remark}
+
+\begin{researchnote}
+The saturation endpoint is structural, not an algorithm and not, in general, a consequence-equivalent trade. Computing $A^\star$ may be as difficult as the original theorem-proving problem. The search question is whether a small target-relevant fragment of saturation, or a cheaper presentation that retains a deductive kernel and satisfies mutual reproducibility, can be discovered without hiding the original proof problem inside the trade.
+\end{researchnote}
+
+\section{Induction as an exact trading instance}
+Let $A(n,\bar u)$ be an object-language formula with parameters $\bar u$. Consider a standard induction rule, schematically,
+\[
+\rho_{\mathrm{Ind}}=
+\frac{A(0,\bar u)\qquad \forall n\bigl(A(n,\bar u)\to A(n+1,\bar u)\bigr)}
+{\forall n\,A(n,\bar u)}.
+\]
+The associated induction axiom instance is
+\[
+I_A=\Bigl(A(0,\bar u)\land\forall n(A(n,\bar u)\to A(n+1,\bar u))\Bigr)
+\to\forall n\,A(n,\bar u).
+\]
+
+\begin{corollary}[Induction Trading]\label{cor:induction}
+In a background calculus in which the displayed induction rule is conditionalizable and the usual parameter/eigenvariable restrictions are respected, adjoining the induction rule schema is consequence equivalent to adjoining the corresponding induction axiom schema.
+\end{corollary}
+
+\begin{proof}
+The axiom simulates the rule by conjunction introduction followed by implication elimination. For recoverability, temporarily assume
+\[
+A(0,\bar u)\land\forall n(A(n,\bar u)\to A(n+1,\bar u)).
+\]
+Extract the two conjuncts, apply the induction rule, derive $\forall nA(n,\bar u)$, and discharge the temporary assumption. Hence each induction axiom instance is a theorem of the rule presentation, and Corollary~\ref{cor:conditional} applies.
+\end{proof}
+
+This equivalence is standard in suitable proof calculi; for example, Buss explicitly notes an induction-rule/induction-axiom equivalence in a sequent-calculus setting~\cite{Buss1998}.
+
+\subsection{Recursive auxiliary data}
+Suppose the background theory proves existence and uniqueness of a function satisfying
+\[
+Y(0)=a,\qquad Y(n+1)=f(n,Y(n)),
+\]
+and let the language be conservatively extended by a function symbol $Y$ naming that function. Equivalently for the argument below, one may simply assume that $Y$ is already an available function symbol and that the two displayed recursion equations are proved in the background theory. For a formula $P(n,Y(n))$, define
+\[
+Q(n):=P(n,Y(n)).
+\]
+Ordinary induction on $Q$ yields the following.
+
+\begin{corollary}[Definable-Sequence Induction]
+If
+\[
+P(0,Y(0))
+\]
+and
+\[
+\forall n\bigl(P(n,Y(n))\to P(n+1,Y(n+1))\bigr)
+\]
+are available, then
+\[
+\forall n\,P(n,Y(n))
+\]
+follows by ordinary induction.
+\end{corollary}
+
+The notation $Y(n)$ is object-language data. This avoids treating a metamathematical sequence symbol $y_n$ as though it were automatically a term of the formal language.
+
+\section{Verified checkpoints and handoff}
+Trading can occur not only between axioms and rules but between verified proof states.
+
+\begin{theorem}[Verified Checkpoint Theorem]\label{thm:checkpoint}
+Let $C=\Cn_P$ and suppose
+\[
+\Gamma\subseteq S\subseteq C(\Gamma).
+\]
+Then
+\[
+C(S)=C(\Gamma).
+\]
+\end{theorem}
+
+\begin{proof}
+From $\Gamma\subseteq S$, monotonicity gives $C(\Gamma)\subseteq C(S)$. From $S\subseteq C(\Gamma)$, monotonicity and idempotence give
+\[
+C(S)\subseteq C(C(\Gamma))=C(\Gamma).
+\]
+Hence equality.
+\end{proof}
+
+In SIC language, a verifier-approved state containing the original bank and only verified consequences may be promoted to the new starting bank without changing ultimate deductive power.
+
+\begin{theorem}[Compressed Checkpoint Theorem]\label{thm:compressed}
+If
+\[
+S\subseteq C(\Gamma)
+\qquad\text{and}\qquad
+\Gamma\subseteq C(S),
+\]
+then
+\[
+C(S)=C(\Gamma).
+\]
+\end{theorem}
+
+\begin{proof}
+The first inclusion gives $C(S)\subseteq C(C(\Gamma))=C(\Gamma)$. The second gives $C(\Gamma)\subseteq C(C(S))=C(S)$.
+\end{proof}
+
+Thus a checkpoint may even forget the literal original hypotheses if it retains enough verified information to reconstruct them.
+
+\subsection{Consequence-level handoff}
+\begin{definition}[Consequence-preserving translation]
+A formula map $\tau:y_P\to y_Q$ is consequence preserving if for every admissible $\Delta$ and formula $\varphi$,
+\[
+\varphi\in\Cn_P(\Delta)
+\quad\Longrightarrow\quad
+\tau(\varphi)\in\Cn_Q(\tau[\Delta]).
+\]
+\end{definition}
+
+\begin{theorem}[One-Way Handoff]
+If $\tau$ is consequence preserving and $S$ is any verified $P$-state, then every future $P$-consequence of $S$ translates to a $Q$-consequence of $\tau[S]$:
+\[
+\varphi\in\Cn_P(S)\Longrightarrow\tau(\varphi)\in\Cn_Q(\tau[S]).
+\]
+\end{theorem}
+
+This theorem needs no inverse map. If the implication also holds in the reverse direction, the translation reflects consequence and supports exact deductive handoff.
+
+\subsection{Operational handoff with bounded stuttering}
+Consequence preservation identifies reachable conclusions, but continuing an ongoing computation step by step requires a transition-level hypothesis.
+
+Let $S\to_P S&#x27;$ denote one legal verifier-approved SIC transition. Let $\mathcal R$ be a declared relation between $P$-states and $Q$-states; intuitively, $S\mathrel{\mathcal R}U$ says that $U$ is an acceptable target-side representation of the source state $S$.
+
+\begin{definition}[$b$-step relational simulation]
+For $b\in\mathbb N$, the relation $\mathcal R$ is a $b$-step simulation of $P$ by $Q$ if, whenever
+\[
+S\mathrel{\mathcal R}U
+\qquad\text{and}\qquad
+S\to_P S&#x27;,
+\]
+there exists a $Q$-state $U&#x27;$ such that
+\[
+U\to_Q^{\le b}U&#x27;
+\qquad\text{and}\qquad
+S&#x27;\mathrel{\mathcal R}U&#x27;.
+\]
+A concrete state translation $\widehat\tau$ is a special case: one may declare $S\mathrel{\mathcal R}U$ exactly when $U$ represents or contains $\widehat\tau(S)$, provided that this declared relation satisfies the condition above.
+\end{definition}
+
+\begin{theorem}[Finite-Stuttering Handoff]\label{thm:stutter}
+Suppose $\mathcal R$ is a $b$-step simulation, $S_0\mathrel{\mathcal R}U_0$, and
+\[
+S_0\to_P S_1\to_P\cdots\to_P S_r.
+\]
+Then there exists a $Q$-state $U_r$ such that
+\[
+U_0\to_Q^{\le br}U_r
+\qquad\text{and}\qquad
+S_r\mathrel{\mathcal R}U_r.
+\]
+In particular, if $U_0=\widehat\tau(S_0)$ and $\mathcal R$ is induced by a state translation as above, then $Q$ reaches in at most $br$ transitions a state representing $\widehat\tau(S_r)$.
+\end{theorem}
+
+\begin{proof}
+Induct on $r$. For $r=0$, take $U_r=U_0$. Assume the claim holds through $S_r$, so some $U_r$ is reachable from $U_0$ in at most $br$ target transitions and $S_r\mathrel{\mathcal R}U_r$. Apply the simulation property to the source step $S_r\to_P S_{r+1}$. There is a state $U_{r+1}$ with
+\[
+U_r\to_Q^{\le b}U_{r+1}
+\qquad\text{and}\qquad
+S_{r+1}\mathrel{\mathcal R}U_{r+1}.
+\]
+Concatenating the two target paths gives a path of length at most $br+b=b(r+1)$.
+\end{proof}
+
+The special case $b=1$ gives one target transition per source transition, but not necessarily literal state equality. More generally, a traded system may need several target steps to reproduce one source step while still allowing verified continuation without restarting. The relational formulation is essential: each simulated segment must end in a state from which the simulation hypothesis is valid for the next source step.
+
+\section{Settlement invariance under trading}
+For a conjecture $c$, define the syntactic settlement signature
+\[
+\sigma_P(c)=\bigl(\mathbf 1[c\in\Th(P)],\mathbf 1[\neg c\in\Th(P)]\bigr).
+\]
+The four possibilities are
+\[
+(1,0)=P,\qquad (0,1)=R,\qquad (0,0)=I_{\mathrm{syn}},\qquad (1,1)=C.
+\]
+Here $I_{\mathrm{syn}}$ means only that neither $c$ nor $\neg c$ is derivable in the presentation. It is not, by itself, a model-theoretic independence certificate.
+
+\begin{theorem}[Settlement Preservation]
+If $P_1\equivCn P_2$, then for every conjecture $c$,
+\[
+\sigma_{P_1}(c)=\sigma_{P_2}(c).
+\]
+\end{theorem}
+
+\begin{proof}
+Consequence equivalence at $\Gamma=\varnothing$ gives $\Th(P_1)=\Th(P_2)$. Membership of both $c$ and $\neg c$ is therefore preserved.
+\end{proof}
+
+Thus consequence-preserving trading can alter search geometry without altering the basic syntactic prove/refute/unsettled/inconsistent classification.
+
+\section{Proof-cost distortion under trading}
+A theoremhood-preserving translation may still make certificates longer or shorter.
+
+\begin{theorem}[Proof-Translation Distortion Bound]\label{thm:distortion}
+Suppose there is a proof translation $T:\Proof_P(\varphi)\to\Proof_Q(\varphi)$ such that
+\[
+C_Q(T\pi)\le a\,C_P(\pi)+b
+\]
+for all translated proofs, where $a\ge 1$ and $b\ge 0$. Then
+\[
+H_Q(\varphi)\le aH_P(\varphi)+b.
+\]
+If a reverse translation satisfies
+\[
+C_P(S\sigma)\le c\,C_Q(\sigma)+d,
+\]
+then also
+\[
+H_P(\varphi)\le cH_Q(\varphi)+d.
+\]
+\end{theorem}
+
+\begin{proof}
+If $H_P(\varphi)=\infty$, the first inequality is vacuous. Otherwise, for every $\varepsilon&gt;0$ choose a $P$-proof $\pi$ with
+\[
+C_P(\pi)&lt;H_P(\varphi)+\varepsilon.
+\]
+Then
+\[
+H_Q(\varphi)\le C_Q(T\pi)
+\le aC_P(\pi)+b
+&lt;aH_P(\varphi)+a\varepsilon+b.
+\]
+Let $\varepsilon\downarrow0$. The reverse direction is identical.
+\end{proof}
+
+This is a proof-complexity statement, not a universal runtime theorem. Cook and Reckhow&#x27;s classical work emphasizes that proof systems can be compared by the efficiency of proof simulation~\cite{CookReckhow1979}. In the present setting, if measured runtime differs drastically while certified translation overhead remains small, certificate-length distortion alone cannot explain the entire runtime gap; branching, ordering, duplicate states, heuristic behavior, data structures, and verifier overhead remain candidates.
+
+\section{The Quotient Hunter}
+The Quotient Hunter (\QH{}) is a metalogical search agent. Instead of asking only for the next proof step, it asks whether a large verifier-valid search graph can be mapped to a smaller graph that preserves enough structure to certify impossibility, lower-bound distance, or merge redundant states.
+
+Let
+\[
+G=(S,E,w)
+\]
+be a directed weighted search graph, with positive edge costs. States may be formulas, proof states, \BANK{}-augmented states, or verified AMLD states. Let $s_0$ be the start state and $T\subseteq S$ a target or settlement region.
+
+\begin{definition}[Search quotient]
+A map $q:S\to Q$ is a search quotient when every original edge $s\to t$ induces an abstract edge $q(s)\to q(t)$. The map may merge many original states into one quotient state.
+\end{definition}
+
+\subsection{Safe impossibility pruning}
+\begin{theorem}[Quotient Obstruction Theorem]\label{thm:obstruction}
+If no quotient path exists from $q(s_0)$ to any class in $q(T)$, then no original path exists from $s_0$ to $T$.
+\end{theorem}
+
+\begin{proof}
+Any original path
+\[
+s_0\to s_1\to\cdots\to s_m\in T
+\]
+would project to a quotient path
+\[
+q(s_0)\to q(s_1)\to\cdots\to q(s_m)\in q(T),
+\]
+a contradiction.
+\end{proof}
+
+\begin{corollary}[Certified Fiber Pruning]
+If a quotient class $u\in Q$ is unreachable from $q(s_0)$, every original state in $q^{-1}(u)$ is unreachable from $s_0$ and may be removed from forward search.
+\end{corollary}
+
+\subsection{Quotient distance as a lower bound}
+Assign each quotient edge a cost satisfying
+\[
+w_Q(q(s),q(t))\le w(s,t)
+\]
+for every original edge $s\to t$ that induces it.
+
+\begin{theorem}[Quotient Relaxation Lower Bound]\label{thm:lowerbound}
+For every state $s$,
+\[
+\dist_Q(q(s),q(T))\le\dist_G(s,T).
+\]
+Hence
+\[
+h(s)=\dist_Q(q(s),q(T))
+\]
+is an admissible lower bound on target distance.
+\end{theorem}
+
+\begin{proof}
+Every original path from $s$ to $T$ projects to a quotient path. By the edge-cost condition, the projected path costs no more than the original path. Taking infima over paths yields the inequality.
+\end{proof}
+
+This is the standard abstraction principle behind admissible heuristic construction: abstract solution cost can lower-bound concrete solution cost~\cite{Hart1968,MostowPrieditis1989,Holte1996}.
+
+\subsection{Exact proof distance under path lifting}
+\begin{definition}[Cost-preserving path lifting]
+The quotient has cost-preserving path lifting toward $T$ if every quotient path from $q(s)$ to $q(T)$ lifts, from the specified concrete start $s$, to an original path ending in $T$ with the same cost.
+\end{definition}
+
+\begin{theorem}[Exact Geodesic Quotient Theorem]
+If the quotient satisfies the relaxation condition of Theorem~\ref{thm:lowerbound} and cost-preserving path lifting toward $T$, then
+\[
+\dist_Q(q(s),q(T))=\dist_G(s,T)
+\]
+for every relevant $s$.
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:lowerbound} gives $\dist_Q\le\dist_G$. Conversely, lift an arbitrarily close-to-optimal quotient path. Its concrete lift has the same cost, so $\dist_G\le\dist_Q$. Hence equality.
+\end{proof}
+
+\subsection{Exact duplicate-state reduction}
+\begin{definition}[Settlement congruence]
+An equivalence relation $\sim$ on $S$ is a settlement congruence when:
+\begin{enumerate}[label=(\roman*)]
+\item $s\sim t$ implies $s\in T$ iff $t\in T$;
+\item if $s\sim t$ and $s\to s&#x27;$, then some $t\to t&#x27;$ satisfies $s&#x27;\sim t&#x27;$;
+\item symmetrically, every step from $t$ can be matched from $s$.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Settlement-Congruence Reduction]
+A target is reachable in the original graph if and only if a target class is reachable in the quotient graph $S/{\sim}$. Under the matching conditions, a quotient path can be lifted one class at a time from any related representative.
+\end{theorem}
+
+\begin{proof}
+Projection of concrete paths is immediate. For the converse, lift a quotient path inductively using the matching-transition property; target membership is invariant on each equivalence class.
+\end{proof}
+
+\begin{corollary}[Frontier Compression]
+If a finite search would retain $N$ reachable concrete states occupying only $M$ reachable settlement-congruence classes, exact canonicalization needs at most $M$ class representatives while preserving settlement reachability.
+\end{corollary}
+
+\section{Trading and quotient hunting compose}
+The Quotient Hunter may inspect whichever certified presentation exposes the simplest invariant.
+
+\begin{theorem}[Trade-Then-Quotient Transfer]\label{thm:tradequotient}
+Let $P\equivCn Q$ and let $c$ be a conjecture. Suppose the chosen $Q$ proof-search graph is sound and complete for $Q$-proofs of $c$. If a verified quotient obstruction proves that no target state representing a $Q$-proof of $c$ is reachable, then
+\[
+c\notin\Th(P).
+\]
+The same statement holds with $c$ replaced by $\neg c$.
+\end{theorem}
+
+\begin{proof}
+Proof-search completeness plus quotient obstruction implies $c\notin\Th(Q)$. Consequence equivalence gives $\Th(P)=\Th(Q)$.
+\end{proof}
+
+Thus the joint search space can include
+\[
+(\text{candidate presentation},\text{ candidate quotient},\text{ candidate lemma})
+\]
+rather than only candidate formulas inside one fixed presentation.
+
+\section{Verified theorem reuse and the shared BANK}
+The \BANK{} stores proved formulas together with certificates and provenance.
+
+\begin{theorem}[Cross-Presentation BANK Soundness]
+Let $P_1,\ldots,P_k$ be consequence-equivalent presentations over the same formula language. If $\lambda$ is verified as a theorem in one presentation, then $\lambda$ is a theorem in every presentation.
+\end{theorem}
+
+\begin{proof}
+Consequence equivalence implies equality of theorem sets.
+\end{proof}
+
+Before measuring a macro shortcut, two costs must be distinguished. Let $C_{\mathrm{cmp}}$ be a \emph{compressed/search cost} that charges a declared cost for a macro reference, and let $C_{\mathrm{exp}}$ be the cost after all macro references are recursively expanded back to primitive trust-anchor certificates.
+
+\begin{theorem}[Verified-Lemma Macro Shortcut]\label{thm:macro}
+Suppose $\lambda\in\Th(P)$ has a verified primitive derivation of primitive cost $m$. Augment search with a macro edge producing $\lambda$, retain that primitive derivation as the macro&#x27;s certificate expansion, and let $C_{\mathrm{cmp}}$ charge $b\le m$ for the macro reference while otherwise agreeing with the primitive cost model. Then:
+\begin{enumerate}[label=(\roman*)]
+\item the theorem set is unchanged;
+\item the shortest horizon measured by $C_{\mathrm{cmp}}$ cannot increase;
+\item if a primitive proof of cost $L$ contains $r$ disjoint copies of that cost-$m$ derivation, replacing them by macro references yields a compressed proof representation of cost at most
+\[
+L-r(m-b);
+\]
+\item if those $r$ macro references are then fully expanded back to the same primitive derivation, no reduction in primitive expanded-certificate cost follows from compression alone: with no additional wrapper or substitution overhead, the expanded cost returns to $L$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The macro proves nothing new because every macro use expands to an existing verified theorem proof. Original proof paths remain available, so the optimum under $C_{\mathrm{cmp}}$ cannot increase. Replacing each of $r$ disjoint cost-$m$ segments by a cost-$b$ reference saves $m-b$ in the compressed representation. Expanding each reference restores the corresponding cost-$m$ primitive segment, so the saved compressed cost is not, by itself, a saving in the fully expanded primitive certificate.
+\end{proof}
+
+A frequently used verified theorem schema can therefore be promoted to an expandable macro rule. This is another resource trade: previously derived theorem content becomes an operational inference resource while its original proof remains the trust anchor. If a native verifier securely accepts cached macro references without re-expanding them on every use, its own verification cost may also decrease; that is an additional implementation assumption and should be measured separately from the theorem above.
+
+\section{Portfolios over traded presentations}
+Trading may expose several correct search geometries. A fair portfolio need not guess a single winner in advance.
+
+\begin{theorem}[Equivalent-Presentation Portfolio Bound]
+Let $P_1,\ldots,P_k$ be consequence-equivalent presentations, each searched by a deterministic procedure. For a fixed settlement task, suppose search $i$ would produce a verified certificate after $E_i&lt;\infty$ of its own expansion steps. A round-robin scheduler allocating one expansion per active search per cycle returns a certificate after at most
+\[
+k\min_i E_i
+\]
+portfolio expansions, up to any explicitly counted initialization cost.
+\end{theorem}
+
+\begin{proof}
+Let $j$ minimize $E_i$. After $kE_j$ round-robin expansion slots, search $j$ has received at least $E_j$ of its own expansion steps and therefore has produced its certificate.
+\end{proof}
+
+\begin{corollary}[Parallel version]
+With $k$ processors running the $k$ searches simultaneously at full speed and negligible coordination overhead, the first certificate arrives in time
+\[
+\min_i T_i,
+\]
+where $T_i$ is the standalone runtime of search $i$.
+\end{corollary}
+
+The theorem does not say that trading creates a faster presentation. It says that once several certified presentations exist, fair scheduling captures the best completed run within a bounded scheduling penalty.
+
+\section{Relative completeness of a finite Quotient Hunter}
+A practical Quotient Hunter cannot enumerate all conceivable invariants. It can be complete relative to a declared finite candidate family.
+
+\begin{theorem}[Finite Quotient Discovery Completeness]
+Fix a finite family $\mathcal H$ of candidate quotient maps and a terminating verifier that checks whether a candidate is a valid search quotient and whether it separates the start class from the target classes. Systematic enumeration of $\mathcal H$ eventually finds an obstruction whenever some member of $\mathcal H$ is a valid separating quotient.
+\end{theorem}
+
+\begin{proof}
+The family is finite and every verification terminates, so enumeration reaches every member.
+\end{proof}
+
+The research problem is to order or generate candidate quotients cheaply: modular counts, parity, syntactic types, conserved quantities, homomorphic images, canonical forms, and learned partitions subsequently subjected to exact transition verification are natural classes.
+
+\section{A conditional contraction result}
+A quotient-space controller can support fixed-point iteration if it is genuinely contractive.
+
+\begin{theorem}[Quotient Contraction Settlement Theorem]
+Let $(Q,d)$ be a complete metric space and let $T:Q\to Q$ satisfy
+\[
+d(Tu,Tv)\le\kappa d(u,v),\qquad 0\le\kappa&lt;1.
+\]
+Then $T$ has a unique fixed point $q^\star$ and
+\[
+d(T^nq_0,q^\star)\le\kappa^n d(q_0,q^\star).
+\]
+If $q^\star$ is a verified settlement class, the quotient iteration converges geometrically to that settlement class.
+\end{theorem}
+
+\begin{proof}
+This is the Banach contraction principle.
+\end{proof}
+
+\begin{corollary}[Finite discrete arrival]
+If $Q$ is finite and
+\[
+\delta=\min\{d(u,v):u\ne v\}&gt;0,
+\]
+then any $n$ satisfying
+\[
+\kappa^n d(q_0,q^\star)&lt;\delta
+\]
+forces $T^nq_0=q^\star$.
+\end{corollary}
+
+The difficult task is not proving Banach&#x27;s theorem but constructing a verifier-safe quotient and controller for which $\kappa&lt;1$ can actually be certified.
+
+\section{Worked example: MIU as quotient obstruction}
+In the standard MIU system, begin with the axiom $MI$ and the four production rules described by Hofstadter~\cite{Hofstadter1979}. Let $I(w)$ count occurrences of the symbol $I$, and define
+\[
+q(w)=I(w)\bmod 3\in\mathbb Z/3\mathbb Z.
+\]
+The rules act on the count as follows:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Rule effect &amp; Effect on $I(w)$ &amp; Effect mod $3$\\
+\midrule
+append $U$ after terminal $I$ &amp; $n\mapsto n$ &amp; $r\mapsto r$\\
+duplicate tail after $M$ &amp; $n\mapsto 2n$ &amp; $r\mapsto 2r$\\
+replace $III$ by $U$ &amp; $n\mapsto n-3$ &amp; $r\mapsto r$\\
+delete $UU$ &amp; $n\mapsto n$ &amp; $r\mapsto r$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The axiom $MI$ has residue $1$. From residues $1$ and $2$, the only nontrivial quotient action is doubling:
+\[
+1\mapsto2,\qquad 2\mapsto1.
+\]
+Residue $0$ is unreachable from the start quotient state, whereas
+\[
+q(MU)=0.
+\]
+By Theorem~\ref{thm:obstruction}, $MU$ is unreachable in the original MIU system. The infinite string search collapses, for this negative target, to a three-state quotient obstruction.
+
+\section{How the theorems fit together}
+The verifier-gated pipeline is
+\[
+\begin{array}{c}
+\text{original presentation}\\
+\downarrow\ \text{mutually reproducible trade}\\
+\text{certified equivalent presentation family}\\
+\downarrow\ \text{quotient / congruence}\\
+\text{pruning, lower bounds, or compression}\\
+\downarrow\ \text{verified checkpoint and BANK reuse}\\
+\text{shorter or differently organized candidate routes}\\
+\downarrow\ \text{original verifier or verified translator}\\
+\text{settlement certificate.}
+\end{array}
+\]
+
+The main logical invariants are:
+\begin{enumerate}
+\item Mutual contextual reproducibility preserves consequence closure.
+\item The Basic Trading Theorem is a direct corollary.
+\item Rule-to-axiom trading requires both forward simulation and recoverability.
+\item Verified checkpoints preserve closure; mutually reconstructible checkpoints may replace one another.
+\item Consequence-equivalent presentations preserve syntactic settlement signatures.
+\item Quotient obstruction preserves negative reachability conclusions when the underlying proof graph is complete for the target search.
+\item Relaxed quotient distance lower-bounds concrete proof distance.
+\item Verified macro rules preserve theoremhood because they expand to certificates.
+\item Fair portfolios preserve access to any finitely completing certified search with bounded scheduling overhead.
+\end{enumerate}
+
+The speed mechanisms are different and should be measured separately: presentation change, exact quotient pruning, admissible quotient heuristics, congruence-based canonicalization, checkpoint compression, \BANK{} macros, and portfolio scheduling.
+
+\section{Candidate implementation for DATA-MIND / AMLD}
+A conservative implementation can keep the original verifier and original formal presentation as the trust anchor.
+
+\begin{enumerate}
+\item Generate a small family of candidate trades.
+\item Require local simulation certificates in both directions, or apply a specialized theorem such as the Recoverability Criterion, before declaring consequence equivalence.
+\item Keep every translated proof expandable back to a verifier-acceptable certificate whenever the destination verifier differs from the trust anchor.
+\item Let the Quotient Hunter inspect each certified presentation for cheap candidate invariants: modular counts, parity, type signatures, canonical forms, homomorphic images, and learned partitions subsequently checked for transition soundness.
+\item Use quotient unreachability only as hard pruning when the proof-search graph and quotient hypotheses needed by Theorem~\ref{thm:tradequotient} are certified.
+\item Use quotient distance as a heuristic only when the lower-bound conditions of Theorem~\ref{thm:lowerbound} are certified.
+\item Deposit verified theorems, trades, checkpoints, invariants, and provenance into the shared \BANK{}.
+\item Compile expensive recurring theorems into macro edges while retaining expandable trust-anchor certificates.
+\item Dovetail multiple certified presentations when no single presentation is known to dominate.
+\item Measure expansions, proof horizon, wall time, macro-aware compressed cost, fully expanded primitive-certificate cost, native verifier operations, memory, trade-construction cost, quotient-construction cost, and \BANK{} hit rate separately.
+\end{enumerate}
+
+A controller objective may therefore take a form such as
+\[
+\min_{P&#x27;,q,L}
+\Bigl[
+C_{\mathrm{trade}}(P&#x27;)+C_{\mathrm{quotient}}(q)+C_{\mathrm{search}}^{\mathrm{cmp}}(P&#x27;,q,L)
++C_{\mathrm{verify}}^{\mathrm{native}}+C_{\mathrm{expand}}
+\Bigr]
+\]
+subject to certified $P&#x27;\equivCn P$, quotient soundness, and verifier-valid macro/checkpoint use. Here $C_{\mathrm{expand}}$ records any cost required to expand compressed macro references back to the primitive trust-anchor format; it may be zero for a verifier that natively and soundly accepts the cached macro representation.
+
+\section{Experimental predictions}
+The theorems motivate experiments without guaranteeing universal speedups.
+
+\begin{enumerate}
+\item When a verified quotient separates the start from a target, the corresponding search branch can terminate with a certified obstruction rather than spend its remaining brute-force budget.
+\item A certified abstract distance may be used as an admissible lower bound in an optimal-search framework; net benefit still depends on heuristic informativeness and quotient-construction cost.
+\item If many reachable states fall into settlement-congruence classes, exact canonicalization should reduce stored frontier states according to the observed class compression.
+\item If verified \BANK{} lemmas recur in successful proofs, macro reuse should reduce macro-aware compressed/search cost according to Theorem~\ref{thm:macro}. Fully expanded primitive-certificate cost and native verifier time should be reported separately; neither is guaranteed to decrease merely because the compressed representation is shorter.
+\item If consequence-equivalent presentations differ substantially in search cost, a portfolio should approach the first finitely completing presentation within the scheduling bound.
+\item Trading may make a useful quotient transparent in a presentation where it was opaque in the original; Theorem~\ref{thm:tradequotient} makes a certified negative conclusion transferable back.
+\item Checkpoint compression can be tested by measuring whether smaller mutually reconstructible banks reduce branching or memory without changing verifier outcomes.
+\end{enumerate}
+
+A strong factorial experiment would compare baseline, trading only, quotient hunting only, trading plus quotient hunting, and the same systems with checkpoint/\BANK{} macros, while reporting both certificate cost and search cost.
+
+\section{Prior-art positioning}
+The Trading Theorem developed here should be read against several established traditions.
+
+\paragraph{Consequence relations and admissible rules.}
+Iemhoff develops rule schemes, derivability, admissibility, and extensions of consequence relations, emphasizing that a rule may preserve theoremhood without being derivable in the original presentation~\cite{Iemhoff2016}. The present paper&#x27;s notion of an exact trade is stronger than one-way admissibility when it demands consequence equality for every hypothesis bank and proof-local simulation in both directions.
+
+\paragraph{Induction rule versus induction axiom.}
+The equivalence of suitable induction-rule and induction-axiom presentations is standard under appropriate structural conditions; Buss gives an explicit sequent-calculus example~\cite{Buss1998}. The role here is illustrative: induction is a nontrivial instance of the general recoverability criterion, not evidence that induction equivalence itself is new.
+
+\paragraph{Proof simulation and proof complexity.}
+Cook and Reckhow compare proof systems through relative proof efficiency and polynomial simulation~\cite{CookReckhow1979}. The proof-horizon theorem in Section~7 is a simple abstract distortion bound in that spirit. The SIC-specific research question is what happens when certified presentation changes are selected dynamically to alter search geometry.
+
+\paragraph{Abstraction heuristics and quotient search.}
+A* and abstraction-derived lower bounds are classical~\cite{Hart1968,MostowPrieditis1989,Holte1996}. The Quotient Hunter is therefore best positioned as a verifier-gated agent that searches for useful abstractions and invariants across a family of consequence-equivalent proof presentations, rather than as a claim to have invented abstraction search.
+
+\paragraph{Transition simulation.}
+Step matching, simulation, bisimulation, and quotienting are standard in transition-system and model-checking theory; see, for example, Baier and Katoen~\cite{BaierKatoen2008}. The finite-stuttering handoff theorem uses that style of argument to distinguish logical equivalence from operational continuation.
+
+The potentially distinctive package is thus the integration
+\[
+\begin{aligned}
+&amp;\text{mutual resource trading}\to\text{verified checkpoints}\\
+&amp;\qquad\to\text{cross-presentation quotient search}\\
+&amp;\qquad\to\text{BANK reuse and portfolios},
+\end{aligned}
+\]
+inside a common settlement architecture.
+
+\section{What is proved and what remains open}
+\begin{center}
+\begin{tabular}{p{0.43\textwidth}p{0.47\textwidth}}
+\toprule
+\textbf{Established under stated assumptions} &amp; \textbf{Still empirical or open}\\
+\midrule
+Mutual reproducibility implies consequence equivalence &amp; Which nontrivial trades are cheap enough to help real ATPs\\
+Basic hypothesis/zero-premise trade &amp; Automated discovery of useful mutually reproducible resources\\
+Recoverability criterion for rule internalization &amp; Tight, machine-checkable recoverability certificates for major calculi\\
+Induction rule/axiom trade in suitable calculi &amp; Search benefit of choosing one induction presentation over another\\
+Verified and compressed checkpoint theorems &amp; Best checkpoint compression policy\\
+One-way handoff and bounded-step handoff under an explicit simulation relation &amp; Useful operational translations with small stuttering factor\\
+Settlement-signature preservation &amp; Separate certification of genuine model-theoretic independence\\
+Proof-cost distortion bounds &amp; Tight distortion constants and relation to wall time\\
+Quotient obstruction and distance lower bounds &amp; Frequency and cost of strong quotients in theorem proving\\
+Exact reduction under path lifting/congruence &amp; Practical class compression and canonicalization cost\\
+Cross-presentation \BANK{} soundness and compressed macro shortcut bounds &amp; Best retrieval, native verification, and macro policy\\
+Round-robin portfolio bound &amp; Best resource allocation beyond round robin\\
+Contraction convergence when a certified contraction exists &amp; Whether useful proof-search contractions can be constructed\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusion}
+The central Trading Theorem is a mutual-reproducibility theorem. A deductive resource may be replaced without changing consequence behavior when its primitive uses can be simulated by the replacement and the replacement is, in turn, recoverable from the original resources. The hypothesis/zero-premise Trading Theorem is therefore a clean corollary rather than an isolated fact. Rule-to-axiom trading becomes exact only after the reverse direction is proved; ordinary induction supplies a familiar example.
+
+For SIC-style automated reasoning, the broader consequence is that verified state can also be traded. A checkpoint containing only verified consequences may replace the original bank without altering closure, and mutually reconstructible banks may replace one another. Consequence-preserving formula translations support logical handoff, while bounded transition simulation supports finite operational continuation. Once multiple certified presentations exist, quotient hunting, macro reuse, and portfolios can search across representations without changing the underlying theoremhood question.
+
+The compact research slogan is:
+\[
+\boxed{\text{Same deductive content. Certified trade. Better route if the search geometry cooperates.}}
+\]
+
+\begin{thebibliography}{99}
+
+\bibitem{BaierKatoen2008}
+C. Baier and J.-P. Katoen,
+\emph{Principles of Model Checking},
+MIT Press, 2008.
+
+\bibitem{Buss1998}
+S. R. Buss,
+``An Introduction to Proof Theory,&#x27;&#x27;
+in \emph{Handbook of Proof Theory}, S. R. Buss, ed.,
+Elsevier, 1998, pp. 1--78.
+
+\bibitem{CookReckhow1979}
+S. A. Cook and R. A. Reckhow,
+``The Relative Efficiency of Propositional Proof Systems,&#x27;&#x27;
+\emph{Journal of Symbolic Logic}, vol. 44, no. 1, pp. 36--50, 1979.
+
+\bibitem{Hart1968}
+P. E. Hart, N. J. Nilsson, and B. Raphael,
+``A Formal Basis for the Heuristic Determination of Minimum Cost Paths,&#x27;&#x27;
+\emph{IEEE Transactions on Systems Science and Cybernetics}, vol. 4, no. 2, pp. 100--107, 1968.
+DOI: 10.1109/TSSC.1968.300136.
+
+\bibitem{Hofstadter1979}
+D. R. Hofstadter,
+\emph{G\&quot;odel, Escher, Bach: An Eternal Golden Braid},
+Basic Books, 1979.
+
+\bibitem{Holte1996}
+R. C. Holte, M. B. Perez, R. M. Zimmer, and A. J. MacDonald,
+``Hierarchical A*: Searching Abstraction Hierarchies Efficiently,&#x27;&#x27;
+in \emph{Proceedings of AAAI-96}, 1996, pp. 530--535.
+
+\bibitem{Iemhoff2016}
+R. Iemhoff,
+``Consequence Relations and Admissible Rules,&#x27;&#x27;
+\emph{Journal of Philosophical Logic}, vol. 45, pp. 327--348, 2016.
+DOI: 10.1007/s10992-015-9380-8.
+
+\bibitem{MostowPrieditis1989}
+J. Mostow and A. E. Prieditis,
+``Discovering Admissible Heuristics by Abstracting and Optimizing: A Transformational Approach,&#x27;&#x27;
+in \emph{Proceedings of IJCAI-89}, pp. 701--707, 1989.
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>

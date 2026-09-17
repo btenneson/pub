@@ -79,7 +79,7 @@ def main():
     original = CATALOG.read_bytes()
     try:
         expanded = expanded_catalog()
-        if len(expanded["items"]) != 113:
+        if len(expanded["items"]) != 114:
             raise SystemExit(f"Expected 111 cards after restoration, got {len(expanded['items'])}")
         CATALOG.write_text(json.dumps(expanded, ensure_ascii=False, indent=2) + "\n")
         subprocess.run([sys.executable, str(BUILDER)], cwd=ROOT, check=True)
