@@ -1,0 +1,812 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Geodesic Continuation and Multiresolution Omnicartography — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/geodesic_continuation_and_multiresolution_omnicartography/">Back to publication</a><h1>Geodesic Continuation and Multiresolution Omnicartography</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/geodesic_continuation_and_multiresolution_omnicartography/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!60!black}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Geodesic Continuation and Multiresolution Omnicartography}
+\rhead{Tenneson}
+\cfoot{\thepage}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\Sett}{\Sigma}
+\newcommand{\Qval}{Q}
+\newcommand{\Gap}{\Delta}
+\newcommand{\Slack}{S}
+\newcommand{\eps}{\varepsilon}
+
+\newenvironment{interpretiveformula}{%
+  \begin{center}\begin{minipage}{0.92\textwidth}\small
+  \textbf{Interpretive formula.}\ }{\end{minipage}\end{center}}
+
+\newenvironment{interpretation}{%
+  \begin{center}\begin{minipage}{0.92\textwidth}\small
+  \textbf{Interpretation.}\ }{\end{minipage}\end{center}}
+
+\title{\textbf{Geodesic Continuation and Multiresolution Omnicartography}\\
+\large Pioneers, Directional Gaps, Advance Certification, and Oracle Guidance in AMLDs}
+\author{Brian Tenneson\\Framework synthesis and formalization assisted by OpenAI&#x27;s ChatGPT}
+\date{September 16, 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Opening picture}
+Imagine that it is late, a Pioneer is trying to reach a hospital, and the Pioneer has no map---only the ability to make basic legal moves. An Omnicartographer, however, knows the terrain and can communicate directions to the Pioneer while the journey is underway. For the purposes of this paper, the reader is initially invited to suspend disbelief and allow genuine oracles: sources that may possess information the Pioneer could not obtain by its ordinary local computation alone. Nothing supernatural is required for the motivating picture---an Omnicartographer could simply be someone who has already traversed the terrain and is now radioing directions to someone following behind---but the formal theory also permits stronger oracle access.
+
+The appeal to oracles is not intended to conceal a paradoxical assumption. A later part of the paper argues explicitly why oracle guidance of the kind used here need not produce an illegal or paradoxical state, including cases in which information supplied by an oracle could otherwise appear to create a self-referential difficulty. Thus the reader may first grant the oracle as a formal device and subsequently examine the mechanism by which its use is reconciled with a paradox-safe computational architecture.
+
+The natural questions are immediate: how much cartographic resolution is required before the next move can be certified, what should the Omnicartographer communicate, and how should mapping and movement be coordinated so that the target is reached with minimum delay?
+
+Nothing in the present paper concerns an actual wounded traveler. The Pioneer is an automated theorem-proving agent inside an automated metalogical decider (AMLD), the ``hospital&#x27;&#x27; is a settlement region, and the target may be as difficult as the Hodge conjecture. The analogy nevertheless captures the central problem precisely: an agent with limited local movement capability must reach a target while an oracle-equipped cartographer attempts, in real time, to determine which next move lies on a geodesic and when that fact can be certified before the move is taken. The formal development begins from that question.
+
+\begin{abstract}
+This paper develops a discrete theory of geodesic continuation for Pioneers operating inside automated metalogical deciders (AMLDs), with semi-ideal computers (SICs) providing the underlying formal computational framework and an Omnicartographer serving as an oracle-equipped source of cartographic guidance. Oracle access is admitted explicitly rather than hidden inside the computational model. The paper also addresses the apparent paradox problem associated with such access and argues that oracle guidance can be incorporated without requiring a paradoxical computational state.
+
+Let $G=(V,E,w)$ be a weighted Pioneer-accessible state graph, let $\Sett\subseteq V$ be a settlement region, and define the intrinsic settlement horizon
+\[
+H(x)=d(x,\Sett).
+\]
+The first principal result is a local geodesic-continuation criterion:
+\[
+H(x)=w(x,y)+H(y)
+\]
+if and only if the legal transition $x\to y$ can begin a geodesic from $x$ to settlement, under the stated attainment assumptions.
+
+\begin{interpretiveformula}
+minimum distance from here to settlement $=$ cost of the next move $+$ minimum distance remaining afterward.
+\end{interpretiveformula}
+
+This gives a coordinate-free meaning to the statement that ``straight ahead is on a geodesic.&#x27;&#x27; Straightness need not be defined by Euclidean appearance or by continuous interpolation; it may instead be defined intrinsically by exact consumption of settlement horizon.
+
+The paper next studies whether such a move can be certified before it is taken. For each legal successor $y$, define its continuation cost
+\[
+\Qval_x(y)=w(x,y)+H(y).
+\]
+If $y^*$ is the uniquely optimal successor, define the directional gap
+\[
+\Gap(x)=\min_{z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr).
+\]
+If an Omnicartographer estimates all continuation costs with uniform error at most $\eps$, then
+\[
+\eps&lt;\frac{\Gap(x)}{2}
+\]
+is sufficient to identify the uniquely optimal next move, and the factor $1/2$ is worst-case sharp under symmetric bounded error.
+
+A certified interval formulation is also developed. If, at cartographic resolution $r$, the Omnicartographer has
+\[
+L_r(y)\le H(y)\le U_r(y)
+\]
+for every legal successor, then a candidate $y^*$ is certified uniquely optimal whenever
+\[
+w(x,y^*)+U_r(y^*)&lt;w(x,z)+L_r(z)\qquad\text{for every }z\neq y^*.
+\]
+Thus the Omnicartographer need not know the complete geodesic or even the exact horizon values. It need only refine its map until competing continuation intervals separate sufficiently to certify the next move.
+
+The resulting theory distinguishes lack of cartographic resolution from genuine geodesic branching. If multiple successors attain the same minimum continuation cost, no amount of refinement can make one intrinsically preferable unless new information changes the underlying state geometry. Conversely, when a unique continuation exists and the Omnicartographer&#x27;s certified bounds converge to the true horizons, sufficiently high but finite resolution eventually certifies that continuation.
+
+Finally, the paper examines the interaction between cartographic computation and Pioneer execution. Rather than requiring the Omnicartographer to construct a complete global map before movement begins, the proposed protocol refines only until the next move is certifiable, communicates that move immediately, and continues refining while the Pioneer executes verifier-safe transitions. This yields a real-time model of multiresolution theorem navigation in which geometry determines the geodesic, the Omnicartographer determines when the next geodesic move is knowable, the Pioneer converts certified local guidance into formal progress toward settlement, and the oracle layer is treated explicitly enough for its paradox-safety assumptions to be examined rather than merely presumed.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Formal setting: SICs, AMLDs, Pioneers, and settlement}
+The purpose of this section is deliberately modest. SIC and AMLD terminology is used as a formal substrate; the new mathematics begins with the induced state geometry.
+
+\begin{definition}[Semi-ideal computer, schematic form]
+A semi-ideal computer (SIC) is represented here only at the level needed for the present paper: a formally specified state-transition system with an admissible state class, a transition relation or weighted transition rule, and a halting or settlement condition. The details of a particular SIC implementation are external to the results below so long as its permitted transitions and costs are well defined.
+\end{definition}
+
+\begin{definition}[AMLD, schematic form]
+An automated metalogical decider (AMLD) is treated as a verifier-gated federation of automated theorem-proving agents sharing a trusted $\BANK$. A typical five-agent decomposition is written
+\[
+\mathcal A=(P,R,D,I,C;\BANK,V),
+\]
+where $P$ seeks proof settlement of the target, $R$ seeks refutation, $D$ and $I$ seek specified metalogical settlement certificates, $C$ monitors contradiction-type settlement, and $V$ is the verifier gate. The present paper focuses on the currently active agent as a \emph{Pioneer}.
+\end{definition}
+
+\begin{definition}[Pioneer-accessible graph]
+Fix a frozen formal environment and a current AMLD/Pioneer configuration. The Pioneer-accessible graph is
+\[
+G=(V,E,w),
+\]
+where vertices are admissible formal states, $x\to y\in E$ is a legal Pioneer transition, and $w(x,y)\ge 0$ is its declared cost.
+\end{definition}
+
+\begin{definition}[Settlement region]
+For a target $T$, let $\Sett(T)\subseteq V$ denote the states in which the relevant settlement certificate is available and accepted under the declared verifier policy. When the target is fixed we write simply $\Sett$.
+\end{definition}
+
+\begin{definition}[Intrinsic settlement horizon]
+For $x\in V$, define
+\[
+H(x):=d(x,\Sett)=\inf_{\gamma:x\leadsto \Sett}\operatorname{Len}(\gamma).
+\]
+When the infimum is attained by an admissible path, any minimizing path is called a geodesic from $x$ to $\Sett$.
+\end{definition}
+
+\begin{interpretiveformula}
+$H(x)$ means: the least possible cost still required, from the current formal state, to reach an accepted settlement state.
+\end{interpretiveformula}
+
+\begin{assumption}[Attainment when geodesic language is used]
+Whenever a theorem below says that a transition ``begins a geodesic,&#x27;&#x27; we assume that the relevant shortest path is attained. This is automatic, for example, in finite graphs with nonnegative weights, and in many discrete-cost settings where reachable path costs lie in $\delta\mathbb N_0$ for some $\delta&gt;0$.
+\end{assumption}
+
+\section{Geodesic continuation: when straight ahead is justified}
+
+\begin{theorem}[Bellman settlement identity]
+For every state $x$ with at least one legal successor and finite $H(x)$,
+\[
+H(x)=\inf_{x\to y}\bigl(w(x,y)+H(y)\bigr).
+\]
+If the infimum over successors is attained, then it is a minimum.
+\end{theorem}
+
+\begin{proof}
+Every path from $x$ to settlement begins with some legal edge $x\to y$ and then follows a path from $y$ to settlement. Therefore every such path has cost at least $w(x,y)+H(y)$ for its first successor $y$, giving
+\[
+H(x)\ge \inf_{x\to y}(w(x,y)+H(y)).
+\]
+Conversely, for every successor $y$ and every $\eta&gt;0$, choose a path from $y$ to settlement of cost at most $H(y)+\eta$. Prepending $x\to y$ gives a path from $x$ of cost at most $w(x,y)+H(y)+\eta$. Taking infima and then $\eta\downarrow0$ gives the reverse inequality.
+\end{proof}
+
+\begin{interpretiveformula}
+minimum cost from here $=$ best, over all legal next moves, of (cost of that move $+$ minimum cost remaining afterward).
+\end{interpretiveformula}
+
+\begin{theorem}[Geodesic Continuation Theorem]\label{thm:continuation}
+Assume the relevant shortest paths are attained. For a legal transition $x\to y$,
+\[
+\boxed{H(x)=w(x,y)+H(y)}
+\]
+if and only if $x\to y$ begins a geodesic from $x$ to $\Sett$.
+\end{theorem}
+
+\begin{interpretiveformula}
+\[
+\underbrace{H(x)}_{\text{minimum distance from here to settlement}}
+=
+\underbrace{w(x,y)}_{\text{cost of this next move}}
++
+\underbrace{H(y)}_{\text{minimum distance remaining afterward}}.
+\]
+\end{interpretiveformula}
+
+\begin{proof}
+If equality holds, choose a shortest path from $y$ to $\Sett$ of cost $H(y)$ and prepend the edge $x\to y$. The resulting path has cost $w(x,y)+H(y)=H(x)$ and is therefore geodesic.
+
+Conversely, suppose a geodesic from $x$ begins with $x\to y$. Its suffix beginning at $y$ must itself have cost $H(y)$; otherwise replacing the suffix by a cheaper path from $y$ would shorten the original geodesic. Hence the total geodesic cost is $w(x,y)+H(y)=H(x)$.
+\end{proof}
+
+\begin{interpretation}
+If $y$ represents the current forward heading, Theorem~\ref{thm:continuation} is the precise coordinate-free meaning of ``straight ahead is on a geodesic.&#x27;&#x27; The statement concerns intrinsic cost, not visual straightness in a Euclidean embedding.
+\end{interpretation}
+
+\begin{definition}[Geodesic slack]
+For a legal edge $x\to y$, define
+\[
+\Slack(x,y):=w(x,y)+H(y)-H(x).
+\]
+\end{definition}
+
+\begin{interpretiveformula}
+\[
+\underbrace{\Slack(x,y)}_{\text{slack of this move}}
+=
+\underbrace{w(x,y)+H(y)}_{\text{best total cost after committing to this move}}
+-
+\underbrace{H(x)}_{\text{best total cost before committing}}.
+\]
+\end{interpretiveformula}
+
+\begin{corollary}[Slack criterion]
+For every legal transition $x\to y$,
+\[
+\Slack(x,y)\ge 0,
+\]
+and, under attainment,
+\[
+\Slack(x,y)=0
+\iff
+x\to y\text{ begins a geodesic}.
+\]
+\end{corollary}
+
+\begin{proof}
+The Bellman inequality gives $H(x)\le w(x,y)+H(y)$, hence $\Slack(x,y)\ge0$. Equality is exactly Theorem~\ref{thm:continuation}.
+\end{proof}
+
+\begin{corollary}[Geodesic prefix theorem]\label{cor:prefix}
+Suppose
+\[
+x_0\to x_1\to\cdots\to x_k
+\]
+is a finite legal path and every edge has zero geodesic slack. Then
+\[
+\boxed{
+H(x_0)=\sum_{i=0}^{k-1}w(x_i,x_{i+1})+H(x_k)
+}
+\]
+and the entire prefix can be extended to a geodesic from $x_0$ to settlement.
+\end{corollary}
+
+\begin{interpretiveformula}
+original distance to settlement $=$ distance already traveled $+$ distance still remaining.
+\end{interpretiveformula}
+
+\begin{proof}
+For each $i$,
+\[
+H(x_i)=w(x_i,x_{i+1})+H(x_{i+1}).
+\]
+Substitution telescopes through the prefix and yields the displayed equality. Appending a shortest path from $x_k$ produces a shortest path from $x_0$.
+\end{proof}
+
+\begin{corollary}[Unit-cost intrinsic straightness]
+If every Pioneer move costs one unit, then a transition $x_i\to x_{i+1}$ is geodesically exact exactly when
+\[
+H(x_{i+1})=H(x_i)-1.
+\]
+\end{corollary}
+
+\begin{interpretiveformula}
+Each unit of movement consumes exactly one unit of remaining optimal distance. No movement cost is wasted.
+\end{interpretiveformula}
+
+\section{Unique continuation and the directional gap}
+
+\begin{definition}[Continuation value]
+For a legal successor $y$ of $x$, define
+\[
+\Qval_x(y):=w(x,y)+H(y).
+\]
+\end{definition}
+
+\begin{interpretiveformula}
+continuation value $=$ price of taking this next move $+$ shortest remaining trip afterward.
+\end{interpretiveformula}
+
+A successor is geodesically admissible exactly when $\Qval_x(y)=H(x)$. Let
+\[
+\mathcal G(x):=\{y:x\to y,\ \Qval_x(y)=H(x)\}
+\]
+be the set of geodesically optimal successors.
+
+\begin{proposition}[Unique next direction]
+Assume the minimum continuation value is attained. A successor $y^*$ is the unique geodesically optimal next move if and only if
+\[
+\Qval_x(y^*)&lt;\Qval_x(z)\qquad\text{for every }z\neq y^*.
+\]
+\end{proposition}
+
+\begin{interpretiveformula}
+The chosen road is uniquely optimal exactly when its best possible total trip is strictly shorter than the best possible total trip beginning with every other road.
+\end{interpretiveformula}
+
+\begin{definition}[Directional gap]
+If $y^*$ is uniquely optimal, define
+\[
+\Gap(x):=\min_{z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr)&gt;0,
+\]
+with the minimum replaced by an infimum when required.
+\end{definition}
+
+\begin{interpretiveformula}
+\[
+\underbrace{\Gap(x)}_{\text{directional gap}}
+=
+\underbrace{\text{best competing continuation cost}}_{\text{runner-up}}
+-
+\underbrace{\text{optimal continuation cost}}_{\text{best}}.
+\]
+\end{interpretiveformula}
+
+The directional gap measures not distance to the target, but decisiveness of the local navigation problem. A state may be far from settlement and have a large directional gap, making the next move easy to certify; another state may be close to settlement but have nearly tied continuations, making the next move difficult to distinguish.
+
+\section{How much cartographic resolution is required?}
+The Omnicartographer need not possess the exact horizon function. It may instead hold estimates or certified intervals that improve with additional real computation.
+
+\begin{definition}[Uniform cartographic error]
+At resolution $r$, suppose the Omnicartographer has estimates $\widehat{\Qval}_{x,r}(y)$ satisfying
+\[
+\bigl|\widehat{\Qval}_{x,r}(y)-\Qval_x(y)\bigr|\le \eps_r
+\]
+for every legal successor $y$.
+\end{definition}
+
+\begin{theorem}[Sharp Cartographic Resolution Theorem]\label{thm:half-gap}
+Suppose $y^*$ is the uniquely optimal successor at $x$ with directional gap $\Gap(x)&gt;0$. If
+\[
+\boxed{\eps_r&lt;\frac{\Gap(x)}{2}},
+\]
+then $y^*$ is also the unique minimizer of the estimated continuation values $\widehat{\Qval}_{x,r}$.
+
+Moreover, the factor $1/2$ is worst-case sharp under symmetric bounded error: at $\eps=\Gap/2$ an admissible error assignment can create an estimated tie between the best and second-best moves, and for $\eps&gt;\Gap/2$ an admissible error assignment can reverse their estimated order.
+\end{theorem}
+
+\begin{interpretiveformula}
+\[
+\underbrace{\text{maximum map uncertainty}}_{\eps_r}
+&lt;
+\frac12\underbrace{\text{gap between the best and second-best roads}}_{\Gap(x)}.
+\]
+\end{interpretiveformula}
+
+\begin{proof}
+For any competitor $z\neq y^*$,
+\[
+\widehat{\Qval}_{x,r}(y^*)\le \Qval_x(y^*)+\eps_r
+\]
+and
+\[
+\widehat{\Qval}_{x,r}(z)\ge \Qval_x(z)-\eps_r.
+\]
+Since $\Qval_x(z)-\Qval_x(y^*)\ge\Gap(x)$,
+\[
+\widehat{\Qval}_{x,r}(z)-\widehat{\Qval}_{x,r}(y^*)
+\ge \Gap(x)-2\eps_r&gt;0.
+\]
+Thus $y^*$ remains uniquely optimal in the estimated ordering.
+
+For sharpness, choose a runner-up $z$ attaining the gap. Assign error $+\eps$ to $y^*$ and $-\eps$ to $z$. At $\eps=\Gap/2$ their estimates tie; above that threshold the order reverses.
+\end{proof}
+
+\begin{corollary}[Bit-resolution estimate]
+If the cartographic scheme guarantees $\eps_r\le 2^{-r}$, then any integer $r$ satisfying
+\[
+2^{-r}&lt;\frac{\Gap(x)}{2}
+\]
+is sufficient. Equivalently, it is sufficient that
+\[
+r&gt;\log_2\frac{2}{\Gap(x)}.
+\]
+\end{corollary}
+
+\begin{interpretiveformula}
+The number of bits of local cartographic precision grows approximately like $\log_2(1/\Gap)$: nearly tied roads require more resolution.
+\end{interpretiveformula}
+
+\section{Advance certification without exact horizons}
+A practical Omnicartographer will often know certified intervals rather than symmetric error bars.
+
+\begin{assumption}[Certified horizon intervals]
+At cartographic resolution $r$, for every legal successor $y$ the Omnicartographer has
+\[
+L_r(y)\le H(y)\le U_r(y).
+\]
+Define
+\[
+\underline{\Qval}_r(y):=w(x,y)+L_r(y),\qquad
+\overline{\Qval}_r(y):=w(x,y)+U_r(y).
+\]
+\end{assumption}
+
+\begin{theorem}[Advance-Move Certification Theorem]\label{thm:advance}
+If a legal successor $y^*$ satisfies
+\[
+\boxed{
+\overline{\Qval}_r(y^*)&lt;\underline{\Qval}_r(z)
+\qquad\text{for every }z\neq y^*,
+}
+\]
+then $y^*$ is the uniquely optimal next move under the true horizon function.
+\end{theorem}
+
+\begin{interpretiveformula}
+\[
+\underbrace{\text{worst certified total cost of the chosen road}}_{\overline{\Qval}_r(y^*)}
+&lt;
+\underbrace{\text{best certified total cost of every competing road}}_{\underline{\Qval}_r(z)}.
+\]
+\end{interpretiveformula}
+
+\begin{proof}
+For every competitor $z$,
+\[
+\Qval_x(y^*)\le\overline{\Qval}_r(y^*)&lt;\underline{\Qval}_r(z)\le\Qval_x(z).
+\]
+Hence $\Qval_x(y^*)&lt;\Qval_x(z)$ for every $z\neq y^*$.
+\end{proof}
+
+\begin{interpretation}
+The Omnicartographer can certify a move before it is taken without knowing the exact geodesic and without knowing any exact horizon value. It need only know enough to separate one continuation interval from all competitors.
+\end{interpretation}
+
+\begin{definition}[Required cartographic resolution]
+For a state $x$, define
+\[
+r^*(x):=\inf\left\{r:\exists y^*\text{ such that }\overline{\Qval}_r(y^*)&lt;\min_{z\neq y^*}\underline{\Qval}_r(z)\right\}.
+\]
+\end{definition}
+
+\begin{interpretiveformula}
+$r^*(x)$ is the first map resolution at which one road is certified better than every rival road.
+\end{interpretiveformula}
+
+\begin{theorem}[Eventual Finite-Resolution Certification]\label{thm:eventual}
+Assume $x$ has finitely many legal successors, the true optimum $y^*$ is unique, and for every successor $y$,
+\[
+L_r(y)\uparrow H(y),\qquad U_r(y)\downarrow H(y)
+\quad\text{as }r\to\infty.
+\]
+Then there exists a finite $r_0$ such that Theorem~\ref{thm:advance}&#x27;s strict separation condition holds for every $r\ge r_0$.
+\end{theorem}
+
+\begin{interpretiveformula}
+If there really is one best road and the map converges to the truth, then sufficiently high but finite resolution eventually proves which road it is.
+\end{interpretiveformula}
+
+\begin{proof}
+Because the successor set is finite and $y^*$ is uniquely optimal, the minimum positive directional gap $\Gap(x)$ is strictly positive. For each successor, convergence of $L_r$ and $U_r$ implies that eventually the interval width is smaller than $\Gap(x)/3$. Taking the maximum of finitely many such finite indices gives a common $r_0$. For $r\ge r_0$, the upper continuation bound for $y^*$ lies strictly below every competitor&#x27;s lower continuation bound.
+\end{proof}
+
+\section{Branching is not ignorance}
+
+\begin{definition}[Geodesic branching state]
+A state $x$ is geodesically branching when
+\[
+|\mathcal G(x)|&gt;1,
+\]
+that is, at least two distinct successors begin geodesics.
+\end{definition}
+
+\begin{theorem}[Branching-versus-resolution dichotomy]
+Suppose the Omnicartographer&#x27;s bounds converge to the true horizon values.
+\begin{enumerate}[label=(\roman*)]
+\item If the optimal successor is unique, finite-resolution certification eventually occurs under the hypotheses of Theorem~\ref{thm:eventual}.
+\item If two distinct successors $y_1,y_2$ satisfy
+\[
+\Qval_x(y_1)=\Qval_x(y_2)=H(x),
+\]
+then no truthful refinement of the same underlying geometry can make one of them intrinsically better than the other.
+\end{enumerate}
+\end{theorem}
+
+\begin{interpretiveformula}
+More resolution can eliminate uncertainty, but it cannot eliminate a genuine tie in the underlying geodesic geometry.
+\end{interpretiveformula}
+
+\begin{remark}
+This distinction separates ``I cannot tell yet&#x27;&#x27; from ``there really are two equally short roads.&#x27;&#x27; An Omnicartographer should report the latter as branching rather than manufacture a false unique recommendation.
+\end{remark}
+
+\section{Possibility elimination and emergent predictability}
+A motivating cultural image comes from the 1998 film \emph{Pi}: as a Go position develops, one character argues that the possibilities become smaller and order emerges. The present framework suggests a precise qualification: fewer possibilities alone do not imply predictability. What matters is whether close competitors are eliminated or sufficiently separated.
+
+\begin{definition}[Candidate-relative directional gap]
+Let $C$ be a set of candidate successors containing a uniquely optimal $y^*$. Define
+\[
+\Gap_C(x):=\min_{z\in C,\ z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr).
+\]
+\end{definition}
+
+\begin{theorem}[Candidate-Elimination Monotonicity]
+If
+\[
+y^*\in C&#x27;\subseteq C,
+\]
+then
+\[
+\boxed{\Gap_{C&#x27;}(x)\ge\Gap_C(x)}.
+\]
+\end{theorem}
+
+\begin{interpretiveformula}
+Eliminating candidate roads while keeping the true best road cannot make the nearest surviving competitor closer in continuation cost.
+\end{interpretiveformula}
+
+\begin{proof}
+The minimum defining $\Gap_{C&#x27;}$ is taken over a subset of the competitors used to define $\Gap_C$. Removing elements from the set over which a minimum is taken cannot decrease the minimum.
+\end{proof}
+
+\begin{remark}
+This theorem does \emph{not} say that merely having fewer legal moves makes a decision easier. If the one surviving competitor is nearly tied with the optimum, the required resolution can remain extremely high. Predictability increases when close competitors disappear or when cartographic uncertainty shrinks.
+\end{remark}
+
+\begin{definition}[Cartographic predictability ratio]
+When $\Gap(x)&gt;0$ and the Omnicartographer has uniform continuation-value error at most $\eps_r&gt;0$, define
+\[
+\mathcal P_r(x):=\frac{\Gap(x)}{2\eps_r}.
+\]
+\end{definition}
+
+\begin{interpretiveformula}
+\[
+\underbrace{\mathcal P_r(x)}_{\text{cartographic predictability}}
+=
+\frac{\underbrace{\text{separation between best and runner-up}}_{\Gap(x)}}{\underbrace{\text{twice the map uncertainty}}_{2\eps_r}}.
+\]
+\end{interpretiveformula}
+
+\begin{corollary}[Predictability threshold]
+If $\mathcal P_r(x)&gt;1$, the unique next move is recoverable from the estimates under the hypotheses of Theorem~\ref{thm:half-gap}. If $\mathcal P_r(x)=1$, worst-case bounded error can create a tie. If $\mathcal P_r(x)&lt;1$, the worst-case error model does not guarantee correct identification.
+\end{corollary}
+
+\begin{proposition}[Monotone emergence under two-sided improvement]
+Along a sequence of decision problems, suppose the relevant directional gaps do not decrease and the uniform cartographic errors do not increase:
+\[
+\Gap_{t+1}\ge\Gap_t&gt;0,\qquad \eps_{t+1}\le\eps_t.
+\]
+Then
+\[
+\mathcal P_{t+1}\ge\mathcal P_t.
+\]
+\end{proposition}
+
+\begin{interpretiveformula}
+If competing roads become more separated while the map becomes more accurate, certified next-move predictability cannot get worse.
+\end{interpretiveformula}
+
+\section{The Omnicartographer&#x27;s role}
+The geometry determines which transitions are geodesic. The Omnicartographer determines when that fact becomes knowable to the Pioneer under the permitted information channel.
+
+The Omnicartographer may be ordinary or oracle-strength. In the ordinary motivating case, it may simply be a source that has traversed the terrain before and retained a better map. In the formal oracle case, it may provide information unavailable to the Pioneer by its ordinary local computation. In either case its operational output can be restricted to certified horizon bounds, continuation-value bounds, branching information, or a certified next-move recommendation.
+
+A useful protocol is:
+\begin{enumerate}
+\item At current verified state $x$, enumerate the Pioneer-permitted successors.
+\item Maintain certified intervals $[L_r(y),U_r(y)]$ for their horizons.
+\item Refine until either a unique successor separates by Theorem~\ref{thm:advance}, or a genuine tie/branching certificate is established, or a declared cartographic budget is exhausted.
+\item Communicate only the information justified by that certificate.
+\item Let the Pioneer execute the verifier-safe transition.
+\item Recompute after any state change or relevant $\BANK$ deposit.
+\end{enumerate}
+
+The guiding principle is therefore
+\[
+\boxed{\text{refine just enough}\ \longrightarrow\ \text{certify next move}\ \longrightarrow\ \text{move}\ \longrightarrow\ \text{refine again}.}
+\]
+
+\begin{interpretiveformula}
+Do not finish the whole map when the next certified instruction is already enough to make progress.
+\end{interpretiveformula}
+
+\section{Real-time coordination and minimal-latency guidance}
+The Pioneer and Omnicartographer have different clocks. The Pioneer advances by formal transitions; the Omnicartographer may consume real computation time between or during those transitions.
+
+Let $c_O(x_i)$ be the real time needed, starting from the information then available, to certify the next move at state $x_i$. Let $m_i=m(x_i,x_{i+1})$ be the real execution-and-verification time for that Pioneer transition.
+
+\begin{proposition}[Sequential guidance time]
+If cartography and movement are performed strictly sequentially along a settled route
+\[
+x_0\to x_1\to\cdots\to x_k\in\Sett,
+\]
+then the total real time is
+\[
+\boxed{
+T_{\mathrm{seq}}=\sum_{i=0}^{k-1}\bigl(c_O(x_i)+m_i\bigr).
+}
+\]
+\end{proposition}
+
+\begin{interpretiveformula}
+total time $=$ time spent figuring out each next move $+$ time spent carrying out each move.
+\end{interpretiveformula}
+
+If the Omnicartographer can compute while the Pioneer is executing an already-certified move, part of the cartographic work may be hidden behind movement.
+
+\begin{proposition}[Idealized pipelined upper bound]
+Under an idealized one-step look-ahead model in which cartographic work for $x_i$ can be performed during execution of the preceding move, a corresponding completion-time upper bound is
+\[
+\boxed{
+T_{\mathrm{pipe}}
+=
+ c_O(x_0)
++\sum_{i=0}^{k-1}m_i
++\sum_{i=1}^{k-1}\max\{0,c_O(x_i)-m_{i-1}\}.
+}
+\]
+\end{proposition}
+
+\begin{interpretiveformula}
+initial navigation delay $+$ actual movement time $+$ only the cartography that could not be completed while the Pioneer was already moving.
+\end{interpretiveformula}
+
+\begin{remark}
+This proposition is a scheduling model, not a theorem that every AMLD permits one-step speculative look-ahead. If the next verified state is not predictable until the current transition completes, the available overlap may be smaller. The formula should therefore be used under an explicit overlap model.
+\end{remark}
+
+\section{Changing BANK, changing terrain}
+In an AMLD, the trusted $\BANK$ may grow while the Pioneer is active. A verified lemma deposited by another agent can alter the accessible continuation geometry. The Omnicartographer must therefore distinguish a frozen-state horizon from a dynamically updated horizon.
+
+Write
+\[
+H_{\BANK_t}(x)=d_{G(\BANK_t)}(x,\Sett)
+\]
+for the settlement horizon induced by the currently trusted state. If $\BANK_t\subseteq\BANK_{t+1}$ enlarges the set of permitted useful resources without invalidating old transitions, then new shortcuts may appear and the horizon may decrease:
+\[
+H_{\BANK_{t+1}}(x)\le H_{\BANK_t}(x)
+\]
+under the corresponding monotone-accessibility assumptions.
+
+\begin{interpretiveformula}
+A new verified lemma can make the remaining trip shorter even though it does not retroactively change the cost already spent.
+\end{interpretiveformula}
+
+Therefore an Omnicartographer should invalidate or recompute recommendations whose optimality depended on an older $\BANK$ snapshot whenever a relevant verified deposit changes the accessible geometry.
+
+\section{Oracles and paradox safety}
+The word \emph{oracle} is used literally as a formal permission: the Pioneer may receive information not obtainable by its ordinary local computation. This does not, by itself, create a logical contradiction.
+
+\begin{theorem}[Oracle access is not intrinsically paradoxical]\label{thm:oracle-safe}
+Let a formal transition system have a trusted state $B$, a verifier gate $V$, and an advisory oracle channel $O$. Suppose oracle outputs are not automatically inserted into $B$ as trusted mathematical facts; instead, any state-changing mathematical deposit must pass the same declared verifier/provenance rules that govern non-oracle deposits. Then adjoining the oracle channel does not by itself make the trusted formal state inconsistent.
+\end{theorem}
+
+\begin{interpretiveformula}
+Extra information is not the same thing as an extra axiom: advice may guide search, but trusted mathematical state changes still require the declared acceptance rule.
+\end{interpretiveformula}
+
+\begin{proof}
+The transition system is extended by an additional input source. By hypothesis, receiving an oracle message does not itself add a formula to the trusted mathematical base. Any trusted deposit remains subject to the pre-existing acceptance relation. Therefore inconsistency of the trusted state cannot follow merely from the existence of the oracle channel; it would have to arise from the acceptance policy, the trusted base, or a verified derivation already capable of introducing the inconsistency. The oracle may change which candidates are tried or in what order, but under the hypothesis it does not bypass the trust boundary.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:oracle-safe} is intentionally modest. It does not claim that every imaginable self-referential oracle specification is consistent. It establishes the narrower point required by the present paper: oracle-guided navigation is not paradoxical merely because an oracle knows or communicates more than the Pioneer can locally compute.
+\end{remark}
+
+A second issue arises when the content of an oracle&#x27;s message refers to the future behavior of that same oracle or to an illegal state whose construction depends on preserving the oracle&#x27;s identity. The following handoff schema isolates one class of such concerns.
+
+\begin{proposition}[Copy-and-handoff safety schema]
+Suppose an oracle $O_1$ emits information at time $t$ whose problematic self-reference, if any, would require $O_1$ itself to remain the relevant acting oracle at a later time $t+k$ with $k&gt;1$. Suppose before that critical time a successor oracle $O_2$ is created with the permitted informational state of $O_1$, $O_1$ is retired, and $O_2$ did not perform the original disclosure. Then any contradiction whose antecedent specifically requires identity between the original disclosing oracle and the later acting oracle is blocked by the handoff.
+\end{proposition}
+
+\begin{interpretiveformula}
+If the paradox requires ``the same oracle that said it&#x27;&#x27; to be the later actor, replace that actor before the critical time; the copied successor remembers the information but is not the original discloser.
+\end{interpretiveformula}
+
+\begin{proof}
+By construction, the later acting oracle is $O_2\neq O_1$. Therefore any paradox condition containing the identity requirement ``later actor $=$ original discloser&#x27;&#x27; is false after handoff. The informational continuity of the copied state does not restore numerical identity of the agents under the stated model.
+\end{proof}
+
+\begin{remark}[Scope of the handoff claim]
+This is a conditional schema, not a universal solution to semantic paradox. If the problematic condition depends only on information content and not on the identity of the disclosing oracle, copying does not remove it. The paper therefore separates the broad non-paradoxicality of oracle-guided search from this more specific identity-sensitive handoff mechanism.
+\end{remark}
+
+\section{Relation to rectilinear MAPQUEST and proof-fiber geometry}
+Earlier rectilinear MAPQUEST work established that a coordinatewise monotone $L^1$ route has endpoint length determined only by coordinate displacement and that arbitrarily fine subdivision does not reduce that length. Later proof-space work separated such a realizable rectilinear route from the intrinsic geodesic, with
+\[
+d_A(P,Q)\le D_{\mathrm{rect}}(P,Q)
+\]
+and equality only under additional conditions excluding shorter admissible routes.
+
+The present paper changes the emphasis. Rather than forcing the AMLD state graph into continuous rectilinear coordinates, it asks for local information directly in the intrinsic discrete geometry. The equality
+\[
+H(x)=w(x,y)+H(y)
+\]
+is therefore not a coordinate statement. It is a shortest-path identity. Continuous or rectilinear charts may still be useful heuristics or sources of upper/lower bounds, but the geodesic-continuation theorem itself requires no such embedding.
+
+This also clarifies the status of ``half-steps.&#x27;&#x27; A formal proof transition need not be divided into fictional continuous points. If a computation has meaningful verifier-safe control checkpoints, an Omnicartographer may refine guidance at those checkpoints; otherwise the natural atomic unit is simply the discrete legal transition.
+
+\section{Main results at a glance}
+The paper&#x27;s central results can be compressed as follows.
+
+\begin{enumerate}
+\item \textbf{Geodesic continuation.}
+\[
+H(x)=w(x,y)+H(y)
+\iff
+x\to y\text{ begins a geodesic.}
+\]
+\begin{interpretiveformula}
+The next move is geodesically correct exactly when its cost plus the best remaining distance equals the best total distance available before moving.
+\end{interpretiveformula}
+
+\item \textbf{Geodesic slack.}
+\[
+\Slack(x,y)=w(x,y)+H(y)-H(x)\ge0.
+\]
+\begin{interpretiveformula}
+Slack is the exact excess cost forced by committing to that first move; zero slack means geodesic continuation.
+\end{interpretiveformula}
+
+\item \textbf{Sharp resolution threshold.}
+\[
+\eps&lt;\frac{\Gap(x)}2.
+\]
+\begin{interpretiveformula}
+Map uncertainty must be less than half the best-versus-runner-up separation to guarantee recovery of the unique next move under symmetric bounded error.
+\end{interpretiveformula}
+
+\item \textbf{Advance certification.}
+\[
+\overline{\Qval}_r(y^*)&lt;\underline{\Qval}_r(z)\quad\forall z\neq y^*.
+\]
+\begin{interpretiveformula}
+Even the worst certified case for the chosen road is better than the best certified case for every rival road.
+\end{interpretiveformula}
+
+\item \textbf{Branching versus ignorance.}
+More resolution can eliminate uncertainty but cannot remove a genuine geodesic tie.
+
+\item \textbf{Eventual certification.}
+A uniquely optimal successor with positive directional gap is eventually certified at finite resolution when the certified bounds converge to truth.
+
+\item \textbf{Candidate elimination.}
+Eliminating competitors while preserving the true optimum cannot decrease the candidate-relative directional gap.
+
+\item \textbf{Oracle safety.}
+Oracle guidance does not itself alter the trusted formal base; verifier-gated search advice is therefore not intrinsically paradoxical.
+\end{enumerate}
+
+\section{Open problems}
+Several questions remain open and appear experimentally approachable.
+
+\begin{enumerate}
+\item \textbf{Computability of useful horizon bounds.} Which AMLD/SIC architectures admit inexpensive certified $L_r,U_r$ bounds strong enough to separate next moves before exhaustive proof search?
+
+\item \textbf{Empirical directional-gap distribution.} On natural theorem corpora, how often is $\Gap(x)$ large enough that low-resolution cartography suffices, and where do near-ties dominate?
+
+\item \textbf{Value of shared BANK contributions.} How often do verified deposits by non-Pioneer AMLD agents increase directional gaps, decrease horizons, or change the identity of the optimal Pioneer move?
+
+\item \textbf{Resolution scheduling.} Given a cost model for cartographic computation, when should the Omnicartographer stop refining and allow a merely near-optimal move rather than wait for exact certification?
+
+\item \textbf{Branching policies.} If several next moves are genuinely geodesic, what secondary criterion should choose among them---future expected branching, verifier latency, robustness to BANK changes, or another certified objective?
+
+\item \textbf{Dynamic geometry.} What strongest guarantees survive when $\BANK$ changes while cartography is in progress?
+
+\item \textbf{Oracle hierarchy.} Which results require genuine oracle strength and which can be realized by ordinary learned, cached, previously traversed, or independently computed cartography?
+\end{enumerate}
+
+\section{Conclusion}
+The motivating question was simple: how much map is required before a Pioneer can be told, in advance and with justification, to keep going straight?
+
+The answer begins with an intrinsic equality:
+\[
+\boxed{H(x)=w(x,y)+H(y).}
+\]
+
+\begin{interpretiveformula}
+minimum distance from here to settlement $=$ cost of this next move $+$ minimum distance remaining afterward.
+\end{interpretiveformula}
+
+Under attainment, that equality is exactly the condition that the move $x\to y$ begin a geodesic. The geometry therefore determines what the correct move is. The Omnicartographer&#x27;s task is epistemic and operational: determine when enough of that geometry has been resolved to certify the move before it is taken.
+
+The directional gap $\Gap(x)$ quantifies how strongly the best move separates from its competitors. Under symmetric error $\eps$, the threshold $\eps&lt;\Gap/2$ is sufficient and worst-case sharp. Under certified intervals, the Omnicartographer can stop refining as soon as the chosen continuation&#x27;s worst certified cost lies below every competitor&#x27;s best certified cost. Genuine branching remains genuine; additional resolution cannot create uniqueness where the intrinsic geometry has none.
+
+This yields a compact architecture for theorem navigation: geometry determines the geodesic, cartography determines when the next geodesic move is knowable, the Pioneer executes only permitted formal transitions, and the verifier protects the trusted state. The Omnicartographer need not be magical; it may be a source that has traversed the terrain before. But the formal theory also permits stronger oracle access, and oracle guidance itself is not paradoxical merely because it supplies information beyond the Pioneer, provided that advice is kept distinct from verifier-gated trusted deposits.
+
+The resulting program is therefore local rather than omniscient: refine just enough, certify the next move, move, listen again, and repeat until settlement.
+
+\begin{thebibliography}{9}
+\bibitem{recttarget}
+B. Tenneson,
+\emph{Rectilinear Target Distance in MAPQUEST: From Arbitrarily Fine Monotone Steps to a Geometric Distance from $B_0$ to $T$}, corrected and strengthened ATLAS-audited edition, September 2026.
+
+\bibitem{proofsA}
+B. Tenneson,
+\emph{Rectilinear Upper Bounds for Geodesic Distance in $\mathrm{Proofs}(A)$: A Proof-Space Theorem Separating Coordinate Route Length from Intrinsic Difficulty}, with ATLAS continuation, September 2026.
+
+\bibitem{sicfiber}
+B. Tenneson,
+\emph{Semi-Ideal Computers in Proof-Fiber Geometry}, post-audit edition, September 2026.
+
+\bibitem{amldcart}
+B. Tenneson,
+\emph{AMLDs, Cartographers, Pioneers, and Omnicartographers}, post-audit consolidated synthesis, September 2026.
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
