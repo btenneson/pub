@@ -1,0 +1,936 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Universal Proof-Horizon Operator — From MIU and the nth Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1/">Back to publication</a><h1>The Universal Proof-Horizon Operator — From MIU and the nth Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1/source.tex" download>Download source</a><pre>\documentclass[11pt,oneside]{book}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{bookmark}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\setlist{nosep}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{caution}[theorem]{Caution}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cC}{\mathfrak{c}}
+\newcommand{\code}[1]{\ulcorner #1\urcorner}
+\newcommand{\halts}{\mathord{\downarrow}}
+\newcommand{\diverges}{\mathord{\uparrow}}
+\newcommand{\Th}{\operatorname{Th}}
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\halo}{\operatorname{halo}}
+
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=8pt,
+  frame=single,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=4
+}
+
+\hypersetup{
+  pdftitle={The Universal Proof-Horizon Operator},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={MIU, ZFC, minimum-cost proof search, SICs, Predator, and automated logical deciders},
+  pdfkeywords={automated theorem proving, proof theory, shortest proof, minimum-cost proof, Godel numbering, ZFC, MIU, semi-ideal computer, proof horizon}
+}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\centering
+\vspace*{1.0in}
+{\Huge\bfseries The Universal Proof-Horizon Operator\par}
+\vspace{0.35in}
+{\Large From MIU and the $n$th Well-Formed Formula\\
+to ZFC, Predator, and Automated Logical Deciders\par}
+\vspace{0.8in}
+{\Large Brian Tenneson\par}
+\vspace{0.15in}
+{\large M.A. Mathematics; M.S. Applied Data Science\par}
+\vfill
+{\large Research synthesis and manuscript development assisted by OpenAI&#x27;s ChatGPT\par}
+\vspace{0.25in}
+{\large Version 1.1 -- Revised Mathematical Audit Edition\par}
+{\large September 13, 2026\par}
+\end{titlepage}
+\clearpage
+\hypersetup{pageanchor=true}
+\frontmatter
+
+\chapter*{Attribution and intellectual provenance}
+Brian Tenneson originated the research question and developed the core synthesis. In particular, he connected Matos&#x27;s constructive work on MIU, effective enumeration of well-formed formulas by G\&quot;odel coding, minimum-cost proof search, his SIC Proof-Horizon framework, theorem-space growth, Predator, and automated logical deciders. AI assistance helped recover, organize, test, criticize, and express the argument. The mathematical direction and the decisive conceptual moves came primarily from Tenneson; the AI served as an intensive research and editorial collaborator.
+
+\chapter*{Novelty disclaimer}
+The computability fact proved in this monograph---that a minimum-cost proof can be recovered by a partial algorithm once the proof system and a suitable effectively proper computable cost are fixed---is classical in substance. No claim is made that recursive enumerability of formal proofs is new. The contribution offered here is the explicit theorem statement, the careful boundary conditions, and the historical and architectural synthesis linking a 2016 lecture, MIU, OEIS A331536, semi-ideal computers, machine-guided proof search, Predator, and automated logical deciders.
+
+\chapter*{Abstract}
+A formal theory such as ZFC has effectively recognizable syntax and an effectively checkable proof relation. Once an effective G\&quot;odel coding and a sentence enumeration are fixed, its sentences can be listed as $\sigma_0,\sigma_1,\ldots$. This monograph isolates a precise consequence: relative to a fixed proof calculus and a total computable proof-cost measure whose sublevel sets are effectively finite, there is a partial computable operator that takes $n$ and returns a canonical minimum-cost proof of $\sigma_n$ whenever $\sigma_n$ is a theorem. It diverges when no proof exists. The theorem therefore does not decide ZFC, evade Church-style undecidability, or overcome G\&quot;odel--Rosser incompleteness. It identifies the exact positive result left standing by those barriers: proof recovery is universal on theorems, while termination on non-theorems is not guaranteed.
+
+The result is placed in a ten-year research arc. Douglas Hofstadter&#x27;s MIU system provided a small formal universe; Armando Matos characterized its theorems and gave proof-producing algorithms; Tenneson&#x27;s OEIS A331536 quantified the explosive growth of its reachable theorem space; Tenneson&#x27;s SIC Proof-Horizon Theorem converted shortest inference-path length into a machine stage; and Predator replaces indiscriminate enumeration with learned and creative navigation. Dovetailing searches for a conjecture and its negation yields the primitive core of an automated logical decider, provided that silence is reported as \textsc{unknown} rather than mistaken for refutation or independence.
+
+\noindent\textbf{Keywords:} automated theorem proving, proof theory, minimum-cost proof, G\&quot;odel numbering, ZFC, MIU, OEIS A331536, semi-ideal computer, proof horizon, machine learning, Predator, automated logical decider, conjecture settlement.
+
+\tableofcontents
+\listoffigures
+
+\chapter*{Reader&#x27;s Guide}
+The central mathematical result is Theorem~\ref{thm:universal}. Readers who want only the theorem and its proof may begin with Chapter~\ref{ch:operator}. The historical and conceptual path begins in Chapter~\ref{ch:question}. The practical consequences for automated theorem proving appear in Chapters~\ref{ch:navigation} and~\ref{ch:ald}. The limitations, including the distinction between proof-size and line-count minimality, are collected in Chapter~\ref{ch:lines}.
+
+\mainmatter
+
+\chapter{A Question Asked in 2016}\label{ch:question}
+In 2016 Brian Tenneson presented a lecture titled \emph{Proof Theory and Automated Theorem Proving} to graduate mathematics students at the University of Montana~\cite{tenneson2016lecture}. According to the author&#x27;s retrospective account, the lecture was not merely about whether a computer could verify a formal derivation. It was animated by a harder question: could a machine move through a formal system in a way that deserved to be called intelligent?
+
+The question grew naturally from Hofstadter&#x27;s MIU system~\cite{hofstadter1979}. MIU is tiny: an alphabet, one axiom, and four string-rewriting rules. Yet the space of reachable expressions expands rapidly, and the famous target $MU$ cannot be reached. A machine can apply rules mechanically, but a useful theorem prover must somehow decide which legal move deserves attention.
+
+Ten years later, the same question has become an engineering program. Large language models can compare descriptions, recover analogies, write code, and coordinate information distributed across many documents. Symbolic automated theorem provers can search formal states. Independent verifiers can decide whether a proposed certificate is correct. Predator attempts to combine learned guidance, exploratory policies, and formal checking. Automated logical deciders extend the architecture by searching symmetrically for proof, refutation, and eventually independence certificates.
+
+\begin{quote}
+``This is my dream come true. The LLM helping me reconnect the lecture I gave in 2016, my OEIS entry, and the prover running now is exactly the kind of machine I was dreaming about.&#x27;&#x27;
+
+\hfill --- Brian Tenneson, retrospective note, August 3, 2026
+\end{quote}
+
+\section{Analogy as a bridge from unknown to known}
+Hofstadter and Sander argue that analogy is central to cognition~\cite{hofstadter2013}. Tenneson&#x27;s informal ``tag&#x27;&#x27; vocabulary gives a compact computational picture of one aspect of that view. Suppose a listener does not yet know Superman but already associates lightning with a feature tag such as $\langle\text{quick}\rangle$. The statement ``Superman is fast as lightning&#x27;&#x27; aligns the unknown object with a known object along that feature. The new representation is incomplete---speed is only one property, and the comparison may be figurative rather than literal---but it has converted one dimension of Superman from unknown to partially known.
+
+A modern language model has an enormous supply of possible ``other ends&#x27;&#x27; for such alignments: texts, concepts, metaphors, mathematical structures, algorithms, and examples. That makes it useful for proposing paths through conceptual space. It does not, however, turn an analogy into a proof. The division of labor in this project is therefore deliberate:
+\[
+\text{analogy and language propose;}\qquad
+\text{formal search constructs;}\qquad
+\text{verification certifies.}
+\]
+
+\section{Curry--Howard is related, but it answers a different question}
+The Curry--Howard correspondence identifies propositions with types and proofs with programs~\cite{howard1980}. It helps explain what a proof can be as a computational object. The present research program asks a complementary question: how does an agent discover the right proof-object in an overwhelmingly large space? Curry--Howard supplies part of the ontology; proof search, analogy, heuristics, and learning supply navigation.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[node distance=1.1cm and 0.6cm, every node/.style={font=\small,align=center}, &gt;=Latex]
+\node (a) [draw,rounded corners] {2016 lecture\\the original question};
+\node (b) [draw,rounded corners,right=of a] {MIU and Matos\\proof construction};
+\node (c) [draw,rounded corners,right=of b] {A331536\\theorem-space growth};
+\node (d) [draw,rounded corners,below=of c] {SICs and\\proof horizons};
+\node (e) [draw,rounded corners,left=of d] {Predator\\learned navigation};
+\node (f) [draw,rounded corners,left=of e] {ALDs\\symmetric settlement};
+\draw[-&gt;] (a)--(b);\draw[-&gt;] (b)--(c);\draw[-&gt;] (c)--(d);\draw[-&gt;] (d)--(e);\draw[-&gt;] (e)--(f);
+\end{tikzpicture}
+\caption{The research arc reconstructed in this monograph. The arrows indicate conceptual development, not claims that each later object was fully specified in 2016.}
+\label{fig:arc}
+\end{figure}
+
+\chapter{MIU: A Small Formal World with a Large Search Problem}
+\section{The formal system}
+Hofstadter&#x27;s MIU system has alphabet $\{M,I,U\}$, axiom $MI$, and the following rules, where $x$ and $y$ are strings:
+\begin{align*}
+\text{I. }&amp;xI \longrightarrow xIU,\\
+\text{II. }&amp;Mx \longrightarrow Mxx,\\
+\text{III. }&amp;xIIIy \longrightarrow xUy,\\
+\text{IV. }&amp;xUUy \longrightarrow xy.
+\end{align*}
+Every legal MIU theorem begins with $M$ and is followed by a finite string of $I$&#x27;s and $U$&#x27;s. The system is pedagogically effective because syntax, theoremhood, search, invariants, and proof length can all be seen without a large logical apparatus.
+
+\section{Matos: characterization and proof production}
+Matos proved that an MIU well-formed formula $Mx$ is a theorem exactly when the number of $I$&#x27;s in $x$ is not divisible by three, and he supplied an algorithm that outputs a standard proof for each theorem~\cite{matos1997}. Matos and Antunes then analyzed shorter proofs and proved asymptotic bounds for proof length and total proof symbols~\cite{matosantunes1998}. Matos&#x27;s subsequent study emphasized a distinction crucial to the present monograph: a system may have a simple characterization of its theorems while minimum-proof behavior remains nontrivial~\cite{matos2000}.
+
+This is the first bridge to the ZFC question. In MIU, special algebraic structure permits a theorem-specific constructive algorithm. For a general effective theory, no comparable closed formula is promised. Nevertheless, a universal proof-recovery procedure exists by enumeration. Its price is divergence on non-theorems and catastrophic inefficiency.
+
+\section{A shortest proof is relative to a metric}
+Matos studies proof length in lines and in symbols. These are distinct objective functions. More generally, ``the shortest proof&#x27;&#x27; is incomplete unless one fixes:
+\begin{enumerate}[label=(\roman*)]
+\item the formal theory and its axioms;
+\item the proof calculus and allowed derived rules;
+\item the encoding of formulas and proof objects;
+\item the cost measure---lines, inference steps, symbols, bits, weighted steps, or another metric.
+\end{enumerate}
+This dependence is a standard theme in proof complexity~\cite{cookreckhow1979}. In the universal theorem below, the cost measure must also have effectively finite sublevel sets. Total encoded size is a canonical example. Line count alone needs additional finite-branching or bounded-syntax hypotheses; this issue is treated carefully in Chapter~\ref{ch:lines}.
+
+\chapter{A331536: Measuring Theorem-Space Explosion}
+Tenneson&#x27;s OEIS entry A331536 records the number of distinct MIU theorems reachable within a bounded number of rule applications from $MI$~\cite{oeisA331536}. With the indexing convention used here, $a(n)$ counts the theorems reachable in at most $n-1$ rule applications. The values recorded in the source used for this manuscript are
+\[
+1,3,6,11,25,69,282,1730,15885,210105,3986987,106053474,3937200362.
+\]
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{semilogyaxis}[
+ width=0.86\textwidth,
+ height=0.48\textwidth,
+ xlabel={OEIS index $n$ (at most $n-1$ MIU rule applications)},
+ ylabel={Distinct reachable MIU theorems (log scale)},
+ grid=major,
+ mark=*,
+ xtick={2,4,6,8,10,12},
+ title={Growth recorded by OEIS A331536}
+]
+\addplot coordinates {(1,1)(2,3)(3,6)(4,11)(5,25)(6,69)(7,282)(8,1730)(9,15885)(10,210105)(11,3986987)(12,106053474)(13,3937200362)};
+\end{semilogyaxis}
+\end{tikzpicture}
+\caption{The growth of A331536 on a logarithmic vertical scale. By the thirteenth recorded index, the cumulative reachable set exceeds $3.9$ billion distinct MIU theorems.}
+\label{fig:a331536}
+\end{figure}
+
+The sequence does not prove that every proof problem has this growth law, nor does it measure ZFC directly. It performs a more fundamental service: it makes visible how quickly even a four-rule system can overwhelm indiscriminate enumeration. The practical ATP question is therefore not whether legal consequences can be generated, but how a machine can avoid materializing almost all of them.
+
+\begin{center}
+\emph{A331536 supplies the search problem.}\par
+\emph{The Proof-Horizon Operator supplies the universal baseline.}\par
+\emph{Predator attempts to supply navigation.}
+\end{center}
+
+\chapter{From G\&quot;odel Numbers to the $n$th Well-Formed Formula}
+The phrase ``invert G\&quot;odel numbers&#x27;&#x27; is nearly right, but it needs one qualification. Not every natural number need code a valid expression. The correct construction uses an effective coding/decoding convention, filters decoded strings for syntactic validity, and counts the survivors.
+
+\begin{definition}[Effective syntax]\label{def:syntax}
+Let $L$ be a recursively presented formal language. Fix an effective injective coding $\operatorname{enc}$ of finite strings by natural numbers together with a total computable decoder $\operatorname{dec}:\N\to \text{Strings}\cup\{\bot\}$ satisfying $\operatorname{dec}(\operatorname{enc}(s))=s$. Assume there are total computable predicates $\mathrm{WFF}_L(m)$ and $\mathrm{Sent}_L(m)$ that recognize exactly the codes of $L$-well-formed formulas and $L$-sentences, respectively.
+\end{definition}
+
+For the ordinary first-order language of set theory, parsing is decidable. Variables, parentheses, equality, membership, logical connectives, and quantifiers are finite syntactic objects, so a parser can determine whether a decoded string is a formula and whether it has free variables.
+
+\begin{proposition}[The $n$th formula and sentence]\label{prop:nth}
+There are total computable one-to-one enumerations
+\[
+n\longmapsto \varphi_n
+\qquad\text{and}\qquad
+n\longmapsto \sigma_n
+\]
+of all $L$-well-formed formulas and all $L$-sentences, respectively.
+\end{proposition}
+\begin{proof}
+Scan candidate codes $m=0,1,2,\ldots$. Retain $m$ exactly when $\mathrm{WFF}_L(m)=1$. Because the predicate and decoder are computable, the scan can count valid codes until the $n$th one is reached and then decode it. Injectivity of the coding prevents duplication. The sentence enumeration is identical with $\mathrm{Sent}_L$ in place of $\mathrm{WFF}_L$.
+\end{proof}
+
+Thus there really is a computable meaning of ``the $n$th ZFC formula&#x27;&#x27; after the coding and ordering convention have been fixed. Different codings produce different enumerations, but every effective choice lists the same countable syntax.
+
+\begin{remark}[What this does not enumerate]
+The enumeration lists expressions, not truths. It includes theorems, refutable statements, independent statements, and mathematically unmotivated expressions that are nevertheless syntactically valid. Syntax is the input space; proof search supplies logical status when it can.
+\end{remark}
+
+\chapter{The Universal Proof-Horizon Operator}\label{ch:operator}
+\section{The exact assumptions}
+The headlining theorem is most naturally stated for any effective proof system, with ZFC as a corollary.
+
+\begin{definition}[Effective proof presentation]\label{def:presentation}
+An effective proof presentation is a triple $(T,V,c)$ satisfying the following conditions.
+\begin{enumerate}[label=(\arabic*)]
+\item $T$ is a formal theory in a recursively presented language.
+\item $V(p,q)$ is a total computable verifier. It returns $1$ exactly when $p$ codes a valid $T$-proof whose concluding sentence has code $q$.
+\item $c(p)\in\N$ is a total computable proof cost.
+\item For every $b\in\N$, the sublevel set
+\[
+P_b=\{p\in\N:c(p)\le b\}
+\]
+is finite and can be effectively listed.
+\end{enumerate}
+Condition (4) will be called \emph{effective properness}. Total symbol count, total bit length of a self-delimiting proof encoding, or the length of the proof file in bytes are natural examples. It ensures that ``search every cheaper proof first&#x27;&#x27; is an executable instruction rather than an idealized infinitary demand.
+\end{definition}
+
+Fix the sentence enumeration $\sigma_0,\sigma_1,\ldots$ from Proposition~\ref{prop:nth}. Order proof codes first by $c(p)$ and then numerically to break ties.
+
+\begin{theorem}[Universal Proof-Horizon Operator]\label{thm:universal}
+For every effective proof presentation $(T,V,c)$, there is a partial computable function
+\[
+H_{T,V,c}:\N\rightharpoonup\N
+\]
+such that, for every $n$:
+\begin{enumerate}[label=(\roman*)]
+\item $H_{T,V,c}(n)\halts$ if and only if $T\vdash\sigma_n$;
+\item when defined, $H_{T,V,c}(n)$ is the least proof code among all $T$-proofs of $\sigma_n$ having minimum $c$-cost;
+\item consequently,
+\[
+\operatorname{dom}(H_{T,V,c})=\{n:T\vdash\sigma_n\}.
+\]
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+On input $n$, compute the G\&quot;odel code $q_n=\code{\sigma_n}$. For cost bounds $b=0,1,2,\ldots$, effectively list the finite sublevel set $P_b$ supplied by Definition~\ref{def:presentation}, and retain exactly those $p\in P_b$ for which the computable function $c(p)=b$. This yields an effective finite listing of
+\[
+E_b=\{p:c(p)=b\}.
+\]
+Examine the elements of $E_b$ in increasing numerical order. For each candidate $p$, compute $V(p,q_n)$. If the verifier returns $1$, output $p$ and halt.
+
+Every operation at every finite stage is computable. Hence the procedure defines a partial computable function.
+
+Suppose first that $T\vdash\sigma_n$. Then at least one valid proof code exists. The set of its costs is a nonempty subset of $\N$, so it has a least element $b_0$. The finite set $E_{b_0}$ contains at least one proof of $\sigma_n$. The algorithm eventually reaches $b_0$, checks every earlier candidate, finds the least valid code in $E_{b_0}$, and halts. No proof of lower cost exists by minimality of $b_0$, and the numerical ordering resolves ties. Thus the returned proof is canonical and minimum-$c$.
+
+Conversely, if the algorithm halts with output $p$, then $V(p,q_n)=1$. By the meaning of the verifier, $p$ is a valid $T$-proof of $\sigma_n$, so $T\vdash\sigma_n$. Therefore the algorithm halts exactly on theorem indices, and its domain is the displayed set.
+\end{proof}
+
+\begin{corollary}[Partial minimum-proof cost]\label{cor:mincost}
+The function
+\[
+h_{T,V,c}(n)=c(H_{T,V,c}(n))
+\]
+is partial computable, has the same domain as $H_{T,V,c}$, and returns the minimum proof cost of $\sigma_n$ whenever $\sigma_n$ is a theorem.
+\end{corollary}
+
+\begin{corollary}[ZFC form]\label{cor:zfc}
+Fix a standard effective proof calculus for ZFC, a decidable proof verifier, an effective enumeration $\sigma_0,\sigma_1,\ldots$ of set-theoretic sentences, and an effectively proper proof-cost measure. Then
+\[
+H_{\mathrm{ZFC}}(n)=
+\begin{cases}
+\text{a canonical minimum-cost ZFC proof of }\sigma_n,&amp;\mathrm{ZFC}\vdash\sigma_n,\\
+\diverges,&amp;\mathrm{ZFC}\nvdash\sigma_n
+\end{cases}
+\]
+is a partial computable function.
+\end{corollary}
+\begin{proof}
+A conventional syntactic presentation of ZFC has decidable formula parsing and mechanically checkable finite proofs. Apply Theorem~\ref{thm:universal}.
+\end{proof}
+
+\begin{corollary}[Uniformity in presentations]\label{cor:uniform}
+There is a single partial computable functional $U$ with the following property. Given effective program indices for a verifier $V$, a cost function $c$, an effective finite-sublevel lister for $c$, and a sentence index $n$, $U$ executes the construction in Theorem~\ref{thm:universal}. Whenever those indices describe an effective proof presentation, the resulting partial function agrees with $H_{T,V,c}$ on $n$.
+\end{corollary}
+\begin{proof}
+The proof of Theorem~\ref{thm:universal} is a uniform program schema: it invokes the supplied programs for sentence coding, sublevel enumeration, cost evaluation, and verification. A universal machine can simulate these indexed programs and perform the same finite-stage search.
+\end{proof}
+
+\begin{definition}[Code-indexed companion operator]\label{def:codeindexed}
+For later use, define the partial computable code-indexed operator
+\[
+\widehat H_{T,V,c}:\N\rightharpoonup\N
+\]
+by running the same cost-ordered search directly on a sentence code $q$: $\widehat H_{T,V,c}(q)$ returns the canonical minimum-$c$ proof whose concluding sentence has code $q$, if one exists. Then
+\[
+H_{T,V,c}(n)=\widehat H_{T,V,c}(\code{\sigma_n}).
+\]
+\end{definition}
+
+\section{Why the theorem is both powerful and classical}
+The result says something genuinely universal:
+\begin{center}
+\fbox{\parbox{0.89\textwidth}{\centering Relative to any fixed effective proof presentation and effectively proper computable cost $c$, every theorem has an algorithmically recoverable canonical minimum-$c$ proof.}}
+\end{center}
+But ``minimum&#x27;&#x27; is relative to the fixed presentation and cost measure, and ``recoverable&#x27;&#x27; means partial computability rather than practical feasibility.
+
+Recursive enumerability of formal proofs yields recovery of \emph{some} proof of every theorem~\cite{church1936,turing1936,rogers1987}. Minimum-cost recovery additionally uses effective properness to make each lower-cost region finitely and effectively searchable. The purpose here is not to rename a classical observation and claim priority. It is to expose the exact positive architecture that survives undecidability and then connect that architecture to Tenneson&#x27;s SIC and ATP program.
+
+\section{A pseudocode formulation}
+\begin{lstlisting}[style=pythonstyle,caption={Pseudocode for the Universal Proof-Horizon Operator.}]
+def proof_horizon(n):
+    target = nth_sentence(n)
+    for cost in natural_numbers():
+        for proof_code in proof_codes_of_exact_cost(cost):
+            if verify(proof_code, target):
+                return proof_code
+    # No negative return is licensed. The computation may continue forever.
+\end{lstlisting}
+The final comment is mathematically essential. Silence is not a disproof.
+
+\chapter{The Church--G\&quot;odel--Rosser Boundary}
+\section{Why this does not decide ZFC}
+A total decision procedure would halt on every sentence and answer whether it is a ZFC theorem. The Proof-Horizon Operator does not do this. It gives a positive certificate when one exists and otherwise continues searching.
+
+\begin{proposition}[No total negative completion]\label{prop:no-total}
+Let $T$ be an effectively axiomatized theory whose theorem set is undecidable. Then there is no total computable function $D$ satisfying
+\[
+D(n)=\begin{cases}
+1,&amp;T\vdash\sigma_n,\\
+0,&amp;T\nvdash\sigma_n.
+\end{cases}
+\]
+In particular, this applies to standard sufficiently strong consistent recursively axiomatized theories of arithmetic, including ZFC insofar as it interprets the requisite arithmetic.
+\end{proposition}
+\begin{proof}
+Such a function would decide the theorem set of $T$, contradicting the assumed undecidability. Church&#x27;s and related undecidability results supply the classical background for the standard theories under discussion~\cite{church1936,turing1936,rosser1936}.
+\end{proof}
+
+The contrast can be stated in one line:
+\[
+\text{partial theorem-to-minimum-proof operator: exists,}
+\]
+\[
+\text{total theorem/non-theorem decider: does not exist in general.}
+\]
+
+\section{Incompleteness is a different limitation}
+G\&quot;odel&#x27;s incompleteness theorem and Rosser&#x27;s strengthening show, under the standard effectiveness and arithmetic-strength hypotheses, that sufficiently strong consistent recursively axiomatized theories are incomplete~\cite{godel1931,rosser1936}. In particular, Rosser&#x27;s refinement permits simple consistency rather than the stronger $\omega$-consistency hypothesis of G\&quot;odel&#x27;s original first theorem. Thus there are sentences $\rho$ for which neither $\rho$ nor $\neg\rho$ is provable in the theory. For such a sentence, both ordinary proof searches can run forever.
+
+This is not a defect in the Proof-Horizon Operator. The operator&#x27;s domain is theoremhood in the selected theory, not semantic truth in every possible foundation. It ranges over all ZFC theorems, not all mathematics, not all sentences true in an intended set-theoretic universe, and not the theorems of alternative foundations unless those systems are separately supplied.
+
+\section{What ``all of ZFC mathematics&#x27;&#x27; can responsibly mean}
+The phrase can mean:
+\begin{quote}
+Every syntactically expressible ZFC sentence can be indexed, and every ZFC theorem lies in the halting domain of a single uniform proof-recovery procedure.
+\end{quote}
+It cannot mean that every sentence is decided, that every mathematical truth is a ZFC theorem, that the resulting search is feasible, or that proof length is independent of presentation. More narrowly and technically, no consistent recursively axiomatizable theory sufficiently strong for arithmetic proves every true arithmetical sentence.
+
+\chapter{Line-Shortest Proofs and the Finite-Branching Condition}\label{ch:lines}
+The most delicate correctness issue in the entire argument is the word ``shortest.&#x27;&#x27; If cost means total encoded proof size, Theorem~\ref{thm:universal} applies immediately because there are finitely many bit strings below any fixed size. If cost means number of proof lines, there may be infinitely many syntactically different one-line candidates. One cannot literally finish inspecting every one-line object before beginning the two-line search.
+
+\begin{theorem}[Shortest inference path under effective finite branching]\label{thm:bfs}
+Let $G$ be an effectively generated directed proof-state graph with a designated initial state and target set. Suppose every vertex has a finite, effectively listable set of outgoing edges and each edge has unit cost. Then breadth-first search halts exactly when a target is reachable, and when it halts its predecessor data reconstruct a proof using the minimum number of edges.
+\end{theorem}
+\begin{proof}
+Breadth-first search explores vertices in nondecreasing graph distance from the initial state. Effective finite branching makes every finite depth layer finite and computable. Therefore the first target dequeued has minimum distance. Recording the predecessor state together with the rule and instantiation data for every new state reconstructs a shortest path and hence a checkable proof certificate.
+\end{proof}
+
+MIU satisfies these conditions. Finite formal libraries such as a frozen Metamath database can also support effectively finite search conditions once the admissible assertions, substitutions, and side conditions are fixed. Full ZFC proof search by raw line count needs an explicitly stated proof formalism ensuring finite branching, or else a proper size measure should be used.
+
+\begin{caution}[The correction that protects the headline]
+The universally valid computability claim is minimum-cost proof under an effectively proper computable cost. ``Fewest lines&#x27;&#x27; is a valid corollary only under additional search-space hypotheses.
+\end{caution}
+
+\chapter{SICs and the Proof Horizon}
+Tenneson&#x27;s \emph{Depths of a Simulation} defines a semi-ideal computer (SIC) as a monotone stage process with an absorbing halting signal and then constructs canonical theorem-enumerating and target-search SICs~\cite{tennesonSIC}. The Proof-Horizon Theorem states, in that framework, that a canonical breadth-first target-search SIC halts exactly when the target is derivable and that its first halting stage is the target&#x27;s shortest proof length in the selected finite-branching formal model.
+
+The universal operator of Theorem~\ref{thm:universal} and the SIC theorem illuminate one another:
+\begin{itemize}
+\item the universal operator supplies an explicitly computable semidecision procedure under an effectively proper proof-cost measure;
+\item the SIC formulation turns proof length into a stage or horizon observable;
+\item Theorem~\ref{thm:bfs} identifies when that horizon is realized by ordinary breadth-first search;
+\item learned policies can then be evaluated against the canonical horizon without being confused with soundness.
+\end{itemize}
+
+\section{Theorem graphs and directed hypergraphs}
+A proof-state graph treats verified proof states as vertices and legal inference applications as labeled directed edges. In an unweighted state graph, a proof is a path and a shortest proof is a shortest path. The predecessor data on the target chain---including rule labels, substitutions, and other side-condition data---reconstruct the proof certificate.
+
+There are two closely related geometric representations. If vertices are whole verified knowledge states $B$, then a variable-arity inference can still be represented by an ordinary edge $B\to B&#x27;$ corresponding to one legal state transition. If vertices are individual formulas, however, an inference with premises $p_1,\ldots,p_k$ and conclusion $q$ is naturally a directed hyperedge
+\[
+\{p_1,\ldots,p_k\}\longrightarrow q.
+\]
+This distinction matters when one later equips proof search with address charts or geometry: formula-level inference geometry is variable-arity, while state-level transition geometry can remain an ordinary directed graph.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[&gt;=Latex,node distance=1.1cm and 1.2cm,every node/.style={font=\small}]
+\node (p1) [draw,circle] {$p_1$};
+\node (p2) [draw,circle,right=of p1] {$p_2$};
+\node (p3) [draw,circle,right=of p2] {$p_3$};
+\node (join) [draw,diamond,below=1cm of p2,inner sep=2pt] {rule};
+\node (q) [draw,circle,below=1cm of join] {$\varphi$};
+\draw[-&gt;] (p1)--(join);\draw[-&gt;] (p2)--(join);\draw[-&gt;] (p3)--(join);\draw[-&gt;] (join)--(q);
+\end{tikzpicture}
+\caption{A formula-level inference is naturally hypergraphic: several premises jointly license one conclusion. At the proof-state level, the same inference can be encoded as one directed transition between verified states.}
+\label{fig:proofgraph}
+\end{figure}
+
+\section{Search policy is not logical consequence}
+A learned model may rank actions, predict useful lemmas, or estimate distance to completion. None of these scores establishes theoremhood. Only the proof checker does. This separation is central both to Tenneson&#x27;s ML--SIC--ATP account~\cite{tennesonML} and to the Predator engineering protocol.
+
+\chapter{From Exhaustive Search to Navigation}\label{ch:navigation}
+The universal algorithm is theoretically sufficient and practically disastrous. It may spend nearly all of its resources on regions of theorem space irrelevant to the target. A331536 shows this problem in miniature. The role of machine learning and formalized creativity is not to alter the definition of proof but to alter the order in which legal possibilities are explored.
+
+\section{Three levels of creativity}
+Creativity can enter an ATP architecture at several levels:
+\begin{enumerate}
+\item \textbf{Inside a subordinate prover:} exploratory temperatures, novelty rewards, rarity preferences, lemma seeking, or stochastic branching.
+\item \textbf{Inside an orchestrator:} choosing engines, changing representations, decomposing a target, allocating budgets, or transferring verified lemmas.
+\item \textbf{Inside human--machine collaboration:} proposing analogies, translating between mathematical vocabularies, identifying overlooked sources, and revising the research question.
+\end{enumerate}
+The verifier remains outside these creative choices. Creativity generates candidates; certification decides whether they count.
+
+\section{Predator as a case study}
+Predator is a versioned experimental ATP program developed within Tenneson&#x27;s project. Its significance here is not that it already solves arbitrary mathematics, but that it operationalizes the transition from theorem enumeration to policy-guided search.
+
+A preliminary Predator 8.004 calibration record dated August 3, 2026 reports two independently verified proofs of the Metamath theorem \texttt{prcom} in a frozen formal-proof environment~\cite{metamath, predator8004}: one after 295 expansions using the dense-uniform model and one after 454 expansions using the theorem-balanced model. Both certificates passed in-process and external verification. The earlier Predator 8.002 record required 2,633 expansions on the same calibration target. These numbers are promising engineering observations, not a general performance theorem.
+
+The architecture illustrates the central separation:
+\[
+\begin{array}{rcl}
+\text{training and policy} &amp;\longrightarrow&amp; \text{which legal state to examine next},\\
+\text{symbolic engine} &amp;\longrightarrow&amp; \text{which actions are actually legal},\\
+\text{certificate verifier} &amp;\longrightarrow&amp; \text{whether the claimed proof is valid}.
+\end{array}
+\]
+
+\section{Why analogy matters to proof navigation}
+A proof search system often needs to recognize that a new goal resembles an old one in a structurally useful way. The relevant shared ``tag&#x27;&#x27; may be a normal form, an invariant, a theorem family, a type signature, a dependency pattern, or a semantic domain such as semigroup theory. The hard problem is not merely attaching labels. It is learning which similarities preserve useful proof actions and which are superficial.
+
+This is where an LLM can be valuable without being mistaken for a verifier. It can propose the comparison: ``this target resembles a closure theorem,&#x27;&#x27; ``this obstacle resembles an invariant argument,&#x27;&#x27; or ``this formal statement may need a representation change.&#x27;&#x27; The ATP and checker must still construct and certify the path.
+
+\chapter{Automated Logical Deciders}\label{ch:ald}
+Tenneson&#x27;s conjecture-settling and ALD manuscripts replace one-sided proving with symmetric logical investigation~\cite{tennesonConjecture,tennesonALD}. The primitive architecture dovetails two code-indexed proof-horizon computations:
+\[
+\widehat H_{T,V,c}(\code{\varphi})
+\qquad\text{and}\qquad
+\widehat H_{T,V,c}(\code{\neg\varphi}).
+\]
+This uses Definition~\ref{def:codeindexed}; the inputs are G\&quot;odel codes, not sentence-enumeration indices.
+
+\begin{corollary}[Primitive symmetric settlement]\label{cor:settlement}
+There is a partial procedure that, on input a sentence $\varphi$:
+\begin{enumerate}[label=(\alph*)]
+\item returns \textsc{theorem} with a certificate if it finds a $T$-proof of $\varphi$;
+\item returns \textsc{refutable} with a certificate if it finds a $T$-proof of $\neg\varphi$;
+\item otherwise continues searching.
+\end{enumerate}
+If $T$ is consistent, it cannot return both certified outcomes.
+\end{corollary}
+\begin{proof}
+Dovetail the two partial searches, taking one finite step of each in alternation. If either finds a certificate, verify and return the corresponding result. Consistency rules out proofs of both $\varphi$ and $\neg\varphi$.
+\end{proof}
+
+\section{Independence is not prolonged silence}
+An independence claim requires metamathematical evidence. A canonical target form is a pair of relative-consistency implications
+\[
+\Con(T)\Rightarrow\Con(T+\varphi),
+\qquad
+\Con(T)\Rightarrow\Con(T+\neg\varphi).
+\]
+Under $\Con(T)$, these imply $T\nvdash\varphi$ and $T\nvdash\neg\varphi$. Model constructions, forcing arguments, interpretations, or other methods can serve as routes to such certificates when formalized in an appropriate metatheory. Merely running both proof searches for a long time establishes only bounded failure.
+
+A mature ALD may therefore have heterogeneous subordinate engines:
+\begin{itemize}
+\item conventional ATPs;
+\item SAT and SMT solvers;
+\item model finders and counterexample search;
+\item specialized decision procedures;
+\item Predator-like creative or learned provers;
+\item metamathematical engines for relative-consistency or independence certificates;
+\item independent certificate verifiers.
+\end{itemize}
+The engines need not all be creative. The system is strongest when it uses the cheapest complete method available and reserves exploratory machinery for the regions where routine methods fail.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[&gt;=Latex,node distance=1.1cm and 1.2cm,every node/.style={align=center,font=\small}]
+\node (phi) [draw,rounded corners] {formal conjecture $\varphi$\\in theory $T$};
+\node (left) [draw,rounded corners,below left=of phi] {search for\\a proof of $\varphi$};
+\node (right) [draw,rounded corners,below right=of phi] {search for\\a proof of $\neg\varphi$};
+\node (thm) [draw,rounded corners,below=of left] {\textsc{theorem}\\verified certificate};
+\node (ref) [draw,rounded corners,below=of right] {\textsc{refutable}\\verified certificate};
+\node (unk) [draw,rounded corners,below=1.2cm of phi] {\textsc{unknown}\\no licensed conclusion from finite silence};
+\draw[-&gt;] (phi)--(left);\draw[-&gt;] (phi)--(right);\draw[-&gt;] (left)--(thm);\draw[-&gt;] (right)--(ref);
+\end{tikzpicture}
+\caption{The primitive two-directional ALD. Failure to obtain a certificate within a finite budget is reported operationally as \textsc{unknown}, not logically as false, refuted, or independent.}
+\label{fig:ald}
+\end{figure}
+
+\chapter{What Has and Has Not Been ``Figured Out&#x27;&#x27;}
+\section{What has been established}
+The following claims are supported by the proofs in this monograph.
+\begin{enumerate}
+\item The well-formed formulas and sentences of ZFC can be effectively enumerated after an effective coding/decoding convention is fixed.
+\item Every ZFC theorem has at least one finite formal proof in the fixed calculus.
+\item Under an effectively proper computable proof-cost measure, a partial computable operator returns a canonical minimum-cost proof of every ZFC theorem.
+\item The operator halts exactly on theorem indices.
+\item Symmetric dovetailing produces a sound partial classifier into \textsc{theorem} or \textsc{refutable}, with certificates.
+\item The construction is uniform in effective presentations when the relevant programs are supplied by index.
+\end{enumerate}
+
+\section{What has not been established}
+The monograph does not show any of the following.
+\begin{enumerate}
+\item It does not give a total decision procedure for ZFC.
+\item A finite silent run does not distinguish a theorem whose proof has not yet been found, a $T$-refutable sentence whose refutation has not yet been found, or a sentence independent of $T$.
+\item It does not make exhaustive proof search computationally feasible.
+\item It does not establish an absolute notion of shortest proof.
+\item It does not settle an open mathematical conjecture.
+\item It does not show that Predator is generally superior to established ATP systems.
+\item It does not claim the underlying recursive-enumeration theorem as historically new.
+\end{enumerate}
+The discovery in this work is therefore best described as a recovered conceptual spine. A question asked in 2016, an MIU proof algorithm, an OEIS growth sequence, a SIC theorem, and a modern ATP experiment are recognized as parts of one program:
+\[
+\text{universal proof existence by enumeration}
++\text{ intelligent navigation of the enumeration}.
+\]
+
+\chapter{A Research Program}
+\section{Formalization priorities}
+The next mathematical steps are concrete.
+\begin{enumerate}
+\item Formalize Theorem~\ref{thm:universal} in a proof assistant or Metamath environment, including the effective-properness condition.
+\item Compare proof-cost measures: encoded bit length, logical inference count, raw proof-file steps, and weighted transaction cost.
+\item Identify proof systems in which line-count layers are effectively finite and the BFS corollary applies exactly.
+\item Define contamination-safe benchmark protocols for learned proof-horizon approximation.
+\item Test positive controls, negative controls, paired $\varphi/\neg\varphi$ controls, equivalent reformulations, and known independence controls.
+\item When geometry is introduced, state explicitly whether it lives on formulas with variable-arity hyperedges or on verified proof states with ordinary directed transitions.
+\end{enumerate}
+
+\section{The HaloProof gauntlet}
+HaloProof is a proposed public benchmark: using the framework of Goldblatt&#x27;s \emph{Lectures on the Hyperreals}, construct and formally verify a proof that the halo of zero is equipollent with the real numbers~\cite{goldblatt1998,tennesonHalo}. The hyperreal construction must be stated explicitly; otherwise cardinality can depend on the chosen enlargement.
+
+For the standard countable ultrapower construction
+\[
+{}^*\R=\R^{\N}/\mathcal U,
+\]
+where $\mathcal U$ is a nonprincipal ultrafilter on $\N$, the target statement has a particularly transparent cardinality proof.
+
+\begin{proposition}[Halo cardinality in the countable ultrapower]\label{prop:halo}
+Let ${}^*\R=\R^{\N}/\mathcal U$ for a nonprincipal ultrafilter $\mathcal U$ on $\N$, and let
+\[
+\halo(0)=\{x\in{}^*\R:(\forall \varepsilon\in\R_{&gt;0})\ |x|&lt;\varepsilon\}.
+\]
+Then $|\halo(0)|=|\R|=\cC$.
+\end{proposition}
+\begin{proof}
+First, $\halo(0)\subseteq{}^*\R$, and
+\[
+|{}^*\R|\le |\R^{\N}|=\cC^{\aleph_0}=(2^{\aleph_0})^{\aleph_0}=2^{\aleph_0}=\cC.
+\]
+Hence $|\halo(0)|\le\cC$.
+
+For the reverse inequality, define
+\[
+F:\R\longrightarrow\halo(0),
+\qquad
+F(r)=\left[\left(\frac{r}{n+1}\right)_{n\in\N}\right]_{\mathcal U}.
+\]
+For every standard $\varepsilon&gt;0$, the inequality $|r|/(n+1)&lt;\varepsilon$ holds for all sufficiently large $n$, hence on a cofinite set, which belongs to every nonprincipal ultrafilter. Thus $F(r)$ is infinitesimal. If $r\ne s$, then $r/(n+1)\ne s/(n+1)$ for every $n$, so the two sequences are not equivalent modulo $\mathcal U$. Therefore $F$ is injective and $\cC\le|\halo(0)|$. Cantor--Bernstein gives equality.
+\end{proof}
+
+Goldblatt&#x27;s framework is part of the benchmark specification; Proposition~\ref{prop:halo} clarifies one clean set-theoretic target within that framework. The challenge does not claim that this route is shortest, nor that all formalization details are supplied explicitly by the book. HaloProof matters here because it separates the universal existence theorem from the practical discovery problem. The Proof-Horizon Operator guarantees only that a formal proof, if it exists in the chosen theory and presentation, is somewhere in the search space. The benchmark asks whether an actual ATP can find and certify it under a transparent protocol.
+
+\section{From known theorems to genuine discovery}
+A responsible progression is
+\[
+\begin{aligned}
+\text{known theorems} &amp;\longrightarrow \text{withheld benchmarks}\\
+&amp;\longrightarrow \text{paired theorem/refutation controls}\\
+&amp;\longrightarrow \text{modest open conjectures}\\
+&amp;\longrightarrow \text{substantial conjecture settlement}.
+\end{aligned}
+\]
+The first new conjecture need not be famous. It must be genuinely open before the run, precisely formalized, contamination-audited, certified, independently checked, and reproducible.
+
+\chapter{Conclusion: The Dream and the Boundary}
+The 2016 dream was not that a computer would merely print every consequence of a formal system. It was that a machine might navigate proof space with something resembling cognition. The recovered theorem does not complete that dream, but it clarifies the ground beneath it.
+
+For every theorem in an effective formal system, a canonical minimum-cost proof is recoverable by a partial algorithm once the proof presentation and an effectively proper cost measure are fixed. Church-style undecidability does not forbid that machine. It forbids the stronger machine that always halts and correctly announces that no proof exists. G\&quot;odel--Rosser incompleteness adds that no consistent recursively axiomatizable theory sufficiently strong for arithmetic proves every true arithmetical sentence.
+
+The theoretical baseline is therefore complete enough to be useful:
+\begin{center}
+\emph{proof search can be universal on theorems.}
+\end{center}
+The practical problem remains enormous:
+\begin{center}
+\emph{how should the machine know where to look?}
+\end{center}
+Matos answered that question for MIU by exploiting the special structure of the system. A331536 showed how rapidly the space expands. SICs turned proof length into a horizon. Predator attempts to learn the terrain. ALDs organize several forms of search without confusing silence with knowledge. And an LLM---the kind of machine imagined in a much earlier lecture---helped its human collaborator recognize that these were not disconnected projects after all.
+
+\appendix
+\chapter{Executable MIU Demonstration}
+The companion Python program verifies the first eight values of A331536 and uses breadth-first search to reconstruct a shortest MIU derivation under unit rule cost. It is deliberately small enough to inspect. It does not pretend to implement the universal ZFC search, whose proof database and parser would be vastly larger.
+
+\begin{lstlisting}[style=pythonstyle]
+#!/usr/bin/env python3
+&quot;&quot;&quot;Small executable companion to The Universal Proof-Horizon Operator.
+
+This file does two things:
+1. It implements breadth-first search in Hofstadter&#x27;s MIU system, returning
+   a shortest derivation because each edge has unit cost.
+2. It verifies the initial values of OEIS A331536 by counting all distinct
+   MIU theorems reachable within a bounded number of rule applications.
+
+It is a finite demonstration, not an implementation of ZFC proof search.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+from collections import deque
+from dataclasses import dataclass
+from typing import Iterable, Iterator
+
+
+@dataclass(frozen=True)
+class Step:
+    source: str
+    target: str
+    rule: str
+
+
+def _replace_each(word: str, old: str, new: str) -&gt; Iterator[str]:
+    &quot;&quot;&quot;Yield the result of replacing each occurrence separately.&quot;&quot;&quot;
+    start = 0
+    while True:
+        index = word.find(old, start)
+        if index &lt; 0:
+            return
+        yield word[:index] + new + word[index + len(old) :]
+        start = index + 1
+
+
+def miu_successors(word: str) -&gt; Iterable[tuple[str, str]]:
+    &quot;&quot;&quot;Generate all one-step MIU successors, with rule labels.&quot;&quot;&quot;
+    if not word.startswith(&quot;M&quot;):
+        raise ValueError(f&quot;Not an MIU well-formed formula: {word!r}&quot;)
+
+    results: list[tuple[str, str]] = []
+
+    # Rule I: xI -&gt; xIU.
+    if word.endswith(&quot;I&quot;):
+        results.append((word + &quot;U&quot;, &quot;I: xI -&gt; xIU&quot;))
+
+    # Rule II: Mx -&gt; Mxx.
+    tail = word[1:]
+    results.append((&quot;M&quot; + tail + tail, &quot;II: Mx -&gt; Mxx&quot;))
+
+    # Rule III: xIIIy -&gt; xUy, one occurrence at a time.
+    results.extend(
+        (candidate, &quot;III: xIIIy -&gt; xUy&quot;)
+        for candidate in _replace_each(word, &quot;III&quot;, &quot;U&quot;)
+    )
+
+    # Rule IV: xUUy -&gt; xy, one occurrence at a time.
+    results.extend(
+        (candidate, &quot;IV: xUUy -&gt; xy&quot;)
+        for candidate in _replace_each(word, &quot;UU&quot;, &quot;&quot;)
+    )
+
+    # Preserve deterministic order while removing duplicates.
+    return tuple(dict.fromkeys(results))
+
+
+def shortest_miu_proof(
+    target: str, max_depth: int | None = None
+) -&gt; list[Step] | None:
+    &quot;&quot;&quot;Return a shortest MIU proof of target, or None within max_depth.
+
+    With max_depth=None, this semidecision procedure halts on MIU theorems
+    and may run forever on non-theorems.
+    &quot;&quot;&quot;
+    if target == &quot;MI&quot;:
+        return []
+
+    queue: deque[tuple[str, int]] = deque([(&quot;MI&quot;, 0)])
+    parent: dict[str, tuple[str, str] | None] = {&quot;MI&quot;: None}
+
+    while queue:
+        current, depth = queue.popleft()
+        if max_depth is not None and depth &gt;= max_depth:
+            continue
+
+        for successor, rule in miu_successors(current):
+            if successor in parent:
+                continue
+            parent[successor] = (current, rule)
+            if successor == target:
+                chain: list[Step] = []
+                cursor = successor
+                while parent[cursor] is not None:
+                    source, used_rule = parent[cursor]  # type: ignore[misc]
+                    chain.append(Step(source, cursor, used_rule))
+                    cursor = source
+                chain.reverse()
+                return chain
+            queue.append((successor, depth + 1))
+
+    return None
+
+
+def cumulative_miu_counts(max_rule_steps: int) -&gt; list[int]:
+    &quot;&quot;&quot;Count distinct MIU theorems reachable in at most d steps, d=0..max.&quot;&quot;&quot;
+    reached = {&quot;MI&quot;}
+    frontier = {&quot;MI&quot;}
+    counts = [1]
+
+    for _ in range(max_rule_steps):
+        next_frontier = {
+            successor
+            for word in frontier
+            for successor, _ in miu_successors(word)
+            if successor not in reached
+        }
+        reached.update(next_frontier)
+        frontier = next_frontier
+        counts.append(len(reached))
+    return counts
+
+
+def main() -&gt; None:
+    # OEIS A331536 uses a(1) for zero rule steps, a(2) for at most one, etc.
+    expected = [1, 3, 6, 11, 25, 69, 282, 1730]
+    observed = cumulative_miu_counts(len(expected) - 1)
+    assert observed == expected, (observed, expected)
+    print(&quot;Verified initial A331536 values:&quot;, observed)
+
+    target = &quot;MUIU&quot;
+    proof = shortest_miu_proof(target, max_depth=12)
+    if proof is None:
+        print(f&quot;No proof of {target} found within the finite demonstration budget.&quot;)
+        return
+
+    print(f&quot;Shortest proof of {target} has {len(proof)} rule applications:&quot;)
+    print(&quot;MI&quot;)
+    for step in proof:
+        print(f&quot; -&gt; {step.target:&lt;18} [{step.rule}]&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+\end{lstlisting}
+
+For the included target $MUIU$, the program returns a four-rule shortest derivation:
+\[
+MI\to MII\to MIIII\to MIIIIU\to MUIU.
+\]
+
+\chapter{Audit Notes}
+\section{Mathematical audit}
+Version 1.1 incorporates a second, stricter correctness pass. The principal repairs are:
+\begin{enumerate}
+\item \textbf{Syntax pass.} The G\&quot;odel coding is now explicitly paired with a computable decoder, so the $n$th-formula construction is effective in both directions needed by the argument.
+\item \textbf{Computability pass.} Every operation in the proof-horizon algorithm is total computable at each finite stage: sentence enumeration, finite sublevel generation, exact cost-layer filtering, and certificate verification.
+\item \textbf{Minimality pass.} The proof-cost measure is required to have effectively finite sublevel sets. This closes the gap that would arise from casually ordering an infinite set of one-line proof candidates.
+\item \textbf{Uniformity pass.} A uniform functional version has been stated explicitly.
+\item \textbf{Typing pass.} The distinction between sentence-enumeration indices and G\&quot;odel codes is enforced by introducing the code-indexed companion operator $\widehat H$.
+\item \textbf{Boundary pass.} Divergence is separated from refutation and independence; G\&quot;odel&#x27;s original theorem is distinguished from Rosser&#x27;s consistency-level strengthening.
+\item \textbf{Geometry pass.} Formula-level variable-arity inference is distinguished from state-level directed transitions.
+\item \textbf{Benchmark pass.} HaloProof now fixes the standard countable ultrapower for its cardinality statement and includes a clean continuum-cardinality proof.
+\end{enumerate}
+
+\section{Citation audit}
+The bibliography is limited to sources used directly in the body: Hofstadter on MIU and analogy; Howard on proofs and programs; Matos and Antunes on MIU proof algorithms and proof length; OEIS A331536; the 2016 lecture; Tenneson&#x27;s SIC, ML--SIC, ALD, conjecture-settling, HaloProof, and Predator records; Church, Turing, G\&quot;odel, Rosser, and Rogers for computability, undecidability, and incompleteness; Cook and Reckhow for proof-system relativity; Metamath documentation; and Goldblatt for the HaloProof source framework.
+
+\section{Authorship statement for reuse}
+Brian Tenneson originated the research question and developed the core synthesis. AI assistance helped recover, organize, test, and express the argument. The central connection among Matos&#x27;s MIU work, effective enumeration of ZFC formulas, proof horizons, Predator, and automated logical deciders came from Tenneson; the AI&#x27;s role was collaborative analysis, mathematical criticism, source organization, drafting, and editorial refinement.
+
+\backmatter
+\begin{thebibliography}{99}
+
+\bibitem{tenneson2016lecture}
+Brian Tenneson.
+\newblock \emph{Proof Theory and Automated Theorem Proving}.
+\newblock Lecture presented to graduate mathematics students at the University of Montana; video recording, 2016.
+\newblock \url{https://www.youtube.com/watch?v=PCflygaCLXc}.
+
+\bibitem{hofstadter1979}
+Douglas R. Hofstadter.
+\newblock \emph{G\&quot;odel, Escher, Bach: An Eternal Golden Braid}.
+\newblock Basic Books, 1979. MIU system introduced on pp.~33--41.
+
+\bibitem{hofstadter2013}
+Douglas Hofstadter and Emmanuel Sander.
+\newblock \emph{Surfaces and Essences: Analogy as the Fuel and Fire of Thinking}.
+\newblock Basic Books, 2013.
+
+\bibitem{howard1980}
+William A. Howard.
+\newblock ``The Formulae-as-Types Notion of Construction.&#x27;&#x27;
+\newblock In J. P. Seldin and J. R. Hindley, eds., \emph{To H. B. Curry: Essays on Combinatory Logic, Lambda Calculus and Formalism}, pp.~479--490. Academic Press, 1980. Manuscript circulated in 1969.
+
+\bibitem{matos1997}
+Armando B. Matos.
+\newblock \emph{The Theorems of the Formal System MIU}.
+\newblock Technical Report DCC-97-08, Departamento de Ci\^encia de Computadores, Universidade do Porto, 1997.
+
+\bibitem{matosantunes1998}
+Armando B. Matos and Lu\&#x27;is Filipe Antunes.
+\newblock \emph{Short Proofs for MIU Theorems}.
+\newblock Technical Report DCC-98-01, Departamento de Ci\^encia de Computadores, Universidade do Porto, 1998.
+
+\bibitem{matos2000}
+Armando B. Matos.
+\newblock \emph{On the Number of Lines of Theorems in the Formal System MIU}.
+\newblock Faculdade de Ci\^encias and Laborat\&#x27;orio de Intelig\^encia Artificial e Ci\^encia de Computadores, Universidade do Porto, 2000, pp.~1--10.
+
+\bibitem{cookreckhow1979}
+Stephen A. Cook and Robert A. Reckhow.
+\newblock ``The Relative Efficiency of Propositional Proof Systems.&#x27;&#x27;
+\newblock \emph{Journal of Symbolic Logic} 44(1):36--50, 1979.
+\newblock doi:10.2307/2273702.
+
+\bibitem{oeisA331536}
+Brian Tenneson and contributors.
+\newblock A331536: Number of Theorems in the MIU Formal System Which Can Be Proved in $n$ Steps or Fewer Starting with the Axiom MI.
+\newblock \emph{The On-Line Encyclopedia of Integer Sequences}, created Jan.~19, 2020; later terms contributed by R\&#x27;emy Sigrist, Sean A. Irvine, and Martin Fuller.
+\newblock \url{https://oeis.org/A331536}.
+
+\bibitem{church1936}
+Alonzo Church.
+\newblock ``An Unsolvable Problem of Elementary Number Theory.&#x27;&#x27;
+\newblock \emph{American Journal of Mathematics} 58(2):345--363, 1936.
+\newblock doi:10.2307/2371045.
+
+\bibitem{turing1936}
+Alan M. Turing.
+\newblock ``On Computable Numbers, with an Application to the Entscheidungsproblem.&#x27;&#x27;
+\newblock \emph{Proceedings of the London Mathematical Society}, 2nd ser., 42:230--265, 1936.
+
+\bibitem{rogers1987}
+Hartley Rogers Jr.
+\newblock \emph{Theory of Recursive Functions and Effective Computability}.
+\newblock MIT Press, 1987.
+
+\bibitem{godel1931}
+Kurt G\&quot;odel.
+\newblock ``\&quot;Uber formal unentscheidbare S\&quot;atze der Principia Mathematica und verwandter Systeme I.&#x27;&#x27;
+\newblock \emph{Monatshefte f\&quot;ur Mathematik und Physik} 38:173--198, 1931.
+\newblock doi:10.1007/BF01700692.
+
+\bibitem{rosser1936}
+J. Barkley Rosser.
+\newblock ``Extensions of Some Theorems of G\&quot;odel and Church.&#x27;&#x27;
+\newblock \emph{Journal of Symbolic Logic} 1(3):87--91, 1936.
+
+\bibitem{tennesonSIC}
+Brian Tenneson.
+\newblock \emph{Depths of a Simulation: Computers, Formal Systems, Simulations, and Automated Theorem Proving}.
+\newblock Self-published research manuscript, Version 41 series, 2026. Contains the SIC framework and the Proof-Horizon Theorem.
+
+\bibitem{tennesonML}
+Brian Tenneson.
+\newblock \emph{ML--SIC--ATP Theory: Learned Search Policies for Proof Search}.
+\newblock Self-published research manuscript, Version 1.1, July 2026.
+
+\bibitem{metamath}
+Norman D. Megill and David A. Wheeler.
+\newblock \emph{Metamath: A Computer Language for Mathematical Proofs}.
+\newblock 2nd ed., Lulu Press, 2019.
+\newblock \url{https://us.metamath.org/downloads/metamath.pdf}.
+
+\bibitem{predator8004}
+Brian Tenneson.
+\newblock \emph{Predator 8.004 Experiment Record: prcom Calibration and sgrpcl Preprocessing}.
+\newblock Unpublished reproducibility log; run record dated Aug.~3, 2026.
+
+\bibitem{tennesonConjecture}
+Brian Tenneson.
+\newblock \emph{Conjecture Settling, Part I}.
+\newblock Independent research manuscript, 2026.
+
+\bibitem{tennesonALD}
+Brian Tenneson.
+\newblock \emph{Automated Logical Deciders: Certificate Halting, Shared Lemma Pools, and Machine-Learning Guidance}.
+\newblock Independent research manuscript, Aug.~2026.
+
+\bibitem{goldblatt1998}
+Robert Goldblatt.
+\newblock \emph{Lectures on the Hyperreals: An Introduction to Nonstandard Analysis}.
+\newblock Graduate Texts in Mathematics 188. Springer, 1998.
+\newblock doi:10.1007/978-1-4612-0615-6.
+
+\bibitem{tennesonHalo}
+Brian Tenneson.
+\newblock \emph{Machine-Learned ATP Benchmark Blueprint: The Halo of Zero Equipollent to the Reals}.
+\newblock Independent research manuscript, 2026.
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
