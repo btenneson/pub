@@ -1,0 +1,591 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Self Aware Machine: Epistemic Handoff and Successor-Safe Self-Awareness — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/">Back to publication</a><h1>The Self Aware Machine: Epistemic Handoff and Successor-Safe Self-Awareness</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{The Self Aware Machine}
+\rhead{Epistemic Handoff}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{principle}[definition]{Principle}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+
+\newcommand{\View}{\operatorname{View}}
+\newcommand{\Witness}{\operatorname{Witness}}
+\newcommand{\Issued}{\operatorname{Issued}}
+\newcommand{\Active}{\operatorname{Active}}
+\newcommand{\AMLD}{\operatorname{AMLD}}
+\newcommand{\Oracle}{\operatorname{Oracle}}
+\newcommand{\Fresh}{\operatorname{Fresh}}
+\newcommand{\Bind}{\operatorname{Bind}}
+\newcommand{\Cert}{\operatorname{Cert}}
+\newcommand{\Sem}{\models_{\mathcal C}}
+\newcommand{\K}[4]{K^{#3,#4}_{#1,#2}}
+\newcommand{\handoff}{\mathrel{\overset{h}{\rightsquigarrow}}}
+
+\title{\textbf{The Self Aware Machine: Epistemic Handoff and\\Successor-Safe Self-Awareness}\\[0.7em]
+\large A verifier-gated extension of the AMLD self-awareness program}
+\author{Brian Tenneson}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note extends the living manuscript \emph{The Self Aware Machine} using the later Omnicartographer handoff construction. Its purpose is narrow: to specify the type of the epistemic subject, the meaning of verifier-gated knowledge, and the conditions under which certified knowledge may be transported to a successor without identifying successor and predecessor. The formalism distinguishes an enduring certified subject from its time-indexed state and separates state continuity, knowledge continuity, provenance continuity, and identity continuity. The handoff theory is stated for a general certified subject and then specialized to AMLDs and Omnicartographers. A handoff may preserve selected state, knowledge, and provenance while deliberately breaking identity continuity. The resulting theorems are restricted to hazards whose trigger essentially requires one certified identity to occupy both a historical and a later active role. No claim is made that handoff resolves identity-insensitive diagonal, liar-like, prediction-based, L\&quot;obian, or content-sensitive paradoxes. The construction is formal and architectural; it makes no phenomenological or consciousness claim.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Source basis and scope}
+
+This note is based on two project manuscripts in the author&#x27;s research archive:
+\begin{enumerate}[label=(\roman*)]
+\item \emph{The Self Aware Machine}, a living manuscript on formal reflection, epistemic self-awareness, AMLDs, Dreamer, oracles, verifier-gated knowledge, and DATA MIND; and
+\item \emph{Omnicartographers 001: Pioneer AMLDs, one-step geodesic advice, and the Handoff Theorem}.
+\end{enumerate}
+The first manuscript separates formal self-awareness from epistemic knowledge and proposes verifier-gated semantics for an AMLD-level knowledge expression. The second introduces a handoff in which a successor may inherit useful informational state while remaining a distinct certified identity from the subject that made an earlier disclosure.
+
+The present note combines only those strands. Its theorems are conditional on declared certification, soundness, transport, identity, and activation hypotheses. In particular, the handoff result applies only when a forbidden condition has an essential identity- or provenance-local component. It does not claim that copying, succession, or renaming by itself neutralizes every form of self-reference.
+
+\section{Typed subjects, states, and AMLDs}
+
+The symbol for an epistemic subject must not float ambiguously among ``program,&#x27;&#x27; ``proof,&#x27;&#x27; ``formula,&#x27;&#x27; ``ATP,&#x27;&#x27; ``AMLD,&#x27;&#x27; and a time-specific machine snapshot. We therefore distinguish an enduring certified subject from its state at an epoch.
+
+\begin{definition}[Certified subject]
+Fix a formal and computational environment $\mathcal E$. A \emph{certified subject} $X$ is an enduring metatheoretic object equipped with a certified identity token $\iota_X$ and a family of finite typed states
+\[
+\Sigma_X(t), \qquad t\in T,
+\]
+where $T$ is the relevant epoch set. The token $\iota_X$ identifies the certified execution lineage member; it is not itself a proposition of the object theory. Equality of identity tokens is equality in the declared certified identity service. Subject to that service&#x27;s non-aliasing policy, equal tokens denote the same certified identity coordinate.
+\end{definition}
+
+\begin{definition}[Certified subject state]
+A state of $X$ at epoch $t$ has the schematic form
+\[
+\Sigma_X(t)=\bigl(\iota_X,\,M_X,\,B_X(t),\,\mathcal V_X,\,S_X(t),\,I_X(t),\,\Pi_X(t)\bigr),
+\]
+where:
+\begin{enumerate}[label=(\alph*)]
+\item $\iota_X$ is the certified identity token of the subject;
+\item $M_X$ is a finite role-indexed family of computational or reasoning components, possibly empty for subject types that do not require an AMLD federation;
+\item $B_X(t)$ is the verifier-governed trusted state, BANK state, or other declared certified store at epoch $t$;
+\item $\mathcal V_X$ is the declared verifier regime;
+\item $S_X(t)$ is scheduling/control state;
+\item $I_X(t)$ is certified interface and role-relation state; and
+\item $\Pi_X(t)$ is provenance and audit metadata sufficient for the epistemic and handoff constructions used below.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}[Administrative coordinates versus semantic content]
+The token $\iota_X$ and the canonical code $\langle\Sigma_X(t)\rangle$ are identity and audit coordinates. They are kept separate from intrinsic proof content. Changing an identity coordinate does not change a theorem, proof certificate, or semantic fact. Conversely, preserving mathematical content does not imply preservation of the identity that previously held or disclosed it.
+\end{remark}
+
+\begin{definition}[Provenance and activation predicates]
+For a certified identity token $\iota$, the predicate $\Issued(\iota,d)$ means that the certified provenance layer credits $\iota$ as an issuer of disclosure $d$. The predicate $\Active(\iota,t)$ means that an execution runtime-bound to $\iota$ occupies the relevant active role at epoch $t$. Thus both predicates are typed on certified identity coordinates rather than on mutable state snapshots.
+\end{definition}
+
+\begin{definition}[AMLD subject]
+An AMLD subject $A$ is a certified subject whose state satisfies a frozen, verifier-checkable structural predicate
+\[
+\AMLD\bigl(\langle\Sigma_A(t)\rangle\bigr).
+\]
+The role signature is a parameter of the frozen AMLD specification. For example, one presentation may use roles written schematically as $P,R,I,C,V$, while another may use search channels $P,R,D,I,C$ with verifier governance represented separately by $\mathcal V_A$. A concrete implementation must choose one frozen signature.
+\end{definition}
+
+\begin{definition}[Omnicartographer subject]
+An Omnicartographer or oracle subject $O$ is a certified subject satisfying a declared structural predicate
+\[
+\Oracle\bigl(\langle\Sigma_O(t)\rangle\bigr),
+\]
+which fixes the state and provenance information required for its advisory role. The handoff theorems below apply to $O$ only through the general certified-subject hypotheses; they do not assume that an Omnicartographer is an AMLD.
+\end{definition}
+
+\begin{remark}[Level distinction]
+Neither $X$ nor $\Sigma_X(t)$ is automatically a formula of the object theory. The expression $\langle\Sigma_X(t)\rangle$ denotes a canonical code for a state, while $\AMLD(\langle\Sigma_A(t)\rangle)$ and $\Oracle(\langle\Sigma_O(t)\rangle)$ are propositions about coded states in the declared structural metalanguage.
+\end{remark}
+
+\section{Verifier-gated knowledge}
+
+The symbol $K$ is first defined externally and relationally. Modal-looking notation is secondary.
+
+\begin{definition}[Certified epistemic domain]
+A certified epistemic domain $\mathcal C$ is a declared class of propositions equipped with:
+\begin{enumerate}[label=(\roman*)]
+\item a designated semantic or proof-theoretic satisfaction relation $\Sem$ appropriate to $\mathcal C$;
+\item certificate formats and verifier rules;
+\item provenance requirements; and
+\item accessibility rules for certified records.
+\end{enumerate}
+The meaning of ``sound on $\mathcal C$&#x27;&#x27; is always relative to this declared semantics or proof-theoretic interpretation.
+\end{definition}
+
+\begin{definition}[Accessible epistemic view]
+For a certified subject $X$, let
+\[
+\View_X(t)
+\]
+be the set of records accessible to $X$ for epistemic use at epoch $t$. Accessibility is stronger than physical existence: a record may exist somewhere in the system without belonging to $X$&#x27;s certified epistemic view.
+\end{definition}
+
+\begin{definition}[Verifier-qualified witness]
+For a record $r$ and proposition $\varphi\in\mathcal C$, the relation
+\[
+\Witness_{\mathcal V}(r,\varphi)
+\]
+holds when $r$ identifies $\varphi$, carries or references an admissible certificate for $\varphi$, records acceptance by the declared verifier regime $\mathcal V$, and possesses the scope and provenance required for epistemic use.
+\end{definition}
+
+\begin{definition}[Verifier-gated knowledge relation]
+For a subject $X$, epoch $t$, verifier regime $\mathcal V$, certified domain $\mathcal C$, and proposition $\varphi$, define
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi
+\quad\Longleftrightarrow\quad
+\varphi\in\mathcal C\ \land\ \exists r\in\View_X(t)\;\Witness_{\mathcal V}(r,\varphi).
+\]
+Thus $K$ is primarily a metatheoretic relation among a persistent subject $X$, an epoch $t$, a verifier regime, a certified domain, and a proposition.
+\end{definition}
+
+This is the precise meaning of ``$X$ knows $\varphi$ at time $t$&#x27;&#x27; used here. It is not defined as subjective experience, belief, unrestricted semantic truth, omniscience, or mere string presence in memory.
+
+\begin{definition}[Sound verifier on a certified domain]
+The verifier regime $\mathcal V$ is \emph{sound on $\mathcal C$} when
+\[
+\Witness_{\mathcal V}(r,\varphi)\quad\Longrightarrow\quad \Sem\varphi
+\]
+for every qualifying witness $r$ and every $\varphi\in\mathcal C$.
+\end{definition}
+
+\begin{theorem}[Relative factivity]
+If $\mathcal V$ is sound on $\mathcal C$, then
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi\quad\Longrightarrow\quad \Sem\varphi.
+\]
+\end{theorem}
+\begin{proof}
+By the definition of $K$, choose $r\in\View_X(t)$ with $\Witness_{\mathcal V}(r,\varphi)$. Soundness on $\mathcal C$ yields $\Sem\varphi$.
+\end{proof}
+
+\begin{remark}[No verifier bootstrap]
+A subject&#x27;s structural self-identification does not, by itself, prove the soundness of the verifier used to certify that self-identification. Verifier soundness is a separate metatheoretic assumption or must be certified at a distinct trust layer. This prevents a circular reading of factivity.
+\end{remark}
+
+\begin{definition}[Epistemic representability and closure]
+A domain $\mathcal C$ is \emph{epistemically closed for a specified construction} when the metalanguage can represent the relevant codes for subjects, epochs, views, witnesses, and $K$-statements, and when the particular nested propositions required by that construction belong to $\mathcal C$.
+\end{definition}
+
+Before these representability and closure obligations are discharged, expressions such as $\K{X}{t}{\mathcal V}{\mathcal C}\varphi$ should be read as external relations rather than internal modal formulas.
+
+\section{Self-identification and receipt-based reflection}
+
+For an AMLD subject $A$, the time-indexed structural proposition is
+\[
+E^A_0(t):=\AMLD\bigl(\langle\Sigma_A(t)\rangle\bigr).
+\]
+When $E^A_0(t)\in\mathcal C$ and a qualifying structural certificate is accessible, the first epistemic level is
+\[
+E^A_1(t):=\K{A}{t}{\mathcal V}{\mathcal C}E^A_0(t).
+\]
+A higher level must respect chronology. If at a later epoch $t&#x27;&gt;t$ the architecture constructs a verified receipt whose content is the historical proposition that $A$ had a qualifying witness for $E^A_0(t)$ at $t$, then one may obtain
+\[
+\K{A}{t&#x27;}{\mathcal V}{\mathcal C}\bigl(\K{A}{t}{\mathcal V}{\mathcal C}E^A_0(t)\bigr),
+\]
+provided the inner $K$-statement is representable and belongs to the required certified domain.
+
+\begin{principle}[Receipt-based temporal epistemic reflection]
+Assume epistemic closure for the displayed statement. If
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi
+\]
+and the architecture can construct, verify, deposit, and expose at epoch $t&#x27;&gt;t$ a receipt certifying the earlier qualifying witness, then
+\[
+\K{X}{t&#x27;}{\mathcal V}{\mathcal C}
+\bigl(\K{X}{t}{\mathcal V}{\mathcal C}\varphi\bigr).
+\]
+\end{principle}
+
+This is a temporal, receipt-mediated realization analogous in shape to positive introspection. It is not assumed as an atemporal modal axiom.
+
+\section{Certified handoff}
+
+We now define handoff for general certified subjects. Let $L$ denote the certified lineage history available to the identity service or audit layer.
+
+\begin{definition}[Certified successor relation]
+Let $X$ and $X&#x27;$ be certified subjects. A handoff certificate $h$ records a certified cutover epoch $\tau_h$ and is checked by a declared handoff-verification regime $\mathcal V_H$, which need not be identical to either subject&#x27;s mathematical verifier. Write
+\[
+X\handoff X&#x27;
+\]
+when $h$ is accepted by $\mathcal V_H$ and establishes all applicable clauses below.
+\begin{enumerate}[label=(H\arabic*)]
+\item \textbf{Successor well-formedness.} The certificate identifies a successor activation epoch $t_h^+\geq\tau_h$ and proves that $\Sigma_{X&#x27;}(t_h^+)$ satisfies the declared structural predicate for $X&#x27;$&#x27;s subject type.
+\item \textbf{State transport.} The designated transferable portions of trusted state, epistemic records, maps, and operational state required by the continuation policy are copied or re-instantiated in $X&#x27;$.
+\item \textbf{Verifier/domain compatibility.} Transported records remain interpretable under the successor&#x27;s declared verifier/domain pair, either because the pair is preserved or because a certified translation/validation step is supplied.
+\item \textbf{Verifier continuity for records.} Transported records retain the receipts or references required for continued admissibility.
+\item \textbf{Provenance fidelity.} Historical origin fields are preserved rather than rewritten.
+\item \textbf{Identity separation.} $\iota_{X&#x27;}\neq\iota_X$.
+\item \textbf{Certified freshness/non-aliasing.} The handoff certificate establishes $\Fresh(\iota_{X&#x27;},L)$, meaning that $\iota_{X&#x27;}$ is not an alias or reuse of a predecessor identity prohibited by the lineage policy.
+\item \textbf{Runtime binding.} The active successor execution is certified to be the subject named by $\iota_{X&#x27;}$; schematically $\Bind(X&#x27;,\iota_{X&#x27;})$.
+\item \textbf{Activation discipline.} For every handoff-sensitive role named in the certificate, the predecessor is inactive after the certified cutover epoch. If the role is intended to be exclusive, the exclusivity rule is itself part of the certified policy.
+\end{enumerate}
+\end{definition}
+
+A valid handoff may therefore preserve selected state, knowledge, and provenance while breaking identity continuity.
+
+\begin{example}[Provenance is history, not identity transfer]
+Suppose identity token $\iota_X$ issued a disclosure $d$. A faithful successor may inherit the certified historical record
+\[
+\Issued(\iota_X,d),
+\]
+but transport does not manufacture
+\[
+\Issued(\iota_{X&#x27;},d).
+\]
+The successor receives the history without becoming the historical actor.
+\end{example}
+
+\section{Semantic invariance and witness transport}
+
+Two notions that are often conflated must be separated: whether a proposition keeps the same truth conditions across a handoff, and whether a particular certificate can be transported.
+
+\begin{definition}[Semantic handoff invariance]
+A proposition $\varphi$ is \emph{semantically handoff-invariant} for $X\handoff X&#x27;$ when replacing the active subject by the certified successor does not change the proposition&#x27;s intended referents or truth conditions. In particular, a proposition that explicitly asserts an identity-sensitive fact about $X$ need not be invariant.
+\end{definition}
+
+An arithmetic theorem may be semantically invariant. The statement ``the currently active subject is the subject that issued $d$&#x27;&#x27; is generally not invariant when handoff deliberately changes the active identity.
+
+\begin{definition}[Handoff-transportable witness]
+Assume $X\handoff X&#x27;$. A qualifying witness $r$ for $\varphi$ at epoch $t$ is \emph{handoff-transportable to epoch $t&#x27;$} when $\varphi\in\mathcal C&#x27;$ and the handoff certificate establishes a corresponding record $r&#x27;\in\View_{X&#x27;}(t&#x27;)$ such that
+\[
+\Witness_{\mathcal V}(r,\varphi)
+\quad\Longrightarrow\quad
+\Witness_{\mathcal V&#x27;}(r&#x27;,\varphi),
+\]
+with all provenance fields semantically relevant to $\varphi$ preserved and with any required verifier/domain compatibility certified.
+\end{definition}
+
+\begin{lemma}[Handoff Knowledge Transport]
+Assume
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi,
+\qquad X\handoff X&#x27;,
+\]
+and assume that at least one qualifying witness for $\varphi$ is handoff-transportable to $X&#x27;$ at epoch $t&#x27;$. Then
+\[
+\K{X&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}\varphi,
+\]
+for the successor verifier/domain pair certified by the handoff.
+\end{lemma}
+\begin{proof}
+Choose $r\in\View_X(t)$ with $\Witness_{\mathcal V}(r,\varphi)$. Transportability yields a corresponding $r&#x27;\in\View_{X&#x27;}(t&#x27;)$ satisfying the successor witness predicate for the same proposition. The defining condition for successor knowledge therefore holds.
+\end{proof}
+
+\begin{corollary}[Knowledge continuity without identity continuity]
+Under the hypotheses of the lemma, one may simultaneously have
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi,
+\qquad
+\K{X&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}\varphi,
+\qquad
+\iota_X\neq\iota_{X&#x27;}.
+\]
+Persistence of verifier-gated knowledge therefore does not imply persistence of certified machine identity.
+\end{corollary}
+
+\begin{remark}[Where the substantive implementation work lies]
+The transport lemma is deliberately close to the definitions. Its implementation-level content lies in establishing, from more primitive copy, validation, provenance, and compatibility mechanisms, that a concrete record class is transportable. A system that merely asserts transportability has not yet discharged that engineering or formal-verification obligation.
+\end{remark}
+
+\section{Historical introspection after a handoff}
+
+Suppose
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi.
+\]
+If a receipt for this historical fact is itself representable, certified, preserved, and exposed to the successor, then at a later epoch $t&#x27;$ the successor may establish
+\[
+\K{X&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}
+\bigl(\K{X}{t}{\mathcal V}{\mathcal C}\varphi\bigr).
+\]
+This says that the successor knows a certified fact about what its predecessor knew at a specified epoch.
+
+It does not follow merely by renaming the subject that
+\[
+\K{X&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}
+\bigl(\K{X&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}\varphi\bigr).
+\]
+For the latter statement, $X&#x27;$ must first possess its own qualifying witness for $\varphi$, and then a later reflection step must certify the successor&#x27;s own epistemic state.
+
+\begin{principle}[No subject-index substitution]
+A certified handoff transports certified records according to a transport policy. It does not license
+\[
+K_X\varphi\Longrightarrow K_{X&#x27;}\varphi
+\]
+for arbitrary $\varphi$ by syntactic replacement of the subject name. This caution is mandatory when $\varphi$ itself contains $X$, $X&#x27;$, an issuance predicate, an activity predicate, a provenance predicate, or another identity-sensitive term.
+\end{principle}
+
+\section{Successor self-identification for AMLDs}
+
+Suppose AMLD predecessor $A$ has established at epoch $t$
+\[
+\K{A}{t}{\mathcal V}{\mathcal C}
+\AMLD\bigl(\langle\Sigma_A(t)\rangle\bigr).
+\]
+After a handoff $A\handoff A&#x27;$, the successor may possess a historical certificate supporting
+\[
+\K{A&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}
+\AMLD\bigl(\langle\Sigma_A(t)\rangle\bigr),
+\]
+but this is not the successor&#x27;s own self-identification.
+
+The successor target is instead
+\[
+\K{A&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}
+\AMLD\bigl(\langle\Sigma_{A&#x27;}(t&#x27;)\rangle\bigr).
+\]
+
+\begin{principle}[Successor Self-Identification]
+Assume $A\handoff A&#x27;$ and suppose the successor&#x27;s certified view contains a verifier-qualified structural certificate $c_{A&#x27;,t&#x27;}$ such that
+\[
+c_{A&#x27;,t&#x27;}\in\View_{A&#x27;}(t&#x27;)
+\]
+and
+\[
+\Witness_{\mathcal V&#x27;}\!\left(c_{A&#x27;,t&#x27;},
+\AMLD\bigl(\langle\Sigma_{A&#x27;}(t&#x27;)\rangle\bigr)\right).
+\]
+Then
+\[
+\K{A&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}
+\AMLD\bigl(\langle\Sigma_{A&#x27;}(t&#x27;)\rangle\bigr).
+\]
+\end{principle}
+\begin{proof}
+Immediate from the definition of verifier-gated knowledge, provided the structural proposition belongs to the successor&#x27;s certified epistemic domain.
+\end{proof}
+
+Thus successor-safe formal self-awareness is preserved by \emph{re-identification}, not by identity fiction. The successor need not claim to be its predecessor.
+
+\section{Identity-local hazards and handoff}
+
+The handoff argument addresses a specific class of hazards. The essential feature is not merely that information is copied. The essential feature is that a forbidden condition requires one certified identity to occupy two historically separated roles.
+
+\begin{definition}[Unique certified issuer]
+A disclosure $d$ has unique certified issuer token $\iota_X$ in the relevant provenance domain when
+\[
+\Issued(\iota_X,d)
+\]
+and
+\[
+\forall \iota\;\bigl(\Issued(\iota,d)\Longrightarrow \iota=\iota_X\bigr).
+\]
+Here issuance is a provenance predicate on certified identity tokens, not on mutable machine states.
+\end{definition}
+
+\begin{definition}[Identity-local hazard]
+Let $d$ have a unique certified historical issuer token. A later forbidden condition at epoch $t_1$ is \emph{identity-local with respect to $d$} when the declared hazard model proves the necessary condition
+\[
+F(d,t_1)\;\Longrightarrow\;
+\exists \iota\bigl(\Issued(\iota,d)\land\Active(\iota,t_1)\land Q(\iota,d,t_1)\bigr),
+\]
+where the same certified identity token $\iota$ must satisfy both the historical-issuer and later-active roles. The predicate $Q$ may express additional conditions, but the same-token conjunction is necessary for $F$.
+\end{definition}
+
+\begin{theorem}[Identity-Local Handoff Theorem]
+Suppose $\iota_X$ is the unique certified issuer token of $d$ at epoch $t_0$, and suppose a forbidden condition at $t_1&gt;t_0$ is identity-local with respect to $d$. Assume that a certified handoff $X\handoff X&#x27;$ has cutover epoch $\tau_h$ with $t_0&lt;\tau_h&lt;t_1$ and that:
+\begin{enumerate}[label=(\roman*)]
+\item provenance fidelity preserves $\Issued(\iota_X,d)$ and does not create $\Issued(\iota_{X&#x27;},d)$;
+\item the active-role policy certifies $\Active(\iota_{X&#x27;},t_1)$ and $\neg\Active(\iota_X,t_1)$; and
+\item the unique-issuer certificate remains valid in the provenance domain at $t_1$.
+\end{enumerate}
+Then
+\[
+\neg\exists \iota\bigl(\Issued(\iota,d)\land\Active(\iota,t_1)\land Q(\iota,d,t_1)\bigr),
+\]
+and consequently $\neg F(d,t_1)$ in the declared hazard model.
+\end{theorem}
+\begin{proof}
+Assume for contradiction that some certified token $\iota$ satisfies the displayed issuer/active conjunction. Unique certified provenance gives $\iota=\iota_X$. Hence $\Active(\iota_X,t_1)$, contradicting the certified predecessor-deactivation condition $\neg\Active(\iota_X,t_1)$. Therefore the necessary conjunction is false. Since the hazard model proves $F(d,t_1)$ only if that conjunction holds, modus tollens yields $\neg F(d,t_1)$. The active successor token $\iota_{X&#x27;}$ does not change this conclusion because provenance fidelity does not credit it with issuing $d$.
+\end{proof}
+
+\begin{remark}[Scope boundary]
+The theorem applies only when equality of the certified identity token is the identity notion that is genuinely necessary to the hazard model. It does not apply when the forbidden condition instead depends on physical continuity, causal continuity, copied content, copied memories, the mathematical content of $d$, global history, or any other token-insensitive property. In those cases $X&#x27;$ may inherit precisely the feature that triggers the hazard. Nor does a post-disclosure handoff help when the hazard is already immediate and there is no certified interval in which succession can occur.
+\end{remark}
+
+\begin{remark}[No relabeling loophole]
+The theorem relies on certified freshness, runtime binding, provenance fidelity, and predecessor deactivation. Merely changing a string used as an identity label is insufficient. If $X&#x27;$ is only an alias for the same prohibited active identity, the hypotheses of certified handoff fail.
+\end{remark}
+
+\section{Omnicartographer and self-aware AMLD}
+
+The Omnicartographer architecture casts an oracle subject $O$ as a guide that supplies one-step cartographic information toward a settlement region, while a Pioneer AMLD $A$ performs proof work and a verifier controls admission to trusted state. The types are distinct:
+\[
+\text{oracle information}\neq\text{certified knowledge}\neq\text{machine identity}.
+\]
+
+An Omnicartographer may tell an AMLD where to attempt a next step. The AMLD may receive or inspect that advice. But knowledge in the sense of $K$ arises only when the relevant proposition has a qualifying accessible verifier witness. Likewise, a successor Omnicartographer or successor AMLD may inherit maps and records without inheriting a predecessor identity.
+
+Handoff timing is hazard-relative rather than fixed to a universal four-step sequence. A safe discipline is to disclose and/or act under verification while completing any required handoff before the certified identity-local hazard boundary.
+The verifier governs mathematical certification; handoff governs identity, provenance, and continuity structure. Neither substitutes for the other.
+
+\section{Lineage-aware epistemic towers}
+
+Repeated certified handoffs produce a lineage
+\[
+X_0\handoff X_1\handoff X_2\handoff\cdots.
+\]
+The lineage is not one identity stretched across time. It is a sequence of distinct certified subjects connected by transport certificates.
+
+\begin{definition}[Fresh lineage]
+A handoff lineage is \emph{fresh} when
+\[
+m\neq n\quad\Longrightarrow\quad \iota_{X_m}\neq\iota_{X_n}
+\]
+for every pair of lineage members to which the non-reuse policy applies. This global condition is stronger than adjacent inequality and prevents a later successor from silently reusing an earlier identity token.
+\end{definition}
+
+Two kinds of epistemic nesting should be distinguished.
+
+\subsection{Fixed-subject receipt reflection}
+For a fixed lineage member $X_n$, one may have a time-indexed sequence such as
+\[
+\K{X_n}{t_0}{\mathcal V_n}{\mathcal C_n}\varphi,
+\]
+\[
+\K{X_n}{t_1}{\mathcal V_n}{\mathcal C_n}
+\bigl(\K{X_n}{t_0}{\mathcal V_n}{\mathcal C_n}\varphi\bigr),
+\]
+and so on, with $t_0&lt;t_1&lt;\cdots$, provided each receipt is constructible, verifiable, accessible, and representable in the relevant certified domain.
+
+\subsection{Lineage-history knowledge}
+Across a handoff, one may instead have
+\[
+\K{X_{n+1}}{t&#x27;}{\mathcal V_{n+1}}{\mathcal C_{n+1}}
+\bigl(\K{X_n}{t}{\mathcal V_n}{\mathcal C_n}\varphi\bigr),
+\]
+meaning that the successor knows a certified historical fact about the predecessor&#x27;s epistemic state. This is not interchangeable with the successor knowing that it itself knew $\varphi$ at the earlier epoch.
+
+\begin{definition}[Self-aware AMLD lineage]
+A self-aware AMLD lineage is a fresh sequence $(A_n)_{n\in I}$ with certified successor relations $A_n\handoff A_{n+1}$ such that each successor can establish, at an appropriate epoch $t_n$, its own structural self-identification
+\[
+\K{A_n}{t_n}{\mathcal V_n}{\mathcal C_n}
+\AMLD\bigl(\langle\Sigma_{A_n}(t_n)\rangle\bigr),
+\]
+while provenance-preserving transport allows selected historical and mathematical knowledge to persist across the lineage.
+\end{definition}
+
+Successor-safe self-awareness therefore need not be identity-invariant.
+
+\section{Positive and negative introspection}
+
+The Self Aware Machine program considers restricted realizations of factivity and introspection on certified domains. The corrected formulation keeps subject and epoch indices semantically active.
+
+For receipt-based positive reflection without a handoff,
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi
+\Longrightarrow
+\K{X}{t&#x27;}{\mathcal V}{\mathcal C}
+\bigl(\K{X}{t}{\mathcal V}{\mathcal C}\varphi\bigr),
+\qquad t&#x27;&gt;t,
+\]
+only when the receipt and closure hypotheses are satisfied.
+
+If a handoff occurs between those epochs, the directly inherited historical form is instead
+\[
+\K{X}{t}{\mathcal V}{\mathcal C}\varphi
+\Longrightarrow
+\K{X&#x27;}{t&#x27;}{\mathcal V&#x27;}{\mathcal C&#x27;}
+\bigl(\K{X}{t}{\mathcal V}{\mathcal C}\varphi\bigr),
+\]
+again only under certified receipt transport and representability. If $X&#x27;$ separately acquires its own witness for $\varphi$, a later receipt may support a statement about $X&#x27;$&#x27;s own knowledge.
+
+Negative introspection requires stronger closure conditions.
+
+\begin{definition}[Certified absence of a qualifying witness]
+A record $n_{X,t,\varphi}$ is a \emph{certified absence record} when it certifies, relative to a frozen epistemic snapshot $\View_X(t)$, that:
+\begin{enumerate}[label=(\alph*)]
+\item the relevant view is closed or exhaustively enumerable for the claim;
+\item qualification by $\Witness_{\mathcal V}(-,\varphi)$ is decidable or otherwise exhaustively checkable on that view; and
+\item no record in the frozen view qualifies as a witness for $\varphi$.
+\end{enumerate}
+\end{definition}
+
+\begin{principle}[Certified negative reflection]
+Let $\mathsf{NoK}(X,t,\varphi)$ denote the internal proposition represented by a valid certified absence record for the frozen snapshot $\View_X(t)$. If $\mathsf{NoK}(X,t,\varphi)\in\mathcal C$, the absence record is accessible at a later epoch $t&#x27;&gt;t$, and the relevant representability conditions are satisfied, then
+\[
+\K{X}{t&#x27;}{\mathcal V}{\mathcal C}\mathsf{NoK}(X,t,\varphi).
+\]
+This is a certified historical statement about the closed snapshot at $t$; it is not an unrestricted modal axiom $\neg K\varphi\to K\neg K\varphi$.
+\end{principle}
+
+Only under such a condition may ``no qualifying witness exists in $X$&#x27;s certified view at $t$&#x27;&#x27; be promoted from failure to find a witness into a certified historical epistemic statement. Even then, it does not imply that successor $X&#x27;$ lacks a witness after transport, because the successor&#x27;s certified view may differ.
+
+\section{Implementation obligations}
+
+The mathematical notation hides obligations that a concrete AMLD or Omnicartographer implementation must discharge.
+\begin{enumerate}[label=(O\arabic*)]
+\item \textbf{Frozen structural signatures.} Specify the finite data required for each subject type used by the theory.
+\item \textbf{Persistent-subject/state separation.} Implement the distinction between enduring subject $X$ and state $\Sigma_X(t)$.
+\item \textbf{Canonical coding.} Provide stable codes for the structural states whose properties are asserted.
+\item \textbf{Epistemic view.} Implement or formalize $\View_X(t)$ and make its accessibility rule auditable.
+\item \textbf{Witness predicate.} Make $\Witness_{\mathcal V}(r,\varphi)$ representable/checkable for the declared domain.
+\item \textbf{Semantic or proof-theoretic soundness target.} State exactly what $\Sem\varphi$ means and what soundness guarantee the verifier satisfies.
+\item \textbf{Epistemic closure.} Identify which nested $K$-statements are representable and belong to the certified domain.
+\item \textbf{Receipt reflection.} Construct and verify meta-records witnessing historical knowledge facts.
+\item \textbf{Successor certificate.} Define the exact record $h$ proving $X\handoff X&#x27;$ and the handoff-verification regime $\mathcal V_H$ that accepts it.
+\item \textbf{Verifier/domain compatibility.} Certify preservation or translation when verifier/domain pairs differ across handoff.
+\item \textbf{Provenance preservation.} Copy historical origin fields without rewriting the issuer identity.
+\item \textbf{Transport policy.} Specify which records and proposition classes have transportable witnesses.
+\item \textbf{Identity freshness and non-aliasing.} Establish a policy and certificate preventing forbidden token reuse or mere relabeling.
+\item \textbf{Runtime binding.} Establish that the active successor execution is the subject named by its certified identity token.
+\item \textbf{Activation exclusivity/deactivation.} When a theorem requires $\neg\Active(\iota_X,t)$, certify actual predecessor-identity deactivation rather than infer it from successor activation.
+\item \textbf{Unique provenance when required.} For identity-local hazard theorems, certify the uniqueness assumptions on historical issuers.
+\item \textbf{Negative-introspection closure.} For absence claims, freeze the relevant view and certify exhaustive witness checking.
+\item \textbf{Hazard predicate.} Formalize each forbidden condition and prove that the same-identity issuer/active conjunction is genuinely necessary to its trigger.
+\item \textbf{Identity adequacy.} Prove, for each application of the Identity-Local Handoff Theorem, that equality of the certified identity token is the identity relation on which the hazard actually depends. If the hazard instead tracks physical, causal, memory, or content continuity, the theorem is not applicable merely by relabeling that continuity as token identity.
+\end{enumerate}
+These obligations separate a genuine theorem about an implemented epistemic architecture from a suggestive relabeling of symbols.
+
+\section{Main conclusions}
+
+Under the explicitly stated hypotheses, the corrected architecture supports the following conclusions.
+
+\begin{enumerate}[label=\textbf{C\arabic*.}]
+\item The epistemic subject is a persistent certified subject $X$ with time-indexed state $\Sigma_X(t)$; an AMLD is a specialized subject type rather than the universal type of every handoff-capable oracle.
+\item $\K{X}{t}{\mathcal V}{\mathcal C}\varphi$ is primarily a verifier-gated metatheoretic relation defined through an accessible qualifying witness.
+\item Relative factivity is conditional on a separately declared verifier soundness relation for the certified domain; structural self-identification does not bootstrap verifier soundness.
+\item A certified handoff can preserve selected knowledge while changing the active certified identity, provided verifier/domain compatibility, provenance, transportability, runtime binding, and identity freshness are certified.
+\item Semantic handoff invariance of a proposition and transportability of a witness are distinct notions.
+\item A successor may know that its predecessor knew something without that historical statement becoming present self-introspection by subject renaming.
+\item An AMLD successor&#x27;s statement ``I know that I am an AMLD&#x27;&#x27; must be grounded in a certificate for its own current state $\Sigma_{A&#x27;}(t&#x27;)$.
+\item The Identity-Local Handoff Theorem blocks the necessary same-identity issuer/active conjunction only under explicit unique-provenance and predecessor-deactivation hypotheses and only when certified-token identity is adequate for the hazard being modeled. It does not eliminate token-insensitive hazards.
+\item Repeated handoffs naturally produce a lineage-aware epistemic theory in which knowledge continuity, provenance continuity, state continuity, and identity continuity are tracked separately, with a global non-reuse policy when identity freshness matters.
+\item Positive introspection in this architecture is best understood as receipt-based temporal epistemic reflection; negative introspection additionally requires a certified closed snapshot and exhaustive absence check.
+\end{enumerate}
+
+The resulting research target is sharper than the informal sentence ``I know that I know that I am an AMLD.&#x27;&#x27; One must ask:
+\begin{quote}
+Which proposition is certified, by which persistent subject, about which time-indexed state, at which epoch, under which verifier and certified domain, through which accessible witness, with which provenance, and what exactly is preserved or deliberately broken by a handoff?
+\end{quote}
+That formulation keeps formal reflection, verifier-gated knowledge, proof content, provenance, and certified machine identity distinct while still allowing them to interact in one architecture.
+
+\section*{Status note}
+This is a research-development note based on the author&#x27;s existing Self Aware Machine and Omnicartographer manuscripts. The stated theorems are conditional on their definitions and certification hypotheses. Several implementation obligations remain to be discharged by a concrete system. No claim of phenomenological consciousness is made.
+
+\end{document}
+</pre></main></body></html>
