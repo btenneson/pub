@@ -1,0 +1,188 @@
+name: Remove editorial audit language from latest two publications
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/remove_editorial_audit_language_latest_two.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clean-publication-language:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LaTeX and PDF verification tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install pymupdf==1.26.4
+
+      - name: Remove editorial-process language from public TeX and catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          sam = Path('docs/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/source.tex')
+          s = sam.read_text()
+          replacements = {
+              'provenance and audit metadata': 'provenance and trace metadata',
+              'identity and audit coordinates': 'identity and trace coordinates',
+              'identity service or audit layer': 'identity service or verification layer',
+              'make its accessibility rule auditable': 'make its accessibility rule inspectable',
+          }
+          for a,b in replacements.items():
+              s = s.replace(a,b)
+          assert 'audit' not in s.lower(), 'Self Aware Machine still contains audit language'
+          sam.write_text(s)
+
+          ush = Path('docs/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/source.tex')
+          s = ush.read_text()
+          replacements = {
+              'cited post-audit edition': 'cited edition',
+              r'\section{Limitations and audit boundaries}': r'\section{Limitations and scope boundaries}',
+              'Revised Mathematical Audit Edition': 'Revised Mathematical Edition',
+              'Consolidated Post-Audit Edition': 'Consolidated Edition',
+              'Post-Audit Revised Edition': 'Revised Edition',
+              'Post-Audit Consolidated Synthesis 004': 'Consolidated Synthesis 004',
+              'Audited Corrected Edition': 'Corrected Edition',
+          }
+          for a,b in replacements.items():
+              s = s.replace(a,b)
+          assert 'audit' not in s.lower(), 'Universal Settlement Horizons still contains audit language'
+          ush.write_text(s)
+
+          cat = Path('scripts/publications.json')
+          data = json.loads(cat.read_text())
+          byid = {x.get('id'): x for x in data['items']}
+
+          x = byid['cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff']
+          x['card_text'] = x['card_text'].replace('Post-audit Atlas revision', 'Atlas revision')
+          x['status'] = x['status'].replace('POST-AUDIT ATLAS REVISION', 'ATLAS REVISION')
+          x['classification_note'] = x['classification_note'].replace('Post-Audit Atlas Revision', 'Atlas Revision')
+
+          x = byid['cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002']
+          for k in ('card_text','status','classification_note'):
+              if k in x and isinstance(x[k], str):
+                  x[k] = (x[k]
+                      .replace('Post-Audit', '')
+                      .replace('post-audit', '')
+                      .replace('Audited', '')
+                      .replace('audited', ''))
+                  x[k] = ' '.join(x[k].split())
+
+          for pid in (
+              'cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff',
+              'cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002',
+          ):
+              x = byid[pid]
+              public_text = ' '.join(str(x.get(k,'')) for k in ('card_text','status','classification_note'))
+              assert 'audit' not in public_text.lower(), (pid, public_text)
+
+          cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+          PY
+
+      - name: Recompile both PDFs from cleaned TeX
+        shell: bash
+        run: |
+          set -euo pipefail
+          build_one () {
+            src="$1"; rootpdf="$2"; docspdf="$3"; work="$4"
+            mkdir -p "$work"
+            cp "$src" "$work/source.tex"
+            (
+              cd "$work"
+              for i in 1 2 3; do
+                pdflatex -interaction=nonstopmode -halt-on-error source.tex
+              done
+            )
+            test -s "$work/source.pdf"
+            cp "$work/source.pdf" "$rootpdf"
+            cp "$work/source.pdf" "$docspdf"
+          }
+
+          build_one             docs/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/source.tex             cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/Self_Aware_Machine_Epistemic_Handoff_Atlas_Revision.pdf             docs/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/Self_Aware_Machine_Epistemic_Handoff_Atlas_Revision.pdf             .build/clean_sam
+
+          build_one             docs/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/source.tex             cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/Universal_Settlement_Horizons_002_Corrected.pdf             docs/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/Universal_Settlement_Horizons_002_Corrected.pdf             .build/clean_ush
+
+      - name: Verify public PDFs contain no editorial audit language
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import fitz
+          from pathlib import Path
+          pdfs = [
+            Path('docs/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/Self_Aware_Machine_Epistemic_Handoff_Atlas_Revision.pdf'),
+            Path('docs/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/Universal_Settlement_Horizons_002_Corrected.pdf'),
+          ]
+          for p in pdfs:
+              d = fitz.open(p)
+              assert len(d) > 0
+              text = '\n'.join(page.get_text() for page in d)
+              assert all(page.get_text().strip() for page in d), f'Empty page in {p}'
+              assert 'audit' not in text.lower(), f'Audit language remains in {p}'
+              print('PASS', p, len(d), 'pages')
+          PY
+
+      - name: Refresh catalog hashes and generated site
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, fitz
+          cat = Path('scripts/publications.json')
+          data = json.loads(cat.read_text())
+          for x in data['items']:
+              pid = x.get('id')
+              if pid not in {
+                  'cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff',
+                  'cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002',
+              }:
+                  continue
+              p = Path(x['pdf'])
+              x['sha256'] = hashlib.sha256(p.read_bytes()).hexdigest()
+              x['pages'] = len(fitz.open(p))
+          cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+          PY
+          python scripts/build_publications_106.py
+
+      - name: Verify generated cards and source pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          paths = [
+            Path('docs/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/index.html'),
+            Path('docs/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/source.html'),
+            Path('docs/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/index.html'),
+            Path('docs/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/source.html'),
+          ]
+          for p in paths:
+              assert p.is_file(), p
+              assert 'audit' not in p.read_text().lower(), f'Audit language remains in {p}'
+          print('PASS: cards, TeX/source pages, and PDFs are clean.')
+          PY
+
+      - name: Commit cleaned publications
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Remove editorial process language from latest two publications [skip ci]'
+            git push
+          fi
