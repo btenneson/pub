@@ -1,0 +1,744 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Automated Metalogical Deciders II — Decision Geometry, Verified BANK Compression, and Five-Role Cooperative Settlement Theory — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/automated_metalogical_deciders_ii_decision_geometry_002/">Back to publication</a><h1>Automated Metalogical Deciders II — Decision Geometry, Verified BANK Compression, and Five-Role Cooperative Settlement Theory</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/automated_metalogical_deciders_ii_decision_geometry_002/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=0.88in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,longtable}
+\usepackage{enumitem}
+\usepackage{xurl}
+\usepackage[hidelinks,bookmarksopen=true]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist{leftmargin=2em,itemsep=0.2em,topsep=0.3em}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Automated Metalogical Deciders II}
+\rhead{Brian Tenneson}
+\cfoot{\thepage}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{caution}[definition]{Caution}
+\newtheorem{hypothesis}[definition]{Research Hypothesis}
+
+\newcommand{\BANK}{\ensuremath{\mathrm{BANK}}}
+\newcommand{\Dep}{\operatorname{Dep}}
+\newcommand{\Ind}{\operatorname{Ind}}
+\newcommand{\Inc}{\operatorname{Inc}}
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\Reg}{\operatorname{Regret}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\UNSAT}{\mathrm{UNSAT}}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Pow}{\mathcal P}
+
+\hypersetup{
+ pdftitle={Automated Metalogical Deciders II: Decision Geometry, Verified BANK Compression, and Five-Role Cooperative Settlement Theory},
+ pdfauthor={Brian Tenneson},
+ pdfsubject={Five-role automated metalogical deciders, decision boundaries, verified BANK compression, settlement horizons, trading, and SAT specialization},
+ pdfkeywords={automated theorem proving, automated metalogical decider, AMLD, proof horizon, settlement horizon, proof DAG, lemma bank, decision frontier, SAT, proof complexity}
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries Automated Metalogical Deciders II}\\[0.35em]
+{\Large Decision Geometry, Verified BANK Compression,\\and Five-Role Cooperative Settlement Theory}\\[0.45em]
+{\large Minimal Bridge Cores, Cross-Channel Cooperation, Trading Invariance, and SAT Specialization}\\[0.85em]
+{\large Brian Tenneson}\\[0.25em]
+{\normalsize M.A. Mathematics; M.S. Applied Data Science}\\[0.2em]
+{\normalsize September 18, 2026}\\[0.65em]
+{\small Research synthesis, formalization, and manuscript development assisted by OpenAI&#x27;s ChatGPT.}
+\end{center}
+
+\begin{abstract}
+This paper develops a five-role theory of automated metalogical settlement. Building on the author&#x27;s Version 48 AMLD formalism, an automated metalogical decider is treated as a verifier-governed federation of five ATP/certifier channels $P,R,D,I,C$ sharing a typed conservative \BANK. The channels seek, respectively, proof, refutation, dependence, independence, and contradiction certificates. The Universal Proof-Horizon Operator supplies the minimum-cost proof template, while Universal Settlement Horizons extends that template to tagged finite settlement certificates.
+
+The main development concerns what becomes possible only after the five-role architecture and its shared verified memory are taken seriously. Dependence is upward monotone under genuine theory extension and independence is downward monotone. The resulting one-dimensional decision frontier is generalized to a finite decision geometry over candidate theory-strengthening packages: deciding packages form an upset, nondeciding packages form a downset, and inclusion-minimal deciding packages form an antichain. A deletion procedure extracts an inclusion-minimal bridge core from any finite deciding package. Conservative verified BANK deposits are kept conceptually separate: because they preserve deductive closure, they cannot move a target across the decision boundary, although they may shorten its proof or settlement horizon. Contradiction search adds a second monotone boundary, separating genuine decision from decision caused by inconsistency.
+
+The paper then formalizes \BANK\ as a proof-DAG compressor. If search is performed directly on a verified quotient DAG with only polynomially many distinct states and processed quotient transitions, and per-state/per-transition generation, verification, canonicalization, indexing, and retrieval are polynomially bounded, the quotient-processing component is polynomial even when the corresponding unfolded tree is exponential. An exact diamond family gives a $2^{n+2}-3$ versus $1+3n$ formula-node separation and a $3(2^n-1)$ versus $3n$ rule-application separation between a forgetful tree certificate and a banked DAG certificate. Five-channel cooperation is quantified by a cross-channel breakthrough matrix measuring how a lemma discovered by one role shortens another role&#x27;s intrinsic horizon.
+
+Finally, consequence-preserving trading is separated from settlement status: equivalent presentations preserve proof/refutation dependence status while potentially changing settlement geometry. ATLAS-style forward/backward obligation search, verifier-gated external guidance, certified lower/upper difficulty bounds, and settlement regret are integrated into the same framework. Finite propositional SAT is used as a specialization test: in a complete propositional setting the general AMLD correctly collapses to verified $P/R$ search with reusable clause-like BANK records, showing that the five-role theory adds metalogical machinery only where the problem class requires it.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Orientation: from an older nested machine to AMLD-5}
+
+Earlier AMLD manuscripts treated independence through an outer proof/refutation machine that could invoke a nested metalogical decider. That architecture was useful historically, but it is no longer the cleanest formal object. Version 48 of \emph{Depths of Induction} gives a direct five-role architecture with typed verifier-governed shared memory: $P$ searches for a proof of the target, $R$ for a designated refutation target, $D$ for dependence, $I$ for independence, and $C$ for contradiction. The present paper takes that architecture as foundational rather than reproducing the older nested construction \cite{depths48}.
+
+The shift matters. The prover is not merely accompanied by four labels. Each role may be implemented by a substantial ATP or certifier, every role may contribute verifier-accepted records to shared memory, and the logical value of a deposit is independent of the role that discovered it. This makes it possible to study cross-role breakthroughs, proof-DAG reuse, route-specific settlement geometry, and decision boundaries in a way that the older architecture could not express naturally.
+
+The intended slogan is:
+\[
+\boxed{\text{one conjecture, five certificate routes, one verifier-governed memory}.}
+\]
+
+The theory developed below is deliberately conditional where it must be. In particular, no timeout or failed search is an independence certificate; $D$ and $I$ require declared metatheories and sound certificate interfaces; a larger \BANK\ need not make a heuristic implementation faster; and no theorem below claims that arbitrary mathematical independence questions are decidable.
+
+\section{Formal setting: five ATP/certifier channels and typed BANK}
+
+Fix an object-level formal system $F$, a verifier-trusted initial premise set $B_0$, a target $T$, a designated refutation target $T^-$, and a contradiction target $\bot$. Fix also a declared metatheory $F^{\rm meta}$ capable of expressing the proof-theoretic claims used by the $D$ and $I$ channels. Whenever the words \emph{refutes}, \emph{decides}, or \emph{independent} are used below, assume that $T^-$ is an adequate formal refutation target for $T$ in the declared object theory; in an ordinary logic with negation one may take $T^-=\neg T$.
+
+Write $B\vdash_F\varphi$ for derivability in $F$. Define
+\[
+\Dep_{F,B}(T)\iff (B\vdash_F T)\vee(B\vdash_F T^-),
+\]
+\[
+\Ind_{F,B}(T)\iff (B\nvdash_F T)\wedge(B\nvdash_F T^-),
+\]
+and
+\[
+\Inc_F(B)\iff B\vdash_F\bot.
+\]
+
+\begin{definition}[AMLD-5]
+An automated metalogical decider for $(F,F^{\rm meta},B_0,T,T^-,\bot)$ is a coordinated architecture
+\[
+\mathcal A=(P,R,D,I,C;\BANK,V_F,V_{\rm meta},\pi),
+\]
+where $P,R,C$ are ATP channels over $F$, $D,I$ are ATP/certifier channels over $F^{\rm meta}$, and $\pi$ is a control policy or fair scheduling discipline. The roles seek verifier-certified records of the forms
+\[
+\begin{array}{ccl}
+P&amp;:&amp;B\vdash_F T,\\
+R&amp;:&amp;B\vdash_F T^-,\\
+D&amp;:&amp;\Dep_{F,B}(T),\\
+I&amp;:&amp;\Ind_{F,B}(T),\\
+C&amp;:&amp;\Inc_F(B).
+\end{array}
+\]
+The object-level and metatheoretic components of \BANK\ are type-distinct. A metatheorem about provability is not silently importable as an object-level axiom.
+\end{definition}
+
+\begin{remark}[Dependence is not a fifth truth value]
+A $P$- or $R$-certificate already witnesses dependence. The $D$ channel is useful because a metatheoretic certificate of dependence may exist before the corresponding object-level proof is exposed, or because dependence itself is the research target.
+\end{remark}
+
+\begin{remark}[No independence from silence]
+Failure of $P$ and $R$, finite budget exhaustion, or long runtime never establishes $I$. Independence requires a positive certificate accepted by the declared metaverifier.
+\end{remark}
+
+\begin{remark}[When AMLD-5 is literally five ATPs]
+The formalism allows $D$ and $I$ to be ATP/certifier channels because their certificate languages are metatheoretic and may require specialized checkers. When $D$ and $I$ are implemented as theorem provers that fairly search recursively enumerable certificate spaces in $F^{\rm meta}$, AMLD-5 is literally a federation of five ATPs. The more general theory below requires only five verifier-governed search roles, not that every role use the same proving engine.
+\end{remark}
+
+\begin{definition}[Conservative verified deposit]
+An object-level formula $L$ may enter the trusted object \BANK\ at stage $k$ only if $V_F$ accepts a certificate establishing $B_k\vdash_F L$. The update is
+\[
+B_{k+1}=B_k\cup\{L\}.
+\]
+The originating role may be any of $P,R,D,I,C$ provided the deposited object-level record has the required object-level certificate.
+\end{definition}
+
+The conservative-deposit principle gives the central invariant inherited from Version 48.
+
+\begin{theorem}[Conservative BANK invariance]
+If every accepted object-level deposit is derivable from the immediately preceding object \BANK, then for every stage $k$,
+\[
+\Con_F(B_k)=\Con_F(B_0).
+\]
+Hence adding verified lemmas changes available presentation and search geometry without changing the deductive closure of the frozen object theory.
+\end{theorem}
+
+\begin{proof}
+Induct over accepted deposits. If $L$ is derivable from $B_k$ and $B_k\subseteq\Con_F(B_0)$, then $L\in\Con_F(B_0)$ by monotonicity and idempotence of deductive closure. Conversely $B_0\subseteq B_k$, so $\Con_F(B_0)\subseteq\Con_F(B_k)$. Thus the closures agree at every stage.
+\end{proof}
+
+\begin{corollary}[Channel-independent invariant transfer]
+Any object-level invariant preserved by the primitive inference rules is preserved by verified \BANK\ deposits independently of which role discovered the deposited lemma. In particular, a lemma discovered during an unsuccessful $R$, $D$, $I$, or $C$ search may later be used by $P$ whenever its certificate and scope permit that reuse.
+\end{corollary}
+
+\section{From universal proof horizons to universal settlement horizons}
+
+The Universal Proof-Horizon Operator isolates a classical positive computability fact: for a fixed effectively presented proof system and a total computable proof-cost function with effectively finite sublevel sets, cost-ordered search can return a canonical minimum-cost proof whenever one exists; on non-theorems it may diverge \cite{uph}. Universal Settlement Horizons extends the same architecture from one proof target to finite typed AMLD settlement histories \cite{ush}.
+
+The following formulation packages the idea directly for AMLD-5.
+
+\begin{definition}[Route certificate spaces]
+For each $J\in\{P,R,D,I,C\}$ let $\mathcal C_J(T)$ be the set of finite strings accepted by the corresponding sound verifier as $J$-certificates for target $T$. Let $c(J,p)\in\N$ be a total computable cost. Assume every sublevel set
+\[
+\{(J,p):c(J,p)\le b\}
+\]
+is finite and effectively listable.
+\end{definition}
+
+\begin{theorem}[Universal AMLD settlement operator]
+Under the preceding effectiveness assumptions there is a partial computable operator $\mathsf{USO}$ such that, whenever
+\[
+\bigcup_{J\in\{P,R,D,I,C\}}\mathcal C_J(T)\ne\varnothing,
+\]
+$\mathsf{USO}(T)$ returns a canonical minimum-cost accepted tagged settlement certificate. If no accepted finite settlement certificate exists, the operator may diverge.
+\end{theorem}
+
+\begin{proof}
+Enumerate tagged candidate certificates in nondecreasing cost order, using a fixed computable tie-breaking order. Effective properness makes each cost layer finite. Run the appropriate total verifier on every candidate in that order. The first accepted candidate has minimum cost; deterministic tie-breaking makes the output canonical. If no candidate is accepted, the search never terminates.
+\end{proof}
+
+\begin{definition}[Route, first-settlement, and oriented-status horizons]
+When the relevant certificate language and cost are fixed, define
+\[
+h_J(B,T)=\min\{c(J,p):p\in\mathcal C_J(B,T)\},
+\]
+with $h_J=\infty$ if no finite $J$-certificate exists. Define the intrinsic \emph{first-settlement-information horizon}
+\[
+H_{\rm first}(B,T)=\min_{J\in\{P,R,D,I,C\}}h_J(B,T).
+\]
+A bare $D$-certificate establishes that the theory decides $T$ but need not identify which object-level side is derivable. Accordingly define the \emph{oriented-status horizon}
+\[
+H_{\rm orient}(B,T)=\min\{h_P(B,T),h_R(B,T),h_I(B,T)\},
+\]
+while a $C$-certificate is recorded separately as an inconsistency settlement of the environment. If a $D$-certificate itself contains or points to an accepted $P$- or $R$-witness, its cost may also be accounted for through that oriented route.
+\end{definition}
+
+This separates intrinsic settlement difficulty from the path realized by a particular controller and prevents a dependence-only certificate from being mistaken for an oriented proof/refutation answer. It also yields a geometric view. If proof states form a directed cost space and each certificate class has a target region $C_J$, then
+\[
+H_{\rm first}(x)=d\!\left(x,\bigcup_J C_J\right)=\min_J d(x,C_J).
+\]
+The regions where a fixed $J$ attains the minimum act as directed, target-conditioned analogues of Voronoi cells. These \emph{settlement regions} need not be disjoint because distinct settlement classes can tie or logically overlap.
+
+\section{MAIN THEOREM 1: decision frontiers and decision boundaries}
+
+The oldest useful result in Part Two becomes much stronger in the modern framework.
+
+\begin{theorem}[Theory-strength monotonicity]
+Let $G\subseteq H$ be theories in the same monotone proof calculus and let $T$ be a common-language target. Then
+\[
+\Dep_G(T)\Rightarrow\Dep_H(T),
+\qquad
+\Ind_H(T)\Rightarrow\Ind_G(T).
+\]
+\end{theorem}
+
+\begin{proof}
+Any $G$-proof remains an $H$-proof because $H$ contains all premises of $G$. Therefore a proof of $T$ or $T^-$ over $G$ remains such a proof over $H$. The independence statement is the contrapositive applied to both proof directions.
+\end{proof}
+
+\begin{corollary}[One-dimensional decision frontier]
+For a finite chain
+\[
+G_0\subseteq G_1\subseteq\cdots\subseteq G_m,
+\]
+the dependence indicator has the form
+\[
+0,\ldots,0,1,\ldots,1.
+\]
+Thus there is at most one independence-to-dependence transition.
+\end{corollary}
+
+If every dependence query in the chain can itself be conclusively certificate-settled, binary search locates the first deciding level with $O(\log m)$ AMLD calls. The number of calls does not bound the internal cost of those calls; the hardest metatheoretic query may still dominate.
+
+The chain, however, artificially assumes that mathematical prerequisites arrive in one fixed order. ATLAS mode suggests replacing it by a finite family of optional \emph{theory-strengthening} packages. These packages are additions to the formal environment, not conservative BANK lemmas already derivable from the current theory.
+
+\begin{definition}[Finite decision cube]
+Fix a base theory $G$ and a finite family of admissible theory-strengthening packages
+\[
+A=\{a_1,\ldots,a_n\}.
+\]
+For $S\subseteq A$, let $G_S=G\cup\bigcup_{a\in S}a$, where each $a$ denotes an explicitly declared finite package of additional axioms or assumptions. Conservative derived lemmas of $G$ are not counted as theory-strengthening packages. Define
+\[
+D_T(S)=1\iff \Dep_{G_S}(T).
+\]
+The partial order is set inclusion on $\Pow(A)$.
+\end{definition}
+
+\begin{theorem}[MAIN THEOREM 1: Decision Boundary Theorem]
+For the finite decision cube of a monotone proof calculus:
+\begin{enumerate}[label=(\roman*)]
+\item the deciding region $\mathcal D_T=\{S:D_T(S)=1\}$ is an upset;
+\item the nondeciding region $\mathcal N_T=\{S:D_T(S)=0\}$ is a downset;
+\item the inclusion-minimal deciding packages form an antichain;
+\item every deciding package contains at least one inclusion-minimal deciding package.
+\end{enumerate}
+The one-dimensional decision frontier is the restriction of this boundary to a chain in $\Pow(A)$.
+\end{theorem}
+
+\begin{proof}
+If $S\subseteq S&#x27;$ and $S$ decides $T$, theory-strength monotonicity implies $S&#x27;$ decides $T$, proving (i). Taking complements in the finite poset gives (ii). Two distinct inclusion-minimal deciding packages cannot contain one another, proving (iii). For (iv), repeatedly delete elements from any finite deciding package whenever dependence is preserved; finiteness guarantees termination at a minimal element of the deciding upset.
+\end{proof}
+
+The theorem changes the research question. Instead of asking only ``Can $T$ be proved from $G$?&#x27;&#x27;, one may ask:
+\[
+\boxed{\text{Which minimal packages of additional mathematics make }T\text{ decidable?}}
+\]
+There may be several incomparable answers, corresponding to genuinely different bridge routes.
+
+\begin{remark}[Relation to minimal-set and axiom-pinpointing methods]
+The order-theoretic core of MAIN THEOREM 1 is an instance of the general problem of finding minimal sets satisfying a monotone predicate; QuickXplain and related MSMP methods study this pattern, and axiom-pinpointing work studies minimal axiom subsets responsible for logical consequences \cite{junker,rodler,baader}. The contribution sought here is not novelty of the monotone-set combinatorics itself, but its use as a decision-geometry layer inside the five-role AMLD settlement framework.
+\end{remark}
+
+\begin{definition}[Decision bridge versus horizon bridge]
+A \emph{decision bridge} genuinely strengthens the theory and can move $T$ from the nondeciding region to the deciding region. A \emph{horizon bridge} is a conservative verified BANK deposit or macro that preserves deductive closure but lowers one or more route costs. Thus decision bridges change logical status relative to the base environment; horizon bridges change geometry without changing status.
+\end{definition}
+
+By Conservative BANK invariance, an object-level lemma already derivable from $G$ cannot by itself cross the decision boundary when merely deposited in \BANK. Its value is instead measured by horizon reduction, DAG compression, or controller performance.
+
+\section{MAIN THEOREM 2: extracting minimal bridge cores}
+
+\begin{definition}[Bridge package]
+A finite set $S\subseteq A$ of theory-strengthening packages is a \emph{deciding bridge} for $T$ over $G$ when $G_S$ decides $T$. It is an \emph{inclusion-minimal bridge core} when no proper subset of $S$ decides $T$. This terminology concerns changes of formal environment, not conservative BANK deposits.
+\end{definition}
+
+\begin{theorem}[MAIN THEOREM 2: Minimal Bridge-Core Theorem]
+Assume $S_0$ is a finite deciding bridge. Process its members in any order. When considering $a$, permanently delete $a$ if the current package with $a$ removed still decides $T$; otherwise retain it. After at most $|S_0|$ additional conclusive dependence tests, the final package $S_*$ is an inclusion-minimal deciding bridge.
+\end{theorem}
+
+\begin{proof}
+Every deletion preserves dependence, so the final package still decides $T$. Suppose an element $a$ is retained when considered. At that moment $S\setminus\{a\}$ is nondeciding. All later deletions only weaken that theory. Since nondecision is downward closed, no later subset obtained after removing $a$ can become deciding. Therefore every retained element is necessary in the final package, so $S_*$ is inclusion-minimal.
+\end{proof}
+
+\begin{remark}[Minimal is not minimum-cardinality]
+The deletion procedure finds an inclusion-minimal bridge, not necessarily the bridge having the fewest packages. Finding a globally smallest deciding subset may require exploring multiple incomparable regions of the decision boundary.
+\end{remark}
+
+This theorem suggests an explicit difficult-conjecture workflow:
+\[
+\begin{aligned}
+\text{find a sufficient environment}&amp;\to\text{locate the boundary}\to\text{strip the environment}\\
+&amp;\to\text{study the bridge core}.
+\end{aligned}
+\]
+A bridge core can be mathematically informative even when the original conjecture remains unsolved over the weakest base theory.
+
+\section{The contradiction boundary and consistency-qualified decision}
+
+In an explosive classical theory, inconsistency can make every target and its refutation derivable. Consequently $D$ may report dependence for an uninteresting reason. The $C$ channel is therefore logically relevant to decision geometry rather than merely an emergency lane.
+
+\begin{proposition}[Inconsistency is upward monotone]
+If $G_S\vdash\bot$ and $S\subseteq S&#x27;$, then $G_{S&#x27;}\vdash\bot$.
+\end{proposition}
+
+Thus the inconsistency region in the finite package cube is also an upset. The decision boundary and inconsistency boundary may be studied simultaneously.
+
+\begin{definition}[Proper decision]
+Mathematically, a package $S$ \emph{properly decides} $T$ when $G_S$ decides $T$ and $G_S\nvdash\bot$. Operationally, absence of a $C$-certificate is not enough to certify the second clause; a machine claiming consistency must provide whatever positive consistency or model certificate is required by its declared metatheory.
+\end{definition}
+
+This distinction prevents a common error: ``no contradiction found&#x27;&#x27; is an operational observation, not a proof of consistency.
+
+\section{MAIN THEOREM 3: verified BANK compression}
+
+The shared \BANK\ has two different effects. It can change search by preventing rediscovery of accepted intermediate results, and it can change certificate representation by replacing duplicated subproofs with references to a single verified node. The second effect must be reflected in the verifier; otherwise a nominal DAG certificate can be expanded back into an exponential tree during checking.
+
+\begin{definition}[Canonical BANK key]
+A canonical key for a reusable state may include
+\[
+(\text{logical level},\text{normalized statement},\text{support context},\text{environment hash}).
+\]
+Two occurrences may be merged only when their keys agree and the corresponding certificate has been accepted.
+\end{definition}
+
+\begin{definition}[Unfolded tree and verified quotient DAG]
+Let $\mathcal T$ be an unfolded proof-search tree. Identify nodes having the same admissible canonical key and accepted support. The quotient $\mathcal Q=\mathcal T/{\sim}$ is the verified reuse DAG. Write
+\[
+N=|\mathcal T|,\qquad U=|V(\mathcal Q)|,\qquad E=|E(\mathcal Q)|,
+\]
+where $E$ counts the distinct quotient transitions actually processed by the search protocol.
+\end{definition}
+
+\begin{theorem}[MAIN THEOREM 3: BANK Quotient-Processing Compression]
+Assume the search protocol operates directly on the verified quotient DAG rather than first generating the entire unfolded tree. Assume further that (i) each quotient state is admitted and expanded at most once, (ii) each distinct processed quotient transition is generated/considered only a bounded number of times, and (iii) generation, local verification, canonicalization, indexing, and retrieval associated with any one quotient state or processed quotient transition cost at most $q(n)$. Then quotient-processing work is
+\[
+O\!\bigl((U+E)q(n)\bigr).
+\]
+Consequently, if the corresponding unfolded tree has $N=\exp(\Omega(n))$ occurrences while $U+E=\operatorname{poly}(n)$ and $q(n)=\operatorname{poly}(n)$, direct verified quotient search makes this quotient-processing component polynomial even though explicit tree unfolding is exponential.
+\end{theorem}
+
+\begin{proof}
+Charge state-generation, verification, canonicalization, and insertion to the unique admission/expansion of each quotient state, for total $O(Uq(n))$. Charge transition generation, duplicate suppression, lookup, and reference handling to the distinct quotient transitions actually processed, for total $O(Eq(n))$ under the bounded-reconsideration hypothesis. Adding the two charges gives $O((U+E)q(n))$.
+\end{proof}
+
+\begin{caution}
+The theorem does not license an implementation to generate all $N$ unfolded occurrences and only then discover that most are duplicates. If duplicate recognition itself requires touching exponentially many unfolded occurrences, that work must be counted and the polynomial conclusion may fail. The theorem also does not say that an arbitrary prover discovers the right quotient, that canonical matching is cheap, or that larger memory automatically improves runtime. Relevance failure, indexing overhead, verifier contention, or bad retrieval policies can erase the theoretical advantage.
+\end{caution}
+
+\section{MAIN THEOREM 4: an exact exponential-to-linear diamond family}
+
+The following synthetic family isolates the effect of reusable subproofs without confounding it with learned search.
+
+\begin{definition}[Diamond family $\Delta_n$]
+The theory contains atoms
+\[
+q_0,q_1,\ldots,q_n,\quad a_1,b_1,\ldots,a_n,b_n.
+\]
+The base axiom is $q_0$. For each $i=1,\ldots,n$ the rules are
+\[
+q_{i-1}\to a_i,\qquad q_{i-1}\to b_i,\qquad a_i\wedge b_i\to q_i.
+\]
+The target is $q_n$.
+\end{definition}
+
+\begin{theorem}[MAIN THEOREM 4: Exact Tree-versus-BANK Separation]
+Let $T_n$ be the minimum number of formula occurrences in a tree certificate for $q_n$ when derived formulas may not be referenced across branches. Then
+\[
+T_n=2^{n+2}-3.
+\]
+The corresponding tree has exactly
+\[
+R_n=3(2^n-1)
+\]
+rule applications. A banked DAG certificate has exactly
+\[
+1+3n
+\]
+distinct formula nodes and $3n$ rule applications. Hence formula and rule work separate as $\Theta(2^n)$ versus $\Theta(n)$.
+\end{theorem}
+
+\begin{proof}
+For the tree, $T_0=1$. To derive $q_n$, the two branches producing $a_n$ and $b_n$ each require their own complete occurrence of a tree proof of $q_{n-1}$, followed by the two unary conclusions and the final binary conclusion. Thus
+\[
+T_n=2T_{n-1}+3,
+\]
+whose solution is $T_n=2^{n+2}-3$.
+
+For rule applications, $R_0=0$ and
+\[
+R_n=2R_{n-1}+3,
+\]
+so $R_n=3(2^n-1)$. In the DAG representation, store $q_0$ once and add $a_i,b_i,q_i$ once at each level, using the same stored $q_{i-1}$ as parent for both unary rules. This constructs a certificate with $1+3n$ nodes and $3n$ applications. It is minimal because, in this fixed rule system, the only rule concluding $q_i$ requires both $a_i$ and $b_i$, the only rules concluding those atoms require $q_{i-1}$, and this dependency recurses to $q_0$. Hence every one of $q_0$ and the three level-$i$ nodes/rule applications is forced in any DAG certificate for $q_n$.
+\end{proof}
+
+\begin{corollary}[DAG-aware end-to-end verification]
+If each unique node is checked once in topological order and each local rule check has constant cost, output-plus-verification work is $\Theta(2^n)$ for the explicit tree representation and $\Theta(n)$ for the banked DAG representation.
+\end{corollary}
+
+The family is intentionally synthetic. Its role is to give theorem-level ground truth before testing natural proof-complexity families. Known separations between tree-like and general resolution and formal studies of resolution with lemmas show that large reuse advantages are not unique to this toy construction \cite{biw,bks,bhj}.
+
+\section{Five-role cooperation and the breakthrough matrix}
+
+Version 48 already proves that conservative object-level BANK invariants depend on certificate structure, not on the identity of the discovering role \cite{depths48}. This lets us quantify a phenomenon unavailable to a single prover.
+
+\begin{definition}[Cross-channel horizon gain]
+Let $L$ be an admissible verified deposit discovered by role $i$, and let
+\[
+h=h_j(B,T),\qquad h&#x27;=h_j(B\cup\{L\},T).
+\]
+Assume the old route remains available, so $h&#x27;\le h$ in $\N\cup\{\infty\}$. Define
+\[
+\Delta_{i\to j}(L\mid B)=
+\begin{cases}
+h-h&#x27;, &amp; h,h&#x27;&lt;\infty,\\
++\infty, &amp; h=\infty\text{ and }h&#x27;&lt;\infty,\\
+0, &amp; h=h&#x27;=\infty.
+\end{cases}
+\]
+\end{definition}
+
+Under the stated route-preservation assumption, every entry is well-defined and
+\[
+\Delta_{i\to j}(L\mid B)\ge0.
+\]
+The $5\times5$ matrix
+\[
+M(L)=(\Delta_{i\to j}(L))_{i,j\in\{P,R,D,I,C\}}
+\]
+separates self-help on the diagonal from cross-role help off the diagonal.
+
+A large off-diagonal entry is a \emph{cross-role breakthrough}: for example, a lemma discovered during refutation search may sharply reduce the shortest proof route. In a full-ATP instantiation of all five roles, this is literally a cross-ATP breakthrough. More generally it formalizes the sense in which $P$ benefits from four other substantial verifier-governed search processes contributing to shared verified knowledge.
+
+\begin{remark}[Intrinsic gain versus runtime gain]
+A positive $\Delta_{i\to j}$ says that a shorter certified route has become available. It does not say a fixed heuristic will find that route sooner. Runtime benefit additionally depends on retrieval, indexing, scheduling, and controller behavior.
+\end{remark}
+
+\begin{proposition}[Constituent-ATP fallback]
+Suppose a stand-alone ATP $P_*$ proves $T$ in $m$ local transitions, the AMLD prover channel $P$ can reproduce every $P_*$ transition while ignoring foreign deposits, and the global control policy gives $P$ at least one local opportunity per logical round until settlement. Then either another role settles earlier or $P$ can reproduce the stand-alone proof by round $m$.
+\end{proposition}
+
+This is a fallback theorem, not an unconditional five-versus-one speed theorem. Dividing fixed hardware among five channels can increase wall-clock time, and BANK management itself has cost.
+
+\section{Trading: status invariance versus geometry variation}
+
+The Trading Theorem program separates deductive content from presentation by allowing consequence-preserving changes of axioms, rules, derived macros, or quotient presentations under explicit certified translations \cite{trading}. This interacts naturally with AMLD settlement.
+
+\begin{definition}[Target-faithful consequence equivalence]
+Presentations $F$ and $F&#x27;$ are target-faithfully consequence equivalent for $(T,T^-)$ when certified translations preserve and reflect derivability of $T$ and $T^-$ between the two presentations.
+\end{definition}
+
+\begin{theorem}[Trading invariance of dependence status]
+If $F$ and $F&#x27;$ are target-faithfully consequence equivalent for $(T,T^-)$, then
+\[
+\Dep_F(T)\iff\Dep_{F&#x27;}(T),
+\qquad
+\Ind_F(T)\iff\Ind_{F&#x27;}(T).
+\]
+\end{theorem}
+
+\begin{proof}
+The certified translations preserve and reflect both derivability statements $\vdash T$ and $\vdash T^-$. Taking their disjunction gives dependence invariance; negating both gives independence invariance.
+\end{proof}
+
+The horizons need not be invariant because proof size, macro availability, branching, and certificate representation are presentation-dependent:
+\[
+h_J^F(T)\ne h_J^{F&#x27;}(T)
+\]
+may hold even while the settlement status is unchanged.
+
+Thus a difficult-conjecture solver may search two spaces simultaneously:
+\[
+\boxed{\text{proof/settlement states}}
+\qquad\text{and}\qquad
+\boxed{\text{certified consequence-equivalent presentations}.}
+\]
+The guiding principle is: \emph{same settlement; different geometry}.
+
+\section{ATLAS navigation: obligations, pioneers, and verifier-safe guidance}
+
+In an ATLAS view, a route is not merely a stream of forward deductions. Each settlement channel may maintain both forward reachable states and backward obligation regions. For each $J\in\{P,R,D,I,C\}$ write $O_J$ for the current backward obligations induced by the corresponding certificate target. The typed \BANK\ acts as a rendezvous layer: a verified result discovered by one forward scout may discharge an obligation created by another route.
+
+This creates up to ten conceptual search processes---five forward and five backward---without creating ten trust boundaries. The verifier remains the authority for every trusted deposit and final settlement certificate.
+
+External or higher-level guidance can also be incorporated conservatively.
+
+\begin{theorem}[Verifier-safe guidance]
+Assume the frozen object and metatheoretic verifiers are sound for the certificate claims they accept. Assume an external guide may alter only the order in which legal candidates or obligation regions are explored; it cannot write directly to trusted \BANK, and every accepted deposit and settlement certificate is independently checked by the appropriate verifier. Then arbitrary guide errors cannot create a false accepted theorem solely through guidance.
+\end{theorem}
+
+\begin{proof}
+Guidance changes proposal order but not the verifier acceptance relation. Any trusted mathematical assertion still requires a certificate accepted under the frozen verifier rules.
+\end{proof}
+
+\begin{corollary}[Completeness under fair guided recurrence]
+If an unguided route is complete for finite certificates and the guided policy retains fair recurrence so that every candidate required by any finite certificate is eventually serviced, guidance does not destroy finite-certificate completeness.
+\end{corollary}
+
+This gives a precise formal role to a cartographer, pioneer, or Omnicartographer-style advisor: it may change navigation without becoming an oracle of truth \cite{omni}.
+
+\section{Multi-conjecture decision atlases}
+
+Decision geometry need not be rebuilt independently for every target. Given targets $T_1,\ldots,T_m$, define the minimal bridge family
+\[
+\mathcal B(T_r)=\{S\subseteq A:S\text{ is an inclusion-minimal deciding package for }T_r\}.
+\]
+Shared elements or recurring bridge cores identify pieces of mathematics that alter the decision geometry of many conjectures.
+
+For a candidate theory-strengthening package $L\in A$, one can define a simple bridge-frequency statistic
+\[
+\operatorname{freq}(L)=|\{r:\exists S\in\mathcal B(T_r)\text{ with }L\in S\}|.
+\]
+This is not itself a theorem of mathematical importance; it is a research prioritization device. A theory-strengthening ingredient that repeatedly occurs on minimal decision boundaries may be worth isolating or studying even before any single flagship conjecture is completely settled.
+
+Persistent verified memory supplies a different but complementary effect. A hard lemma proved while settling $T_1$ can immediately shorten proof or settlement horizons for $T_2,\ldots,T_m$ through conservative reuse, while leaving their underlying decision status relative to the frozen theory unchanged.
+
+\section{Certified difficulty intervals, regret, and formal self-knowledge}
+
+Exact horizons are generally difficult to compute. Nevertheless an AMLD can sometimes certify bounds on its own settlement difficulty.
+
+\begin{definition}[Certified first-settlement interval]
+Suppose an accepted tagged settlement certificate has certificate cost $U$, and an independently verified lower-bound argument proves that no accepted tagged settlement certificate has certificate cost below $L$. Then
+\[
+L\le H_{\rm first}(B,T)\le U.
+\]
+\end{definition}
+
+\begin{proposition}[Exact certificate-difficulty certification]
+If certified bounds satisfy $L=U$, then the AMLD has a certificate that the intrinsic first-settlement certificate horizon equals that common value.
+\end{proposition}
+
+There are two different notions of regret and they must not be mixed. If controller $\pi$ returns accepted certificate $p_\pi$ in class $J$, define its \emph{certificate suboptimality}
+\[
+\Reg^{\rm cert}_\pi(T)=c(J,p_\pi)-H_{\rm first}(B,T)\ge0.
+\]
+This compares certificate cost with certificate cost. Separately, if a frozen legal-history/search cost $C^{\rm hist}$ is defined and $H_{\rm hist}(B,T)$ denotes the minimum such cost over all accepted settlement histories, define
+\[
+\Reg^{\rm search}_\pi(T)=C^{\rm hist}_\pi(T)-H_{\rm hist}(B,T)\ge0.
+\]
+The second quantity compares search/history cost with search/history cost; it must not subtract a minimum certificate size from wall-clock time or search expansions.
+
+This yields a three-level separation:
+\[
+\boxed{\text{Logic: which certificates are valid?}}
+\]
+\[
+\boxed{\text{Geometry: what is the minimum cost to a valid settlement?}}
+\]
+\[
+\boxed{\text{Control: how close does the realized search come to that minimum?}}
+\]
+The formal self-awareness studied in Version 48 is syntactic and proof-theoretic rather than phenomenological; certified difficulty and regret are examples of useful machine-accessible facts about the machine&#x27;s own formal performance \cite{depths48,sicfiber}.
+
+\section{SAT as a specialization test}
+
+A theory intended to cover difficult theorem settlement should simplify correctly on a familiar complete decision problem. Finite propositional SAT provides a clean test.
+
+Let $\varphi$ be a finite CNF formula. Define:
+\begin{itemize}
+\item $P$: search for a satisfying assignment and verify it directly;
+\item $R$: search for a sound complete UNSAT certificate, for example a resolution-style refutation in a fixed complete propositional proof system;
+\item \BANK: store verifier-accepted derived clauses or other reusable consequences under explicit support and provenance;
+\item $D,I,C$: disable them for the ordinary finite SAT decision task unless one is deliberately studying a weaker/incomplete background theory or a separate metatheoretic question.
+\end{itemize}
+
+\begin{theorem}[SAT specialization theorem]
+For finite CNF SAT, let $P$ fairly enumerate candidate assignments and let $R$ fairly enumerate certificates in a sound complete propositional refutation system. Then fair dovetailing of $P$ and $R$ terminates on every input with exactly one of the ordinary statuses SAT or UNSAT. The $D$ and $I$ channels are unnecessary for logical completeness of this specialization.
+\end{theorem}
+
+\begin{proof}
+If $\varphi$ is satisfiable, a finite satisfying assignment exists and is eventually tested by $P$. If $\varphi$ is unsatisfiable, completeness of the chosen propositional refutation system gives a finite refutation eventually enumerated and accepted by $R$. Soundness prevents an accepted SAT witness for an unsatisfiable formula or an accepted refutation of a satisfiable formula.
+\end{proof}
+
+This is a feature, not a weakness. A general AMLD should not force metalogical machinery into a problem class whose object-level certificate languages already decide every instance.
+
+SAT also makes the \BANK\ distinction concrete. Clause learning and reusable derived clauses are algorithmic analogues of storing verified lemmas rather than repeatedly reconstructing them; proof-complexity results show that DAG-like reuse can be much stronger than tree-like repetition on suitable families \cite{biw,bks,bhj}.
+
+Finally, SAT illustrates trading. Sound preprocessing, equivalent encodings, symmetry handling, variable elimination under certified reconstruction, or other satisfiability-preserving transformations may leave SAT/UNSAT status unchanged while altering the search geometry dramatically. Thus even in a fully decidable domain, the separation
+\[
+\text{status invariance}\quad\text{versus}\quad\text{presentation-dependent horizon}
+\]
+remains important.
+
+\section{Resolution of the four earlier Part Two conjectures}
+
+The modern theory lets the earlier conjectures be classified rather than used as the paper&#x27;s organizing structure.
+
+\begin{longtable}{&gt;{\raggedright\arraybackslash}p{0.19\linewidth}&gt;{\raggedright\arraybackslash}p{0.24\linewidth}&gt;{\raggedright\arraybackslash}p{0.49\linewidth}}
+\toprule
+Earlier item &amp; Modern status &amp; Disposition \\
+\midrule
+\endhead
+Bank realization &amp; Theoretical core proved; natural-runtime claim remains empirical &amp; MAIN THEOREM 3 proves conditional quotient-processing compression when search operates directly on a polynomial-size verified quotient DAG; MAIN THEOREM 4 gives an exact exponential-to-linear certificate family. Whether a natural prover discovers, indexes, retrieves, and exploits the right states before overhead dominates remains an experimental question. \\
+\addlinespace
+Cross-status utility &amp; Unrestricted claim false &amp; Final-certificate membership can be a sufficient statistic on some distributions. The defensible hypothesis is narrower: on heterogeneous workloads, measured downstream marginal value may predict reusable lemma utility better than final-proof membership alone. \\
+\addlinespace
+Metalogical early exit &amp; Unrestricted scheduling claim false &amp; A shorter-looking meta-route does not itself justify reallocating compute from $P/R$. Adaptive scheduling is a controller hypothesis that must be measured against a fair baseline with nonstarvation guarantees. \\
+\addlinespace
+Decision-frontier sparsity &amp; Proved in stronger form &amp; A chain has at most one transition by monotonicity. MAIN THEOREM 1 generalizes this to a finite decision boundary: deciding packages form an upset whose inclusion-minimal elements form an antichain. \\
+\bottomrule
+\end{longtable}
+
+The important conceptual separation is now clear: AMLD is a logical/certificate architecture; learning and adaptive scheduling are performance mechanisms. Failure of a learned scheduler does not invalidate the soundness of AMLD settlement, and a successful learned scheduler does not by itself prove a new logical theorem.
+
+\section{A difficult-conjecture protocol}
+
+The preceding theory suggests the following research protocol for a hard target $T$.
+
+\begin{enumerate}
+\item \textbf{Freeze semantics and trust.} Specify $F$, $F^{\rm meta}$, $B_0$, $T$, $T^-$, $\bot$, verifier interfaces, certificate languages, and cost conventions.
+\item \textbf{Run five typed searches when warranted.} Let $P,R,D,I,C$ explore their legal certificate spaces without turning timeout into evidence.
+\item \textbf{Share only verified discoveries.} Admit object and meta records to typed \BANK\ with explicit provenance, support, and environment compatibility.
+\item \textbf{Maintain route horizons or bounds.} Use Universal Proof/Settlement Horizon machinery whenever effective conditions permit, while distinguishing intrinsic horizon from realized runtime.
+\item \textbf{Search decision geometry.} Build theory ladders or finite cubes of genuine theory-strengthening packages, locate decision boundaries, and extract minimal decision-bridge cores.
+\item \textbf{Exploit horizon bridges and proof-DAG reuse.} Canonicalize conservative verified states, retain reusable landmarks/macros, and ensure the verifier itself checks DAG certificates without recursive tree expansion. These deposits change geometry, not deductive closure.
+\item \textbf{Measure cross-role breakthroughs.} Record which role produced each useful conservative deposit and how much it changes other route horizons or certified bounds.
+\item \textbf{Search presentations as well as proofs.} Use only certified consequence-preserving trades; preserve the original presentation as a fallback when making dominance comparisons.
+\item \textbf{Use guidance only as navigation.} Forward/backward scouts, learned policies, cartographers, or Omnicartographer-style advice may prioritize candidates but never bypass verification.
+\item \textbf{Report settlement and regret separately.} State which certificate first settled the target, whether it was merely a dependence certificate or an oriented status, the realized certificate and/or search cost, any certified lower/upper horizon bounds, and only those regret quantities whose numerator and benchmark use the same cost model.
+\end{enumerate}
+
+The protocol does not guarantee that a difficult conjecture will be settled. Its purpose is to turn a single enormous undirected proof search into a coordinated search for the cheapest verified route to any legitimate settlement while preserving useful certified discoveries along the way.
+
+\section{Boundaries and open problems}
+
+Several limitations are structural rather than editorial.
+
+\begin{enumerate}
+\item \textbf{No automatic independence.} A useful and complete $I$-certificate language may not exist for the problem class of interest.
+\item \textbf{No universal runtime dominance.} Five substantial ATPs can consume more aggregate work than one, especially under fixed hardware or poor control.
+\item \textbf{BANK compression is conditional.} The quotient must actually be much smaller than the unfolded search, search must avoid explicitly generating the exponentially large tree merely to detect duplicates, and canonical matching/retrieval must be affordable.
+\item \textbf{Decision boundaries can be large.} The set of minimal deciding packages is an antichain and can itself be exponentially large in $|A|$.
+\item \textbf{Decision-bridge cores depend on candidate vocabulary.} A minimal theory-strengthening package relative to a chosen finite family $A$ need not be philosophically or mathematically minimal under a richer language of possible assumptions or axiom packages.
+\item \textbf{Consistency is not failure of $C$.} A separate positive metatheoretic certificate is required when a theorem needs certified consistency.
+\item \textbf{Trading requires certified translations.} Informal ``equivalence&#x27;&#x27; is not enough when settlement status or proof transport depends on it.
+\item \textbf{Intrinsic horizons depend on the frozen presentation and cost.} They are not absolute measures of mathematical difficulty independent of formalization.
+\end{enumerate}
+
+These limitations also identify the next experimental questions: how to discover useful bridge packages, how to approximate settlement regions, how to measure cross-channel lemma value, how to choose among consequence-equivalent presentations, and how much of the exact BANK advantage survives on natural theorem-proving families.
+
+\section{Conclusion}
+
+The older Part Two asked whether a nested metalogical component and a shared lemma bank could improve conjecture settlement. The modern five-role framework---literally five ATPs when the $D$ and $I$ metatheoretic roles are instantiated as theorem provers---makes a stronger and cleaner theory possible.
+
+The resulting picture is:
+\[
+\boxed{\text{certificate logic}}
+\longrightarrow
+\boxed{\text{minimum settlement geometry}}
+\longrightarrow
+\boxed{\text{decision boundaries and bridge cores}}
+\]
+\[
+\boxed{\text{verified BANK/DAG compression}}
+\longrightarrow
+\boxed{\text{cross-ATP cooperation}}
+\longrightarrow
+\boxed{\text{presentation and control}}.
+\]
+
+The central question is no longer only ``Can an ATP prove $T$?&#x27;&#x27; It is:
+
+\begin{quote}
+\textbf{What is the cheapest verified way to settle the target, which genuine theory extensions first make it decidable, and which conservative verified discoveries can shorten the route without changing its logical status?}
+\end{quote}
+
+SAT shows that the theory specializes correctly: where ordinary object-level certificates already decide every instance, AMLD collapses to the necessary channels rather than manufacturing metalogical complexity. On harder foundational or theorem-settlement problems, the full $P,R,D,I,C$ federation, decision geometry, verified shared memory, and settlement-horizon framework provide a coherent research architecture for attacking the problem without confusing search failure with mathematical evidence.
+
+\section*{Acknowledgement of AI assistance}
+This manuscript was developed interactively with OpenAI ChatGPT. Brian Tenneson supplied and directed the AMLD research program, the five-ATP interpretation, the shared-BANK research direction, the request to connect the Universal Proof-Horizon Operator to AMLD settlement, and the ATLAS-mode exploration of difficult conjectures and SAT specialization. ChatGPT assisted with formal organization, theorem extraction and extension, proof checking at the abstract-model level, literature reconciliation, and document production. Logical acceptance remains tied to explicit arguments and declared certificate verifiers.
+
+\begin{thebibliography}{99}
+
+\bibitem{depths48}
+B. Tenneson, \emph{Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness -- Version 48}, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}
+
+\bibitem{uph}
+B. Tenneson, \emph{The Universal Proof-Horizon Operator: From MIU and the nth Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders}, Version 1.1, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1/}
+
+\bibitem{ush}
+B. Tenneson, \emph{Universal Settlement Horizons: Canonical Minimum AMLD Certificates, Finite Breakthrough Ladders, and the Noncomputability of the Last Breakthrough}, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/}
+
+\bibitem{trading}
+B. Tenneson, \emph{Trading Theorem 003: Mutual Reproducibility, Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search}, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/trading_theorem_003/}
+
+\bibitem{mc1}
+B. Tenneson, \emph{Metalogical Cartography I: AMLD-5, Verified BANK Geometry, and Settlement Acceleration}, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/metalogical_cartography_i/}
+
+\bibitem{omni}
+B. Tenneson, \emph{AMLDs as Cartographers, Pioneers, and Omnicartographers}, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/amlds_cartographers_pioneers_omnicartographers/}
+
+\bibitem{sicfiber}
+B. Tenneson, \emph{Semi-Ideal Computers in Proof-Fiber Geometry: Machine-Accessible Geodesics, Exact Distance Certification, and Computational Regret}, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/semi_ideal_computers_in_proof_fiber_geometry/}
+
+\bibitem{junker}
+U. Junker, ``QUICKXPLAIN: Preferred Explanations and Relaxations for Over-Constrained Problems,&#x27;&#x27; in \emph{Proceedings of AAAI 2004}, pp. 167--172, 2004.
+
+\bibitem{rodler}
+P. Rodler, ``A formal proof and simple explanation of the QuickXplain algorithm,&#x27;&#x27; \emph{Artificial Intelligence Review} 55:6185--6206, 2022. DOI: 10.1007/s10462-022-10149-w.
+
+\bibitem{baader}
+F. Baader and R. Pe\~naloza, \emph{Axiom Pinpointing in General Tableaux}, LTCS-Report 07-01, TU Dresden, 2007.
+
+\bibitem{biw}
+E. Ben-Sasson, R. Impagliazzo, and A. Wigderson, ``Near optimal separation of tree-like and general resolution,&#x27;&#x27; \emph{Combinatorica} 24(4):585--603, 2004. DOI: 10.1007/s00493-004-0036-5.
+
+\bibitem{bks}
+P. Beame, H. Kautz, and A. Sabharwal, ``Towards Understanding and Harnessing the Potential of Clause Learning,&#x27;&#x27; \emph{Journal of Artificial Intelligence Research} 22:319--351, 2004. DOI: 10.1613/jair.1410.
+
+\bibitem{bhj}
+S. R. Buss, J. Hoffmann, and J. Johannsen, ``Resolution Trees with Lemmas: Resolution Refinements that Characterize DLL Algorithms with Clause Learning,&#x27;&#x27; arXiv:0811.1075, 2008.
+
+
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
