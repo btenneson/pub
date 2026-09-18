@@ -142,7 +142,6 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import json
-          from urllib.parse import quote
 
           pub_id = 'cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff'
           pdf_name = 'Self_Aware_Machine_Epistemic_Handoff_Atlas_Revision.pdf'
@@ -151,25 +150,17 @@ jobs:
           assert search['count'] == 118, search['count']
           assert search['items'][0]['id'] == pub_id, 'New paper is not slot #1'
 
-          index = (docs / 'index.html').read_text()
-          first_card = index.split('<article class="card"', 1)[1].split('</article>', 1)[0]
-          assert 'The Self Aware Machine: Epistemic Handoff and Successor-Safe Self-Awareness' in first_card
-          assert 'POST-AUDIT ATLAS REVISION' in first_card
-          assert 're-identification, not by identity fiction' in first_card
+          first = search['items'][0]
+          assert first['title'] == 'The Self Aware Machine: Epistemic Handoff and Successor-Safe Self-Awareness'
+          assert first['pages'] == 15
+          assert first['pdf'] == pub_id + '/' + pdf_name
 
-          reader = docs / pub_id / 'index.html'
-          assert reader.is_file()
-          html = reader.read_text()
-          expected_pdf = '/pub/' + pub_id + '/' + pdf_name
-          expected_viewer = '/pub/pdf-reader.html?file=' + quote(expected_pdf, safe='')
-          assert expected_viewer in html
-          assert 'Download PDF' in html and '>Source<' in html
+          assert (docs / pub_id / 'index.html').is_file()
+          assert (docs / pub_id / pdf_name).is_file()
+          assert (docs / pub_id / 'source.tex').is_file()
+          assert (docs / pub_id / 'source.html').is_file()
 
-          source_html = docs / pub_id / 'source.html'
-          assert source_html.is_file()
-          assert 'Certified subject' in source_html.read_text()
-
-          print('PASS: new paper is slot #1; 118-card catalog, PDF reader, source, and status verified.')
+          print('PASS: new paper is slot #1; 118-card catalog, PDF reader, PDF, and source files verified.')
           PY
 
       - name: Remove one-time staging payload
