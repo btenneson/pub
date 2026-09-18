@@ -1,0 +1,586 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness — Version 48 — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/">Back to publication</a><h1>Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness — Version 48</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=0.88in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs,longtable,array}
+\usepackage{fancyhdr}
+\usepackage{pdfpages}
+\usepackage[hidelinks,bookmarksopen=true]{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{needspace}
+\usepackage{xurl}
+
+\hypersetup{
+  pdftitle={Depths of Induction, ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness, Version 48},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={Consolidated post-audit edition: induction, proof search, formal self-awareness, ML guidance, and cooperative AMLDs},
+  pdfkeywords={induction, automated theorem proving, AMLD, proof search, machine learning, formal self-awareness, proof complexity, verifier}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Depths of Induction and Formalized Self-Awareness}
+\rhead{Tenneson, Version 48}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\Dep}{\operatorname{Dep}}
+\newcommand{\Ind}{\operatorname{Ind}}
+
+\newcommand{\coreoverlay}{%
+  \thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[white] (current page.north west) rectangle ([yshift=-0.56in]current page.north east);
+    \draw[line width=0.35pt] ([xshift=0.55in,yshift=-0.51in]current page.north west) -- ([xshift=-0.55in,yshift=-0.51in]current page.north east);
+    \node[anchor=north west,font=\scriptsize] at ([xshift=0.55in,yshift=-0.16in]current page.north west)
+      {Depths of Induction and Formalized Self-Awareness};
+    \node[anchor=north east,font=\scriptsize] at ([xshift=-0.55in,yshift=-0.16in]current page.north east)
+      {Version 48 consolidated core};
+    \node[anchor=south,font=\tiny,text=gray!80!black] at ([yshift=0.13in]current page.south)
+      {Documentary core: if retained facsimile wording conflicts with an adjacent correction insert, the correction insert alone states the Version 48 claim.};
+  \end{tikzpicture}%
+}
+
+\begin{document}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{0.55in}
+{\Huge\bfseries Depths of Induction,\\[0.10in]
+ML-Guided Proof Search, Cooperative AMLDs,\\[0.10in]
+and Formalized Self-Awareness\par}
+\vspace{0.34in}
+{\Large Formal Systems, Inference Closure, Automated Theorem Proving,\\
+Proof Complexity, Search Guidance, Simulations, and Self-Aware Structures\par}
+\vspace{0.50in}
+{\LARGE\bfseries Version 48 -- Consolidated Post-Audit Edition\par}
+\vspace{0.62in}
+{\Large Brian Tenneson\par}
+\vspace{0.08in}
+{\large M.S., Applied Data Science\par}
+{\large Currently Unaffiliated\par}
+\vfill
+{\large September 17, 2026\par}
+\vspace{0.26in}
+{\small Version 48 consolidates the Atlas-corrected Version 46.2 core, the unique ML-guided proof-search material of Version 47, and a mathematically repaired AMLD cooperative-induction chapter.\par}
+\vspace{0.30in}
+{\small Copyright \textcopyright\ 2026 Brian Tenneson. All Rights Reserved.\par}
+\end{titlepage}
+
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+This edition consolidates three previously diverged branches of the manuscript. The corrected Version 46.2 core supplies the paper&#x27;s formal-system, SIC/ATP, proof-complexity, induction, and formal-self-awareness framework. The material unique to Version 47 is retained as a separate integration on learned proof-search guidance: a learned ranker changes allocation of finite search attention among legal candidate applications while an independent verifier remains the mathematical trust boundary. The reported Predator 8.002 \texttt{prcom} run is preserved as a finite-instance, right-censored search-effort comparison rather than an asymptotic speedup theorem. A second integration revises the Version 46.3 AMLD material. It formalizes a cooperative five-role architecture with typed verifier-governed BANK memory, distinguishes object-theory channels from metatheoretic dependence and independence certifiers, proves conservative BANK invariants and cooperative birth-time induction through expanded certificate DAGs, separates first settlement from later settlement refinement, proves object-level proof-horizon monotonicity, states resource-qualified ATP-emulation results, and sharpens the AMLD potential method with a causal dependency-depth bound. Formal self-awareness remains a syntactic and proof-theoretic notion; no phenomenological claim is intended.
+
+\section*{Version 48 consolidation and authority statement}
+\addcontentsline{toc}{section}{Version 48 consolidation and authority statement}
+Version 48 is the successor to both Version 47 and Version 46.3. It resolves the numbering split by taking the corrected Version 46.2 core as the common foundation, importing only the material unique to Version 47, and replacing the Version 46.3 AMLD supplement by the revised chapter in this edition.
+
+The corrected core historically used a facsimile-plus-replacement architecture because the underlying merged Parts I and II were not available as one editable LaTeX source. Version 48 preserves that documentary core rather than silently reconstructing mathematical text from PDF extraction. The following reading rule is therefore part of the edition:
+
+\begin{quote}
+\textbf{Authority rule.} A retained facsimile sentence that conflicts with an adjacent or later correction insert is historical source text only and is not a Version 48 mathematical claim. The correction insert is authoritative. No theorem, corollary, remark, priority claim, or complexity claim is asserted in Version 48 merely because it remains visible on a superseded facsimile page.
+\end{quote}
+
+Every imported core page carries a Version 48 footer repeating this rule. This avoids the ambiguity of an unmarked facsimile while preserving the audit trail. The new ML and AMLD integrations are directly editable LaTeX and contain no superseded alternate statements.
+
+\section*{Version 48 audit-driven changes}
+\addcontentsline{toc}{section}{Version 48 audit-driven changes}
+\begin{enumerate}[leftmargin=2em]
+\item Resolves the version split: Version 48 explicitly supersedes both Version 47 and Version 46.3.
+\item Retains the Version 47 learned-search contribution without duplicating its induction material already present in the corrected core.
+\item States the \texttt{prcom} result only as a reported finite-instance search-effort separation under a frozen protocol; independent reproduction remains an empirical obligation.
+\item Makes the AMLD refutation target $T^-$ and contradiction target $\bot$ explicit members of the object language rather than assuming primitive negation syntax.
+\item Places $D$ and $I$ in a declared metatheory with sound certificate interfaces and explicitly rejects timeout or search failure as an independence certificate.
+\item Repairs cooperative BANK birth-time induction by distinguishing external BANK leaves from internal certificate formulas and inducting through the finite certificate DAG.
+\item Replaces an absorbing single settlement class by a monotone settlement record with an absorbing first-settlement time, so an early dependence certificate may later be refined by proof or refutation.
+\item Retains the cumulative weighted AMLD potential theorem and adds a sharper causal dependency-depth theorem that does not charge irrelevant deposits merely because they occurred earlier in the schedule.
+\item Preserves the distinction among proof length, logical stage, search expansions, wall-clock time, and aggregate computational work throughout the new integrations.
+\end{enumerate}
+
+\tableofcontents
+\clearpage
+
+\part*{Corrected Core: Version 46.2 Atlas Edition}
+\addcontentsline{toc}{part}{Corrected Core: Version 46.2 Atlas Edition}
+\noindent The following pages are the corrected common core inherited by Version 48. They include their own detailed contents and correction inserts. The Version 48 authority rule printed above and in the footer of every imported page governs all retained facsimile wording.
+\medskip
+
+\includepdf[pages={2-150},fitpaper=true,pagecommand={\coreoverlay}]{Depths_V46_2_Atlas_Corrected_Core.pdf}
+
+\clearpage
+\part*{Version 48 Integration A: ML-Guided Proof Search}
+\addcontentsline{toc}{part}{Version 48 Integration A: ML-Guided Proof Search}
+\setcounter{section}{0}
+\section*{Purpose and provenance}
+\addcontentsline{toc}{section}{Purpose and provenance of the ML-guided integration}
+This section preserves the material unique to Version 47 while avoiding duplication of the induction results already present in the corrected Version 46.2 core. The claims below concern search allocation under a fixed formal environment and verifier. They do not alter theoremhood, inference rules, or the verifier acceptance relation. The experimental statements are reported run results under the declared protocol; they are not promoted here to asymptotic theorems or universal performance claims.
+
+\section{Proof-count bounds and learned search allocation}
+Part I defines $P_F(\Gamma,\varphi,n)$ to be the number of proofs of $\varphi$ from $\Gamma$ having length exactly $n$. If the maximum rule arity is $a$ and $\kappa_k=|z_k(F)|$, the proof-counting bound gives
+\[
+P_F(\Gamma,\varphi,n)
+\le
+\prod_{j=1}^{n}
+\left(
+|\Gamma|+\sum_{k=1}^{a}\kappa_k(j-1)^k
+\right).
+\]
+The bound is intentionally crude: it counts many line-construction plans that are not genuine proofs, many redundant plans, and many plans irrelevant to the target. Its role here is only to exhibit the combinatorial construction space on which a search policy acts. It is a cardinal upper bound, not a probability model and not a prescription to search uniformly.
+
+\begin{definition}[Learned legal-move ranker]
+Let $S$ be a proof-search state and let $A(S)$ be the finite set of candidate assertion applications declared legal at $S$ by the fixed formal environment, declaration cutoff, grammar, unification conditions, and any explicitly frozen candidate-generation protocol. A learned legal-move ranker is a function
+\[
+s_\theta:\{(S,a):a\in A(S)\}\to\mathbb R.
+\]
+It may change only ordering or sampling weight inside $A(S)$; it does not add an inference rule and does not certify a candidate proof.
+\end{definition}
+
+For $T&gt;0$, an idealized softmax policy is
+\[
+p_{\theta,T}(a\mid S)
+=
+\frac{\exp(s_\theta(S,a)/T)}
+{\sum_{b\in A(S)}\exp(s_\theta(S,b)/T)}.
+\]
+For a legal path $\pi=(a_1,\ldots,a_n)$ through states $S_1,\ldots,S_n$, its idealized path weight is
+\[
+p_{\theta,T}(\pi)=\prod_{j=1}^{n}p_{\theta,T}(a_j\mid S_j).
+\]
+These expressions model nonuniform allocation of search attention. A deployed system may add seeded perturbations, novelty or rarity bonuses, agent profiles, candidate caps, or counterfactual exploration; such additions remain search policy, not proof validity.
+
+\begin{proposition}[Verifier separation]
+Suppose an ATP accepts a theorem only after a sound formal verifier accepts its emitted certificate. Replacing one scoring, ranking, or sampling policy on legal candidate applications by another cannot make the ATP accept a non-theorem, provided the verifier, formal environment, and certificate semantics are unchanged.
+\end{proposition}
+\begin{proof}
+The search policy affects which candidate certificates are proposed and in what order. Acceptance still implies acceptance by the unchanged sound verifier. Thus a poor policy may waste a finite budget or fail to locate an existing proof, but policy replacement alone cannot make an invalid certificate pass.
+\end{proof}
+
+\section{The Predator 8.002 controlled \texttt{prcom} experiment}
+Version 47 reported Predator 8.002 as a population-based nondeterministic ATP with a leakage-controlled learned ranking policy and an independent Metamath verifier. Under the declared protocol, the policy was trained on verified theorem traces strictly preceding the target \texttt{prcom} in the frozen database. The stored target proof, downstream theorems, target-specific features, and manually selected route examples were excluded. The reported training corpus comprised the 2,000 most recent eligible pre-target theorems by declaration order, yielding 11,774 verified logical events and 11,772 usable policy decisions.
+
+The target was the Metamath theorem
+\[
+\texttt{prcom}\qquad \vdash\ \{A,B\}=\{B,A\}.
+\]
+The reported guided and unguided conditions used the same frozen formal database, strict pre-target declaration cutoff, 5,000-expansion global budget, four agents, creativity parameter $1.0$, seed $2301$, maximum logical depth $10$, base-opener cap $48$, and at most six open goals. The intended causal difference was whether the learned policy score was used.
+
+\begin{center}
+\begin{tabular}{p{0.30\textwidth}p{0.42\textwidth}r}
+\toprule
+\textbf{Condition} &amp; \textbf{Reported outcome} &amp; \textbf{Expansions}\\
+\midrule
+Unguided population &amp; bounded unknown under the declared stopping rule &amp; 5,000\\
+ML-guided Predator 8.002 &amp; independently verified proof &amp; 2,633\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The emitted certificate was reported to contain 28 Metamath labels. Its four principal logical assertion applications were
+\[
+\texttt{uncom},\qquad \texttt{df-pr},\qquad \texttt{df-pr},\qquad \texttt{3eqtr4i}.
+\]
+The candidate was reported accepted first by the in-process verifier and then by a fresh process importing the Metamath checker without the Predator search module. At the target root, 150 extending assertions were legal under the frozen run protocol. In the unguided explorer diagnostic, \texttt{3eqtr4i} was reported at rank 134 and outside the active candidate cap; the learned score moved it to raw rank 64, after which counterfactual selection admitted it and the explorer completed the proof.
+
+\begin{definition}[Expansion discovery cost]
+For a fixed ATP implementation $M$, target $\varphi$, resource protocol, and seed, let $E_M(\varphi)$ be the number of search-state expansions before $M$ first emits a verifier-accepted proof of $\varphi$, with value $\infty$ if no such proof is emitted.
+\end{definition}
+
+Under the reported run records,
+\[
+E_{\rm ML}(\texttt{prcom})=2633,
+\qquad
+E_{\rm unguided}(\texttt{prcom})&gt;5000,
+\]
+so the observed censored ratio satisfies
+\[
+\frac{E_{\rm unguided}(\texttt{prcom})}
+{E_{\rm ML}(\texttt{prcom})}
+&gt;
+\frac{5000}{2633}
+\approx1.90.
+\]
+The unguided observation is right-censored by the stopping rule, so the true ratio is not determined by the experiment.
+
+\begin{remark}[Metric separation]
+Expansion discovery cost is neither proof length nor automatically the logical birth stage of the target. Proof length measures the emitted certificate under a declared convention. Logical birth stage measures dependency depth in a rule-driven chronology. Expansion discovery cost measures search work spent while attempting to locate a certificate. The reported experiment changes the third quantity; it does not establish that the 28-label certificate is shorter, and it does not alter the set of formal consequences.
+\end{remark}
+
+\begin{remark}[Scope and reproducibility]
+The \texttt{prcom} result is a fixed-instance, finite-budget proof of concept, not an asymptotic speedup theorem. An asymptotic claim would require a target family, a scaling parameter, and proved upper and lower performance bounds for the compared procedures. The reported separation should therefore be read as evidence that a learned ranking policy can change a bounded search outcome while formal certificate verification remains unchanged. Independent reproduction of the run is a separate empirical obligation.
+\end{remark}
+
+\section{Illustrative counting proxy and its limitation}
+Version 47 also gave an illustrative schema-level calculation. Strictly before \texttt{prcom}, the frozen Metamath database was reported to contain 4,696 assertion schemas with maximum raw mandatory-hypothesis arity 41. Under a finite proxy that absorbs zero-arity schemas into initial resources, a 28-label construction count obtained from the Part I bound is on the order of $10^{1167}$; an analogous four-logical-application proxy was on the order of $10^{19}$.
+
+These values are retained only as illustrations of combinatorial growth. They are \emph{not} literal target-specific proof counts: Metamath assertions are schematic and admit substitutions, whereas the original proof-count theorem treats finitary partial rules. A literal identification requires an explicit encoding of substitutions and instantiated rules. No theorem in Version 48 depends on the numerical proxy.
+
+\section{Relationship to induction}
+Learned proof-search guidance is not a fifth kind of induction. It is a policy acting on legal stage transitions and proof branches whose soundness and invariants are analyzed by the existing induction principles. The Version 48 separation is therefore:
+\[
+\boxed{\text{proof-count bound: construction-space size}}
+\]
+\[
+\boxed{\text{learned guidance: allocation of finite search attention}}
+\]
+\[
+\boxed{\text{formal verifier: certificate acceptance}}
+\]
+At the time of Version 47, HaloProof was identified as a harder intended transfer test. Version 48 records that statement historically but makes no current claim about the status or outcome of that benchmark.
+
+\clearpage
+\part*{Version 48 Integration B: AMLDs, Cooperative Induction, and Settlement Speed}
+\addcontentsline{toc}{part}{Version 48 Integration B: AMLDs, Cooperative Induction, and Settlement Speed}
+\setcounter{section}{0}
+\section*{Scope and relation to the AMLD program}
+\addcontentsline{toc}{section}{Scope of the AMLD integration}
+This integration revises the Version 46.3 AMLD supplement in response to the publication audit. It uses no Omnicartographer, geodesic, or oracle hypothesis. Its object is a cooperative verifier-gated settlement architecture with five search roles sharing typed verified memory. The corrections below make explicit three points that were previously only implicit: the refutation and contradiction targets must belong to the object language; the dependence and independence channels operate over a declared metatheory rather than automatically over the object theory; and first settlement freezes the first-settlement time, not the total set of settlement facts that may later be certified.
+
+\section{Formal AMLD setting}
+Fix a formal system $F=(x,y,z)$, a verifier-trusted initial object-level BANK $B_0\subseteq y$, and a target $T\in y$. Fix also a designated refutation target $T^-\in y$ and contradiction target $\bot\in y$. When the object language has the intended negation connective, one may set $T^-=\neg T$; the notation $T^-$ avoids assuming that every formal system has primitive negation syntax.
+
+Write
+\[
+B\vdash_F\varphi,
+\qquad
+\Con_F(B):=\{\varphi\in y:B\vdash_F\varphi\}.
+\]
+For a provable object-level target define the explicit-premise shortest-proof horizon
+\[
+\|\varphi\|_F(B):=\min\{|\pi|:\pi\text{ is an }F\text{-proof of }\varphi\text{ from }B\},
+\]
+with value $\infty$ if no such proof exists.
+
+To speak formally about dependence and independence, fix a metatheory
+\[
+F^{\rm meta}=(x^{\rm meta},y^{\rm meta},z^{\rm meta})
+\]
+with a declared encoding of $F$, its premise sets, its derivability relation, and the target pair $(T,T^-)$. The metatheory has sound verifier interfaces for the certificate languages actually used below. Define the intended metalogical predicates
+\[
+\Dep_{F,B}(T)\iff (B\vdash_F T)\vee(B\vdash_F T^-),
+\]
+\[
+\Ind_{F,B}(T)\iff (B\nvdash_F T)\wedge(B\nvdash_F T^-).
+\]
+These displayed biconditionals specify the intended mathematical meanings; an implementable $D$- or $I$-certificate system additionally requires a sound formal representation of the relevant claim in $F^{\rm meta}$.
+
+\begin{definition}[AMLD]
+An \emph{automated metalogical decider} for $(F,F^{\rm meta},B_0,T,T^-,\bot)$ is a coordinated architecture
+\[
+\mathcal A=(P,R,D,I,C;\mathsf{BANK},V_F,V_{\rm meta}),
+\]
+where $P,R,C$ are ATP channels over the object theory $F$ and $D,I$ are ATP/certifier channels over the declared metatheory $F^{\rm meta}$. The roles seek verifier-certified records of the following kinds:
+\[
+\begin{array}{ccl}
+P&amp;:&amp;B_k\vdash_F T,\\
+R&amp;:&amp;B_k\vdash_F T^-,\\
+D&amp;:&amp;\Dep_{F,B_k}(T),\\
+I&amp;:&amp;\Ind_{F,B_k}(T),\\
+C&amp;:&amp;B_k\vdash_F\bot.
+\end{array}
+\]
+The object-level and metalogical BANK components are type-distinct. A metalogical record about provability or nonprovability is never usable as an object-level premise merely because both are stored by the same architecture.
+\end{definition}
+
+\begin{remark}[No automatic independence oracle]
+The existence of a useful $I$-channel certificate language is an additional metatheoretic assumption. Failure of $P$ and $R$ to find proofs, timeout, or budget exhaustion does not certify independence. Likewise, the soundness and completeness properties of $D$ and $I$ depend on the declared metatheory and verifier; Version 48 makes no claim that arbitrary independence questions are mechanically decidable.
+\end{remark}
+
+\begin{remark}[Dependence is not a fifth truth value]
+A proof or refutation already implies dependence. The $D$ role is therefore architectural rather than a fifth mutually exclusive object-level truth value. A sound metatheoretic dependence certificate may be useful before $P$ or $R$ exposes the corresponding object-level witness.
+\end{remark}
+
+\begin{definition}[Verifier-gated conservative object deposit]
+Suppose an object-level formula $\lambda$ is proposed for deposit at global stage $k$. It is accepted only with an object-level certificate verified by $V_F$. The deposit is \emph{conservative at stage $k$} when that certificate establishes
+\[
+B_k\vdash_F\lambda.
+\]
+The object BANK then updates by
+\[
+B_{k+1}=B_k\cup\{\lambda\}.
+\]
+The originating channel need not be $P$; any channel may contribute an object-level lemma if it supplies the required object-level certificate.
+\end{definition}
+
+Fix one realized execution schedule. Let $S_k^J$ be the local accepted state of role $J\in\{P,R,D,I,C\}$ after global stage $k$, let $B_k^{\rm obj}$ and $B_k^{\rm meta}$ be the typed BANK components, let $\Pi_k$ be provenance, and let $\Sigma_k\subseteq\{P,R,D,I,C\}$ record all settlement classes accepted by stage $k$. Let $\tau_k$ be the first-settlement time when one has occurred, and $\infty$ otherwise. The global accepted state is
+\[
+X_k=(S_k^P,S_k^R,S_k^D,S_k^I,S_k^C,B_k^{\rm obj},B_k^{\rm meta},\Pi_k,\Sigma_k,\tau_k).
+\]
+
+\begin{definition}[Settlement record]
+A mathematical settlement event is acceptance of a verifier-certified record in one of the five designated classes. Operational outcomes such as timeout, budget exhaustion, and ``unknown&#x27;&#x27; are not settlements. The set $\Sigma_k$ is monotone: later certificates may add information. The first-settlement time, once finite, is absorbing. Thus a dependence settlement may later be refined by an actual proof or refutation without changing the historical first-settlement time.
+\end{definition}
+
+\section{Global-state induction and conservative BANK growth}
+\begin{theorem}[AMLD global-state induction]
+Let $Q$ be a property of global accepted states. If $Q(X_0)$ holds and $Q(X_k)\Rightarrow Q(X_{k+1})$ for every accepted AMLD transition, then $Q(X_k)$ holds for every $k\in\mathbb N$.
+\end{theorem}
+\begin{proof}
+Ordinary induction on $k$.
+\end{proof}
+
+\begin{theorem}[Conservative BANK invariant]
+Assume every accepted object-level deposit is conservative relative to the object BANK immediately preceding it. Then for every $k$,
+\[
+B_k^{\rm obj}\subseteq\Con_F(B_0)
+\qquad\text{and}\qquad
+\Con_F(B_k^{\rm obj})=\Con_F(B_0).
+\]
+\end{theorem}
+\begin{proof}
+Induct on accepted object-BANK updates. Extensiveness gives $B_0\subseteq\Con_F(B_0)$. Suppose $B_k^{\rm obj}\subseteq\Con_F(B_0)$ and $B_k^{\rm obj}\vdash_F\lambda$. Then $\lambda\in\Con_F(B_k^{\rm obj})\subseteq\Con_F(\Con_F(B_0))=\Con_F(B_0)$ by monotonicity, the induction hypothesis, and idempotence. Hence the enlarged BANK remains a subset of $\Con_F(B_0)$. Since $B_0\subseteq B_k^{\rm obj}$, monotonicity gives the reverse closure inclusion, and idempotence gives equality.
+\end{proof}
+
+\begin{corollary}[Logical-status invariance under conservative cooperation]
+Under the preceding hypotheses, the truth values of
+\[
+B_k^{\rm obj}\vdash_FT,\quad
+B_k^{\rm obj}\vdash_FT^-,\quad
+B_k^{\rm obj}\vdash_F\bot,\quad
+\Dep_{F,B_k^{\rm obj}}(T),\quad
+\Ind_{F,B_k^{\rm obj}}(T)
+\]
+are independent of $k$.
+\end{corollary}
+\begin{proof}
+The consequence closure is constant. The first three predicates are membership claims in that closure, while the last two are defined from the first two derivability predicates.
+\end{proof}
+
+\section{Channel discovery, BANK birth, and certificate induction}
+For an object-level formula $\lambda$ and role $J$, let
+\[
+d_J(\lambda):=\min\{k:\lambda\text{ has been validly derived by }J\text{ by stage }k\},
+\]
+with value $\infty$ if no such derivation occurs. Define the cooperative object-BANK birth time
+\[
+b_{\mathcal A}(\lambda):=\min\{k:\lambda\in B_k^{\rm obj}\}.
+\]
+Discovery and BANK birth need not agree.
+
+\begin{definition}[Certificate-preserved property]
+Let $\mathcal P$ be a property of object-level formulas. Say $\mathcal P$ is certificate-preserved when (i) every formula in $B_0$ has $\mathcal P$, and (ii) every primitive object-level inference rule that may occur inside an accepted expanded deposit certificate preserves $\mathcal P$ from its premises to its conclusion.
+\end{definition}
+
+\begin{theorem}[Cooperative BANK birth-time induction]
+Assume every accepted object-level deposit has a finite $F$-derivation whose external leaves belong to the preceding object BANK, and assume $\mathcal P$ is certificate-preserved. Then every object-level formula with finite cooperative BANK birth time has property $\mathcal P$.
+\end{theorem}
+\begin{proof}
+Use strong induction on $b_{\mathcal A}(\lambda)$. A formula born at stage $0$ lies in $B_0$. Suppose $\lambda$ is first deposited at stage $k+1$. Every external BANK leaf of its accepted certificate belongs to $B_k^{\rm obj}$ and therefore has earlier BANK birth and property $\mathcal P$ by the outer induction hypothesis. Now induct through the finite certificate DAG in dependency order. Every internal node is obtained from earlier nodes by a primitive rule preserving $\mathcal P$, so every internal formula, including the root $\lambda$, has $\mathcal P$.
+\end{proof}
+
+\begin{corollary}[Channel-independent invariant transfer]
+Under the theorem&#x27;s hypotheses, object-level BANK invariants depend on certificate structure, not on which role discovered the deposit. In particular a lemma discovered during an unsuccessful refutation search may later be reused by the prover if it was deposited through an accepted object-level certificate.
+\end{corollary}
+
+\section{Settlement time and refinement}
+For each role $J$, let $\tau^J_{\mathcal A}(T)$ be its first global stage of a designated accepted settlement certificate, with value $\infty$ if none occurs. Define
+\[
+\tau^{\rm set}_{\mathcal A}(T):=
+\min\{k:\Sigma_k\ne\varnothing\}.
+\]
+
+\begin{proposition}[First-settlement minimum]
+In the extended natural numbers,
+\[
+\tau^{\rm set}_{\mathcal A}(T)
+=
+\min\{\tau^P_{\mathcal A},\tau^R_{\mathcal A},\tau^D_{\mathcal A},\tau^I_{\mathcal A},\tau^C_{\mathcal A}\}.
+\]
+\end{proposition}
+\begin{proof}
+By definition the first settlement is the first accepted certificate in any designated class.
+\end{proof}
+
+\begin{proposition}[Persistent first settlement with later refinement]
+If $\tau^{\rm set}_{\mathcal A}(T)=h&lt;\infty$, then for every $k\ge h$ the system remains settled and retains first-settlement time $h$, while $\Sigma_h\subseteq\Sigma_k$ may grow as additional certified settlement information arrives.
+\end{proposition}
+\begin{proof}
+Induct on $k-h$. The settled flag and first-settlement time are absorbing by transition rule, while the settlement record is append-only.
+\end{proof}
+
+\section{Proof horizons under cooperative BANK growth}
+For the object-level settlement roles define
+\[
+h_P(k):=\|T\|_F(B_k^{\rm obj}),\qquad
+h_R(k):=\|T^-\|_F(B_k^{\rm obj}),\qquad
+h_C(k):=\|\bot\|_F(B_k^{\rm obj}).
+\]
+The $D$ and $I$ roles may be assigned analogous horizons only after a particular metatheory, certificate language, and cost convention have been fixed.
+
+\begin{theorem}[Cooperative proof-horizon theorem]
+For $J\in\{P,R,C\}$,
+\[
+h_J(k+1)\le h_J(k)
+\]
+whenever $B_k^{\rm obj}\subseteq B_{k+1}^{\rm obj}$.
+\end{theorem}
+\begin{proof}
+Every proof from the smaller premise set remains a proof from the larger premise set. Taking minima gives the inequality.
+\end{proof}
+
+\begin{remark}[Expanded certificates and runtime]
+A shorter explicit-premise horizon need not shorten the fully expanded primitive proof from $B_0$: a deposited lemma may function as a macro. Nor does horizon monotonicity imply heuristic runtime monotonicity. Extra BANK formulas may increase branching, indexing cost, duplicate work, or memory pressure. The theorem states availability of a no-longer route, not that a fixed heuristic finds it sooner.
+\end{remark}
+
+\section{Comparing a stand-alone ATP with an AMLD}
+Separate three quantities: logical effort, wall-clock time, and total work. A comparison theorem is meaningful only after its resource convention is fixed.
+
+\begin{definition}[Baseline-preserving prover channel]
+Let $P_\star$ be a stand-alone target-search ATP for $T$ on $B_0$. The AMLD prover $P$ is baseline-preserving relative to $P_\star$ if, whenever it ignores foreign deposits, it can perform every transition available to $P_\star$ in the same local order and with no greater local transition cost.
+\end{definition}
+
+\begin{definition}[Nonstarving logical-round schedule]
+A global AMLD schedule is $P$-nonstarving at unit rate when, by the end of global round $k$, $P$ has received at least $k$ local transition opportunities unless mathematical settlement has already occurred.
+\end{definition}
+
+\begin{theorem}[Constituent-ATP emulation]
+If $P_\star$ proves $T$ after $m$ local transitions, $P$ is baseline-preserving, and the AMLD uses a $P$-nonstarving unit-rate schedule, then either another role settles earlier or $P$ can reproduce the stand-alone proof by global round $m$. Hence, under this logical-round comparison,
+\[
+\tau^{\rm set}_{\mathcal A}(T)\le\tau^P_{\mathcal A}(T)\le m.
+\]
+\end{theorem}
+\begin{proof}
+If no earlier settlement occurs, nonstarvation supplies at least $m$ local opportunities by round $m$. Baseline preservation lets $P$ ignore foreign deposits and reproduce the stand-alone transitions. Its proof certificate is then a valid AMLD settlement.
+\end{proof}
+
+\begin{remark}[No unconditional five-versus-one speed theorem]
+The emulation theorem is not a claim that five ATPs are inherently faster than one. It can fail as a wall-clock comparison if resources are divided, verifier contention delays $P$, foreign BANK material cannot be ignored, or the schedule starves $P$.
+\end{remark}
+
+\begin{proposition}[Wall-clock dominance under resource replication]
+Assume $P$ receives the same processor, memory, verifier availability, and local service rate as $P_\star$ would receive alone, and foreign deposits may be ignored. If the stand-alone run terminates with a proof of $T$, then
+\[
+t^{\rm set}_{\mathcal A}(T)\le t_\star(T).
+\]
+\end{proposition}
+\begin{proof}
+The AMLD prover can reproduce the stand-alone run without resource loss; another role may only settle earlier under the stated assumptions.
+\end{proof}
+
+\section{Wall-clock speed and total work}
+Up to first settlement write
+\[
+W_{\mathcal A}=W_P+W_R+W_D+W_I+W_C+W_V+W_B,
+\]
+where $W_V$ and $W_B$ account for verification and BANK management, and let $W_\star$ be stand-alone work.
+
+\begin{proposition}[No architecture-only total-work dominance]
+The five-role AMLD architecture alone implies neither $W_{\mathcal A}\le W_\star$ nor $W_{\mathcal A}\ge W_\star$ on every target.
+\end{proposition}
+\begin{proof}
+AMLD work can exceed stand-alone work when losing roles perform large irrelevant searches while $P$ reproduces the baseline. It can be smaller when another role finds a valid early settlement and an early-stop policy prevents most of the baseline work. Architecture alone therefore determines no universal inequality.
+\end{proof}
+
+\section{Weighted and causal AMLD potential bounds}
+Suppose every accepted object-level deposit $\lambda_i$ has a finite certificate from the preceding BANK. Let $q_i$ be the maximum number of primitive inference layers on a dependency path in that certificate when earlier BANK entries are treated as leaves, and let $Q_n=\sum_{i=1}^{n}q_i$.
+
+\begin{theorem}[Cumulative weighted AMLD potential bound]
+Let $r:y\to\mathbb N$ and $d\in\mathbb N^+$. Assume $r(\gamma)\le r_0$ for $\gamma\in B_0$, and every primitive inference $\alpha_1,\ldots,\alpha_s\mapsto\beta$ occurring in an accepted expanded certificate satisfies
+\[
+r(\beta)\le\max_i r(\alpha_i)+d.
+\]
+Then every $\varphi\in B_n^{\rm obj}$ satisfies
+\[
+r(\varphi)\le r_0+dQ_n.
+\]
+Consequently, if $\lambda$ is first deposited by update $n$ and $r(\lambda)&gt;r_0$, then
+\[
+Q_n\ge\left\lceil\frac{r(\lambda)-r_0}{d}\right\rceil.
+\]
+\end{theorem}
+\begin{proof}
+Induct on accepted deposits. Along a certificate path for deposit $n$, at most $q_n$ primitive layers are traversed, each increasing rank by at most $d$. The maximum rank among earlier BANK leaves is bounded by $r_0+dQ_{n-1}$ by induction, yielding $r(\lambda_n)\le r_0+dQ_n$; old BANK entries retain the previous bound.
+\end{proof}
+
+The cumulative sum may charge deposits irrelevant to a particular conclusion. A sharper schedule-insensitive quantity follows the actual dependency ancestry.
+
+\begin{definition}[Causal BANK depth]
+Assign $\delta(\gamma)=0$ for $\gamma\in B_0$. For a deposited formula $\lambda$, expand its accepted certificate as a finite DAG whose external leaves are earlier BANK entries. Give every primitive inference edge unit weight and define $\delta(\lambda)$ to be the maximum, over all external leaves $\psi$ and dependency paths from $\psi$ to the certificate root, of
+\[
+\delta(\psi)+\text{(number of primitive inference edges on that path)}.
+\]
+\end{definition}
+
+\begin{theorem}[Causal potential bound]
+Under the hypotheses of the cumulative potential theorem, every deposited object-level formula satisfies
+\[
+r(\lambda)\le r_0+d\,\delta(\lambda).
+\]
+Hence
+\[
+\delta(\lambda)\ge
+\left\lceil\frac{\max\{0,r(\lambda)-r_0\}}{d}\right\rceil.
+\]
+Moreover, if $\lambda$ is deposited by update $n$, then $\delta(\lambda)\le Q_n$.
+\end{theorem}
+\begin{proof}
+Induct over the well-founded dependency DAG obtained by recursively expanding BANK references to their accepted certificates. Base leaves in $B_0$ have rank at most $r_0$. Each primitive inference increases rank by at most $d$, so a dependency path of weighted depth $\delta(\lambda)$ yields the stated upper bound. The lower bound is algebraic rearrangement. Finally, each dependency segment contributed by a deposit is at most that deposit&#x27;s $q_i$, while $Q_n$ sums all such segment bounds up to update $n$, so the causal depth cannot exceed the cumulative quantity.
+\end{proof}
+
+\section{AMLDs and the induction hierarchy}
+The AMLD extension uses the existing induction principles rather than introducing a new induction axiom. Structural induction applies separately to object and certificate languages when they are least-generated grammars. Rule induction applies inside object proofs and inside declared metatheories. Stage and birth-time induction apply locally to each role and globally to the accepted AMLD chronology. Reflection induction applies to any tagged constituent ATP, or to a separately defined tagged representation of the whole AMLD; the latter is an additional construction, not automatic.
+
+\begin{proposition}[No fifth foundational induction principle]
+Global AMLD induction and cooperative BANK birth-time induction are ordinary induction on newly defined well-founded natural-number chronologies. Their extra content comes from typed transition and certificate structure, not from a stronger induction axiom.
+\end{proposition}
+\begin{proof}
+Both proofs are inductions on $\mathbb N$: global accepted-stage index or finite BANK birth time, supplemented by finite induction through certificate DAGs.
+\end{proof}
+
+\section{Monotone growth and monotone object-level horizons}
+Under verifier-gated object-BANK growth,
+\[
+B_0\subseteq B_1^{\rm obj}\subseteq B_2^{\rm obj}\subseteq\cdots,
+\]
+while for $\varphi\in\{T,T^-,\bot\}$,
+\[
+\|\varphi\|_F(B_0)\ge\|\varphi\|_F(B_1^{\rm obj})\ge\|\varphi\|_F(B_2^{\rm obj})\ge\cdots.
+\]
+Under conservative deposits the consequence closure is constant. Thus cooperation may improve explicit access to an already-derivable settlement target without increasing deductive strength.
+
+\section{Conclusions}
+The corrected cooperative picture is:
+\[
+\boxed{\text{one ATP: induction on one proof-search chronology}}
+\]
+becomes
+\[
+\boxed{\text{one AMLD: five local role chronologies plus one verifier-accepted shared chronology}.}
+\]
+The five roles need not live in one object theory: $P,R,C$ operate over $F$, while $D,I$ require the declared metatheory and sound certificate interfaces. Conservative object-BANK growth preserves the initial consequence closure, shared BANK birth-time induction propagates object-level invariants through finite expanded certificates, object-level shortest explicit-premise horizons are nonincreasing, and a baseline-preserving nonstarved prover can emulate a stand-alone ATP under the stated resource convention. None of these statements alone implies a universal wall-clock or total-work advantage.
+
+
+\clearpage
+\part*{Version 48 Closing Synthesis}
+\addcontentsline{toc}{part}{Version 48 Closing Synthesis}
+The consolidated hierarchy is now explicit. Structural induction follows least-generated syntax. Rule induction follows finite derivations and least inference closure. ATP-stage and birth-time induction follow verified search chronologies. ML guidance changes the distribution of finite search effort over legal moves but not the verifier&#x27;s acceptance relation. Cooperative AMLD induction adds no new induction axiom; it applies ordinary induction to a global verifier-accepted chronology and finite certificate dependency structures. Reflection induction governs finite formal self-ascription, while transfinite reflection still requires separately stated limit clauses.
+
+The corresponding trust boundary is equally simple:
+\[
+\boxed{\text{search may be heuristic, learned, cooperative, or self-referential}}
+\]
+\[
+\boxed{\text{promotion to trusted mathematical state remains verifier-gated}.}
+\]
+This edition does not infer consciousness from formal self-awareness, does not infer independence from failed search, does not infer wall-clock speed from proof-size separation, and does not infer lower total work from parallel settlement. Those distinctions are substantive hypotheses of the theory rather than editorial caveats.
+
+\section*{Version 48 source note}
+The Version 48 LaTeX source is self-contained for the new front matter and integrations and depends on one retained asset, \texttt{Depths\_V46\_2\_Atlas\_Corrected\_Core.pdf}, for the documentary corrected core. This dependency is intentional: it preserves the established typography and correction history without pretending that a PDF-to-text reconstruction is the original editable source. The distribution bundle should therefore keep the main \texttt{.tex}, both Version 48 integration \texttt{.tex} files, and the corrected-core PDF together.
+
+\end{document}
+</pre></main></body></html>
