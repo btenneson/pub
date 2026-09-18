@@ -1,0 +1,659 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs,tabularx,array}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\setlength{\parindent}{1.25em}
+\setlength{\parskip}{0.15em}
+\setlist{nosep,leftmargin=*}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{principle}[theorem]{Principle}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{limitation}[theorem]{Limitation}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Universal Settlement Horizons}
+\rhead{Brian Tenneson}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\newcommand{\BANK}{\ensuremath{\mathrm{BANK}}}
+\newcommand{\SETTLED}{\ensuremath{\mathrm{SETTLED}}}
+\newcommand{\USH}{\ensuremath{\mathrm{USH}}}
+\newcommand{\Hist}{\mathrm{Hist}}
+\newcommand{\cost}{\mathrm{cost}}
+
+\title{\bfseries Universal Settlement Horizons\\[0.25em]
+\large Canonical Minimum AMLD Certificates, Finite Breakthrough Ladders,\\
+and the Noncomputability of the Last Breakthrough\\[0.5em]
+\normalsize A Three-Way Synthesis of Universal Proof Horizons, Depths of Induction,\\
+and ATP-to-AMLD Transfer}
+\author{Brian Tenneson\\[0.35em]
+\small Formalization, proof development, source reconciliation, and editorial assistance by OpenAI's ChatGPT}
+\date{September 18, 2026\\\small Corrected Research Synthesis 002}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Three recent strands of the author's work fit together more tightly than their original presentations suggest. The \emph{Universal Proof-Horizon Operator} supplies, for an effective proof presentation with an effectively proper computable cost, a partial computable operator returning a canonical minimum-cost proof whenever the target is provable. \emph{Depths of Induction}, Version 48, places ATPs and five-role automated metalogical deciders (AMLDs) in a verifier-gated SIC framework and develops conservative shared-\BANK\ growth, cooperative horizon monotonicity, global induction, and constituent-ATP emulation. \emph{AMLDs as Settlement ATPs} supplies a compilation bridge from typed AMLD histories to a formal target token $\SETTLED(T)$.
+
+The present paper closes this triangle, subject to the stated source dependencies. MAIN THEOREM 1 defines a Universal Settlement-Horizon Operator: after effective AMLD history compilation, universal cost-ordered search returns a canonical minimum-cost finite \emph{compiled settlement derivation} whenever one exists. When the compilation is history-faithful and cost-faithful in the explicit sense defined below, the decoded object is also a canonical minimum-cost typed settlement history. MAIN THEOREM 2 combines this operator with constituent-ATP emulation: under five-role round robin and a service-count cost assigning zero cost to administrative initialization/projection, a stand-alone $m$-step proof supplies a legal AMLD settlement route of cost at most $5m$.
+
+Under cost-nonincreasing optional-import \BANK\ growth, standardized restarted settlement horizons form a nonincreasing integer sequence. MAIN THEOREM 3 therefore gives a finite canonical breakthrough ladder: once the initial settlement horizon is finite, only finitely many strict horizon improvements can occur, although infinitely many verified \BANK\ deposits may still occur. Every realized improvement can be certified retrospectively by recomputing the two relevant minima. MAIN THEOREM 4 is independent of the unfinished AMLD compilation work: by a direct halting reduction, there is no uniform algorithm that always outputs a stage after which no further strict horizon decrease occurs, even in a toy family whose horizon is constantly $2$ or drops once from $2$ to $1$.
+
+Thus finite breakthrough depth does not imply effective knowledge of when the breakthrough process is finished. The paper ends with an explicit dependency ledger separating results that are self-contained here from results that remain conditional on unfinished source manuscripts.
+\end{abstract}
+
+\section{Purpose, source discipline, and theorem status}
+This paper is not a merger of three manuscripts. The source manuscripts remain authoritative for their own definitions and claims. The purpose here is to use each source as one side of a triangle and derive consequences not available from any one side alone.
+
+The three load-bearing sources are:
+\begin{description}[style=nextline]
+\item[S1. Universal proof recovery.] The \emph{Universal Proof-Horizon Operator}, Version 1.1, fixes an effective proof presentation $(\mathcal T,V,c)$ and states that cost-ordered finite-sublevel search returns a canonical minimum-cost proof exactly on theorem inputs [1]. Its code-indexed companion form is used here. Source [1] is currently cited as a preview manuscript, so results here that invoke its theorem are conditional on that theorem until [1] is finalized or its needed theorem is reproduced in full here.
+
+\item[S2. Dynamic cooperative horizons.] \emph{Depths of Induction}, Version 48, defines the SIC/ATP framework used by the author, formalizes a typed five-role AMLD with verifier-gated \BANK\ memory, and supplies global accepted-state induction, conservative \BANK\ growth, cooperative \BANK\ birth-time induction, object-level proof-horizon monotonicity, and constituent-ATP emulation under nonstarvation and baseline-preservation hypotheses [2].
+
+\item[S3. Compilation bridge.] \emph{AMLDs as Settlement ATPs}, Corrected and Strengthened Theorem Paper 002, constructs a tagged first-settlement history SIC, introduces a compiled formal system $F_A$, and states the derivability/finite-history and ATP-to-AMLD transfer properties used below [3]. Source [3] is currently a working manuscript. Therefore every theorem below that uses the equivalence between compiled derivability and legal typed AMLD histories is conditional on [3] until that bridge is finalized or reproved inside the present paper.
+\end{description}
+
+The results labeled MAIN THEOREM 1--4 are synthesis results proved here from the stated hypotheses. The universal minimum-search ingredient is classical in computability/proof enumeration; the novelty claimed here is only the stated synthesis inside the author's SIC/AMLD framework, not recursive proof enumeration, fair interleaving, or the halting problem [14--17].
+
+\section{The three-way flow}
+The interaction can be summarized as the directed cycle
+\[
+\text{Universal Proof Horizon}
+\longrightarrow \text{canonical minima for compiled AMLD derivations}
+\]
+\[
+\text{Depths v48}
+\longrightarrow \text{monotone \BANK\ dynamics and induction}
+\]
+\[
+\text{ATP-to-AMLD compilation}
+\longrightarrow \text{AMLD settlement becomes a formal target}.
+\]
+The third arrow returns to the first: once $\SETTLED(T)$ is a target of an effective compiled proof presentation, the Universal Proof-Horizon construction may be applied to its code.
+
+The division of labor is important. The compilation theorem determines what counts as a finite settlement derivation. The universal horizon theorem selects the canonical least-cost derivation among such finite derivations. The induction and \BANK\ theorems govern how the optimum behaves under certified growth of shared information.
+
+\begin{principle}[Static-to-dynamic-to-global cycle]
+The three source theories may be summarized as
+\[
+\begin{aligned}
+\text{static minimum proof}
+&\longrightarrow \text{dynamic minimum under \BANK\ growth}\\
+&\longrightarrow \text{global typed settlement minimum}.
+\end{aligned}
+\]
+\end{principle}
+
+\section{Effective compiled settlement presentations}
+\begin{definition}[Compiled settlement calculus]
+Fix a target statement $T$ and an AMLD architecture $A$ satisfying the history-compilation hypotheses of [3]. Let $F_{A,T}$ be the effective formal system whose formulas encode the initial compiled state, finite legal tagged AMLD history prefixes, and the distinguished target token $\SETTLED(T)$. Its rules consist of initialization, legal one-service history extension, and settlement projection from an accepted typed settlement certificate.
+
+Certificate types remain tagged. A $P$-certificate may be an object-theory proof of $T$; an $R$-certificate may prove the designated refutation target; $D$ denotes a declared dependence certificate language; $I$ denotes a declared independence certificate language; and $C$ denotes the contradiction channel. The outer token $\SETTLED(T)$ records that at least one accepted settlement class has been reached. It does not identify these certificate types with one another or erase their formal environments, verifiers, or provenance [2,3,8,9].
+\end{definition}
+
+\begin{definition}[Effective compiled settlement presentation]
+An effective compiled settlement presentation is a triple
+\[
+(F_{A,T},V_{A,T},c)
+\]
+with the following properties:
+\begin{enumerate}[label=(\arabic*)]
+\item $F_{A,T}$ is recursively presented.
+\item $V_{A,T}(p,q)$ is a total computable verifier returning $1$ exactly when $p$ codes a valid finite $F_{A,T}$ derivation concluding the formula with code $q$.
+\item $c(p)\in\mathbb N$ is total computable.
+\item For every $b\in\mathbb N$, the sublevel set $\{p:c(p)\le b\}$ is finite and effectively listable.
+\end{enumerate}
+Condition (4) is the effective-properness condition needed by the Universal Proof-Horizon construction [1]. Encoded certificate size is a canonical example. Unit service-count cost may also be used when the compiled system is effectively finite branching and administrative steps are assigned a declared cost.
+\end{definition}
+
+\begin{definition}[Finite settlement reachability]
+Write
+\[
+A\Downarrow T
+\]
+when there exists a finite legal compiled derivation in $F_{A,T}$ concluding $\SETTLED(T)$. Under the derivability/finite-history equivalence asserted in [3], this is equivalent to existence of a finite legal tagged AMLD settlement history with an accepted typed settlement certificate and replayable provenance.
+\end{definition}
+
+\begin{definition}[History-faithful and cost-faithful compilation]
+Let $\Hist_A(T)$ denote the set of finite legal tagged settlement histories for target $T$. A compiled presentation is \emph{history-faithful} if there is an effective decoding map $\delta$ from settling compiled derivations to $\Hist_A(T)$, every legal settling history has at least one valid compiled representative, and $\delta$ preserves the winning settlement type and verifier provenance.
+
+Given a history cost $C:\Hist_A(T)\to\mathbb N$, the compilation is \emph{cost-faithful} when every settling compiled derivation $p$ satisfies
+\[
+c(p)=C(\delta(p)).
+\]
+More generally, a theorem may use only derivation cost $c$ without assuming cost-faithfulness. In that case it proves a canonical minimum compiled derivation, not automatically a minimum history under an independently chosen history metric.
+\end{definition}
+
+\section{MAIN THEOREM 1: the Universal Settlement-Horizon Operator}
+The code-indexed form of the Universal Proof-Horizon construction may now be applied directly to $\ulcorner\SETTLED(T)\urcorner$.
+
+\begin{theorem}[Universal Settlement-Horizon Operator]
+For every effective compiled settlement presentation $(F_{A,T},V_{A,T},c)$ there is a partial computable operator
+\[
+\USH_{A,c}(T)
+:=
+\widehat H_{F_{A,T},V_{A,T},c}
+\bigl(\ulcorner\SETTLED(T)\urcorner\bigr)
+\]
+such that:
+\begin{enumerate}[label=(\roman*)]
+\item $\USH_{A,c}(T)\downarrow$ if and only if $A\Downarrow T$;
+\item when defined, it returns the least proof code among all valid finite compiled settlement derivations of minimum $c$-cost;
+\item its decoded derivation retains the winning settlement type and verifier provenance encoded by the compilation;
+\item if, in addition, the compilation is history-faithful and cost-faithful for a history cost $C$, then $\delta(\USH_{A,c}(T))$ is a canonical minimum-$C$ legal typed settlement history, with proof-code order serving only as the tie-breaker among minimum-cost representatives.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By Definition 3.2, the compiled presentation satisfies the four hypotheses of the proof-horizon minimum-search construction stated in [1]. Apply its code-indexed operator to $\ulcorner\SETTLED(T)\urcorner$. Search proceeds by increasing cost and then by increasing proof code. Effective properness makes every bounded cost layer finite and effectively inspectable. Thus the search halts exactly when $F_{A,T}\vdash\SETTLED(T)$ and, when it halts, returns the least code at the least cost.
+
+Under the compilation theorem asserted in [3], $F_{A,T}\vdash\SETTLED(T)$ is equivalent to existence of a finite legal AMLD settlement history. History-faithful decoding preserves the settlement tag and verifier provenance. If cost-faithfulness also holds, minimization of $c$ on compiled derivations is exactly minimization of $C$ on decoded histories.
+\end{proof}
+
+\begin{definition}[Universal settlement horizon]
+When $A\Downarrow T$, define
+\[
+s_{A,c}(T):=c\bigl(\USH_{A,c}(T)\bigr).
+\]
+This is the universal settlement horizon relative to the fixed compiled calculus, encoding, and derivation cost. Under cost-faithful compilation it is also the corresponding minimum legal history cost.
+\end{definition}
+
+\begin{corollary}[Partial computability of minimum settlement cost]
+The function $s_{A,c}(T)$ is partial computable with domain exactly the finitely settleable targets of the compiled presentation.
+\end{corollary}
+
+\begin{corollary}[Run-independent benchmark for a fixed compiled calculus]
+The value $s_{A,c}(T)$ is determined by the fixed legal compiled settlement calculus, its encoding, and its cost; it does not depend on which admissible history a particular heuristic run happens to realize. If an actual verified run has compiled cost $C_A(T)$, then
+\[
+0\le C_A(T)-s_{A,c}(T).
+\]
+\end{corollary}
+
+\begin{proof}
+The actual verified run supplies one admissible finite compiled settlement derivation, while $s_{A,c}(T)$ is the minimum over all such derivations in the fixed calculus.
+\end{proof}
+
+This is the precise sense in which $s_{A,c}(T)$ can serve as an architecture-relative benchmark. If a policy itself changes the legal-history calculus, then the benchmark may change; ``run-independent'' here does not mean independent of the definition of admissibility.
+
+\section{MAIN THEOREM 2: finite settlement becomes canonically bounded}
+The constituent-ATP emulation theorem of Version 48 and the round-robin transfer described in [3] supply an explicit legal route. The Universal Settlement-Horizon Operator then selects a route no more expensive than that witness.
+
+\begin{theorem}[Canonical finite-settlement bound under five-role round robin]
+Let $P^\star$ be a stand-alone ATP that proves $T$ after $m<\infty$ local transitions. Assume:
+\begin{enumerate}[label=(\alph*)]
+\item the AMLD prover $P$ is baseline-preserving relative to $P^\star$;
+\item the five-role AMLD is scheduled round robin until first settlement;
+\item the declared service-count cost assigns one unit to each completed role-service/history-extension event and zero units to compilation-only initialization and final settlement-projection steps;
+\item each reproduced local $P^\star$ transition is completed inside one bundled $P$-service event;
+\item the resulting compiled presentation satisfies Theorem 4.1 for this cost.
+\end{enumerate}
+Then either another role settles earlier or $P$ reproduces the stand-alone proof by the end of round $m$. In either case there is a valid compiled settlement derivation of service cost at most $5m$, and therefore
+\[
+s_A(T)\le 5m.
+\]
+If the compilation is history-faithful and cost-faithful for this service metric, $\USH_A(T)$ decodes to a canonical minimum-service settlement history satisfying the same bound.
+\end{theorem}
+
+\begin{proof}
+Version 48 supplies constituent-ATP emulation under baseline preservation and a nonstarving unit-rate logical-round schedule [2]. Five-role round robin gives $P$ one service opportunity per round unless another role has already settled. Hence by the end of round $m$, either another role has settled or $P$ has received $m$ service events and can reproduce the $m$ local transitions of $P^\star$. At most $5m$ role-service events have occurred. By hypothesis (c), administrative initialization and settlement projection add no service-count cost. Thus there is an admissible compiled derivation of cost at most $5m$, and the minimum compiled cost cannot exceed it.
+\end{proof}
+
+\begin{remark}[Administrative-overhead variant]
+If initialization and settlement projection have a fixed total administrative cost $K_{\mathrm{admin}}$ instead of zero, the identical proof yields
+\[
+s_A(T)\le 5m+K_{\mathrm{admin}}.
+\]
+Thus the exact $5m$ statement is a property of the declared service-count convention, not of arbitrary proof encodings.
+\end{remark}
+
+\begin{remark}[Two different improvements]
+The inequality $s_A(T)\le 5m$ allows two logically distinct phenomena: another settlement channel may terminate before $P$, or a verified foreign-channel \BANK\ deposit may shorten the route eventually used by $P$. The theorem asserts neither phenomenon must occur and is not a wall-clock speed theorem.
+\end{remark}
+
+\begin{definition}[Canonical baseline-relative architecture gain]
+Let $\rho^\star$ be the particular embedded round-robin history obtained by reproducing the stand-alone proof, and let $C(\rho^\star)$ be its declared history cost under a cost-faithful compilation. Define
+\[
+G_A(T):=C(\rho^\star)-s_{A,c}(T)\ge 0.
+\]
+A positive value certifies that the compiled architecture contains a strictly cheaper legal settlement route than this particular baseline embedding. By itself it does \emph{not} establish that cooperation caused the improvement; the cheaper route could, for example, be another $P$-only route.
+\end{definition}
+
+\section{Restarted horizons under \BANK\ growth}
+To compare stages dynamically, one must compare like with like. A later live AMLD snapshot may differ in scheduler phase, caches, learned state, and search frontiers as well as in \BANK\ contents. The monotonicity statement therefore uses standardized restarts.
+
+\begin{definition}[Standardized restarted AMLD]
+Let
+\[
+B_0\subseteq B_1\subseteq B_2\subseteq\cdots
+\]
+be an effective verifier-gated \BANK\ evolution. For each $k$, let $A[B_k]$ denote the same compiled AMLD architecture restarted from a fixed controller phase and fixed non-\BANK\ initialization, with $B_k$ supplied as its initial typed \BANK.
+\end{definition}
+
+\begin{definition}[Cost-nonincreasing \BANK\ persistence / optional import]
+The restarted architecture is \emph{cost-nonincreasing \BANK-persistent} when, whenever $j\le k$, there is a uniform effective embedding
+\[
+\iota_{j,k}:
+\{\text{valid settling derivations of }A[B_j]\}
+\longrightarrow
+\{\text{valid settling derivations of }A[B_k]\}
+\]
+that preserves the decoded settlement type and provenance of the older route, ignores the additional \BANK\ entries when desired, and satisfies
+\[
+c\bigl(\iota_{j,k}(p)\bigr)\le c(p).
+\]
+If equality always holds, call the restart embedding \emph{cost-preserving}. This condition is the precise settlement-level form of ``the old route remains available at no greater declared cost.'' Merely having set inclusion $B_j\subseteq B_k$ is not enough if the encoding or cost of an old route changes across restarts.
+\end{definition}
+
+\begin{definition}[Restarted settlement horizon]
+If $A[B_k]\Downarrow T$, define
+\[
+s_k(T):=s_{A[B_k],c}(T).
+\]
+When $s_0(T)<\infty$, cost-nonincreasing \BANK\ persistence preserves a finite settlement route at every later stage.
+\end{definition}
+
+\begin{proposition}[Monotone restarted settlement horizon]
+Under cost-nonincreasing \BANK\ persistence,
+\[
+s_{k+1}(T)\le s_k(T)
+\]
+for every $k$ for which $s_k(T)<\infty$.
+\end{proposition}
+
+\begin{proof}
+Let $p_k$ be a minimum-cost settling derivation at stage $k$. By Definition 6.2, $\iota_{k,k+1}(p_k)$ is a valid settling derivation at stage $k+1$ and has cost at most $c(p_k)=s_k(T)$. Since $s_{k+1}(T)$ is the minimum over all settling derivations at stage $k+1$,
+\[
+s_{k+1}(T)\le c(\iota_{k,k+1}(p_k))\le s_k(T).
+\]
+\end{proof}
+
+\section{MAIN THEOREM 3: the canonical finite breakthrough ladder}
+\begin{definition}[Strict settlement breakthrough]
+A \BANK\ transition $B_k\to B_{k+1}$ is a strict settlement breakthrough for $T$ when
+\[
+s_{k+1}(T)<s_k(T).
+\]
+\end{definition}
+
+\begin{theorem}[Canonical Finite Breakthrough Ladder]
+Assume:
+\begin{enumerate}[label=(\alph*)]
+\item $B_0\subseteq B_1\subseteq\cdots$ is an effective cost-nonincreasing \BANK-persistent evolution;
+\item $s_0(T)<\infty$;
+\item the common settlement cost takes values in $\mathbb N$;
+\item the effective compiled presentation at stage $k$ is generated uniformly from $k$.
+\end{enumerate}
+Then:
+\begin{enumerate}[label=(\roman*)]
+\item the sequence $s_0(T)\ge s_1(T)\ge s_2(T)\ge\cdots$ is a total computable nonincreasing sequence of natural numbers;
+\item only finitely many indices $k$ are strict settlement breakthroughs;
+\item the sequence is eventually constant. If $s_\infty(T)$ denotes its eventual value, then the number of strict breakthroughs is at most
+\[
+s_0(T)-s_\infty(T)\le s_0(T).
+\]
+The number $s_\infty(T)$ exists mathematically but need not be uniformly computable from an index for the evolution;
+\item at every stage $k$, $\USH_{A[B_k],c}(T)$ returns a canonical minimum-cost compiled settlement derivation witnessing $s_k(T)$;
+\item whether a particular observed transition $k\to k+1$ is a strict breakthrough is decidable by computing $s_k(T)$ and $s_{k+1}(T)$ and comparing them.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Proposition 6.4 gives monotonicity. Since $s_0(T)<\infty$ and each older route remains available at no greater cost, every later stage has a finite settlement route. Uniform generation of the stage-$k$ presentation together with Theorem 4.1 gives an algorithm that, on input $k$, constructs that presentation and runs its Universal Settlement-Horizon Operator. The operator halts at every stage because a settlement route exists. Hence $k\mapsto s_k(T)$ is total computable.
+
+A strictly decreasing sequence of natural numbers beginning at $s_0(T)$ can undergo only finitely many strict decreases, each by at least one. Therefore it eventually stabilizes at some $s_\infty(T)$ and the number of strict decreases is at most $s_0(T)-s_\infty(T)$. Statement (iv) is Theorem 4.1 at each restart, and (v) follows by evaluating two total computations.
+\end{proof}
+
+\begin{corollary}[Infinitely many deposits, finitely many strict horizon events]
+Even if the verifier accepts infinitely many conservative \BANK\ deposits, a fixed finitely settleable target can undergo only finitely many strict improvements in an integer-valued restarted settlement horizon satisfying the hypotheses above.
+\end{corollary}
+
+The \BANK\ may therefore accumulate certified mathematics forever while the strict target-specific horizon-improvement set remains finite.
+
+\section{MAIN THEOREM 4: the last breakthrough is not uniformly computable}
+\begin{definition}[Explicit-premise proof horizon]
+For a proof system with a current premise bank $B$ and target $T$, let $h_B(T)$ denote the minimum unit-inference cost of a proof of $T$ that may use elements of $B$ as explicit premises, when such a proof exists. In the toy family below this value is always finite and belongs to $\{1,2\}$.
+\end{definition}
+
+The finite-breakthrough theorem is easy to misread: finiteness of the strict-drop set does not supply a uniform procedure for announcing when that set is complete.
+
+\begin{theorem}[Last-Breakthrough Noncomputability]
+There is no total computable functional $L$ with the following property. Given an index for every uniformly effective conservative \BANK\ evolution in an effectively finite-branching proof system, with a fixed target whose initial explicit-premise proof horizon is finite, $L$ always returns a stage $N$ such that
+\[
+h_{k+1}(T)=h_k(T)\qquad\text{for every }k\ge N.
+\]
+The impossibility already holds for a family in which the horizon takes only the values $2$ and $1$ and can strictly decrease at most once.
+\end{theorem}
+
+\begin{proof}
+Assume such a total functional $L$ exists. We reduce the halting problem to it.
+
+Fix a finite-branching formal system with formulas $a,\lambda,T$, initial \BANK\ $B_0=\{a\}$, and relevant rules
+\[
+a\longrightarrow\lambda,
+\qquad
+\lambda\longrightarrow T.
+\]
+Use unit inference cost. From $\{a\}$ the minimum explicit-premise proof of $T$ has cost $2$; from $\{a,\lambda\}$ it has cost $1$. Depositing $\lambda$ is conservative because it carries the displayed one-step certificate from $a$.
+
+Given a Turing-machine/input pair $(e,x)$, define the effective evolution $(B_k^{e,x})$ by simulating $e(x)$ for the first $k$ steps at stage $k$ and setting
+\[
+B_k^{e,x}=\begin{cases}
+\{a\}, & e(x)\text{ has not halted within those }k\text{ steps},\\
+\{a,\lambda\}, & e(x)\text{ has halted within those }k\text{ steps}.
+\end{cases}
+\]
+At the first stage containing $\lambda$, attach the valid certificate $a\to\lambda$. The construction is uniform in $(e,x)$; by the standard parameter/index theorem (equivalently, the $s$-$m$-$n$ theorem), an index for this effective \BANK\ evolution is computable from $(e,x)$.
+
+Its target horizon is
+\[
+h_k(T)=\begin{cases}
+2, & e(x)\text{ has not halted by stage }k,\\
+1, & e(x)\text{ has halted by stage }k.
+\end{cases}
+\]
+Hence the horizon is constantly $2$ or drops exactly once from $2$ to $1$.
+
+Compute $N=L(e,x)$ for the index of this evolution and simulate $e(x)$ for $N$ steps. If it has halted, answer ``halts.'' If it has not halted, then it cannot halt at any later stage: a later halt would cause a later deposit of $\lambda$ and therefore a strict drop from $2$ to $1$ at some transition with index at least $N$, contradicting the stabilization guarantee supplied by $L$. Thus $L$ would decide the halting problem, impossible by Turing undecidability [15,16].
+\end{proof}
+
+\begin{corollary}[Settlement version under a strict-drop-preserving compilation]
+Suppose a class of compiled AMLDs contains the preceding prover-only evolutions as a cost-preserving special case up to a fixed additive constant independent of $k$. Then strict decreases of the object proof horizon induce exactly corresponding strict decreases of the compiled settlement horizon, so no total functional can return a last-breakthrough stage for every process in that class.
+
+More generally, the same conclusion holds under any effective embedding for which strict decreases in this prover-only family are preserved as strict decreases of the compiled settlement horizon. This weaker strict-drop-preservation condition is sufficient; it is not claimed to be equivalent to fixed-additive cost preservation.
+\end{corollary}
+
+\begin{proof}
+A total settlement-horizon stabilizer on such a class would restrict to a stabilizer for the proof-horizon family of Theorem 8.2, contradicting that theorem.
+\end{proof}
+
+\begin{corollary}[Finite does not mean effectively finished]
+Under the hypotheses of Theorem 7.2, every strict settlement breakthrough is recognizable after the relevant two stages have been computed, and only finitely many occur. Theorem 8.2 and Corollary 8.3 show that this finiteness cannot in general be promoted to one uniform algorithm that certifies a final no-more-breakthrough stage.
+\end{corollary}
+
+The AMLD may therefore have a finite breakthrough ladder without a computable ``last-breakthrough alarm.'' In the toy reduction there is at most one possible strict breakthrough, yet determining uniformly that it will never occur would decide halting.
+
+\section{The positive/negative asymmetry survives AMLD compilation}
+The Universal Proof-Horizon source emphasizes a fundamental asymmetry: canonical minimum proofs are partially computable on positive theorem inputs, while no total theorem/non-theorem decider exists for general undecidable effective theories [1,14,15]. AMLD compilation does not remove that boundary.
+
+\begin{proposition}[No total universal settlement complement]
+Consider a class of effective compiled settlement presentations broad enough to contain architectures whose only possible settlement route is the prover channel $P$ for an arbitrary effectively axiomatized theory with undecidable theorem set. There is no total computable procedure that, for every such compiled instance, returns
+\[
+1\iff A\Downarrow T,
+\qquad
+0\iff A\not\Downarrow T.
+\]
+\end{proposition}
+
+\begin{proof}
+If such a total settlement decider existed, restrict it to the subclass in which all non-$P$ roles are inert and $P$ settles exactly when $T$ is provable in the underlying theory. The procedure would decide that theory's theorem set, contradicting the assumed undecidability.
+\end{proof}
+
+\begin{remark}[Independence certificates do not invalidate the proposition]
+An AMLD may settle some otherwise undecided object-level targets by producing a valid independence certificate in a declared metatheory. Proposition 9.1 does not deny this. It states only that the general compiled class contains undecidable theorem-search subclasses, so no single total procedure can decide finite settlement for every effective compiled architecture and target.
+\end{remark}
+
+\section{A canonical horizon process}
+The combined theory defines the stage-indexed process
+\[
+H_T:B_k\longmapsto \bigl(s_k(T),\pi_k\bigr),
+\qquad
+\pi_k:=\USH_{A[B_k],c}(T).
+\]
+When $s_0(T)<\infty$ and cost-nonincreasing \BANK\ persistence holds, this process is total on stage indices. It returns a minimum value and a canonical minimum-cost compiled witness at every restart; under history-faithful cost it also returns a canonical minimum-cost decoded history.
+
+This yields three levels of information:
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{Value.} $s_k(T)$ is the least compiled settlement cost from the restarted state.
+\item \textbf{Witness.} $\pi_k$ is the canonical minimum-cost compiled derivation attaining that value.
+\item \textbf{Dynamics.} The strict-drop set
+\[
+D_T:=\{k:s_{k+1}(T)<s_k(T)\}
+\]
+is finite and each membership query is decidable, while no uniform procedure can in general compute a final stage beyond all members of $D_T$.
+\end{enumerate}
+
+The third item is a computability-theoretic distinction between local recognizability and global completion knowledge. A breakthrough can be certified once both adjacent stages are available; absence of all future breakthroughs is a stronger negative claim.
+
+\section{Relation to induction}
+Nothing above introduces a new foundational induction principle. The dynamical statements use induction objects already isolated in Version 48:
+\begin{itemize}
+\item ordinary stage induction on the compiled ATP chronology;
+\item strong induction on cooperative \BANK\ birth time and finite provenance DAGs;
+\item monotonicity of explicit-premise horizons under optional import / cost-preserving route retention;
+\item constituent-ATP emulation under nonstarvation and baseline preservation.
+\end{itemize}
+Version 48 emphasizes that cooperative AMLD induction is ordinary induction applied to new verified chronologies, not a new foundational induction axiom [2]. The present paper adds an optimization operator to those chronologies: at each standardized restart, the Universal Settlement-Horizon Operator selects a canonical minimum compiled settlement derivation.
+
+Induction establishes invariants along the chronology; minimum search optimizes over finite derivations inside the trusted search space. Neither function replaces the other.
+
+\section{Relation to shortest settlement and proof-fiber geometry}
+The \emph{Shortest Settlement} paper models a verifier-backed settlement machine as a directed control system with terminal settlement set and proves Bellman optimality for exact remaining settlement distance [4]. The present $s_k(T)$ is compatible with that viewpoint when the declared path cost agrees with the compiled derivation/history cost: it is then the restart-state distance to the typed settlement target.
+
+The proof-fiber work separates the full intrinsic proof/settlement optimum from what a particular SIC architecture or policy accesses [6,7]. The Universal Settlement-Horizon Operator sharpens the full compiled-architecture benchmark whenever the legal-history calculus is effectively enumerable with an effectively proper cost: on its positive domain, it returns a canonical attaining witness rather than merely defining an infimum.
+
+When the same cost model is used, let
+\[
+s_k(T),\qquad s_k^M(T),\qquad C_M(T)
+\]
+denote respectively the full compiled settlement optimum, the machine/policy-accessible optimum, and the realized run cost. Then
+\[
+C_M(T)-s_k(T)
+=
+\bigl(C_M(T)-s_k^M(T)\bigr)
++
+\bigl(s_k^M(T)-s_k(T)\bigr).
+\]
+The first term is run-versus-accessible excess; the second is architecture/accessibility excess. On the positive domain of an effective proper compiled presentation, $s_k(T)$ and a canonical attaining compiled derivation are partially computable; under persistent finite reachability they are total computable as functions of the stage $k$.
+
+The interpretation in terms of the more recent SIC--proof-fiber refinements in [7] is nonessential to MAIN THEOREMS 1--4 and remains interpretive while [7] is a working manuscript.
+
+\section{What the unfinished Universal Proof-Horizon manuscript contributes here}
+The Universal Proof-Horizon manuscript is organized around ordinary proof recovery, MIU, ZFC, Predator, and primitive proof/refutation dovetailing [1]. The theorem imported here is deliberately static: fix one theory, verifier, target sentence, and effectively proper cost, then recover a canonical minimum proof on positive inputs.
+
+The present synthesis uses that static operator only after settlement has been compiled into an ordinary formal target. The conceptual continuation is
+\[
+\begin{aligned}
+\text{minimum proof operator}
+&\longrightarrow \text{minimum compiled settlement operator}\\
+&\longrightarrow \text{minimum settlement dynamics under \BANK\ growth}.
+\end{aligned}
+\]
+The finite-breakthrough theorem then follows from discrete monotone descent. The last-breakthrough noncomputability theorem does not require [1]; it is proved directly in Section 8.
+
+Because [1] remains a preview manuscript, MAIN THEOREM 1 should presently be read as a theorem \emph{relative to} the proof-horizon theorem stated there. Finalizing [1], or reproducing the exact minimum-search theorem and proof in an appendix here, would discharge this external dependency.
+
+\section{Source map and dependency table}
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}p{0.18\textwidth}p{0.27\textwidth}p{0.28\textwidth}p{0.17\textwidth}@{}}
+\toprule
+\textbf{Source} & \textbf{Imported result/object} & \textbf{Use here} & \textbf{Status for this paper}\\
+\midrule
+\endhead
+Source [1] Universal Proof-Horizon Operator v1.1 & Effective proof presentation; canonical minimum-cost partial proof operator; code-indexed search & Supplies the minimum-search engine used in MAIN THEOREM 1 & \textbf{Load-bearing; unfinished preview}\\
+\addlinespace
+Source [2] Depths of Induction v48 & SIC/ATP framework; typed five-role AMLD; conservative \BANK\ growth; constituent-ATP emulation & Supplies the finite baseline route and cooperative chronology & Load-bearing for MAIN THEOREM 2; cited post-audit edition\\
+\addlinespace
+Source [3] AMLDs as Settlement ATPs 002 & History compilation; $F_A$; target $\SETTLED(T)$; finite-history/derivability bridge; round-robin transfer & Allows proof-horizon search to act on typed AMLD settlement without erasing certificate types & \textbf{Load-bearing; working manuscript}\\
+\addlinespace
+Source [4] Shortest Settlement & Exact settlement distance and Bellman geometry & Geometric/control interpretation of $s_k(T)$ when costs agree & Interpretive, not needed for MAIN THEOREMS 1--4\\
+\addlinespace
+Source [5] Proof-State Cartography III & Horizon triangle and Pioneer language & Historical/navigational context & Working manuscript; non-load-bearing\\
+\addlinespace
+Source [6] Semi-Ideal Computers in Proof-Fiber Geometry & Accessible subfibers, intrinsic/accessibility horizons, regret & Interprets full versus accessible optimum & Interpretive\\
+\addlinespace
+Source [7] UTG-enhanced SIC--proof-fiber revision & SIC--\BANK\ filtrations and refined regret language & Additional interpretation in Section 12 & Working manuscript; non-load-bearing\\
+\addlinespace
+Source [8] Metalogical Cartography I & Typed settlement regions; optional import; conditional acceleration & Motivates persistence discipline & Supporting; Definition 6.2 here states the exact hypothesis actually used\\
+\bottomrule
+\end{longtable}
+\endgroup
+
+\section{Further deductions}
+\subsection{A finite breakthrough budget is intrinsic to discrete horizon value}
+If a target begins with $s_0(T)=r$, then at most $r$ strict unit-or-more horizon decreases can occur, and in fact at most $r-s_\infty(T)$. The number of agents, heuristics, or verified deposits can affect when those decreases occur and which histories realize them, but cannot create an infinite descending chain in $\mathbb N$.
+
+\subsection{Winning-channel identity and breakthrough-associated provenance can differ}
+A canonical minimum settlement history may contain a foreign-channel deposit and may ultimately settle through $P$. Thus winner identity alone does not describe the provenance of the minimum route. However, the presence of a foreign-channel deposit does not by itself prove that the deposit \emph{caused} a strict horizon decrease.
+
+A causal statement is justified only with an additional comparison, for example: the transition adds exactly one new certified deposit and the horizon decreases, or a counterfactual recomputation with that deposit removed restores the older minimum. Without such a comparison, the correct record is \emph{cross-channel provenance} or \emph{breakthrough-associated provenance}, not an asserted causal attribution [2,9].
+
+\subsection{Canonical minima do not imply feasible minima}
+The operator $\USH$ is universal in a computability sense, not a tractability sense. The number of candidate proof/history codes below successive cost bounds may be enormous. Learned ATP policies, Pioneer heuristics, cartography, rendezvous, and consequence-preserving trading can remain useful because they seek good routes without materializing the full universal-search baseline [10--13]. The working status of [12] affects this contextual claim only, not the proofs of MAIN THEOREMS 1--4.
+
+\subsection{A machine may know every past breakthrough and still not know that there are no future ones}
+For any completed transition $k\to k+1$, the machine can compute the two finite horizons under the hypotheses of Theorem 7.2 and decide whether that transition was a strict breakthrough. Theorem 8.2 says that this retrospective exactness cannot be upgraded uniformly to a prospective declaration that the breakthrough stream is finished.
+
+\section{Dependency status and remaining work}
+This section records exactly where additional work is still required because cited source manuscripts are unfinished.
+
+\subsection{Core results that remain conditional}
+\begin{enumerate}[label=\textbf{D\arabic*.}]
+\item \textbf{MAIN THEOREM 1 depends on unfinished Sources [1] and [3].} The minimum-search argument is valid from Definition 3.2 once the code-indexed proof-horizon theorem of [1] is granted, and its interpretation as typed AMLD settlement uses the compilation equivalence of [3]. To make MAIN THEOREM 1 standalone, either finalize [1] and [3] or reproduce the two imported theorems, with proofs, in this paper.
+
+\item \textbf{MAIN THEOREM 2 depends on the constituent-ATP emulation result of [2] and the round-robin compilation bridge of unfinished Source [3].} The cost issue identified in the earlier draft has been discharged here by explicitly setting administrative compilation steps to zero service cost, with a $5m+K_{\mathrm{admin}}$ fallback if a different cost is chosen.
+
+\item \textbf{Proposition 6.4 and MAIN THEOREM 3 are internally proved from Definition 6.2, but application to a concrete AMLD requires verification of that definition for the chosen compilation.} The earlier draft silently moved from \BANK\ inclusion to cost monotonicity. The corrected paper now requires an explicit effective cost-nonincreasing embedding $\iota_{j,k}$. If [3] is intended to establish this property generally, that proof remains source work; otherwise it must be checked architecture by architecture.
+
+\item \textbf{Corollary 8.3 (the AMLD settlement transfer of the last-breakthrough theorem) depends on a strict-drop-preserving compiled embedding.} A fixed-additive, cost-preserving embedding is sufficient. This settlement-level transfer remains conditional until such an embedding is proved for the intended AMLD compilation, most naturally in [3].
+\end{enumerate}
+
+\subsection{Core results that do not depend on unfinished sources}
+\begin{enumerate}[label=\textbf{S\arabic*.}]
+\item \textbf{MAIN THEOREM 4 / Theorem 8.2 is self-contained apart from classical computability theory.} Its proof uses only the explicit two-step proof system constructed in Section 8 and the undecidability of the halting problem [15,16]. It does not depend on [1], [3], [5], [7], or [12].
+
+\item \textbf{Proposition 9.1 is a direct reduction from an undecidable theorem set.} It requires only that the considered compiled class actually contains the stated prover-only subclass. Its logical argument does not require the unfinished proof-horizon manuscript.
+
+\item \textbf{Finite descent itself is elementary once the stage horizons are known to be total, natural-valued, and nonincreasing.} The unfinished work lies in justifying the compiled AMLD hypotheses that produce those horizons, not in the discrete descent argument.
+\end{enumerate}
+
+\subsection{Non-load-bearing unfinished references}
+Sources [5], [7], and [12] are cited only for interpretation, navigation language, or contextual algorithmic directions. None is needed for the validity of MAIN THEOREMS 1--4 as conditional statements. Their future revision may change exposition or terminology but should not change the formal arguments above unless a future version changes a definition explicitly imported here.
+
+\subsection{Concrete remaining tasks}
+The shortest route to a fully standalone theorem paper is:
+\begin{enumerate}[label=(\arabic*)]
+\item finalize or reproduce the exact code-indexed minimum-search theorem presently imported from [1];
+\item finalize or reproduce the typed AMLD history-compilation equivalence presently imported from [3];
+\item prove that the intended standardized restart construction admits the effective cost-nonincreasing embeddings of Definition 6.2 for the chosen service/history metric;
+\item prove the stricter drop-preservation or fixed-additive cost relation needed to instantiate Corollary 8.3 for the desired AMLD class.
+\end{enumerate}
+Once these four obligations are discharged, the core settlement-level synthesis no longer depends on unfinished mathematical bridges.
+
+\section{Limitations and audit boundaries}
+\begin{limitation}[Cost relativity]
+All minimum claims are relative to the declared proof/history encoding and cost. A minimum encoded-size or service-count history need not minimize wall-clock time, energy, memory, or expanded primitive-proof size.
+\end{limitation}
+
+\begin{limitation}[Restarted, not arbitrary live-state, monotonicity]
+The sequence $s_k(T)$ compares standardized restarts from larger \BANK s. A live controller may change scheduler phase, caches, learned parameters, or search frontiers; its instantaneous remaining runtime need not be monotone merely because the \BANK\ grows.
+\end{limitation}
+
+\begin{limitation}[Typed settlement is preserved]
+The compilation target $\SETTLED(T)$ is an outer tag. It does not assert that proof, refutation, dependence, independence, and contradiction certificates inhabit one untyped object logic. Their formal environments and verifiers remain part of the encoded certificate record.
+\end{limitation}
+
+\begin{limitation}[No universal speedup]
+MAIN THEOREM 2 supplies a legal baseline route and a canonical optimum no worse than that route under the declared service metric. It does not imply that five ATPs use less wall-clock time or total computational work than one ATP.
+\end{limitation}
+
+\begin{limitation}[Last-breakthrough theorem is uniform]
+For a particular concrete \BANK\ evolution, a stabilization stage may be known for independent mathematical reasons. Theorem 8.2 rules out one total computable functional that succeeds on every evolution in the stated effective class.
+\end{limitation}
+
+\begin{limitation}[Conditional synthesis status]
+Until the load-bearing unfinished source results identified in Section 16 are finalized or reproduced here, MAIN THEOREMS 1--3 and the settlement-transfer Corollary 8.3 should be read as rigorous conditional theorems: their proofs are valid from the stated imported hypotheses, but this paper does not independently reprove every imported source theorem.
+\end{limitation}
+
+\section{Conclusion}
+The corrected synthesis separates what is proved internally from what is imported. Subject to the proof-horizon theorem of [1] and the typed AMLD compilation theorem of [3], effective compilation turns $\SETTLED(T)$ into an ordinary formal target to which canonical minimum-cost search applies. With a history-faithful, cost-faithful compilation this yields a canonical minimum typed settlement history; without that extra hypothesis it yields the more conservative and always correct object: a canonical minimum-cost compiled settlement derivation.
+
+Under five-role round robin and an explicit service-count convention, a finite constituent proof supplies a global $5m$ route, or $5m+K_{\mathrm{admin}}$ under nonzero fixed administrative overhead. Under standardized restart embeddings that preserve old routes at no greater cost, the resulting settlement horizons form a total computable nonincreasing sequence of natural numbers whenever the initial target is finitely settleable. Hence only finitely many strict breakthroughs occur.
+
+The sharpest negative result is independent of the unfinished settlement machinery. Eventual stabilization does not imply uniform effective recognition of stabilization. Even when the only possible horizon change is a single drop from $2$ to $1$, a universal last-breakthrough detector would decide the halting problem.
+
+Accordingly, the mathematical picture is now deliberately two-tiered. The finite-descent and halting arguments are secure once their explicit hypotheses are met; the remaining research work is concentrated in finalizing the two load-bearing compilation/minimum-search bridges and proving the cost-preserving restart property for the intended AMLD implementation.
+
+\begin{thebibliography}{99}
+\bibitem{uph}
+B. Tenneson, \emph{The Universal Proof-Horizon Operator -- From MIU and the nth Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders}, Version 1.1, Revised Mathematical Audit Edition, September 13, 2026. Preview manuscript.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1/}
+
+\bibitem{depths}
+B. Tenneson, \emph{Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness}, Version 48, Consolidated Post-Audit Edition, September 17, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}
+
+\bibitem{settlementatp}
+B. Tenneson, \emph{AMLDs as Settlement ATPs: History Compilation, Round-Robin Fairness, and ATP-to-AMLD Transfer}, Corrected and Strengthened Theorem Paper 002, September 18, 2026. Working manuscript.
+
+\bibitem{shortest}
+B. Tenneson, \emph{Shortest Settlement: Optimal Control, Distance Geometry, and Exact One-Dimensional Coordinates}, Version 1.0, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/shortest_settlement_optimal_control_v1_0/}
+
+\bibitem{cart3}
+B. Tenneson, \emph{Proof-State Cartography III: The Horizon Triangle with Geodesic Navigation -- Induction, Universal Proof Horizons, Shortest Settlement, Multiresolution Omnicartography, Trading, and Pioneer Breakthroughs}, Synthesis 003, September 17, 2026. Working manuscript.
+
+\bibitem{sicpf}
+B. Tenneson, \emph{Semi-Ideal Computers in Proof-Fiber Geometry: Machine-Accessible Geodesics, Exact Distance Certification, and Computational Regret}, Post-Audit Revised Edition, September 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/semi_ideal_computers_in_proof_fiber_geometry/}
+
+\bibitem{sicpf2}
+B. Tenneson, \emph{Semi-Ideal Computers in Proof-Fiber Geometry: SIC--BANK Trifiltrations, Macro Compression, Machine-Accessible Geodesics, and Computational Regret}, UTG-Enhanced Revision 002, September 18, 2026. Working manuscript.
+
+\bibitem{mc1}
+B. Tenneson, \emph{Metalogical Cartography I -- AMLD-5, Verified BANK Geometry, and Settlement Acceleration}, Post-Audit Revised Edition, September 15, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/metalogical_cartography_i/}
+
+\bibitem{omni}
+B. Tenneson, \emph{AMLDs as Cartographers, Pioneers, and Omnicartographers}, Post-Audit Consolidated Synthesis 004, September 16, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/amlds_cartographers_pioneers_omnicartographers/}
+
+\bibitem{mlsic}
+B. Tenneson, \emph{ML--SIC--ATP Theory -- Learned Search Policies for Proof Search}, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LG_Machine_Learning/ml_sic_atp_theory_learned_search_policies_for_proof_search/}
+
+\bibitem{geo}
+B. Tenneson, \emph{Geodesic Continuation and Multiresolution Omnicartography}, September 16, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/geodesic_continuation_and_multiresolution_omnicartography/}
+
+\bibitem{aco}
+B. Tenneson, \emph{Ant-Colony Rendezvous for Verifier-Backed Bidirectional Proof Search: Certified Regression, Scout Fusion, Bridge Bounds, and Proof-Horizon Estimates}, Working Theorem Draft 001, September 2026.
+
+\bibitem{trading}
+B. Tenneson, \emph{Trading Theorem 003 -- Mutual Reproducibility, Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search}, Audited Corrected Edition, September 17, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/trading_theorem_003/}
+
+\bibitem{church}
+A. Church, ``An Unsolvable Problem of Elementary Number Theory,'' \emph{American Journal of Mathematics}, 58(2):345--363, 1936.
+
+\bibitem{turing}
+A. M. Turing, ``On Computable Numbers, with an Application to the Entscheidungsproblem,'' \emph{Proceedings of the London Mathematical Society}, 2nd ser., 42:230--265, 1936.
+
+\bibitem{rogers}
+H. Rogers Jr., \emph{Theory of Recursive Functions and Effective Computability}, MIT Press, 1987.
+
+\bibitem{handbook}
+J. A. Robinson and A. Voronkov (eds.), \emph{Handbook of Automated Reasoning}, 2 vols., Elsevier/MIT Press, 2001.
+\end{thebibliography}
+
+\end{document}
