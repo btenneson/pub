@@ -1,0 +1,182 @@
+name: Publish AMLD II Decision Geometry 002 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_amld_ii_decision_geometry_002_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LaTeX and verification tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install pymupdf==1.26.4
+
+      - name: Compile approved source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .build/amld2
+          cp incoming_publications/amld_ii_decision_geometry_002/source.tex .build/amld2/source.tex
+          test "$(wc -c < .build/amld2/source.tex)" -eq 51969
+          test "$(sha256sum .build/amld2/source.tex | awk '{print $1}')" = "f9b03cccd35af01c341dbd54220054e99e4335b50fc0b2e287191810509f5551"
+          grep -q '\\end{document}' .build/amld2/source.tex
+          if grep -Eqi 'post[- ]audit|audited|audit revision|audit-driven|publication audit' .build/amld2/source.tex; then
+            echo "Public source contains editorial audit language."
+            exit 1
+          fi
+          cd .build/amld2
+          for i in 1 2 3; do
+            pdflatex -interaction=nonstopmode -halt-on-error source.tex
+          done
+          test -s source.pdf
+
+      - name: Verify compiled paper
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, re
+          pdf=Path('.build/amld2/source.pdf')
+          doc=fitz.open(pdf)
+          assert len(doc)==18, f'Expected 18 pages, got {len(doc)}'
+          assert all(doc[i].get_text().strip() for i in range(len(doc))), 'Unreadable or empty PDF page'
+          p1=re.sub(r'\s+',' ',doc[0].get_text()).strip()
+          assert 'Automated Metalogical Deciders II' in p1
+          p11=re.sub(r'\s+',' ',doc[10].get_text()).strip()
+          assert 'same settlement; different geometry.' in p11
+          text=' '.join(re.sub(r'\s+',' ',p.get_text()).strip() for p in doc)
+          assert not re.search(r'(?i)post[- ]audit|audited|audit revision|audit-driven|publication audit', text)
+          print('PASS: 18-page paper compiled; title, quote, readability, and public wording verified.')
+          PY
+
+      - name: Stage publication files
+        shell: bash
+        run: |
+          set -euo pipefail
+          PUB='cs.LO_Logic_in_Computer_Science/automated_metalogical_deciders_ii_decision_geometry_002'
+          DOCS='docs/cs.LO_Logic_in_Computer_Science/automated_metalogical_deciders_ii_decision_geometry_002'
+          PDF='Automated_Metalogical_Deciders_II_Decision_Geometry_002.pdf'
+          mkdir -p "$PUB" "$DOCS"
+          cp .build/amld2/source.pdf "$PUB/$PDF"
+          cp .build/amld2/source.pdf "$DOCS/$PDF"
+          cp .build/amld2/source.tex "$DOCS/source.tex"
+
+      - name: Promote publication to slot 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, fitz
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/automated_metalogical_deciders_ii_decision_geometry_002'
+          pdf_name='Automated_Metalogical_Deciders_II_Decision_Geometry_002.pdf'
+          pdf=root/pub_id/pdf_name
+          docs_pdf=root/'docs'/pub_id/pdf_name
+          source=root/'docs'/pub_id/'source.tex'
+          assert pdf.is_file() and docs_pdf.is_file() and source.is_file()
+          assert hashlib.sha256(pdf.read_bytes()).hexdigest()==hashlib.sha256(docs_pdf.read_bytes()).hexdigest()
+          digest=hashlib.sha256(pdf.read_bytes()).hexdigest()
+          pages=len(fitz.open(pdf))
+          assert pages==18
+
+          cat=root/'scripts/publications.json'
+          data=json.loads(cat.read_text())
+          old=[x for x in data['items'] if x.get('id') != pub_id]
+          item={
+            'title':'Automated Metalogical Deciders II — Decision Geometry, Verified BANK Compression, and Five-Role Cooperative Settlement Theory',
+            'kind':'Core paper',
+            'quote':'same settlement; different geometry.',
+            'quote_page':11,
+            'card_text':'A modern successor to the earlier AMLD Part Two, rebuilt on the Version 48 five-role P/R/D/I/C architecture. It develops decision-boundary geometry over genuine theory-strengthening packages, inclusion-minimal bridge cores, verifier-gated BANK quotient compression, an exact exponential-to-linear diamond family, cross-channel horizon gains, consistency-qualified decision, trading invariance, ATLAS forward/backward navigation, certified difficulty and regret, and a SAT specialization showing when the general AMLD collapses to P/R plus verified reuse.',
+            'subject':'cs.LO_Logic_in_Computer_Science',
+            'id':pub_id,
+            'href':pub_id+'/',
+            'pdf':pub_id+'/'+pdf_name,
+            'archive_path':pub_id+'/'+pdf_name,
+            'sha256':digest,
+            'pages':pages,
+            'order':-8,
+            'source':pub_id+'/source.html',
+            'authors':'Brian Tenneson',
+            'source_file':pub_id+'/source.tex',
+            'classification_note':'Research Edition 002, September 18, 2026. Five-role AMLD settlement theory integrating decision geometry, verified BANK compression, cross-channel cooperation, trading, ATLAS navigation, certified difficulty, and SAT specialization. Subject classification: cs.LO — Logic in Computer Science.'
+          }
+          data['items']=[item]+old
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          PY
+
+      - name: Increase restored-catalog expected count
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/build_publications_106.py')
+          s=p.read_text()
+          if '!= 118:' in s:
+              s=s.replace('!= 118:', '!= 119:')
+              s=s.replace('Expected 118 cards after restoration', 'Expected 119 cards after restoration')
+          assert '!= 119:' in s, 'Could not establish 119-card restored catalog expectation'
+          p.write_text(s)
+          PY
+
+      - name: Rebuild and validate publication library
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json, re
+          pub_id='cs.LO_Logic_in_Computer_Science/automated_metalogical_deciders_ii_decision_geometry_002'
+          pdf_name='Automated_Metalogical_Deciders_II_Decision_Geometry_002.pdf'
+          docs=Path('docs')
+          search=json.loads((docs/'search-index.json').read_text())
+          assert search['count']==119, search['count']
+          assert search['items'][0]['id']==pub_id, 'New paper is not slot #1'
+          first=search['items'][0]
+          assert first['pages']==18
+          assert first['quote']=='same settlement; different geometry.'
+          reader=(docs/pub_id/'index.html').read_text()
+          source=(docs/pub_id/'source.html').read_text()
+          assert 'Download PDF' in reader and '>Source<' in reader
+          assert 'Research Edition 002' in reader
+          assert 'post-audit' not in reader.lower() and 'audited' not in reader.lower()
+          assert 'post-audit' not in source.lower() and 'audited' not in source.lower()
+          homepage=(docs/'index.html').read_text()
+          first_card=homepage.split('<article class="card"',1)[1].split('</article>',1)[0]
+          assert 'Automated Metalogical Deciders II' in first_card
+          assert (docs/pub_id/pdf_name).is_file()
+          print('PASS: AMLD II is slot #1; 119-card catalog, reader, PDF, and source verified.')
+          PY
+
+      - name: Remove one-time staging payload
+        run: rm -rf incoming_publications/amld_ii_decision_geometry_002
+
+      - name: Commit tested publication and regenerated library
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Publish AMLD II Decision Geometry 002 as card 1'
+            git push
+          fi
