@@ -1,0 +1,158 @@
+name: Publish Universal Settlement Horizons 002 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_universal_settlement_horizons_002_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LaTeX and audit tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install pymupdf==1.26.4
+
+      - name: Reconstruct source and compile canonical PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .build/ush
+          cat incoming_publications/universal_settlement_horizons_002/source.tex.gz.b64.part* | base64 -d | gzip -d > .build/ush/Universal_Settlement_Horizons_002_Corrected.tex
+          test "$(wc -c < .build/ush/Universal_Settlement_Horizons_002_Corrected.tex)" -eq 51452
+          test "$(sha256sum .build/ush/Universal_Settlement_Horizons_002_Corrected.tex | awk '{print $1}')" = "3861a6c6ac1142d69fd8ee693615811afb5f8f4a76afabfc27923c97874f14fe"
+          grep -q '\\end{document}' .build/ush/Universal_Settlement_Horizons_002_Corrected.tex
+          cd .build/ush
+          pdflatex -interaction=nonstopmode -halt-on-error Universal_Settlement_Horizons_002_Corrected.tex
+          pdflatex -interaction=nonstopmode -halt-on-error Universal_Settlement_Horizons_002_Corrected.tex
+          test -s Universal_Settlement_Horizons_002_Corrected.pdf
+
+      - name: Verify compiled paper and stage publication files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, re
+          pdf = Path('.build/ush/Universal_Settlement_Horizons_002_Corrected.pdf')
+          doc = fitz.open(pdf)
+          assert len(doc) == 15, f'Expected 15 pages, got {len(doc)}'
+          p1 = re.sub(r'\s+', ' ', doc[0].get_text()).strip()
+          assert 'Universal Settlement Horizons' in p1
+          quote = 'finite breakthrough depth does not imply effective knowledge of when the breakthrough process is finished.'
+          assert quote in p1, p1
+          print('PASS: 15-page corrected paper compiled; title and slot-card quote verified on page 1.')
+          PY
+          PUB='cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002'
+          DOCS='docs/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002'
+          mkdir -p "$PUB" "$DOCS"
+          cp .build/ush/Universal_Settlement_Horizons_002_Corrected.pdf "$PUB/Universal_Settlement_Horizons_002_Corrected.pdf"
+          cp .build/ush/Universal_Settlement_Horizons_002_Corrected.pdf "$DOCS/Universal_Settlement_Horizons_002_Corrected.pdf"
+          cp .build/ush/Universal_Settlement_Horizons_002_Corrected.tex "$DOCS/source.tex"
+
+      - name: Insert audited synthesis as publication card 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, fitz
+          root = Path('.')
+          pub_id = 'cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002'
+          pdf_name = 'Universal_Settlement_Horizons_002_Corrected.pdf'
+          pdf = root / pub_id / pdf_name
+          doc_pdf = root / 'docs' / pub_id / pdf_name
+          tex = root / 'docs' / pub_id / 'source.tex'
+          assert pdf.is_file() and doc_pdf.is_file() and tex.is_file()
+          assert hashlib.sha256(pdf.read_bytes()).hexdigest() == hashlib.sha256(doc_pdf.read_bytes()).hexdigest()
+          digest = hashlib.sha256(pdf.read_bytes()).hexdigest()
+          pages = len(fitz.open(pdf))
+          assert pages == 15
+
+          cat = root / 'scripts/publications.json'
+          data = json.loads(cat.read_text())
+          old = [x for x in data['items'] if x.get('id') != pub_id]
+          item = {
+              'title': 'Universal Settlement Horizons — Canonical Minimum AMLD Certificates, Finite Breakthrough Ladders, and the Noncomputability of the Last Breakthrough',
+              'kind': 'Core paper',
+              'quote': 'finite breakthrough depth does not imply effective knowledge of when the breakthrough process is finished.',
+              'quote_page': 1,
+              'card_text': 'Corrected synthesis linking the Universal Proof-Horizon Operator, Depths of Induction Version 48, and AMLD-to-ATP settlement compilation. It defines canonical minimum compiled settlement horizons, proves finite breakthrough ladders under cost-nonincreasing BANK persistence, and gives a self-contained halting reduction showing that no uniform last-breakthrough detector exists. The paper explicitly separates self-contained results from claims that remain conditional on unfinished source manuscripts.',
+              'status': 'DEPENDENCY STATUS — MAIN THEOREM 4 is self-contained apart from standard computability theory; settlement-operator transfer results remain conditional where they invoke unfinished source [1] and/or [3].',
+              'subject': 'cs.LO_Logic_in_Computer_Science',
+              'id': pub_id,
+              'href': pub_id + '/',
+              'pdf': pub_id + '/' + pdf_name,
+              'archive_path': pub_id + '/' + pdf_name,
+              'sha256': digest,
+              'pages': pages,
+              'order': -6,
+              'source': pub_id + '/source.html',
+              'authors': 'Brian Tenneson',
+              'source_file': pub_id + '/source.tex',
+              'classification_note': 'Corrected Research Synthesis 002, September 18, 2026. Explicit dependency ledger included. MAIN THEOREM 4 is self-contained apart from standard computability theory; settlement-operator transfer results remain conditional where they invoke unfinished source [1] and/or [3]. Subject classification: cs.LO — Logic in Computer Science.'
+          }
+          data['items'] = [item] + old
+          cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+          PY
+
+      - name: Update restored-catalog expected count
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/build_publications_106.py')
+          s = p.read_text()
+          s = s.replace('!= 116:', '!= 117:')
+          s = s.replace('Expected 116 cards after restoration', 'Expected 117 cards after restoration')
+          p.write_text(s)
+          PY
+
+      - name: Rebuild and audit publication library
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          pub_id = 'cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002'
+          index = Path('docs/index.html').read_text()
+          first_card = index.split('<article class="card"', 1)[1].split('</article>', 1)[0]
+          assert 'Universal Settlement Horizons' in first_card, 'Universal Settlement Horizons is not slot #1'
+          assert 'DEPENDENCY STATUS' in first_card, 'Dependency status missing from slot #1 card'
+          search = json.loads(Path('docs/search-index.json').read_text())
+          assert search['count'] == 117, search['count']
+          assert search['items'][0]['id'] == pub_id
+          reader = (Path('docs') / pub_id / 'index.html').read_text()
+          assert 'Download PDF' in reader and '>Source<' in reader
+          assert 'Explicit dependency ledger included' in reader
+          print('PASS: publication is slot #1; 117-card catalog, reader, source, and dependency status verified.')
+          PY
+
+      - name: Remove one-time staging payload
+        run: rm -rf incoming_publications/universal_settlement_horizons_002
+
+      - name: Commit publication
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Publish Universal Settlement Horizons 002 as card 1'
+            git push
+          fi
