@@ -1,0 +1,1191 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Oracle and Omnicartographer Theory — A Running Mathematical Development — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/oracle_omnicartographer_theory_003/">Back to publication</a><h1>Oracle and Omnicartographer Theory — A Running Mathematical Development</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/oracle_omnicartographer_theory_003/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{setspace}
+\setstretch{1.03}
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0.15em}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=black,citecolor=black,pdftitle={Oracle and Omnicartographer Theory},pdfauthor={Brian Tenneson}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{criterion}[theorem]{Criterion}
+
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\Dir}{\operatorname{Dir}}
+\newcommand{\HC}{\operatorname{HC}}
+\newcommand{\Rge}{\mathbb{R}_{\ge 0}}
+\newcommand{\Qge}{\mathbb{Q}_{\ge 0}}
+\newcommand{\N}{\mathbb{N}}
+
+\title{\textbf{Oracle and Omnicartographer Theory}\\[0.35em]\large A Running Mathematical Development}
+\author{Brian Tenneson}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This running document consolidates the developing theory of Pioneers, automated metalogical deciders (AMLDs), Oracles, and Omnicartographers. The central idea is that a Pioneer occupies a verified proof state and seeks a settlement region for a target, while an Omnicartographer supplies certified directional information toward a nearest admissible geodesic leading to such a region. The theory separates logical verification from cartographic guidance, treats fractional time through semigroup or Abel embeddings rather than through new inference rules, and studies promotion from Pioneer to increasingly informed cartographic roles. The document is intentionally maintained as a running source: definitions and results can be strengthened as the theory develops.
+\end{abstract}
+
+\tableofcontents
+
+\section{Proof-state geometry}
+Let
+\[
+G=(V,E,w)
+\]
+be a directed weighted graph of proof states, with positive edge costs $w$. A vertex represents a verifier-recognized logical state. An admissible edge represents a permitted transition. Fix a target $T$. Rather than insisting that $T$ itself be reached, let $\Sigma_T\subseteq V$ be the relevant settlement region: states at which the status of $T$ has been settled in one of the permitted senses.
+
+For a state $x$, define its settlement horizon
+\[
+H_T(x)=d(x,\Sigma_T)=\inf_{z\in\Sigma_T} d(x,z).
+\]
+When the infimum is attained, a shortest path from $x$ to a nearest point of $\Sigma_T$ is a settlement geodesic.
+
+\begin{proposition}[One-step geodesic criterion]
+An admissible edge $x\to y$ lies at the beginning of a settlement geodesic whenever
+\[
+H_T(x)=w(x,y)+H_T(y).
+\]
+For unit edge cost this becomes
+\[
+H_T(y)=H_T(x)-1.
+\]
+\end{proposition}
+
+Thus the basic directional question is not merely ``which move looks useful?&#x27;&#x27; but ``which admissible move satisfies the geodesic equality toward an appropriate settlement region?&#x27;&#x27;
+
+\section{Pioneers and AMLDs}
+\begin{definition}[Pioneer]
+A Pioneer is a proof-searching system occupying a current verified state $x$, attempting to move through admissible transitions toward settlement of a target $T$. The Pioneer may search, propose, and test transitions, but a proposed logical transition becomes trusted only after verifier acceptance.
+\end{definition}
+
+An AMLD may be viewed as a coordinated collection of proof-search channels sharing a certified $\BANK$. The channels can pursue proof, refutation, dependence or independence certificates, contradiction detection, or other formally declared settlement modes. The precise channel vocabulary may vary with the formal system; what matters here is that the $\BANK$ contains only verifier-accepted information.
+
+The shared $\BANK$ makes the AMLD more than five isolated searches: information certified by one channel may change the geometry visible to the others. Hence the effective horizon can be dynamic.
+
+\section{Oracle and Omnicartographer}
+\begin{definition}[Oracle]
+Relative to a declared state space, target, settlement semantics, admissibility relation, and geometry, an Oracle is a system capable of supplying specified correct information that is not assumed to be available to the Pioneer by its ordinary local search alone.
+\end{definition}
+
+\begin{definition}[Omnicartographer]
+An Omnicartographer is an Oracle specialized to proof-state cartography. At a current Pioneer state $x$, it identifies, when such data exist, a nearest admissible geodesic associated with a settlement region containing a settlement of $T$, and supplies directional information telling the Pioneer how to move toward or onto that geodesic and then toward settlement.
+\end{definition}
+
+This definition deliberately separates knowing the map from performing the proof. The Omnicartographer may indicate a route, but the Pioneer or AMLD still performs the proposed proof work, and the verifier remains the gatekeeper for the trusted $\BANK$.
+
+A useful informal picture is a trail crew. The Pioneer is on the trail. The Omnicartographer has already climbed high enough to see the relevant terrain and radios directions to the crew. Nothing in this metaphor requires consciousness or phenomenology; the roles are formal computational roles.
+
+\section{Nearest geodesic guidance}
+There are two related guidance problems.
+\begin{enumerate}[label=(\arabic*)]
+\item If the Pioneer already lies on a settlement geodesic, identify a next geodesic direction.
+\item If the Pioneer does not lie on one, identify a direction toward a nearest admissible geodesic that leads to the relevant settlement region.
+\end{enumerate}
+The second problem is genuinely cartographic: it treats a geodesic itself as a target set before the final settlement region is reached.
+
+Let $\mathcal G_T$ denote the admissible family of settlement geodesics for $T$. One may define
+\[
+D_T(x)=\inf_{\gamma\in\mathcal G_T} d(x,\gamma).
+\]
+An Omnicartographer can therefore have a two-stage objective: first decrease $D_T$, then, after attachment to a chosen $\gamma$, decrease the remaining settlement horizon along $\gamma$.
+
+\section{Directional gaps and certification}
+Suppose candidate successors $y$ of $x$ have exact continuation costs
+\[
+Q(y)=w(x,y)+H_T(y).
+\]
+Let $y^*$ be best and let the runner-up have value $Q_2$. Define the directional gap
+\[
+\Delta(x)=Q_2-Q(y^*).
+\]
+If all candidate estimates have absolute error at most $\varepsilon$, then
+\[
+\varepsilon&lt;\frac{\Delta(x)}{2}
+\]
+is sufficient to certify the identity of the best successor in the worst case.
+
+More generally, with certified intervals
+\[
+H_T(y)\in[L_r(y),U_r(y)],
+\]
+a successor $y^*$ is certified when
+\[
+w(x,y^*)+U_r(y^*)&lt;w(x,z)+L_r(z)
+\]
+for every competing successor $z$. This supports a refine--certify--move strategy: increase map resolution only until the next direction is certified.
+
+\section{Induction along an oracle-guided route}
+Suppose the Oracle knows the present verified state $x_0$, and at every accepted integer time supplies a successor satisfying the geodesic equality. For unit costs, if
+\[
+H_T(x_0)=N&lt;\infty
+\]
+and
+\[
+H_T(x_{n+1})=H_T(x_n)-1,
+\]
+then induction gives
+\[
+H_T(x_n)=N-n
+\]
+for $0\le n\le N$. Thus settlement occurs at accepted step $N$.
+
+For an AMLD with a changing $\BANK$, the appropriate statement is weaker unless the geometry is frozen: verified contributions can change available routes and settlement distances. The important invariant is that accepted information is not confused with unverified advice, and rerouting is performed relative to the current certified state.
+
+\section{Promotion: Pioneer, Cartographer, Omnicartographer, Oracle}
+The roles can be organized by information rather than by prestige.
+
+A Pioneer searches from its current verified state. A Cartographer possesses some certified map information about the surrounding proof-state geometry. An Omnicartographer possesses enough map information to answer the declared geodesic-direction query throughout its specified domain. An Oracle is the more general information role: Omnicartography is one species of oracle behavior.
+
+A natural promotion relation is therefore an information-extension relation. Write
+\[
+M_1\preceq M_2
+\]
+when every certified cartographic query answer available to $M_1$ remains available to $M_2$, with $M_2$ possibly answering more queries or answering at higher resolution.
+
+\begin{definition}[Promotion]
+A transition $M_1\to M_2$ is a promotion when $M_1\preceq M_2$ and the extension is strict in domain, resolution, or certified query power.
+\end{definition}
+
+\subsection{Why demotion needs a precise meaning}
+If ``knowledge&#x27;&#x27; means an immutable certified database of facts and the successor system retains that database, then certified information is monotone:
+\[
+K(M_1)\subseteq K(M_2).
+\]
+Under that convention, informational demotion is impossible.
+
+But this is not automatic merely because an Oracle once knew something. A system can lose storage, access, decoding ability, or query capability unless these are part of the model. Therefore a no-demotion theorem requires persistence hypotheses.
+
+\begin{theorem}[No-demotion under persistent certified knowledge]
+Let $K(M)$ be the set of certified cartographic propositions retrievable by model $M$. Suppose every allowed successor transition $M\to M&#x27;$ satisfies
+\[
+K(M)\subseteq K(M&#x27;).
+\]
+Then no finite or transfinite chain of allowed successor transitions can produce an informational demotion in the order induced by set inclusion.
+\end{theorem}
+
+\section{Maximal cartographers and the role of Zorn&#x27;s lemma}
+A maximum and a maximal element are different.
+
+A maximum Omnicartographer $M^\star$ would satisfy
+\[
+M\preceq M^\star
+\]
+for every admissible Cartographer $M$. A maximal one merely has no strictly larger admissible extension.
+
+Zorn&#x27;s lemma can establish the existence of a maximal element when the admissible Cartographers form a partially ordered set in which every chain has an upper bound inside the same class. It does not by itself produce a maximum, nor does it show that a maximal Cartographer answers every conceivable query.
+
+Accordingly, the strongest useful route is often constructive: specify the query domain $D$, define what constitutes a complete answer function on $D$, and show that the union or completion of compatible certified maps remains admissible. If that construction yields an element extending every member, it is a maximum. If only chain upper bounds are available, Zorn gives maximality.
+
+\section{Discrete time, semigroups, and flows}
+Let $F$ denote one accepted Pioneer update. Integer-time evolution is
+\[
+x,F(x),F^2(x),\ldots.
+\]
+To ask an Oracle meaningful questions at half-steps, rational times, or real times, one needs more structure than the discrete map $F$.
+
+\begin{definition}[Semigroup embedding]
+Let $D\subseteq\Rge$ contain $0$ and $1$ and be closed under the relevant additions. A $D$-parameter semigroup embedding of $F$ is a family $(\Phi_t)_{t\in D}$ satisfying
+\[
+\Phi_0=\mathrm{id},\qquad \Phi_1=F,\qquad \Phi_{s+t}=\Phi_s\circ\Phi_t
+\]
+whenever $s,t,s+t\in D$.
+\end{definition}
+
+This supplies a coherent meaning to noninteger time. The interpolated states need not be new verifier-valid proof states. They may instead be transit, computation, or cartographic states between accepted logical states.
+
+\section{Abel&#x27;s equation}
+A particularly clean construction uses an Abel coordinate.
+
+\begin{criterion}[Abel embedding criterion]
+Suppose there is an injective coordinate $A$ on the relevant orbit or chart such that
+\[
+A(Fx)=A(x)+1.
+\]
+Assume further that $A(X)$ is closed under the desired translations and that $A^{-1}$ is defined there. Then
+\[
+\Phi_t(x)=A^{-1}(A(x)+t)
+\]
+defines the corresponding fractional-time evolution and satisfies
+\[
+\Phi_0=\mathrm{id},\qquad \Phi_1=F,\qquad \Phi_{s+t}=\Phi_s\circ\Phi_t.
+\]
+\end{criterion}
+
+Thus Abel&#x27;s functional equation converts iteration into translation. Integer steps become additions by integers; half-steps become additions by $1/2$; real-time evolution becomes translation by $t$, provided the coordinate and its inverse exist on the required translated domain.
+
+Iterative roots alone are weaker. A map $R$ with $R^m=F$ supplies an $m$-th step, but a family of unrelated roots does not automatically satisfy the compatibility laws needed for a flow. Coherent roots should satisfy the same semigroup arithmetic.
+
+\section{Sufficient criteria for noninteger Oracle inputs}
+The following is a practical sufficient package.
+
+\begin{criterion}[Fractional-time Omnicartographer]
+An Omnicartographer can coherently accept times $t\in D\subseteq\Rge$ if:
+\begin{enumerate}[label=(\roman*)]
+\item the Pioneer dynamics admit a $D$-parameter semigroup $(\Phi_t)_{t\in D}$ with $\Phi_1=F$;
+\item every interpolated state $\Phi_t(x)$ belongs to a declared cartographic state space;
+\item settlement regions and the relevant geodesic objects persist or have well-defined interpolations on that space;
+\item distance, direction, or the replacement guidance functional is defined at those interpolated states;
+\item ties and nonuniqueness are handled by a declared selection rule or by returning a set of admissible directions; and
+\item only integer-time verifier-accepted logical states are deposited into the trusted $\BANK$ unless the formal verifier itself recognizes additional states.
+\end{enumerate}
+\end{criterion}
+
+These conditions justify statements such as ``after a half-step, turn left and move forward one&#x27;&#x27; without pretending that a half-step is itself a new logical inference rule.
+
+For rational inputs it is enough to construct coherent roots for the required denominators. For real inputs, additional regularity is normally desirable: for example continuity or another declared topology making $t\mapsto\Phi_t(x)$ a meaningful trajectory.
+
+\section{The Oracle&#x27;s continuous directional query}
+With a semigroup embedding available, define
+\[
+x(t)=\Phi_t(x_0).
+\]
+The Omnicartographer&#x27;s continuous-time query may be expressed schematically as
+\[
+O_T(t)=\text{direction at }x(t)\text{ toward a nearest admissible }\gamma\in\mathcal G_T,
+\]
+followed, after attachment, by the direction along $\gamma$ toward $\Sigma_T$.
+
+The domain may be
+\[
+D=\N,\quad \frac{1}{m}\N,\quad \Qge,\quad\text{or}\quad\Rge,
+\]
+depending on how much interpolation has actually been constructed.
+
+\section{Oracle handoff and persistence}
+Oracle handoff addresses a different issue from fractional time. Suppose an Oracle $O_k$ has disclosed information and an identity-local hazard would arise from that same Oracle remaining active at a later stage. A successor $O_{k+1}$ may copy the certified internal state of $O_k$, after which $O_k$ is retired. The successor retains the map but did not itself make the earlier disclosure.
+
+This can preserve certified cartographic information while changing disclosure identity. Its scope must be stated carefully: it addresses hazards whose conditions are genuinely identity-local. It does not automatically eliminate diagonal, L\&quot;obian, liar-type, prediction-type, or content-sensitive paradoxes whose conditions survive copying.
+
+Repeated handoff naturally produces an indexed family
+\[
+O_0,O_1,O_2,\ldots
+\]
+with monotone certified map inheritance. This interacts naturally with the promotion order: a handoff may preserve rank, while a handoff combined with additional certified map information may also be a promotion.
+
+\section{Countable oracle federations}
+A single Omnicartographer need not cover every useful domain. Let
+\[
+D_\infty=\bigcup_{i\in\N}D_i
+\]
+where Oracle $O_i$ is certified on $D_i$. Under effective indexing, fair scheduling, verifier acceptance, and accessible certified outputs, an AMLD can use the certified union of the federation without treating any individual member as globally omniscient.
+
+This provides another route to increasing cartographic power: promotion can occur by federation and certified union rather than by assuming one physically monolithic Oracle.
+
+\section{Oracle-to-Oracle Promotion}
+Oracle is best regarded as a role or class rather than automatically as the final rank of an information hierarchy. Let $Q(O)$ denote the certified query domain of an Oracle $O$, and let $K(O)$ denote its certified information state.
+
+\begin{definition}[Oracle promotion]
+For Oracles $O_0,O_1$, write
+\[
+O_0\preceq O_1
+\]
+when every certified capability of $O_0$ is retained by $O_1$. Write
+\[
+O_0\prec O_1
+\]
+when the extension is strict, for example because
+\[
+Q(O_0)\subsetneq Q(O_1)
+\]
+or because $K(O_0)\subsetneq K(O_1)$ yields strictly greater certified query power.
+\end{definition}
+
+Thus there can be a hierarchy
+\[
+O_0\prec O_1\prec O_2\prec\cdots.
+\]
+There is no reason for the word ``Oracle&#x27;&#x27; alone to terminate this hierarchy. Termination requires an additional completeness or maximality property.
+
+\begin{definition}[Pure handoff and promotional handoff]
+A pure handoff $O\rightsquigarrow O&#x27;$ preserves certified capability while changing successor identity. A promotional handoff additionally produces strictly greater certified capability:
+\[
+K(O)\subsetneq K(O&#x27;).
+\]
+\end{definition}
+
+A useful model is
+\[
+K(O_{n+1})=\Cl\bigl(K(O_n)\cup H(O_n)\bigr),
+\]
+where $H(O_n)$ is certified information made available by the completed history or episode of $O_n$. Handoff therefore need not be promotion, but it can serve as a promotion mechanism when succession exposes genuinely new certifiable information.
+
+\subsection{Oracle-of-Oracle Promotion}
+There is a meaningful higher-order analogue of Cartographer-to-Omnicartographer promotion, but it should not be identified merely with a stronger ordinary Oracle.
+
+Let $O$ answer certified object-level queries about a domain $X$. An Oracle of Oracles, written $O^{(2)}$, has Oracles themselves (or their certified states, capabilities, and outputs) among the objects of its declared query domain. Thus $O^{(2)}$ may answer certified questions such as which Oracle covers a requested query, whether one Oracle extends another, whether a handoff is capability-preserving or promotional, or whether a declared Oracle has reached a fixed point of a specified promotion operator.
+
+Accordingly, promotion
+\[
+O\longrightarrow O^{(2)}
+\]
+is a type-level or meta-oracular promotion: the query language has been lifted from statements about the original proof domain to statements about Oracle systems operating on that domain.
+
+This differs from ordinary Oracle-to-Oracle strengthening
+\[
+O_0\prec O_1,
+\]
+where both Oracles remain at the same query level but the latter has greater coverage, resolution, or certified information.
+
+The construction can in principle be iterated:
+\[
+O^{(1)},O^{(2)},O^{(3)},\ldots,
+\]
+where $O^{(n+1)}$ is certified to answer a declared class of questions about level-$n$ Oracles. Such a hierarchy is not automatically well-founded, complete, paradox-free, or strictly increasing; each level requires an explicit query language and certification semantics.
+
+Handoff may assist this promotion if the successor inherits the predecessor&#x27;s certified object-level information and gains certified access to the completed predecessor as an object of analysis. In that case handoff can provide the change of viewpoint needed for
+\[
+O^{(1)}\rightsquigarrow O^{(2)}.
+\]
+Handoff alone, however, does not guarantee the higher-order capability.
+
+\subsection{Computability boundary: halting-type queries}
+Higher-order Oracle promotion encounters a fundamental computability boundary. If an Oracle-of-Oracles is required, for arbitrary encoded programs or proof searchers, to decide whether the queried system will ever halt, settle, emit a certificate, or reach a specified state, then its query language contains the classical halting problem (or an immediate reduction of it). No ordinary effective algorithm can answer all such queries correctly.
+
+Accordingly, the theory must distinguish bounded or certified questions from unrestricted eventuality questions. Examples such as ``does this search settle within $N$ steps?&#x27;&#x27;, ``has this certificate been verified?&#x27;&#x27;, and finite-state reachability in a declared finite transition system may be decidable. In contrast, ``will this arbitrary search ever settle?&#x27;&#x27; can encode halting.
+
+The same issue recurs at higher levels. Granting a genuine halting Oracle at one level does not collapse every higher-order decision problem: machines allowed to query that Oracle have their own relativized halting problem. Thus the hierarchy $O^{(1)},O^{(2)},\ldots$ should not be interpreted as an automatic route to a single effective universal decider.
+
+Handoff does not remove this obstruction. Copying, succession, or treating a predecessor as an object of analysis can expose additional certified historical information, but an effective handoff construction cannot thereby decide the unrestricted halting problem for arbitrary computations. Handoff remains useful for bounded, historical, structural, and fixed-point questions whose required information is actually available and certifiable.
+
+\subsection{Iterated Meta-Oracle Hierarchy}
+There is no principled reason to stop at an Oracle-of-Oracles. Once the query language permits an Oracle to take lower-level Oracles as objects, the same type-lifting construction can be iterated.
+
+Write $O^{(1)}$ for an object-level Oracle. Recursively, $O^{(n+1)}$ is a level-$(n+1)$ Oracle whose declared query domain includes certified representations of level-$n$ Oracles, their capabilities, outputs, handoffs, promotion relations, and other permitted properties. Thus
+\[
+O^{(1)},O^{(2)},O^{(3)},\ldots
+\]
+correspond informally to Oracle, Oracle&#x27;s Oracle, Oracle&#x27;s Oracle&#x27;s Oracle, and so on.
+
+This is a hierarchy of query type, not automatically a hierarchy of strictly greater total power. To prove
+\[
+O^{(n)}\prec O^{(n+1)}
+\]
+one must exhibit a certified level-$(n+1)$ query capability not reducible to the declared capabilities of level $n$.
+
+At the first limit level one may consider
+\[
+O^{(\omega)}
+\]
+whose domain contains suitably encoded finite-level Oracles and whose certified state is constructed, when admissible, from a closure of the finite hierarchy. The existence of such a limit object and its properties require explicit closure and representation assumptions; the notation alone does not establish them.
+
+The hierarchy can also be continued beyond $\omega$ by successor and limit constructions when the formal system supplies the required representations and closure operations. No absolute terminal level follows merely from the word ``Oracle.&#x27;&#x27;
+
+This higher-order hierarchy is distinct from same-level strengthening:
+\[
+O^{(n)}_0\prec O^{(n)}_1
+\]
+increases capability while retaining query level $n$, whereas
+\[
+O^{(n)}\longrightarrow O^{(n+1)}
+\]
+changes the type of objects about which certified queries may be asked.
+
+Computability limitations recur at every level. If a level-$n$ Oracle is granted a particular noncomputable decision capability, computations allowed to query it can possess a new relativized halting problem. Therefore iterated meta-Oracle promotion should not be interpreted as an effective construction that eventually decides every possible question.
+
+Handoff can support a level transition when a successor inherits the predecessor and also obtains a certified representation of that predecessor as an object of meta-level analysis. Such a handoff supplies a possible mechanism for $O^{(n)}$ to contribute to the construction of $O^{(n+1)}$, but handoff alone does not prove that the higher-order query capability exists.
+
+\section{The Handoff Completion Problem}
+Let $\mathcal L$ be the ordered collection of admissible certified Oracle knowledge states, ordered by informational inclusion. Let
+\[
+H:\mathcal L\to\mathcal L
+\]
+be the handoff operator: inherit the certified state, add whatever new certified information the successor is permitted to obtain from the predecessor&#x27;s completed episode, and close under the permitted certification rules.
+
+The fundamental structural assumptions are
+\[
+K\le H(K)
+\]
+(inflationarity) and
+\[
+K\le L\Longrightarrow H(K)\le H(L)
+\]
+(monotonicity).
+
+Define the transfinite handoff hierarchy by
+\[
+K_0=K(O_0),\qquad K_{\alpha+1}=H(K_\alpha),
+\]
+and, at a limit ordinal $\lambda$,
+\[
+K_\lambda=\Cl\left(\bigcup_{\beta&lt;\lambda}K_\beta\right).
+\]
+
+\begin{theorem}[Handoff Completion Theorem]
+Suppose the admissible Oracle knowledge states form a set-sized complete lattice, and $H$ is monotone and inflationary. Then the transfinite iteration of $H$ above any initial state $K_0$ stabilizes: there is an ordinal $\gamma$ such that
+\[
+K_\gamma=K_{\gamma+1}.
+\]
+Consequently
+\[
+H(K_\gamma)=K_\gamma,
+\]
+so the corresponding Oracle is handoff-complete.
+\end{theorem}
+
+\begin{proof}
+Inflationarity makes the transfinite construction an increasing chain. If every successor stage were a strict increase for arbitrarily many ordinals, the construction would produce more distinct elements than the underlying set $\mathcal L$ contains. Hence some successor stage cannot be strict. For that $\gamma$,
+\[
+K_\gamma=K_{\gamma+1}=H(K_\gamma),
+\]
+which is precisely the fixed-point condition.
+\end{proof}
+
+\subsection{When omega already completes the handoff process}
+Let
+\[
+K_\omega=\Cl\left(\bigcup_{n&lt;\omega}K_n\right).
+\]
+If $H$ preserves the relevant increasing countable supremum, so that
+\[
+H\left(\Cl\left(\bigcup_{n&lt;\omega}K_n\right)\right)
+=\Cl\left(\bigcup_{n&lt;\omega}H(K_n)\right),
+\]
+then
+\[
+H(K_\omega)=\Cl\left(\bigcup_{n&lt;\omega}K_{n+1}\right)=K_\omega.
+\]
+Thus $O_\omega$ is already handoff-complete.
+
+If this continuity condition fails, the completed infinite history may expose new certified information, allowing
+\[
+O_\omega\prec O_{\omega+1}.
+\]
+The transfinite construction then continues until its first fixed point.
+
+\begin{definition}[Handoff-complete Oracle]
+An Oracle $O^*$ is handoff-complete when
+\[
+H(K(O^*))=K(O^*)
+\]
+up to the declared equivalence of certified query capability.
+\end{definition}
+
+Under the preceding hypotheses, the transfinite construction yields the least handoff-complete state extending the initial state. Denote this completion by
+\[
+\HC(O).
+\]
+It has the closure properties
+\[
+O\preceq\HC(O)
+\]
+and
+\[
+\HC(\HC(O))\equiv\HC(O).
+\]
+Handoff-completeness must not be confused with global maximality. It establishes only that the particular handoff operator can no longer enlarge the certified state. Another legitimate promotion mechanism may still do so.
+
+\section{Promotion Completion}
+Let
+\[
+\mathcal P=\{H,C,R,\ldots\}
+\]
+be a declared set of permitted promotion operators, such as handoff promotion, cartographic extension, and resolution refinement. Define their combined promotion operator by
+\[
+A(K)=\Cl\left(K\cup\bigcup_{P\in\mathcal P}P(K)\right).
+\]
+
+\begin{definition}[Promotion-complete Oracle]
+An Oracle $O^\star$ is promotion-complete relative to $\mathcal P$ when
+\[
+P(K(O^\star))\le K(O^\star)\qquad\text{for every }P\in\mathcal P.
+\]
+Equivalently, $K(O^\star)$ is a fixed point of the combined promotion closure $A$.
+\end{definition}
+
+\begin{theorem}[Promotion Completion Theorem]
+Let the admissible Oracle states form a set-sized complete lattice and let $\mathcal P$ be a set of monotone inflationary promotion operations whose combined closure $A$ maps admissible states to admissible states. Then above every starting Pioneer, Cartographer, or Oracle state there exists a least state fixed by $A$, obtainable by transfinite iteration.
+\end{theorem}
+
+\begin{proof}
+The combined operator $A$ is inflationary and monotone. Apply the same transfinite fixed-point construction used for handoff completion. The iteration stabilizes at a fixed point. Monotonicity shows by transfinite induction that every fixed point above the starting state contains every stage of the iteration, and hence contains the stabilized state. The stabilized state is therefore the least promotion-complete extension of the starting state.
+\end{proof}
+
+This result supplies a canonical endpoint only relative to the declared promotion family $\mathcal P$. It is not a claim of absolute omniscience. Adding a genuinely new admissible promotion operator can reopen the hierarchy. This distinction separates mathematical completion from an unrestricted claim that no stronger information system could exist.
+
+\section{AMLD Finite Settlement and Universal Proof Horizons}
+The halting boundary requires a careful distinction between the existence of a finite settlement, advance computability of its horizon, and Oracle knowledge of that horizon or its route.
+
+For a target $T$, let the AMLD settlement region be the union of all formally accepted settlement modes,
+\[
+\Sigma_T=\Sigma_T^P\cup\Sigma_T^R\cup\Sigma_T^I\cup\Sigma_T^C\cup\cdots,
+\]
+with the precise components determined by the declared AMLD semantics. When the relevant directed distance is defined, set
+\[
+H_{\mathrm{AMLD}}(T)=d(B_0,\Sigma_T).
+\]
+If the minimum exists over the component horizons, then
+\[
+H_{\mathrm{AMLD}}(T)=\min_i d(B_0,\Sigma_T^i).
+\]
+
+Because an AMLD recognizes several certificate types, its settlement region may be larger than the proof-only region of an ordinary prover. This can make more targets finitely settleable, but enlargement of the settlement region alone does not eliminate computability or incompleteness barriers.
+
+\subsection{Three horizon notions}
+The following notions must remain distinct.
+
+\begin{definition}[Existential finite horizon]
+A target $T$ has an existential finite settlement horizon when some accepted verifier-valid settlement certificate is reachable from the initial $\BANK$ at finite cost:
+\[
+H_{\mathrm{AMLD}}(T)&lt;\infty.
+\]
+This asserts existence; it does not assert that the horizon is computable in advance.
+\end{definition}
+
+\begin{definition}[Computable horizon bound]
+A computable horizon bound is an effective function $f(T)$ known in advance to satisfy
+\[
+H_{\mathrm{AMLD}}(T)\le f(T)
+\]
+on its declared domain.
+\end{definition}
+
+\begin{definition}[Oracle horizon]
+An Oracle horizon is correct horizon information supplied by an assumed Oracle. The existence of such information in the Oracle model is logically distinct from the existence of an ordinary effective procedure computing it.
+\end{definition}
+
+Thus
+\[
+\text{finite settlement exists}
+\not\Rightarrow
+\text{its horizon is computable in advance}
+\not\Rightarrow
+\text{its geodesic is effectively known}.
+\]
+Conversely, an explicitly assumed non-effective Oracle may be assigned horizon or geodesic information without thereby turning the underlying effective AMLD into an ordinary algorithm for the unrestricted halting problem.
+
+For sufficiently expressive effective systems, a computable universal finite bound for every target can be too strong: if bounded exhaustive search through that horizon decides the relevant certificate-existence question, such a bound would decide an otherwise undecidable problem.
+
+\begin{theorem}[Conditional Finite Settlement]
+Let $T$ be a target for which at least one accepted settlement certificate is reachable from $B_0$ by a finite verifier-valid path. Suppose the AMLD search is fair over the relevant finite-cost admissible proof paths, in the sense that every such candidate path is eventually explored to every finite depth required for its verification. Then the AMLD eventually encounters and verifies a finite settlement certificate for $T$.
+\end{theorem}
+
+\begin{proof}
+Choose a finite verifier-valid path from $B_0$ to an accepted settlement certificate for $T$. The path has finite length or finite search cost. Fairness guarantees that the AMLD eventually explores the required finite prefixes and ultimately the complete path. The verifier then accepts its final certificate, so settlement occurs after a finite stage of the fair search.
+\end{proof}
+
+This theorem is conditional rather than universal. It does not claim that every target possesses such a certificate, nor that the AMLD can decide in advance whether one exists.
+
+\subsection{Omnicartographic acceleration versus decidability}
+An Omnicartographer need not answer the unrestricted question ``Will arbitrary $T$ ever settle?&#x27;&#x27; in order to accelerate an AMLD. A safer contract is conditional:
+\[
+H_{\mathrm{AMLD}}(T)&lt;\infty
+\Longrightarrow
+\begin{array}{l}
+\text{when a settlement geodesic exists in its certified domain,}\\
+\text{provide certified guidance toward one.}
+\end{array}
+\]
+The Oracle may therefore improve navigation among finitely reachable settlements without being identified with an effective universal decider of settlement.
+
+This separates three tasks that should not be conflated:
+\[
+\begin{array}{c}
+\text{existence of finite settlement},\\[0.2em]
+\text{knowledge of the horizon},\\[0.2em]
+\text{knowledge of a settlement geodesic}.
+\end{array}
+\]
+The Universal Proof Horizon theory concerns the geometry and bounds associated with settlement; AMLD fairness concerns eventual discovery when a finite certificate is present; Omnicartography concerns directional information. Their interaction can be strong without erasing the classical computability boundary.
+
+\section{Induction, Compactness, Nonstandard Analysis, and Absolute-Size Analogies}
+This section records several distinct mathematical mechanisms that may illuminate the Oracle hierarchy. They must not be conflated: induction propagates properties through successor stages, compactness transfers finite satisfiability to model existence, nonstandard analysis supplies internal hyperfinite approximations inside enlarged models, and alternative set theories may change what kinds of ``large&#x27;&#x27; totalities are admitted.
+
+\subsection{Induction on finite meta-Oracle levels}
+Suppose a property $P(n)$ of level-$n$ Oracles satisfies a base case $P(1)$ and a promotion implication
+\[
+P(n)\Longrightarrow P(n+1).
+\]
+Ordinary induction then yields
+\[
+\forall n\in\N,\quad P(n).
+\]
+This establishes every standard finite level but does not by itself construct $O^{(\omega)}$. A limit object requires a separate closure, union, direct limit, or other admissible limit construction.
+
+Likewise, transfinite induction can propagate a property through a previously defined ordinal-indexed Oracle hierarchy, provided both successor and limit steps have been specified. Transfinite induction proves properties of such a hierarchy; it does not by itself create the hierarchy or establish that every stage is admissible.
+
+\subsection{Logical compactness}
+For first-order logic, compactness states that a theory has a model if every finite subset has a model. Consequently, if for every standard finite $n$ one can consistently specify an object satisfying the requirements of the first $n$ Oracle levels, then compactness may yield a model containing an object satisfying all of those finitely stated requirements simultaneously.
+
+This is a model-existence result. It does not automatically produce an effective Oracle, a canonical object, a maximum Oracle, or an object that decides its own full truth predicate. Compactness can therefore support a useful distinction between ``every finite demand is jointly satisfiable&#x27;&#x27; and ``there exists an effective procedure realizing all demands.&#x27;&#x27;
+
+\subsection{Nonstandard Oracle levels}
+In a nonstandard enlargement one may have a hyperinteger
+\[
+H\in{}^*\N\setminus\N.
+\]
+If the finite-level Oracle construction is internal and transfers appropriately, one can consider an internal level $O^{(H)}$. From the internal viewpoint $H$ behaves as a finite index, although externally it exceeds every standard natural number.
+
+This gives a precise sense in which one object can lie beyond every standard finite meta-Oracle level without being an ``absolutely final&#x27;&#x27; Oracle. An internal hyperfinite hierarchy
+\[
+O^{(1)},O^{(2)},\ldots,O^{(H)}
+\]
+may contain all standard finite levels as an initial part. Transfer may extend first-order finite-level statements to hyperfinite indices when their hypotheses are internal.
+
+External assertions require separate care. In particular, transfer does not turn an internal hyperfinite Oracle into a computable solution of the ordinary halting problem, nor does it make every external subset, truth predicate, or meta-level question internal.
+
+\subsection{Hyperfinite cartography}
+A useful possible application to Omnicartography is an internal hyperfinite map. A hyperfinite atlas may contain internally finitely many cells or proof states while externally containing more cells than any standard finite atlas. This can model arbitrarily high finite resolution simultaneously from the standard viewpoint.
+
+One may therefore distinguish
+\[
+\text{standard finite resolution},\qquad
+\text{hyperfinite internal resolution},\qquad
+\text{external/global completion}.
+\]
+The middle notion can be powerful without being identical to the third.
+
+\subsection{``Absolute infinity&#x27;&#x27; and Oracle terminology}
+Some foundational systems admit totalities or size notions unavailable in ZFC, including theories with universal sets, proper-class frameworks, and alternative notions of infinity. Historical and foundational uses of ``absolute infinity&#x27;&#x27; are not interchangeable, and no such notion should be identified with an Oracle without an explicit formal correspondence.
+
+Nevertheless, there is a useful structural analogy. A promotion-complete Oracle is complete only relative to a declared family of promotion operators $\mathcal P$. A meta-Oracle is complete only relative to a declared query language and representation regime. Attempting to form ``the Oracle containing every possible Oracle and every possible higher-order truth&#x27;&#x27; may cross from a set-sized object to a proper-class-like collection, or may encounter semantic limitations such as undefinability and diagonalization.
+
+Thus a candidate ``absolute Oracle&#x27;&#x27; should not initially be defined as merely the next member of
+\[
+O^{(1)},O^{(2)},O^{(3)},\ldots.
+\]
+A more defensible research question is whether there exists, in a specified foundation, a universal or class-level Oracle structure containing every set-sized admissible Oracle of a declared type while remaining outside the ordinary promotion order it organizes.
+
+This analogy may explain why there need be no largest set-sized Oracle even when a class-level totality of all such Oracles can be discussed. It also marks a boundary: changing foundations changes what collections are legitimate objects, but does not automatically remove diagonal, truth-theoretic, or computability obstructions.
+
+\subsection{Four distinct routes toward ``beyond every finite Oracle&#x27;&#x27;}
+The present theory therefore has at least four mathematically different routes:
+\begin{description}[style=nextline,leftmargin=2.3cm]
+\item[Induction] establish every standard finite level;
+\item[Compactness] obtain models satisfying every finite requirement;
+\item[Nonstandard analysis] form internal hyperfinite levels $O^{(H)}$;
+\item[Transfinite/large-totality foundations] study limit, class-level, or stronger completion objects.
+\end{description}
+These mechanisms may interact, but none should be substituted for another without a theorem connecting them.
+
+\subsection{A ZFC-Compatible Oracle Type}
+For the present theory, the cleanest ZFC-compatible interpretation of repeated ``Oracle&#x27;s Oracle&#x27;&#x27; formation is not a universal set or an absolutely infinite set. It is a typed, set-sized hierarchy.
+
+Fix a set $X$ coding the base proof states, queries, certificates, programs, and other objects under consideration. Define levels recursively. A level-one Oracle is represented by a set-coded relation or partial function over $X$. Given a set $O_n$ of codes for level-$n$ Oracles, form a set $O_{n+1}$ of codes for admissible relations whose query domain may include elements of $O_n$. Power Set, Separation, Pairing, Union, and Replacement provide the ordinary set-forming resources needed for such finite constructions, provided the coding and admissibility predicates are set-definable.
+
+The finite hierarchy
+\[
+O_1,O_2,O_3,\ldots
+\]
+can itself be collected as a set-indexed family over $\omega$, and Replacement can collect the values of a definable recursive construction. Union and further coding can then form a set containing the finite-level codes. This motivates a set-sized Oracle type
+\[
+\mathrm{OType}_{&lt;\omega}=\bigcup_{n&lt;\omega}\{n\}\times O_n.
+\]
+The tags preserve level information.
+
+More generally, when a definable recursion is available along a set ordinal $\alpha$, one may investigate
+\[
+\mathrm{OType}_{&lt;\alpha}=\bigcup_{\beta&lt;\alpha}\{\beta\}\times O_\beta.
+\]
+Every such construction remains set-sized because the index $\alpha$ is a set.
+
+This is the recommended ZFC interpretation of an ``Oracle type&#x27;&#x27;: a set-coded typed hierarchy over a specified set-sized domain and a specified set ordinal. It does not require a set of all sets, a set of all ordinals, or an absolute infinite object.
+
+There is an important boundary. The totality of all set-sized Oracle levels over all ordinals, if formulated analogously to the totality of all ordinals, need not itself be a set. ZFC therefore supports arbitrarily long set-indexed Oracle hierarchies without requiring a largest set-sized Oracle type. A class-level notation may be used metatheoretically for the entire proper-class hierarchy, but that class is not thereby another member at the top of the hierarchy.
+
+Thus the ZFC-compatible picture is
+\[
+O^{(1)},O^{(2)},\ldots,O^{(\omega)},\ldots,O^{(\alpha)}
+\]
+for set ordinals $\alpha$, with each stage explicitly constructed and coded, rather than a final ``absolute Oracle&#x27;&#x27; set containing every possible Oracle.
+
+\section{Structural Answers and Remaining Boundaries}
+The preceding framework permits substantially sharper answers to the structural questions that motivated this section. In several cases the answer takes the form of a sufficient criterion rather than an unconditional existence statement. This is appropriate: the existence of a global Omnicartographer depends on the chosen proof-state geometry, while the existence of global Abel coordinates or continuous semiflows depends on additional dynamical structure.
+
+\subsection{When does a maximum Cartographer exist?}
+Let $\mathcal C$ be a set-sized collection of certified Cartographers ordered by informational extension:
+\[
+M_1\preceq M_2
+\]
+when every certified cartographic capability of $M_1$ is retained by $M_2$.
+
+The distinction between maximal and maximum can be closed by adding one important hypothesis.
+
+\begin{theorem}[Directed Maximum Cartographer Theorem]
+Suppose:
+\begin{enumerate}[label=(\arabic*)]
+\item every chain in $\mathcal C$ has an upper bound in $\mathcal C$; and
+\item $\mathcal C$ is upward directed: for every $M_1,M_2\in\mathcal C$, there is $N\in\mathcal C$ with
+\[
+M_1\preceq N,\qquad M_2\preceq N.
+\]
+\end{enumerate}
+Then $\mathcal C$ has a maximum element.
+\end{theorem}
+
+\begin{proof}
+By Zorn&#x27;s lemma, the chain-upper-bound condition supplies a maximal element $M^\star$. Let $M\in\mathcal C$ be arbitrary. Directedness supplies $N$ extending both $M^\star$ and $M$. Since $M^\star$ is maximal and $M^\star\preceq N$, we must have $N=M^\star$. Hence $M\preceq M^\star$. Since $M$ was arbitrary, $M^\star$ is maximum.
+\end{proof}
+
+This identifies the missing property in the earlier Zorn argument: compatibility of arbitrary pairs of Cartographers.
+
+An even stronger constructive criterion is possible. If all compatible certified maps may be unioned and then closed under the certification rules while remaining admissible, define
+\[
+K^\star=\Cl\left(\bigcup_{M\in\mathcal C}K(M)\right).
+\]
+If $K^\star$ is itself an admissible certified Cartographer state, it directly defines the maximum Cartographer.
+
+Thus a maximum exists when certified cartographic information is both jointly compatible and closed under certified union. If incompatible certified geometries are permitted, several incomparable maximal Cartographers may remain.
+
+For a genuinely proper class of Cartographers, the set-sized hypotheses must be reconsidered; ordinary ZFC does not permit one simply to apply the set form of Zorn&#x27;s lemma to an arbitrary proper class.
+
+\subsection{When does a discrete update admit an Abel coordinate?}
+Suppose
+\[
+F:U\to U
+\]
+is a deterministic update on an invariant domain $U$.
+
+If an injective Abel coordinate
+\[
+A:U\to\mathbb R
+\]
+satisfies
+\[
+A(Fx)=A(x)+1,
+\]
+then two immediate obstructions follow. First, $F$ must be injective: $F(x)=F(y)$ would imply $A(x)+1=A(y)+1$, hence $x=y$. Second, $F$ cannot have a periodic orbit, because $F^k(x)=x$ for $k&gt;0$ would imply $A(x)=A(x)+k$.
+
+These necessary conditions are close to sufficient in the set-theoretic setting relevant to encoded proof states.
+
+\begin{theorem}[Abel-Chart Criterion]
+Suppose $F:U\to U$ is injective, has no periodic points, and the collection of trajectory components of the functional graph of $F$ has cardinality at most that of $\mathbb R$. Then there exists an injective function
+\[
+A:U\to\mathbb R
+\]
+satisfying
+\[
+A(Fx)=A(x)+1.
+\]
+\end{theorem}
+
+\begin{proof}
+Because $F$ is injective and has no periodic points, each trajectory component is a one-sided chain or a bi-infinite chain. Choose a representative coordinate $a_s\in[0,1)$ for each component, using distinct values for distinct components. On a one-sided component write its points as $F^n(s)$ for $n\ge0$ and set
+\[
+A(F^n(s))=a_s+n.
+\]
+On a bi-infinite component index the points by $n\in\mathbb Z$ and use the same formula. Distinct fractional parts separate different components, while the integer displacement records position along a component. Therefore $A$ is injective and satisfies $A(Fx)=A(x)+1$.
+\end{proof}
+
+The important consequence for proof search is that a global Abel coordinate is generally too much to demand from the entire proof-state graph. Branching in the underlying proof graph is not itself fatal, but merging under the selected deterministic update is: if two distinct states are sent by $F$ to one state, an injective Abel coordinate cannot exist there.
+
+This suggests an \emph{Abel atlas} rather than a single global Abel coordinate. A selected deterministic policy, geodesic, Pioneer trajectory, or nonmerging region may carry its own Abel chart even when the full proof graph does not. Overlapping charts can then be related by transition maps.
+
+An Abel coordinate for integer iteration also does not automatically provide half-steps. For that one needs the coordinate image to admit the corresponding translations and the enlarged state space to contain their inverse images.
+
+\subsection{When do rational-time embeddings extend to real time?}
+Suppose a rational-time family
+\[
+(\Phi_q)_{q\in\Qge}
+\]
+satisfies
+\[
+\Phi_0=\mathrm{id},\qquad \Phi_{q+r}=\Phi_q\circ\Phi_r.
+\]
+Continuity merely at rational points is insufficient. What is needed is enough regularity to ensure that rational approximations approaching the same real number determine the same limiting state.
+
+\begin{theorem}[Rational-to-Real Semiflow Completion]
+Let $X$ be a complete metric cartographic state space. Assume:
+\begin{enumerate}[label=(\arabic*)]
+\item for every $x\in X$ and every bounded interval $[0,R]$, the trajectory $q\mapsto\Phi_q(x)$ is uniformly continuous for rational $q\in[0,R]$; and
+\item on bounded time intervals, the family $\{\Phi_q\}$ is equicontinuous in the state variable strongly enough to pass limits through composition.
+\end{enumerate}
+Then there is a unique continuous extension
+\[
+(\Phi_t)_{t\in\Rge}
+\]
+satisfying
+\[
+\Phi_{s+t}=\Phi_s\circ\Phi_t
+\]
+and agreeing with the original maps at rational times.
+\end{theorem}
+
+\begin{proof}
+For real $t\ge0$, choose rational $q_n\to t$ and define
+\[
+\Phi_t(x)=\lim_{n\to\infty}\Phi_{q_n}(x).
+\]
+Uniform continuity on bounded rational intervals makes $(\Phi_{q_n}(x))$ Cauchy and shows that different rational sequences approaching $t$ give the same limit. Completeness of $X$ supplies the limit. Equicontinuity in the state variable allows the rational semigroup identity to pass to the limit, giving $\Phi_{s+t}=\Phi_s\circ\Phi_t$. Density of $\mathbb Q$ and the construction give uniqueness and continuity.
+\end{proof}
+
+A particularly simple sufficient condition is a locally uniform Lipschitz estimate in time together with uniform Lipschitz control of the state maps on bounded intervals.
+
+The Abel construction gives an even cleaner special case. If
+\[
+\Phi_q(x)=A^{-1}(A(x)+q)
+\]
+and $A$ is a homeomorphism onto a domain closed under all required real translations, then
+\[
+\Phi_t(x)=A^{-1}(A(x)+t)
+\]
+immediately supplies the real-time semiflow.
+
+Thus the progression is
+\[
+\text{integer iteration}
+\longrightarrow
+\text{coherent rational roots}
+\longrightarrow
+\text{continuous rational flow}
+\longrightarrow
+\text{real semiflow}.
+\]
+
+\subsection{When is the nearest geodesic unique?}
+It is useful first to define the set of geodesically optimal next moves:
+\[
+\Dir_T(x)=\left\{y:x\to y,\;H_T(x)=w(x,y)+H_T(y)\right\}.
+\]
+The Omnicartographer has a unique next direction exactly when
+\[
+|\Dir_T(x)|=1.
+\]
+
+This separates the issue into two possible sources of nonuniqueness: several settlement states may be equally near, or a unique nearest settlement state may be reachable by several shortest paths. Hence a sufficient discrete criterion is that a unique nearest settlement state exists and the shortest path from $x$ to that state is unique. Directed trees toward the settlement region satisfy this automatically. More general weighted graphs do so whenever competing minimizing path costs contain no ties.
+
+There is also a natural continuous analogue.
+
+\begin{proposition}[Unique Omnicartographic Direction in CAT(0) Geometry]
+Let the proof-state geometry be a complete CAT(0) metric space and let $\Sigma_T$ be a nonempty closed convex settlement region. Then every state $x$ has a unique nearest settlement point, and the geodesic from $x$ to that point is unique. Hence the settlement geodesic direction is unique away from the settlement region.
+\end{proposition}
+
+When uniqueness fails, the mathematically natural Oracle output is not an arbitrary direction but the entire certified set
+\[
+\Dir_T(x).
+\]
+A deterministic Pioneer may subsequently apply a declared tie-breaking rule.
+
+\subsection{Can promotion be characterized by decreasing uncertainty or regret?}
+Yes, with an important qualification.
+
+For a cartographic query $q$, let
+\[
+\mathcal U_M(q)
+\]
+be the set of answers still compatible with the certified information possessed by $M$. More information should never enlarge this set. Thus
+\[
+M_1\preceq M_2
+\quad\Longrightarrow\quad
+\mathcal U_{M_2}(q)\subseteq\mathcal U_{M_1}(q)
+\]
+for every query $q$.
+
+This yields an intrinsic uncertainty interpretation of promotion. If the query family is \emph{separating}, meaning that two certified knowledge states with identical uncertainty sets for every query have identical cartographic capability, then $M_1\prec M_2$ can be characterized by pointwise nonincrease of uncertainty together with strict decrease for at least one query.
+
+Settlement-horizon regret gives a numerical version. For a successor $y$ of $x$, define its true one-step regret by
+\[
+r_T(x,y)=w(x,y)+H_T(y)-H_T(x)\ge0.
+\]
+Geodesic successors have regret zero.
+
+If $A_M(x,T)$ is the set of moves not excluded by $M$&#x27;s certified information, define worst-case cartographic regret
+\[
+R_M(x,T)=\sup_{y\in A_M(x,T)}r_T(x,y).
+\]
+Improved certified cartography shrinks the candidate set and therefore cannot increase this worst-case regret:
+\[
+M_1\preceq M_2
+\quad\Longrightarrow\quad
+R_{M_2}(x,T)\le R_{M_1}(x,T),
+\]
+provided both models use the same underlying geometry and the admissible-move sets are nested accordingly.
+
+However, strict informational promotion need not strictly reduce regret at the current target. The new information may concern another region or another query. Consequently one scalar regret value cannot characterize promotion globally.
+
+The appropriate invariant is the full regret profile
+\[
+\mathcal R(M)=\bigl(R_M(x,T)\bigr)_{(x,T)}.
+\]
+Promotion can therefore be interpreted as monotone improvement of a cartographic uncertainty or regret profile, with strict improvement somewhere whenever the chosen profile is sufficiently query-separating.
+
+\subsection{What can handoff change, and what must survive copying?}
+The distinction can be made exact.
+
+Let
+\[
+\pi(O)
+\]
+denote the identity-free certified state of an Oracle: its $\BANK$, certified map, query capabilities, certified outputs, and any other information copied during a pure handoff. A pure handoff
+\[
+O\rightsquigarrow O&#x27;
+\]
+satisfies
+\[
+\pi(O&#x27;)=\pi(O)
+\]
+while changing Oracle identity.
+
+\begin{theorem}[Pure-Handoff Invariance Theorem]
+Suppose a property $P$ of an Oracle depends only on its copied certified state. That is, for some predicate $\overline P$,
+\[
+P(O)=\overline P(\pi(O)).
+\]
+Then every pure handoff preserves $P$:
+\[
+P(O)\Longleftrightarrow P(O&#x27;).
+\]
+\end{theorem}
+
+\begin{proof}
+A pure handoff satisfies $\pi(O&#x27;)=\pi(O)$. Therefore
+\[
+P(O&#x27;)=\overline P(\pi(O&#x27;))=\overline P(\pi(O))=P(O).
+\]
+\end{proof}
+
+This gives a precise boundary for the handoff argument. Properties naturally preserved by faithful copying include certified theorems and certificates, $\BANK$ contents, verified map data, horizon bounds, certified geodesic information, query-answer tables, and cartographic resolution and capability encoded in the copied state.
+
+Likewise, a hazard whose condition is determined entirely by preserved content cannot be eliminated merely by changing identity. In contrast, a genuinely identity-local condition may change. For example, a rule of the form ``the same Oracle that made disclosure $D$ may not later perform action $A$&#x27;&#x27; may cease to apply after the disclosing Oracle is retired and a distinct successor inherits its state.
+
+The decisive test is therefore factorization through the copied state. If the hazardous condition factors through $\pi(O)$, handoff preserves it. If the hazardous condition essentially depends on the old identity and does not factor through $\pi(O)$, handoff may remove it.
+
+This explains why pure identity replacement does not generically resolve liar-type, diagonal, L\&quot;obian, prediction-type, or other content-sensitive constructions: whenever their operative condition is recreated by the copied semantic content or capability, the condition travels with the copy.
+
+Thus handoff is not a universal paradox eliminator. It is a precise transformation whose power can be characterized by invariance.
+
+\subsection{Can a Pioneer promote itself?}
+Yes. External promotion is not logically necessary.
+
+Let
+\[
+\mathcal H_n
+\]
+be the verifier-certified history accumulated by a Pioneer through stage $n$. Suppose there is a sound cartographic extraction operation
+\[
+\Gamma(\mathcal H_n)
+\]
+which derives certified structural facts from that history---for example discovered edges, impossible transitions, lower or upper horizon bounds, reusable subproofs, or previously traversed geodesic segments.
+
+Define
+\[
+K_{n+1}=\Cl\bigl(K_n\cup\Gamma(\mathcal H_n)\bigr).
+\]
+If
+\[
+K_n\subsetneq K_{n+1}
+\]
+and the additional information strictly enlarges certified cartographic query power, the Pioneer has promoted itself.
+
+There is a particularly strong finite case.
+
+\begin{theorem}[Finite Self-Promotion Theorem]
+Suppose the portion of the verified proof-state graph reachable from $B_0$ is finite. Assume:
+\begin{enumerate}[label=(\arabic*)]
+\item all admissible outgoing transitions from a visited state can be completely enumerated;
+\item each proposed transition can be verifier checked;
+\item settlement states for $T$ are recognizable;
+\item the Pioneer explores the reachable graph fairly; and
+\item discovered verified states and edges are retained.
+\end{enumerate}
+Then after finitely many discoveries the Pioneer reconstructs the entire reachable proof graph. It can therefore compute exact settlement horizons
+\[
+H_T(x)=d(x,\Sigma_T)
+\]
+and the exact sets
+\[
+\Dir_T(x)
+\]
+throughout that reachable domain. Consequently the Pioneer promotes itself to an Omnicartographer for that finite domain and target.
+\end{theorem}
+
+\begin{proof}
+Finiteness, fair exploration, and complete successor enumeration imply that every reachable state and admissible reachable edge is eventually discovered. Since only finitely many such discoveries are required, there is a finite stage after which the entire reachable graph has been reconstructed. Once the finite weighted graph and settlement region are known, ordinary finite shortest-path computation determines every reachable settlement distance and every horizon-preserving first move. All cartographic answers are therefore computable from the Pioneer&#x27;s own certified history.
+\end{proof}
+
+This theorem provides a concrete model of endogenous promotion:
+\[
+\text{Pioneer}\longrightarrow\text{Cartographer}\longrightarrow\text{Omnicartographer}
+\]
+through accumulated verified experience.
+
+The theorem does not extend automatically to unrestricted infinite proof spaces. Complete reconstruction of such a space can require answering whether unexplored computation will ever produce additional states or certificates, returning the theory to the halting and incompleteness boundaries already identified above.
+
+The resulting distinction is important:
+\[
+\boxed{\text{self-promotion is possible without universal self-omniscience}.}
+\]
+A Pioneer can learn enough of its own verified terrain to acquire genuine cartographic power, and in finite or otherwise effectively learnable regions it can eventually acquire complete cartography of that region.
+
+\subsection{Cross-channel geodesic assistance in an AMLD}
+The shared-map viewpoint becomes especially important when the AMLD is represented by five Pioneers
+\[
+P,\quad R,\quad I^+,\quad I^-,\quad C,
+\]
+all acting on one evolving certified environment.  Write the joint state schematically as
+\[
+X_t=(B_t,A_t;x_P,x_R,x_{I^+},x_{I^-},x_C),
+\]
+where $B_t$ is the certified $\BANK$ and $A_t$ is the certified \(\mathrm{ANTIBANK}\) or exclusion store.  The settlement region is the union
+\[
+\Sigma_T=\Sigma_T^P\cup\Sigma_T^R\cup\Sigma_T^{I^+}\cup\Sigma_T^{I^-}\cup\Sigma_T^C.
+\]
+The Omnicartographer should therefore minimize distance in the joint state space rather than issuing five unrelated locally shortest instructions.
+
+A small SAT-style example makes the resulting cross-channel effect concrete.  Suppose the initial certified clauses are
+\[
+a,\qquad \neg a\lor b,\qquad \neg b\lor c,\qquad \neg c\lor\neg T.
+\]
+These axioms entail $\neg T$.  Thus the winning settlement mode is the Refuter&#x27;s region $\Sigma_T^R$, although this need not initially be known by an ordinary search procedure.
+
+If $R$ works alone by forward resolution from the initial state, it may have to derive
+\[
+a\Longrightarrow b\Longrightarrow c\Longrightarrow \neg T.
+\]
+Counting each certified inference as one unit, the relevant part of the route has three inference steps.
+
+Now suppose the $I^+$ Pioneer is exploring whether the current axioms admit a model compatible with $T$.  Unit propagation in that side search forces
+\[
+a,
+\]
+then
+\[
+b,
+\]
+and then
+\[
+c.
+\]
+The formula $c$ is not an $I^+$ settlement certificate.  Nevertheless, once its derivation is verifier accepted, $I^+$ may deposit $c$ into the shared $\BANK$.  The Refuter then immediately combines
+\[
+c
+\qquad\text{and}\qquad
+\neg c\lor\neg T
+\]
+to obtain
+\[
+\neg T.
+\]
+Thus an inference generated by a Pioneer that does \emph{not} settle the conjecture shortens the remaining Refuter horizon.  In the evolving geometry one can have
+\[
+H_R(X_t)=3
+\]
+before the shared lemma is certified, but
+\[
+H_R(X_{t+1})=1
+\]
+after $c$ enters the $\BANK$.
+
+The phenomenon becomes more important in large searches.  Suppose $R$ currently has a certified route of estimated length $35$ to a proof of $\neg T$, while the Omnicartographer sees that $I^+$ can establish a reusable lemma $L$ in four certified steps and that, after $L$ is banked, the Refuter&#x27;s horizon becomes six.  Then the globally shorter joint route is
+\[
+I^+:4\text{ steps to }L,
+\qquad
+R:6\text{ further steps to }\pi_{\neg T},
+\]
+with total cost $10$ rather than $35$.  The $I^+$ Pioneer may therefore be directed away from its own settlement region because its verified work deforms the shared proof geometry in favor of $R$.
+
+\begin{proposition}[Cross-channel geodesic assistance]
+Let $X$ be a joint AMLD state and let $j$ be a Pioneer whose own settlement region is not currently nearest.  Suppose $j$ can reach a verifier-accepted lemma $L$ at cost $a$, depositing $L$ into the shared $\BANK$, and suppose this update reduces another Pioneer&#x27;s remaining settlement horizon from $h$ to $h&#x27;$.  If
+\[
+a+h&#x27;&lt;h,
+\]
+then the joint route through $j$ and $L$ is strictly shorter than continuing along the previously known route of the settling Pioneer.  Hence a globally geodesic Omnicartographic policy may deliberately assign work to a nonsettling Pioneer.
+\end{proposition}
+
+This is not conflicting advice.  The advice is coherent because all five instructions are evaluated against the same global objective
+\[
+H_T(X)=d(X,\Sigma_T).
+\]
+A local move can increase or leave unchanged one Pioneer&#x27;s own channel-specific distance while still decreasing the global AMLD settlement horizon.
+
+An Omni-Omni-Oracle enters one level higher only if the guidance mechanism itself becomes an object of optimization.  The Omnicartographer asks which joint AMLD move best decreases $H_T$.  An Omni-Omni-Oracle may instead compare guidance policies, map resolutions, budget allocations, or alternative Omnicartographers and determine, for example, that spending four steps of cartographic and search effort on $I^+$ is globally preferable to allowing $R$ to continue directly for thirty-five steps.  Thus the higher level does not merely choose another proof step; it may choose how the Oracle-guided AMLD should organize its own guidance.
+
+\subsection{Omni-Oracles, computation, and meta-guidance}
+The preceding discussion suggests a useful distinction between information power and action power.  An Oracle, as defined earlier, supplies correct information on a declared query domain.  An Omnicartographer supplies correct cartographic guidance.  To discuss an ``Omni-Oracle&#x27;&#x27; without collapsing these notions into an unrestricted omniscience claim, fix both a declared query domain $Q$ and an admissible action relation $\mathcal A$ on a state space $S$.
+
+\begin{definition}[Domain-relative Omni-Oracle]
+An Oracle $\Omega$ is an \emph{Omni-Oracle relative to $(Q,\mathcal A)$} when:
+\begin{enumerate}
+\item every query in $Q$ receives its specified correct certified answer; and
+\item for every state $x\in S$ and every outcome $y$ declared admissibly realizable from $x$, the Oracle can realize, or can direct the governed system through an admissible realization of, the transition $x\rightsquigarrow y$.
+\end{enumerate}
+\end{definition}
+
+The adjective ``omni&#x27;&#x27; is therefore explicitly relative to a declared domain.  It does not require the realization of inconsistent state descriptions, nor does it assert the existence of a single set-sized object deciding every possible semantic or computational question.
+
+For computation this distinction is important.  Let $V(x,y)$ be an ordinary effective verifier, with $y$ interpreted as a witness or certificate for the instance $x$.  Search ordinarily attempts to discover a $y$ satisfying
+\[
+V(x,y)=1.
+\]
+If an Omni-Oracle possesses correct witness knowledge on the relevant domain and can realize admissible witness states, then it may replace blind search by direct certified production.
+
+\begin{proposition}[Omni-Oracle search collapse on a declared witness domain]
+Let $D$ be a class of instances and suppose that for every $x\in D$ with
+\[
+\exists y\;V(x,y)=1,
+\]
+the Omni-Oracle can supply an admissible witness $y$ satisfying $V(x,y)=1$.  Then on positive instances in $D$, witness search reduces to Oracle production followed by ordinary verification.
+\end{proposition}
+
+Thus the Omni-Oracle need not make the verifier obsolete.  Rather, it can move computational burden from discovery to certification:
+\[
+\text{search for }y
+\quad\longrightarrow\quad
+\text{produce }y\text{ and verify }V(x,y)=1.
+\]
+For proof search this becomes
+\[
+T\longmapsto \pi_T\longmapsto V(T,\pi_T)=1,
+\]
+whenever a verifier-valid certificate lies in the declared domain.  For an AMLD, the analogous action is to realize or guide the joint state toward one of the accepted settlement regions rather than exhaustively exploring all competing proof paths.
+
+This power does not erase the computability hierarchy.  If an Oracle decides the ordinary halting problem and programs are then allowed to query that Oracle, the resulting oracle machines have a new relativized halting problem.  Consequently the assertion that $\Omega$ is complete for a declared computational domain $D$ does not imply that $\Omega$ decides every computation involving $\Omega$ itself.  A stronger meta-level object would require a separately declared higher-order domain and certification semantics.
+
+This yields a natural computational hierarchy.  A Pioneer performs admissible proof search.  An Omnicartographer maps routes through the joint AMLD state space.  A domain-relative Omni-Oracle adds complete certified query power and admissible realization power over the declared domain.  An Omni-Omni-Oracle treats the Oracle-guided AMLD itself as an object of analysis and may optimize guidance policies, map resolution, scheduling, resource allocation, or the selection among alternative Omnicartographers.
+
+Formally, if an Omnicartographer is represented by a guidance policy
+\[
+O:X\to A,
+\]
+where $X$ is the joint AMLD state and $A$ is the set of admissible guidance actions, then a meta-guidance system may operate on pairs
+\[
+(X,O)
+\]
+and compare alternative policies $O_1,O_2,\ldots$.  Its objective is not merely to choose the next proof transition but to improve the mechanism by which next transitions are chosen.
+
+The cross-channel example above illustrates the distinction.  An ordinary Omnicartographer may observe that $R$ has a route of length $35$ while $I^+$ can bank a lemma $L$ in four steps that reduces $R$&#x27;s remaining horizon to six.  It therefore chooses the ten-step joint route.  An Omni-Omni-Oracle may act one level higher by deciding that the current map resolution is too coarse to notice such cross-channel opportunities, allocating extra cartographic effort to $I^+$, or replacing the current guidance policy by one that systematically searches for horizon-changing lemmas before committing to a long single-channel route.
+
+The guiding principle is therefore
+\[
+\boxed{\text{the Omni-Oracle may replace search by certified realization, but not consistency or verification}.}
+\]
+The corresponding meta-level principle is
+\[
+\boxed{\text{the Omni-Omni-Oracle optimizes how the Oracle-guided AMLD uses its map and its Pioneers}.}
+\]
+
+\subsection{Structural synthesis}
+The seven questions therefore fall into three larger principles.
+
+\paragraph{Completion.}
+Maximal Cartographers become maximum under directed compatibility; rational dynamics become real dynamics under suitable completion regularity; finite verified exploration can complete a Pioneer&#x27;s map.
+
+\paragraph{Coordinatization.}
+Abel coordinates exist naturally on injective acyclic dynamical components, while unique Omnicartographic direction is controlled by uniqueness of metric projection and shortest paths.
+
+\paragraph{Information monotonicity and invariance.}
+Promotion can be measured through decreasing query uncertainty or regret profiles, while handoff can change only properties that are not invariants of the copied certified state.
+
+These results substantially narrow the remaining open territory. The principal unresolved problems are no longer whether these phenomena can occur, but how far they extend in infinite proof-state geometries, which infinite geometries admit useful Abel atlases or real semiflows, and which families of promotion operations admit canonical completions without crossing the computability and semantic boundaries already established.
+
+\section{Working synthesis}
+The emerging picture is a layered one. The verifier determines what counts as trusted mathematics. The Pioneer performs local proof search. The AMLD coordinates multiple search roles through a shared certified $\BANK$. The Cartographer represents partial geometric knowledge of proof space. The Omnicartographer answers a specified global directional query toward settlement geodesics. The more general Oracle abstraction captures information services beyond cartography.
+
+Integer-time proof transitions remain the logical backbone. Semigroup embeddings and Abel coordinates provide a mathematically disciplined way to discuss half-steps, rational steps, and real-time guidance without silently inventing new proof rules. Promotion is best formalized as monotone extension of certified query power, while no-demotion requires an explicit persistence assumption. Maximality is an order-theoretic question; Zorn&#x27;s lemma is relevant when every chain has an admissible upper bound, but a genuine maximum requires stronger coverage or completion structure.
+
+The long-term objective is therefore not an undefined omniscience claim. It is a precise theory of what information an Oracle possesses, what query domain it covers, how that information guides a verified Pioneer, how resolution can increase, and under what mathematical conditions discrete guidance extends to a coherent flow.
+
+\end{document}
+</pre></main></body></html>
