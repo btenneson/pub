@@ -1,0 +1,185 @@
+name: Publish Oracle and Omnicartographer Theory 003 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_oracle_omnicartographer_theory_003_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LaTeX and PDF verification dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install pymupdf==1.26.4
+
+      - name: Reconstruct and compile exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .build/oracle_omnicartographer_theory_003
+          cat incoming_publications/oracle_omnicartographer_theory_003/parts/part* | base64 -d | gzip -d > .build/oracle_omnicartographer_theory_003/source.tex
+          test "$(wc -c < .build/oracle_omnicartographer_theory_003/source.tex)" -eq 69612
+          test "$(sha256sum .build/oracle_omnicartographer_theory_003/source.tex | awk '{print $1}')" = "bf750ff12505961c2fcc053cc7170963c4e22133c3d4410bf63ccf4d0808a4c7"
+          grep -q '\\end{document}' .build/oracle_omnicartographer_theory_003/source.tex
+          cd .build/oracle_omnicartographer_theory_003
+          for i in 1 2 3 4; do
+            pdflatex -interaction=nonstopmode -halt-on-error source.tex
+          done
+          test -s source.pdf
+
+      - name: Stage publication under cs.LO
+        shell: bash
+        run: |
+          set -euo pipefail
+          PUB='cs.LO_Logic_in_Computer_Science/oracle_omnicartographer_theory_003'
+          mkdir -p "$PUB" "docs/$PUB"
+          cp .build/oracle_omnicartographer_theory_003/source.pdf "$PUB/Oracle_Omnicartographer_Theory_003.pdf"
+          cp .build/oracle_omnicartographer_theory_003/source.tex "docs/$PUB/source.tex"
+
+      - name: Verify paper and promote catalog entry to slot 1
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, re, fitz
+
+          root = Path('.')
+          pub_id = 'cs.LO_Logic_in_Computer_Science/oracle_omnicartographer_theory_003'
+          pdf_name = 'Oracle_Omnicartographer_Theory_003.pdf'
+          archive = root / pub_id / pdf_name
+          source = root / 'docs' / pub_id / 'source.tex'
+          assert archive.is_file() and archive.stat().st_size > 0
+          assert source.is_file() and source.stat().st_size == 69612
+          assert hashlib.sha256(source.read_bytes()).hexdigest() == 'bf750ff12505961c2fcc053cc7170963c4e22133c3d4410bf63ccf4d0808a4c7'
+
+          doc = fitz.open(archive)
+          pages = len(doc)
+          assert pages == 30, f'Expected 30 pages, got {pages}'
+          quote = 'The theory separates logical verification from cartographic guidance'
+          page1 = re.sub(r'\s+', ' ', doc[0].get_text()).strip()
+          assert quote in page1, 'Card quote not found on PDF page 1'
+          assert all(doc[i].get_text().strip() for i in range(pages)), 'Unreadable or empty PDF page'
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+
+          card_text = (
+              'A unified theory of Pioneers, AMLDs, Oracles, and Omnicartographers in verifier-governed '
+              'proof-state geometry. It develops nearest-settlement geodesic guidance, directional '
+              'certification, semigroup and Abel embeddings, Oracle handoff and promotion completion, '
+              'typed meta-Oracle hierarchies, cross-channel geodesic assistance among five cooperating '
+              'Pioneers, and domain-relative Omni-Oracle computation while preserving classical halting '
+              'and diagonal boundaries.'
+          )
+
+          cat = root / 'scripts/publications.json'
+          data = json.loads(cat.read_text())
+          old = [x for x in data['items'] if x.get('id') != pub_id]
+          item = {
+              'title': 'Oracle and Omnicartographer Theory — A Running Mathematical Development',
+              'kind': 'Core paper',
+              'quote': quote + '.',
+              'quote_page': 1,
+              'card_text': card_text,
+              'subject': 'cs.LO_Logic_in_Computer_Science',
+              'id': pub_id,
+              'href': pub_id + '/',
+              'pdf': pub_id + '/' + pdf_name,
+              'archive_path': pub_id + '/' + pdf_name,
+              'sha256': digest,
+              'pages': pages,
+              'order': -9,
+              'source': pub_id + '/source.html',
+              'authors': 'Brian Tenneson',
+              'source_file': pub_id + '/source.tex',
+              'classification_note': (
+                  'Research Edition 003, September 19, 2026. Formal development of Pioneer/AMLD '
+                  'proof-state geometry, Oracle and Omnicartographer guidance, promotion and handoff '
+                  'completion, Abel/semigroup time embeddings, cross-channel geodesic assistance, and '
+                  'domain-relative Omni-Oracle computation. Subject classification: cs.LO — Logic in '
+                  'Computer Science.'
+              )
+          }
+          data['items'] = [item] + old
+          cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+          wrapper = root / 'scripts/build_publications_106.py'
+          s = wrapper.read_text()
+          s2 = re.sub(
+              r'if len\(expanded\["items"\]\) != \d+:',
+              'if len(expanded["items"]) != 120:',
+              s
+          )
+          assert s2 != s or '!= 120' in s, 'Could not update expected publication count'
+          wrapper.write_text(s2)
+          PY
+
+      - name: Rebuild publication site and verify slot 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          root = Path('.')
+          docs = root / 'docs'
+          pub_id = 'cs.LO_Logic_in_Computer_Science/oracle_omnicartographer_theory_003'
+          title = 'Oracle and Omnicartographer Theory — A Running Mathematical Development'
+          card_text = (
+              'A unified theory of Pioneers, AMLDs, Oracles, and Omnicartographers in verifier-governed '
+              'proof-state geometry. It develops nearest-settlement geodesic guidance, directional '
+              'certification, semigroup and Abel embeddings, Oracle handoff and promotion completion, '
+              'typed meta-Oracle hierarchies, cross-channel geodesic assistance among five cooperating '
+              'Pioneers, and domain-relative Omni-Oracle computation while preserving classical halting '
+              'and diagonal boundaries.'
+          )
+
+          search = json.loads((docs / 'search-index.json').read_text())
+          assert search['count'] == 120, search['count']
+          assert search['items'][0]['id'] == pub_id, 'New publication is not slot #1'
+          assert search['items'][0]['card_text'] == card_text
+
+          index = (docs / 'index.html').read_text()
+          assert '120 publications' in index
+          first_card = index.split('<article class="card"', 1)[1].split('</article>', 1)[0]
+          assert title in first_card
+          assert card_text in first_card
+
+          pub_docs = docs / pub_id
+          assert (pub_docs / 'index.html').is_file()
+          assert (pub_docs / 'source.html').is_file()
+          assert (pub_docs / 'source.tex').is_file()
+          assert (pub_docs / 'Oracle_Omnicartographer_Theory_003.pdf').is_file()
+          reader = (pub_docs / 'index.html').read_text()
+          assert '/pub/pdf-reader.html?file=' in reader
+          assert 'Oracle_Omnicartographer_Theory_003.pdf' in reader
+          assert 'Source' in reader
+          print('PASS: Oracle and Omnicartographer Theory 003 is slot #1 with reader, PDF, and source.')
+          PY
+
+      - name: Remove one-time staging payload
+        run: rm -rf incoming_publications/oracle_omnicartographer_theory_003
+
+      - name: Commit verified publication and rebuilt library
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Publish Oracle and Omnicartographer Theory 003 as card 1 [skip ci]'
+            git push
+          fi
