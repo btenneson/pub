@@ -17,7 +17,7 @@
 \hypersetup{
   pdftitle={Depths of Induction, ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness, Version 48},
   pdfauthor={Brian Tenneson},
-  pdfsubject={Consolidated post-audit edition: induction, proof search, formal self-awareness, ML guidance, and cooperative AMLDs},
+  pdfsubject={Reconciled flagship monograph: induction, proof search, formal self-awareness, ML guidance, and cooperative AMLDs},
   pdfkeywords={induction, automated theorem proving, AMLD, proof search, machine learning, formal self-awareness, proof complexity, verifier}
 }
 
@@ -69,16 +69,18 @@ and Formalized Self-Awareness\par}
 {\Large Formal Systems, Inference Closure, Automated Theorem Proving,\\
 Proof Complexity, Search Guidance, Simulations, and Self-Aware Structures\par}
 \vspace{0.50in}
-{\LARGE\bfseries Version 48 -- Consolidated Post-Audit Edition\par}
+{\LARGE\bfseries Version 48 -- Reconciled Flagship Edition\par}
 \vspace{0.62in}
 {\Large Brian Tenneson\par}
 \vspace{0.08in}
 {\large M.S., Applied Data Science\par}
 {\large Currently Unaffiliated\par}
 \vfill
-{\large September 17, 2026\par}
+{\large September 19, 2026\par}
 \vspace{0.26in}
-{\small Version 48 consolidates the Atlas-corrected Version 46.2 core, the unique ML-guided proof-search material of Version 47, and a mathematically repaired AMLD cooperative-induction chapter.\par}
+{\small Version 48 consolidates the corrected Version 46.2 core, the unique ML-guided proof-search material of Version 47, and a mathematically strengthened AMLD cooperative-induction chapter.\par}
+\vspace{0.18in}
+{\small Together these layers form a single framework for formal systems, induction, proof horizons, formalized self-awareness, learned proof search, and cooperative automated metalogical settlement.\par}
 \vspace{0.30in}
 {\small Copyright \textcopyright\ 2026 Brian Tenneson. All Rights Reserved.\par}
 \end{titlepage}
@@ -97,10 +99,10 @@ The corrected core historically used a facsimile-plus-replacement architecture b
 \textbf{Authority rule.} A retained facsimile sentence that conflicts with an adjacent or later correction insert is historical source text only and is not a Version 48 mathematical claim. The correction insert is authoritative. No theorem, corollary, remark, priority claim, or complexity claim is asserted in Version 48 merely because it remains visible on a superseded facsimile page.
 \end{quote}
 
-Every imported core page carries a Version 48 footer repeating this rule. This avoids the ambiguity of an unmarked facsimile while preserving the audit trail. The new ML and AMLD integrations are directly editable LaTeX and contain no superseded alternate statements.
+Every imported core page carries a Version 48 footer repeating this rule. This avoids the ambiguity of an unmarked facsimile while preserving documentary provenance. The new ML and AMLD integrations are directly editable LaTeX and contain no superseded alternate statements.
 
-\section*{Version 48 audit-driven changes}
-\addcontentsline{toc}{section}{Version 48 audit-driven changes}
+\section*{Version 48 consolidation changes}
+\addcontentsline{toc}{section}{Version 48 consolidation changes}
 \begin{enumerate}[leftmargin=2em]
 \item Resolves the version split: Version 48 explicitly supersedes both Version 47 and Version 46.3.
 \item Retains the Version 47 learned-search contribution without duplicating its induction material already present in the corrected core.
@@ -197,25 +199,27 @@ The emitted certificate was reported to contain 28 Metamath labels. Its four pri
 \]
 The candidate was reported accepted first by the in-process verifier and then by a fresh process importing the Metamath checker without the Predator search module. At the target root, 150 extending assertions were legal under the frozen run protocol. In the unguided explorer diagnostic, \texttt{3eqtr4i} was reported at rank 134 and outside the active candidate cap; the learned score moved it to raw rank 64, after which counterfactual selection admitted it and the explorer completed the proof.
 
-\begin{definition}[Expansion discovery cost]
-For a fixed ATP implementation $M$, target $\varphi$, resource protocol, and seed, let $E_M(\varphi)$ be the number of search-state expansions before $M$ first emits a verifier-accepted proof of $\varphi$, with value $\infty$ if no such proof is emitted.
+\begin{definition}[Expansion discovery cost and censoring]
+For a fixed ATP implementation $M$, target $\varphi$, resource protocol, and seed, let
+$\widetilde E_M(\varphi)$ be the least search-state expansion index at which the corresponding fixed search trajectory emits a verifier-accepted proof of $\varphi$, with value $\infty$ if no such proof is ever emitted. If an observed run is stopped at budget $B$ before success, the observation is recorded as the right-censored statement
+$\widetilde E_M(\varphi)>B$, not as an exact value.
 \end{definition}
 
 Under the reported run records,
 \[
-E_{\rm ML}(\texttt{prcom})=2633,
+\widetilde E_{\rm ML}(\texttt{prcom})=2633,
 \qquad
-E_{\rm unguided}(\texttt{prcom})>5000,
+\widetilde E_{\rm unguided}(\texttt{prcom})>5000,
 \]
-so the observed censored ratio satisfies
+so the censored experiment yields only the lower bound
 \[
-\frac{E_{\rm unguided}(\texttt{prcom})}
-{E_{\rm ML}(\texttt{prcom})}
+\frac{\widetilde E_{\rm unguided}(\texttt{prcom})}
+{\widetilde E_{\rm ML}(\texttt{prcom})}
 >
 \frac{5000}{2633}
 \approx1.90.
 \]
-The unguided observation is right-censored by the stopping rule, so the true ratio is not determined by the experiment.
+The unguided observation is right-censored by the stopping rule, so the exact unguided hitting time and the exact ratio are not determined by the experiment.
 
 \begin{remark}[Metric separation]
 Expansion discovery cost is neither proof length nor automatically the logical birth stage of the target. Proof length measures the emitted certificate under a declared convention. Logical birth stage measures dependency depth in a rule-driven chronology. Expansion discovery cost measures search work spent while attempting to locate a certificate. The reported experiment changes the third quantity; it does not establish that the 28-label certificate is shorter, and it does not alter the set of formal consequences.
@@ -249,7 +253,7 @@ At the time of Version 47, HaloProof was identified as a harder intended transfe
 \setcounter{section}{0}
 \section*{Scope and relation to the AMLD program}
 \addcontentsline{toc}{section}{Scope of the AMLD integration}
-This integration revises the Version 46.3 AMLD supplement in response to the publication audit. It uses no Omnicartographer, geodesic, or oracle hypothesis. Its object is a cooperative verifier-gated settlement architecture with five search roles sharing typed verified memory. The corrections below make explicit three points that were previously only implicit: the refutation and contradiction targets must belong to the object language; the dependence and independence channels operate over a declared metatheory rather than automatically over the object theory; and first settlement freezes the first-settlement time, not the total set of settlement facts that may later be certified.
+This integration revises the Version 46.3 AMLD supplement as part of the Version 48 reconciliation. It uses no Omnicartographer, geodesic, or oracle hypothesis. Its object is a cooperative verifier-gated settlement architecture with five search roles sharing typed verified memory. The corrections below make explicit three points that were previously only implicit: the refutation and contradiction targets must belong to the object language; the dependence and independence channels operate over a declared metatheory rather than automatically over the object theory; and first settlement freezes the first-settlement time, not the total set of settlement facts that may later be certified.
 
 \section{Formal AMLD setting}
 Fix a formal system $F=(x,y,z)$, a verifier-trusted initial object-level BANK $B_0\subseteq y$, and a target $T\in y$. Fix also a designated refutation target $T^-\in y$ and contradiction target $\bot\in y$. When the object language has the intended negation connective, one may set $T^-=\neg T$; the notation $T^-$ avoids assuming that every formal system has primitive negation syntax.
@@ -277,25 +281,37 @@ with a declared encoding of $F$, its premise sets, its derivability relation, an
 \[
 \Ind_{F,B}(T)\iff (B\nvdash_F T)\wedge(B\nvdash_F T^-).
 \]
-These displayed biconditionals specify the intended mathematical meanings; an implementable $D$- or $I$-certificate system additionally requires a sound formal representation of the relevant claim in $F^{\rm meta}$.
+These displayed biconditionals specify the intended mathematical meanings. For each represented object state $B$ and target pair $(T,T^-)$, fix distinguished metatheory sentences
+\[
+\widehat{\Dep}_{F,B,T},\ \widehat{\Ind}_{F,B,T}\in y^{\rm meta}.
+\]
+The metatheory verifier interface is required to be sound for these encodings: acceptance of a certificate for $\widehat{\Dep}_{F,B,T}$ implies $\Dep_{F,B}(T)$, and acceptance of a certificate for $\widehat{\Ind}_{F,B,T}$ implies $\Ind_{F,B}(T)$. Completeness is not assumed.
 
 \begin{definition}[AMLD]
 An \emph{automated metalogical decider} for $(F,F^{\rm meta},B_0,T,T^-,\bot)$ is a coordinated architecture
 \[
 \mathcal A=(P,R,D,I,C;\mathsf{BANK},V_F,V_{\rm meta}),
 \]
-where $P,R,C$ are ATP channels over the object theory $F$ and $D,I$ are ATP/certifier channels over the declared metatheory $F^{\rm meta}$. The roles seek verifier-certified records of the following kinds:
+where $P,R,C$ are ATP channels over the object theory $F$ and $D,I$ are certifier channels over the declared metatheory $F^{\rm meta}$. The roles seek verifier-certified records of the following kinds:
 \[
 \begin{array}{ccl}
 P&:&B_k\vdash_F T,\\
 R&:&B_k\vdash_F T^-,\\
-D&:&\Dep_{F,B_k}(T),\\
-I&:&\Ind_{F,B_k}(T),\\
+D&:&\widehat{\Dep}_{F,B_k,T},\\
+I&:&\widehat{\Ind}_{F,B_k,T},\\
 C&:&B_k\vdash_F\bot.
 \end{array}
 \]
 The object-level and metalogical BANK components are type-distinct. A metalogical record about provability or nonprovability is never usable as an object-level premise merely because both are stored by the same architecture.
 \end{definition}
+
+\begin{remark}[Verifier versus inference legality]
+The abstract proof relation is determined by the partial inference rules of the formal system $F=(x,y,z)$. The interface $V_F$ does not add a second foundational notion of validity; it is an implementation-level checker that confirms that a presented finite certificate consists only of legal applications of those rules. Likewise, $V_{\rm meta}$ checks certificates in the declared metatheory.
+\end{remark}
+
+\begin{remark}[Architectural use of the word decider]
+Here ``automated metalogical decider'' names the coordinated settlement architecture. It does not assert that every target is totally decidable by a terminating algorithm. If no sound settlement certificate is produced, an AMLD run may remain unsettled.
+\end{remark}
 
 \begin{remark}[No automatic independence oracle]
 The existence of a useful $I$-channel certificate language is an additional metatheoretic assumption. Failure of $P$ and $R$ to find proofs, timeout, or budget exhaustion does not certify independence. Likewise, the soundness and completeness properties of $D$ and $I$ depend on the declared metatheory and verifier; Version 48 makes no claim that arbitrary independence questions are mechanically decidable.
@@ -449,13 +465,18 @@ A global AMLD schedule is $P$-nonstarving at unit rate when, by the end of globa
 \end{definition}
 
 \begin{theorem}[Constituent-ATP emulation]
-If $P_\star$ proves $T$ after $m$ local transitions, $P$ is baseline-preserving, and the AMLD uses a $P$-nonstarving unit-rate schedule, then either another role settles earlier or $P$ can reproduce the stand-alone proof by global round $m$. Hence, under this logical-round comparison,
+If $P_\star$ proves $T$ after $m$ local transitions, $P$ is baseline-preserving, and the AMLD uses a $P$-nonstarving unit-rate schedule, then either another role settles before global round $m$ or $P$ reproduces the stand-alone proof by global round $m$. Consequently, in all cases,
 \[
-\tau^{\rm set}_{\mathcal A}(T)\le\tau^P_{\mathcal A}(T)\le m.
+\tau^{\rm set}_{\mathcal A}(T)\le m.
 \]
+If no other role settles before round $m$, then also
+\[
+\tau^P_{\mathcal A}(T)\le m.
+\]
+The latter bound also holds when the schedule is separately required to continue supplying $P$ its baseline service after another role settles.
 \end{theorem}
 \begin{proof}
-If no earlier settlement occurs, nonstarvation supplies at least $m$ local opportunities by round $m$. Baseline preservation lets $P$ ignore foreign deposits and reproduce the stand-alone transitions. Its proof certificate is then a valid AMLD settlement.
+If another role settles before round $m$, the first displayed inequality is immediate. Otherwise mathematical settlement has not yet occurred, so nonstarvation supplies at least $m$ local opportunities to $P$ by round $m$. Baseline preservation lets $P$ ignore foreign deposits and reproduce the stand-alone transitions. Its proof certificate is then a valid AMLD settlement, and $\tau^P_{\mathcal A}(T)\le m$ in this case.
 \end{proof}
 
 \begin{remark}[No unconditional five-versus-one speed theorem]
