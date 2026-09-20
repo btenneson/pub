@@ -1,0 +1,851 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{titlesec}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Open Problem}
+
+\newcommand{\SIC}{\mathrm{SIC}}
+\newcommand{\AMLD}{\mathrm{AMLD}}
+\newcommand{\clk}{\mathrm{clk}}
+\newcommand{\Pow}{\mathcal{P}}
+\newcommand{\Dclk}{\mathcal{D}_{\mathrm{clk}}}
+\newcommand{\simclk}{\sim_{\mathrm{clk}}}
+\newcommand{\preclk}{\preceq_{\mathrm{clk}}}
+\newcommand{\degclk}{\deg_{\mathrm{clk}}}
+\newcommand{\Damld}{\mathcal{D}_{\mathrm{sAMLD}}}
+\newcommand{\simamld}{\sim_{\mathrm{sAMLD}}}
+\newcommand{\preamld}{\preceq_{\mathrm{sAMLD}}}
+\newcommand{\preFair}{\preceq_{\mathrm{fair}}}
+\newcommand{\simFair}{\sim_{\mathrm{fair}}}
+\newcommand{\Dfair}{\mathcal{D}_{\mathrm{fair}}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\SAT}{\ensuremath{\mathrm{SAT}}}
+\newcommand{\UNSAT}{\ensuremath{\mathrm{UNSAT}}}
+\newcommand{\UNKNOWN}{\textsc{unknown}}
+
+\setlist[itemize]{topsep=3pt,itemsep=2pt,parsep=0pt}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,parsep=0pt}
+
+\title{\textbf{Preorders and Fair Settlement Geometry}\\[4pt]
+\Large From SIC and AMLD Simulation Degrees to a High-Probability Complexity Framework for SAT}
+\author{Brian Tenneson}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper unifies two order-theoretic strands of the \emph{Depths of Induction} program and develops a resource-sensitive extension toward computational complexity. First, using only the principal Version 48 clocked deterministic simulation relation, it develops the preorder and quotient-poset structure of semi-ideal computers (SICs), including cardinality and halting obstructions, incomparable degrees, a strict chain of order type $\omega$, and arbitrarily large finite antichains. Second, it formulates a typed clocked preorder on scheduled automated metalogical deciders (AMLDs), so that mutual simulation of fixed accepted chronologies defines scheduled-execution AMLD degrees while presentation-level differences may disappear under invertible recoding. This scheduled quotient is deliberately not claimed to classify an AMLD architecture over all admissible executions.
+
+The new synthesis begins where those structural preorders cease to measure what complexity theory needs. Clocked equivalence deliberately permits time rescaling, so raw or bounded settlement time is not a clocked-degree invariant. We therefore introduce a compositional notion of \emph{fair settlement reduction}: an exact reduction whose construction cost, instance growth, and distortion of Bellman distance-to-settlement are polynomially controlled. Fair reductions form a preorder and hence induce fair settlement degrees. With a specified family of input distributions, we then distinguish geometric high-probability Bellman settlement from executable high-probability settlement and define a distribution-relative preorder. A polynomial Bellman-competitiveness hypothesis supplies the missing bridge from the existence of a cheap route to an algorithm that actually finds one with polynomial overhead. This framework separates worst-case difficulty from the possibility that an exact solver settles a $1-o(1)$ fraction of instances within polynomial resources. The errorless \textsc{yes}/\textsc{no}/\textsc{unknown} viewpoint is related to established average-case complexity; the proposed additions are the SIC/AMLD preorder connection and the Bellman-distortion geometry.
+
+Probability in this paper concerns the distribution of instances and, optionally, search time. It does \emph{not} mean that a solver is permitted to guess an answer with probability one, or with any other nonzero error probability. Experimental runs return only verifier-certified answers; a run that exceeds its budget returns \textsc{unknown}. A reproducible modern-computer protocol is given for SAT and is written so that the same test harness can be applied to any decision problem with a sampler, exact solver, certificate verifier, size measure, and resource meter.
+\end{abstract}
+
+\section*{Main synthesis}
+The paper uses three different preorders because they answer three different questions.
+\begin{enumerate}[label=(\arabic*)]
+    \item The clocked SIC preorder asks whether one state-and-halting dynamics embeds faithfully into another after admissible time rescaling.
+    \item The scheduled-AMLD preorder asks the analogous question for a fixed typed verifier-accepted cooperative chronology with shared BANK memory and settlement records.
+    \item The fair settlement preorder asks whether one computational problem can be transformed into another without hiding asymptotically significant construction work or destroying the settlement geometry relevant to actual resource bounds.
+\end{enumerate}
+The first two are structural. The third is resource-sensitive. The distinction is essential: a relation designed to quotient away timing differences should not also be asked to classify timing complexity.
+
+\part{Structural Preorders: SICs and AMLDs}
+
+\section{Version 48 baseline: the principal SIC preorder}
+This paper uses the Version 48 formulation of \emph{Depths of Induction, ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness}~\cite{TennesonV48}. Earlier weak-simulation claims are not used as substantive order theory. Version 48 proves that weak simulation collapses universally and designates clocked deterministic simulation as the principal comparison relation.
+
+Let
+\[
+M=(C_M,H_M),\qquad N=(C_N,H_N)
+\]
+be SICs with state spaces $S_M$ and $S_N$. A clocked deterministic simulation from $M$ to $N$ is a pair $(f,\rho)$ such that
+\begin{enumerate}[label=(\roman*)]
+    \item $f:S_M\to S_N$ is injective;
+    \item $\rho:\N^+\to\N^+$ satisfies $\rho(1)=1$, is nondecreasing, and is unbounded;
+    \item for every $p\in S_M$ and $m\in\N^+$,
+    \[
+    f(C_M(p,m))=C_N(f(p),\rho(m));
+    \]
+    \item for every $p\in S_M$ and $m\in\N^+$,
+    \[
+    H_M(p,m)=H_N(f(p),\rho(m)).
+    \]
+\end{enumerate}
+When such a pair exists, write $M\preclk N$.
+
+The state map is faithful and injective, and halting observations are preserved. The clock removes artificial stage-number rigidity without removing state-capacity or halting obstructions.
+
+\section{Clocked simulation degrees of SICs}
+
+\begin{definition}[Clocked equivalence and degree]
+For SICs $M,N$, write
+\[
+M\simclk N
+\quad\Longleftrightarrow\quad
+M\preclk N\text{ and }N\preclk M.
+\]
+The clocked simulation degree of $M$ is
+\[
+[M]_{\mathrm{clk}},
+\]
+and
+\[
+\Dclk:=\SIC/\!\simclk,
+\qquad
+[M]_{\mathrm{clk}}\le [N]_{\mathrm{clk}}
+\Longleftrightarrow M\preclk N.
+\]
+\end{definition}
+
+\begin{theorem}[SIC degree poset]
+Clocked deterministic simulation is a preorder; mutual clocked simulation is an equivalence relation; and $(\Dclk,\le)$ is a partially ordered set.
+\end{theorem}
+
+\begin{proof}
+Reflexivity is witnessed by the identity state map and identity clock. If $(f,\rho)$ witnesses $M\preclk N$ and $(g,\sigma)$ witnesses $N\preclk P$, then $(g\circ f,\sigma\circ\rho)$ is again injective, its clock is admissible, and both state and halting equations compose. Quotienting any preorder by mutual reachability yields a partial order.
+\end{proof}
+
+\subsection{State-space capacity}
+For a Version 48 SIC over $Y$, the stage-one axiom yields
+\[
+S_M=\Pow(Y).
+\]
+
+\begin{theorem}[Cardinality monotonicity]\label{thm:cardinality}
+If $M$ is a SIC over $Y_M$, $N$ is a SIC over $Y_N$, and $M\preclk N$, then
+\[
+|S_M|\le |S_N|.
+\]
+Equivalently,
+\[
+|\Pow(Y_M)|\le |\Pow(Y_N)|.
+\]
+If $Y_M,Y_N$ are finite, then $|Y_M|\le |Y_N|$.
+\end{theorem}
+
+\begin{proof}
+The simulation witness contains an injection $f:S_M\to S_N$. For finite formula domains, $|S_M|=2^{|Y_M|}$ and $|S_N|=2^{|Y_N|}$.
+\end{proof}
+
+\subsection{Halting as an obstruction}
+Fix a nonempty formula domain $Y$ and let
+\[
+C_{\mathrm{stat}}(\Gamma,m)=\Gamma.
+\]
+Define
+\[
+M_0=(C_{\mathrm{stat}},H_0),\qquad M_1=(C_{\mathrm{stat}},H_1),
+\]
+where $H_0(\Gamma,m)=0$ and $H_1(\Gamma,m)=1$ for every state and stage.
+
+\begin{theorem}[Incomparable degrees]
+$[M_0]_{\mathrm{clk}}$ and $[M_1]_{\mathrm{clk}}$ are incomparable. Hence $\Dclk$ is not a chain.
+\end{theorem}
+
+\begin{proof}
+A simulation in either direction would force $0=1$ by halting preservation.
+\end{proof}
+
+\begin{theorem}[No least SIC degree]\label{thm:nolower}
+The two static halting degrees have no common lower bound. Consequently $\Dclk$ has no least element.
+\end{theorem}
+
+\begin{proof}
+If $L\preclk M_0$ and $L\preclk M_1$, halting preservation forces every halting observation of $L$ to equal both $0$ and $1$.
+\end{proof}
+
+\subsection{Chains and antichains}
+Assume the ambient formula universe contains finite subsets of arbitrarily large size. For $n\ge1$, choose $Y_n$ with $|Y_n|=n$ and let $S_n$ be the static never-halting SIC over $Y_n$.
+
+\begin{theorem}[Capacity chain]
+For positive integers $n,m$,
+\[
+S_n\preclk S_m\Longleftrightarrow n\le m.
+\]
+Consequently
+\[
+[S_1]_{\mathrm{clk}}<[S_2]_{\mathrm{clk}}<[S_3]_{\mathrm{clk}}<\cdots
+\]
+is a strict chain of order type $\omega$.
+\end{theorem}
+
+\begin{proof}
+If $n\le m$, choose an injection $\Pow(Y_n)\hookrightarrow\Pow(Y_m)$ and use the identity clock. Conversely, Theorem~\ref{thm:cardinality} rules out simulation when $n>m$.
+\end{proof}
+
+Now fix finite $Y$ with $|Y|=n$ and $N=2^n$. Use the same static stage map on $\Pow(Y)$. For each $k\in\{0,\ldots,N\}$, choose $B_k\subseteq\Pow(Y)$ with $|B_k|=k$ and let $A_k$ halt exactly on states in $B_k$.
+
+\begin{theorem}[Arbitrarily large finite antichains]
+If $A_k\preclk A_\ell$, then $k=\ell$. Hence
+\[
+\{[A_0]_{\mathrm{clk}},\ldots,[A_N]_{\mathrm{clk}}\}
+\]
+is an antichain of size $2^n+1$. Therefore $\Dclk$ contains finite antichains of arbitrarily large size.
+\end{theorem}
+
+\begin{proof}
+The two finite state spaces have equal cardinality, so any injective witness is bijective. Halting preservation therefore bijects $B_k$ with $B_\ell$, forcing $k=\ell$.
+\end{proof}
+
+\section{Scheduled AMLDs and cooperative simulation degrees}
+Version 48 introduces an automated metalogical decider as a verifier-gated cooperative architecture~\cite{TennesonV48}
+\[
+\mathcal A=(P,R,D,I,C;\operatorname{BANK},V_F,V_{\mathrm{meta}}),
+\]
+with object-theory roles $P,R,C$, metatheoretic roles $D,I$, typed shared BANK components, provenance, and a settlement record. For a fixed execution schedule, write the accepted global state as
+\[
+X_k=(S_k^P,S_k^R,S_k^D,S_k^I,S_k^C,
+B_k^{\mathrm{obj}},B_k^{\mathrm{meta}},\Pi_k,\Sigma_k,\tau_k).
+\]
+
+The five constituent channels may each have ordinary SIC degrees, but those five degrees do not automatically classify a fixed global cooperative execution. Scheduling, typed BANK exchange, verifier interfaces, provenance, and settlement chronology also matter. Version 48 supplies the underlying AMLD architecture; the quotient below is intentionally a quotient of \emph{scheduled accepted executions}, not yet of the full branching architecture over all admissible schedules.
+
+\subsection{Scheduled AMLDs}
+\begin{definition}[Scheduled AMLD]
+A scheduled AMLD is a Version 48 AMLD together with a fixed admissible execution schedule and deterministic tie-breaking data sufficient to determine one accepted chronology $X_0,X_1,\ldots$.
+\end{definition}
+
+Because a raw first-settlement timestamp changes under time rescaling, define the clock-free accepted state
+\[
+\overline X_k=
+(S_k^P,S_k^R,S_k^D,S_k^I,S_k^C,
+B_k^{\mathrm{obj}},B_k^{\mathrm{meta}},\Pi_k,\Sigma_k,s_k),
+\]
+where $s_k=0$ before settlement and $s_k=1$ after settlement.
+
+\begin{definition}[Typed clocked AMLD simulation]\label{def:amld-sim}
+A typed clocked AMLD simulation from scheduled AMLD $\mathcal A$ to scheduled AMLD $\mathcal B$ is a pair $(F,\rho)$ such that:
+\begin{enumerate}[label=(\roman*)]
+    \item $F$ injects the clock-free accepted-state set of $\mathcal A$ into that of $\mathcal B$;
+    \item $\rho:\N\to\N$ is nondecreasing, unbounded, and $\rho(0)=0$;
+    \item $F(\overline X_k^{\mathcal A})=\overline X_{\rho(k)}^{\mathcal B}$ for every $k$;
+    \item object-BANK data, metatheoretic BANK data, and designated role types are preserved;
+    \item settled/unsettled status and accepted settlement classes are preserved;
+    \item any recoding used by $F$ is injective on the relevant coding domains and preserves verifier acceptance under the transported verifier interfaces.
+\end{enumerate}
+Write $\mathcal A\preamld\mathcal B$.
+\end{definition}
+
+\begin{theorem}[Scheduled-AMLD preorder]
+Typed clocked simulation of scheduled AMLDs is reflexive and transitive.
+\end{theorem}
+
+\begin{proof}
+The identity map and identity clock witness reflexivity. Composition of two witnesses preserves injectivity, admissibility of the composed clock, typing, settlement observations, and verifier acceptance.
+\end{proof}
+
+\begin{definition}[Scheduled-AMLD degree]
+Write
+\[
+\mathcal A\simamld\mathcal B
+\Longleftrightarrow
+\mathcal A\preamld\mathcal B\text{ and }\mathcal B\preamld\mathcal A.
+\]
+Then
+\[
+\Damld:=\AMLD/\!\simamld
+\]
+is the set of scheduled-execution AMLD simulation degrees.
+\end{definition}
+
+\begin{corollary}[Scheduled-AMLD degree poset]
+Mutual simulation of scheduled AMLDs is an equivalence relation and the quotient $\Damld$ is partially ordered by the induced simulation relation.
+\end{corollary}
+
+\begin{theorem}[Distinct scheduled AMLDs can have the same degree]\label{thm:amld-equality}
+For scheduled AMLDs $\mathcal A,\mathcal B$,
+\[
+[\mathcal A]_{\mathrm{sAMLD}}=[\mathcal B]_{\mathrm{sAMLD}}
+\Longleftrightarrow
+\mathcal A\simamld\mathcal B.
+\]
+Thus $\mathcal A\ne\mathcal B$ does not imply distinct scheduled-execution AMLD degrees.
+\end{theorem}
+
+\begin{proof}
+This is exactly what quotienting by $\simamld$ means. Distinct presentations may lie in one equivalence class.
+\end{proof}
+
+\begin{theorem}[Invertible scheduled-AMLD recodings preserve degree]
+An invertible type-preserving recoding that transports all five role states, typed BANK contents, certificates, provenance, targets, verifier interfaces, and accepted transitions produces a mutually AMLD-simulating presentation.
+\end{theorem}
+
+\begin{proof}
+The recoding induces a bijection on accepted global states. The identity clock witnesses one direction and the inverse recoding witnesses the other.
+\end{proof}
+
+\begin{remark}[Architecture-level AMLD degrees remain a separate construction]
+Two AMLD architectures can agree on one selected execution while differing on other reachable executions. The scheduled degree above therefore does not by itself classify the full AMLD architecture. An architecture-level simulation theory should take as its object the typed reachable accepted-state transition system over all admissible schedules and require a structure-preserving map on all reachable accepted transitions (or on explicitly controlled finite target paths), together with the corresponding BANK, provenance, settlement, and verifier interfaces. No theorem in this paper silently upgrades the scheduled quotient to that stronger architecture-level quotient.
+\end{remark}
+
+\begin{conjecture}[Cooperative nonreducibility]
+There exist scheduled AMLDs with pairwise equal constituent-channel clocked degrees but unequal scheduled-execution AMLD degrees.
+\end{conjecture}
+
+A proof would require a chronology-level invariant preserved by scheduled AMLD simulation but not determined by the five constituent degrees. Candidate invariants include typed reachable-state capacity, settlement-class reachability, verified BANK dependency structure, and clock-invariant causal dependency data.
+
+\section{Settlement regions and the need for target preservation}
+A tempting construction, developed in the conjecture-settling line of the project~\cite{TennesonSettling}, is to associate to a target $c$ the class of machines that settle it. This is useful only if the comparison relation preserves the labelled target and the relevant certificate semantics.
+
+\begin{definition}[Target-preserving simulation]
+A clocked SIC simulation $(f,\rho)$ from a target-bearing machine $(M,c)$ to $(N,c')$ is target-preserving when the state injection is induced by an admissible formula translation sending $c$ to $c'$ and transporting accepted certificates and halting/settlement observations accordingly.
+\end{definition}
+
+\begin{proposition}[Settlement upper sets]
+Under target-preserving simulation, the class of machines that settle a fixed translated target is upward closed.
+\end{proposition}
+
+\begin{proof}
+A certified settlement trajectory in the source transports to a certified settlement trajectory in the target machine by target and certificate preservation.
+\end{proof}
+
+This proposition does \emph{not} hold for an arbitrary injective state recoding that forgets the identity of the target. The distinction becomes more important once a resource bound is imposed.
+
+\section{Why clocked degrees are not complexity degrees}\label{sec:clocknotcomplex}
+Clocked simulation intentionally identifies machines that differ only by admissible rescaling of stage number. Therefore bounded settlement time is not, in general, invariant under $\simclk$ or $\simamld$.
+
+\begin{proposition}[Timing is quotiented out]
+There can be clocked-equivalent machines whose corresponding successful runs take different raw numbers of stages. Hence a theorem about membership in a clocked degree is not automatically a theorem about polynomial-time settlement.
+\end{proposition}
+
+\begin{proof}
+The definition itself allows nonidentity admissible clocks. A delayed copy of a machine may be clockedly equivalent to the original while representing each source stage only after one or more additional target stages.
+\end{proof}
+
+This is a feature, not a defect. Structural simulation asks whether the same state-and-halting behavior is faithfully present after time reparametrization. Complexity asks how much resource is required. The latter therefore needs a different preorder.
+
+\part{Fair Reductions and Settlement Geometry}
+
+\section{Exact decision procedures, settlement cost, and Bellman value}
+Let $L\subseteq\{0,1\}^*$ be a decision problem. An exact settlement system for $L$ consists of a state space $\mathcal X$, an initial state $x_0(w)$ for each input $w$, a set of legal actions $\mathcal A(x)$, deterministic transition map $T(x,a)$, nonnegative action cost $c(x,a)$, and a terminal settlement region $\mathcal S=\mathcal S_{\mathrm{yes}}\cup\mathcal S_{\mathrm{no}}$. Every terminal state carries a certificate whose verifier establishes the claimed answer.
+
+\begin{definition}[Bellman settlement value]
+The optimal remaining settlement cost is
+\[
+V(x)=\inf\left\{\sum_{j=0}^{r-1}c(x_j,a_j):
+ x_0=x,\ x_{j+1}=T(x_j,a_j),\ x_r\in\mathcal S\right\},
+\]
+with $V(x)=\infty$ if no settlement state is reachable.
+\end{definition}
+
+When a minimizing action exists, Bellman's principle gives~\cite{Bellman1957}
+\[
+V(x)=
+\begin{cases}
+0,&x\in\mathcal S,\\[3pt]
+\displaystyle\min_{a\in\mathcal A(x)}\bigl(c(x,a)+V(T(x,a))\bigr),&x\notin\mathcal S.
+\end{cases}
+\]
+Thus proof or decision search can be viewed geometrically: $V(x)$ is distance-to-settlement in the directed cost geometry generated by legal actions.
+
+For an input $w$, write
+\[
+V_M(w):=V(x_0(w)).
+\]
+This is an intrinsic best-path quantity for the declared settlement system. An actual heuristic may spend much more than $V_M(w)$ before discovering a minimizing or near-minimizing route.
+
+Fix an executable search policy $\pi$ for $M$. Let $C_{M,\pi}(w)$ denote the declared resource cost actually incurred before $\pi$ reaches a verifier-accepted settlement, with $C_{M,\pi}(w)=\infty$ if it never settles. The declared cost model includes producing the terminal certificate; in particular, certificate output size cannot be hidden outside the measured execution cost. The two quantities therefore answer different questions:
+\[
+V_M(w)=\text{cost of a best available route},\qquad
+C_{M,\pi}(w)=\text{cost of the route actually found by }\pi.
+\]
+
+\begin{definition}[Polynomial Bellman competitiveness]\label{def:bellman-competitive}
+An executable policy $\pi$ for $M$ is polynomially Bellman-competitive if there is a nondecreasing polynomial $q$ such that, whenever $V_M(w)<\infty$,
+\[
+C_{M,\pi}(w)\le q\bigl(|w|+V_M(w)\bigr).
+\]
+This is a substantive hypothesis: the existence of a short geodesic does not by itself imply that an implementable policy can find it cheaply.
+\end{definition}
+
+\section{Fair settlement reductions}
+Ordinary polynomial-time many-one reductions preserve the yes/no answer and bound transformation cost~\cite{Cook1971,Karp1972}. They need not preserve the resource geometry that makes particular instances easy or hard on a chosen solver or hardware model. The following solver-relative definition is intentionally stronger.
+
+\begin{definition}[Fair settlement reduction]\label{def:fair}
+Let $(L,M)$ and $(K,N)$ be decision problems equipped with exact settlement systems and Bellman values $V_M,V_N$. A \emph{fair settlement reduction} from $(L,M)$ to $(K,N)$ consists of an answer-preserving map $f$, a certificate-lifting procedure $\ell$, and nonnegative nondecreasing polynomials $p_0,p_1,p_2,p_3,p_4$ such that for every input $x$:
+\begin{enumerate}[label=(\roman*)]
+    \item $x\in L\Longleftrightarrow f(x)\in K$;
+    \item $f(x)$ is computable using at most $p_0(|x|)$ declared primitive work and $|f(x)|\le p_1(|x|)$;
+    \item target Bellman settlement cost is not allowed to explode superpolynomially relative to the source geometry:
+    \[
+    V_N(f(x))\le p_2(|x|+V_M(x));
+    \]
+    \item the map is not allowed to hide essentially all difficulty in a collapse to artificially cheap target instances:
+    \[
+    V_M(x)\le p_3(|x|+V_N(f(x)));
+    \]
+    \item from any verifier-accepted target settlement certificate $\pi$ for $f(x)$, $\ell(x,\pi)$ is computable in at most $p_4(|x|+|\pi|)$ declared primitive work and is accepted by the declared source verifier for the corresponding answer. Equivalently, one may use a declared composite source verifier that checks the reduction trace and the target certificate within the same polynomial bound.
+\end{enumerate}
+Every polynomial is extended to $[0,\infty]$ by $p(\infty)=\infty$. Thus clauses (iii)--(iv) also preserve finiteness of the Bellman value in both directions.
+Write
+\[
+(L,M)\preFair(K,N).
+\]
+\end{definition}
+
+Clause (iv) is what makes ``fair'' stronger than an ordinary reduction: mapped instances are required to retain settlement difficulty up to polynomial distortion in both directions. For applications where only one-sided preservation is desired, clause (iv) may be dropped; the resulting relation is still useful but classifies a different phenomenon.
+
+\begin{theorem}[Fair reductions form a preorder]\label{thm:fair-preorder}
+The relation $\preFair$ is reflexive and transitive.
+\end{theorem}
+
+\begin{proof}
+The identity map satisfies the definition with linear polynomials. Suppose $f$ fairly reduces $(L,M)$ to $(K,N)$ and $g$ fairly reduces $(K,N)$ to $(J,P)$. Then $g\circ f$ preserves answers. Polynomial construction costs, size blowups, and certificate-lifting costs remain polynomial under composition. Substituting the settlement-distortion inequalities for $f$ into those for $g$ yields polynomial upper and lower distortions for $g\circ f$. Hence $\preFair$ is transitive.
+\end{proof}
+
+\begin{definition}[Fair settlement degree]
+Write
+\[
+(L,M)\simFair(K,N)
+\Longleftrightarrow
+(L,M)\preFair(K,N)\text{ and }(K,N)\preFair(L,M).
+\]
+The quotient
+\[
+\Dfair:=\{(L,M)\}/\!\simFair
+\]
+is the poset of fair settlement degrees.
+\end{definition}
+
+This is the complexity-theoretic analogue of the earlier quotient constructions, but the preserved structure is different. Clocked degrees intentionally forget time scaling; fair settlement degrees retain resource geometry up to polynomial distortion.
+
+\begin{remark}[Solver-relative degrees]
+The elements of $\Dfair$ are degrees of pairs $(L,M)$, not of languages $L$ alone. Two exact settlement systems for the same language can induce different Bellman geometries and hence different fair settlement degrees. A language-level invariant would require an additional quantifier over a declared class of admissible settlement systems.
+\end{remark}
+
+\section{Distributions and high-probability settlement horizons}
+Worst-case complexity is obtained by maximizing over inputs of a given size. A probability model requires an explicit indexed distribution family.
+
+\begin{definition}[Indexed and size-normalized distribution families]\label{def:indexed-distribution}
+Let $\mathcal I$ be an instance space with declared size function $|\cdot|$. An \emph{indexed distribution family} is a sequence
+\[
+\mathcal D=(D_n)_{n\ge1}
+\]
+of probability distributions on $\mathcal I$, indexed by an external size parameter $n$. It is \emph{size-normalized} when $D_n$ is supported on instances $x$ with $|x|=n$. More generally, we call it \emph{polynomially size-bounded} when there is a polynomial $s_{\mathcal D}$ such that
+\[
+x\in\operatorname{supp}(D_n)\quad\Longrightarrow\quad |x|\le s_{\mathcal D}(n).
+\]
+For complexity-theoretic claims we additionally require the family to be efficiently samplable in time polynomial in $n$, in the standard spirit of distributional/average-case complexity~\cite{Levin1986,BogdanovTrevisan2006}.
+\end{definition}
+
+Unless stated otherwise, native source families below are size-normalized. The more general indexed formulation is needed because if $X\sim D_n$ and a reduction produces $f(X)$, the push-forward family $f_*\mathcal D=(f_*D_n)$ remains naturally indexed by the source parameter $n$ even when the target lengths $|f(X)|$ vary within a polynomial bound. Thus no false requirement is imposed that every image of a size-$n$ source instance have one common target length. There is no distribution-free meaning of ``probability-one SAT behavior.''
+
+For an exact settlement system $M$, define the support-relative worst-case settlement radius
+\[
+W_M^{\mathrm{supp}}(n):=\sup_{x\in\operatorname{supp}(D_n)}V_M(x),
+\]
+and distinguish it from the unrestricted size-$n$ worst case
+\[
+W_M^{\mathrm{all}}(n):=\sup_{|x|=n}V_M(x).
+\]
+the average settlement cost
+\[
+A_M(n):=\E_{X\sim D_n}[V_M(X)],
+\]
+and the $(1-\varepsilon)$ settlement quantile
+\[
+Q_M(n,\varepsilon):=
+\inf\{h:\Prob_{X\sim D_n}[V_M(X)\le h]\ge1-\varepsilon\}.
+\]
+
+\begin{definition}[Geometric high-probability polynomial settlement]
+$M$ has geometric high-probability polynomial settlement on $\mathcal D$ if there exist a polynomial $p$ and a sequence $\varepsilon_n\downarrow0$ such that
+\[
+Q_M(n,\varepsilon_n)\le p(n)
+\]
+for all sufficiently large $n$. Equivalently,
+\[
+\Prob_{X\sim D_n}[V_M(X)\le p(n)]\longrightarrow1.
+\]
+\end{definition}
+
+\begin{proposition}[Worst case and high probability can separate]
+Geometric high-probability polynomial settlement does not imply a polynomial unrestricted worst-case bound. In particular, a vanishing-probability set of inputs may have superpolynomial or even much larger settlement cost while $Q_M(n,\varepsilon_n)$ remains polynomial.
+\end{proposition}
+
+\begin{proof}
+The quantile condition constrains only a $1-\varepsilon_n$ fraction of the distribution. It places no polynomial upper bound on the remaining $\varepsilon_n$ mass.
+\end{proof}
+
+This geometric statement concerns the availability of cheap settlement routes. To infer performance of an actual solver, one must additionally control search overhead.
+
+\begin{definition}[Executable high-probability polynomial settlement]
+A policy $\pi$ for $M$ has executable high-probability polynomial settlement on $\mathcal D$ if some polynomial $r$ satisfies
+\[
+\Prob_{X\sim D_n}[C_{M,\pi}(X)\le r(n)]\longrightarrow1.
+\]
+\end{definition}
+
+\begin{proposition}[Bellman competitiveness transfers geometry to execution]\label{prop:bellman-transfer}
+If $M$ has geometric high-probability polynomial settlement on $\mathcal D$ and $\pi$ is polynomially Bellman-competitive, then $\pi$ has executable high-probability polynomial settlement on $\mathcal D$.
+\end{proposition}
+
+\begin{proof}
+On an event of probability $1-o(1)$, $V_M(X)\le p(n)$. Definition~\ref{def:bellman-competitive} then gives
+\[
+C_{M,\pi}(X)\le q(n+p(n)),
+\]
+which is polynomial in $n$.
+\end{proof}
+
+Thus an NP-complete problem could have polynomially bounded optimal settlement geometry, and even polynomially bounded executable settlement for a declared policy, on almost all instances drawn from a declared distribution while retaining hard worst cases. Neither statement solves the worst-case $P$ versus $NP$ problem.
+
+\section{Distribution-relative fair reduction preorder}
+A reduction changes the input distribution. If $X\sim D_n$, the target solver should be evaluated on the push-forward distribution $f_*D_n$, not on an unrelated convenient distribution chosen after the fact. For a map $f$, define
+\[
+(f_*D_n)(A):=D_n(f^{-1}(A))
+\]
+for each measurable target event $A$ (equivalently, in the discrete setting, $(f_*D_n)(y)=D_n(f^{-1}(\{y\}))$). The family $f_*\mathcal D=(f_*D_n)_{n\ge1}$ is indexed by the original source parameter $n$; it need not be size-normalized on the target space.
+
+\begin{definition}[Distribution-relative fair reduction]\label{def:distribution-relative-fair}
+Let $\mathcal D=(D_n)$ be an indexed source distribution family and $\mathcal E=(E_n)$ an indexed target distribution family. Define
+\[
+(L,M,\mathcal D)\preceq_{\mathrm{fair,hp}}(K,N,\mathcal E)
+\]
+if and only if there exists a fair settlement reduction $f:(L,M)\to(K,N)$ such that
+\[
+\mathcal E=f_*\mathcal D,
+\qquad\text{i.e.}\qquad
+E_n=f_*D_n\quad\text{for every }n.
+\]
+Thus the reduction witness is existentially quantified inside the binary relation, while the transported target distribution is part of the target object.
+\end{definition}
+
+\begin{theorem}[High-probability executable transfer]\label{thm:hp-transfer}
+Let $f:(L,M)\to(K,N)$ be a fair settlement reduction. Suppose $N$ has geometric high-probability polynomial settlement on the push-forward distributions $f_*D_n$, and suppose $N$ has an exact executable policy $\pi$ that is polynomially Bellman-competitive. Then the composed procedure
+\[
+x\longmapsto f(x)\longmapsto \pi(f(x))
+\]
+has executable high-probability polynomial settlement on $D_n$. Every reported source answer remains verifier-certified after the declared certificate lift (or equivalent composite verification).
+\end{theorem}
+
+\begin{proof}
+Let $|x|=n$. The reduction cost is at most $p_0(n)$ and $|f(x)|\le p_1(n)$. On an event of probability $1-o(1)$, geometric high-probability settlement gives $V_N(f(x))\le p(n)$ for some polynomial $p$. Bellman competitiveness then gives
+\[
+C_{N,\pi}(f(x))\le q\bigl(p_1(n)+p(n)\bigr),
+\]
+which is polynomial in $n$. Adding the reduction and certificate-lifting costs preserves polynomiality. Therefore some polynomial $r$ satisfies
+\[
+\Prob_{X\sim D_n}[C_{\mathrm{total}}(X)\le r(n)]\longrightarrow1.
+\]
+Answer preservation and the sound source verifier give exactness on every reported settlement; budget exhaustion may still produce \UNKNOWN{}.
+\end{proof}
+
+\begin{theorem}[Distribution-relative fair reductions form a preorder]\label{thm:distribution-preorder}
+The relation $\preceq_{\mathrm{fair,hp}}$ of Definition~\ref{def:distribution-relative-fair} is reflexive and transitive on triples $(L,M,\mathcal D)$.
+\end{theorem}
+
+\begin{proof}
+For reflexivity, use the identity fair reduction; its push-forward fixes every $D_n$. For transitivity, suppose $f:(L,M)\to(K,N)$ witnesses
+\[
+(L,M,\mathcal D)\preceq_{\mathrm{fair,hp}}(K,N,\mathcal E)
+\]
+and $g:(K,N)\to(J,P)$ witnesses
+\[
+(K,N,\mathcal E)\preceq_{\mathrm{fair,hp}}(J,P,\mathcal F).
+\]
+By Theorem~\ref{thm:fair-preorder}, $g\circ f$ is a fair settlement reduction, and push-forward is functorial:
+\[
+(g\circ f)_*\mathcal D=g_*(f_*\mathcal D)=g_*\mathcal E=\mathcal F.
+\]
+Hence $g\circ f$ witnesses the required composite relation.
+\end{proof}
+
+The push-forward formulation is the exact baseline because it evaluates the target on the distribution actually produced by the reduction. A stronger comparison is needed when the target is required to use an independently declared ``natural'' distribution family. Let $\mathcal E=(E_n)$ be such a target family, indexed by the same external parameter $n$ (not necessarily by exact target length). Call the reduction \emph{polynomially distribution-compatible} when there is a polynomial $q$ such that
+\[
+(f_*D_n)(y)\le q(n)E_n(y)
+\]
+for every relevant $y$. Then any target bad set $B_n$ with $E_n(B_n)\le\varepsilon_n$ has
+\[
+(f_*D_n)(B_n)\le q(n)\varepsilon_n.
+\]
+Consequently, high-probability transfer through an independently chosen target distribution requires the quantitative condition $q(n)\varepsilon_n\to0$, not merely $\varepsilon_n\to0$. This domination condition is one standard kind of safeguard against a reduction concentrating source mass on target instances that are atypical under the advertised target distribution; it is closely related in spirit to distributional reductions in average-case complexity~\cite{Levin1986,BogdanovTrevisan2006}.
+
+\section{What ``semi-solving an NP-complete problem'' means here}
+The phrase \emph{semi-solving} is useful informally but can be misunderstood. In this paper it means neither probabilistic correctness nor a partial logical answer.
+
+The three-outcome behavior below is not presented as a new average-case notion. In established terminology, algorithms that return either the correct answer or ``I don't know'' are studied as \emph{errorless heuristics}, and stronger errorless heuristic schemes parameterize the allowed failure mass~\cite{BogdanovSafra2007,BogdanovTrevisan2006}. The definition here is a fixed-sequence, verifier-gated specialization tailored to settlement geometry.
+
+\begin{definition}[Exact high-probability semisolver]
+An exact high-probability semisolver for $(L,\mathcal D)$ is an exact executable solver equipped with a polynomial budget $p(n)$. Write $T(X)$ for its declared measured settlement cost on instance $X$. It satisfies:
+\begin{enumerate}[label=(\roman*)]
+    \item whenever it outputs \textsc{yes} or \textsc{no}, the output is accompanied by a certificate accepted by the declared verifier;
+    \item if the budget expires first, it outputs \textsc{unknown}, never a guess;
+    \item the probability of a certified settlement within budget tends to one:
+    \[
+    \Prob_{X\sim D_n}[T(X)\le p(n)]\to1.
+    \]
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[No probabilistic-answer principle]\label{thm:noerror}
+Assume the certificate verifier is sound. An exact high-probability semisolver has zero false-settlement probability: every accepted \textnormal{\textsc{yes}} or \textnormal{\textsc{no}} answer is correct. Probability appears only in whether settlement occurs within the declared resource budget.
+\end{theorem}
+
+\begin{proof}
+Every claimed settlement passes the sound verifier. Runs that do not settle within budget return \textsc{unknown} rather than an unverified answer.
+\end{proof}
+
+\begin{quote}
+\textbf{This paper does not give SAT answers with probability one, and it does not claim a randomized algorithm whose answer is merely probably correct.} The proposed experiment studies the probability that an \emph{exact, verifier-gated} computation settles within a resource bound. Correctness and runtime probability are separate axes.
+\end{quote}
+
+This distinction also separates the present theory from an earlier almost-sure completeness result for randomized proof search in the MAPQUEST development~\cite{TennesonMAPQUEST}: if every required proof step continues to receive positive sampling probability, a finite proof may eventually be discovered with probability one. Such a theorem is an eventual-discovery result and supplies no polynomial-time guarantee. High-probability polynomial settlement is substantially stronger as a resource claim and remains to be established for any proposed SAT distribution/solver pair.
+
+\section{SAT as the first test case}
+This section proposes a test framework rather than a new complexity classification of SAT. SAT is a natural test bed because exact verification is asymmetric but practical: a satisfying assignment directly certifies a \SAT{} answer, while a proof-producing exact solver can accompany an \UNSAT{} answer with a checkable refutation certificate. The experiment should use a frozen solver/verifier pair and should report timeouts as \UNKNOWN{}.
+
+A useful first study should avoid a single input distribution. For random $3$-SAT one should declare $n$ to be the number of variables, specify $m=\alpha n$ clauses (or another explicit density rule), and also log the encoded input length used for machine-resource accounting. One should sweep multiple clause densities rather than choose only a regime in which one answer overwhelmingly dominates. Additional families may include planted satisfiable instances, structured generators, or application-derived instances. Each family defines a different $\mathcal D$; conclusions must remain distribution-relative.
+
+The primary experimental objects are not only success fractions. Record at least:
+\[
+\begin{gathered}
+\widehat Q_M(n,\varepsilon),\quad
+\text{deterministic operation count},\quad
+\text{wall time},\quad \text{CPU work},\\
+\text{peak memory},\quad
+\text{certificate size},\quad
+\text{timeout fraction}.
+\end{gathered}
+\]
+A finite experiment cannot prove a limit statement such as $\Prob[T\le p(n)]\to1$. It can only test whether observed scaling is consistent with a candidate high-probability law and whether that law survives larger held-out sizes.
+
+\section{A modern-computer test protocol}
+The following protocol is deliberately reusable. An audience member can substitute a different decision problem without changing the logic of the experiment.
+
+\subsection*{Required interfaces}
+For each problem provide:
+\begin{itemize}
+    \item \texttt{Sample(n, seed)}: draws an instance from a declared distribution $D_n$;
+    \item \texttt{Size(x)}: returns the size parameter used by the theorem statement;
+    \item \texttt{Solve(x, budget, solver-seed)}: exact solver returning \textsc{yes}, \textsc{no}, or \textsc{unknown}, together with a certificate on settlement;
+    \item \texttt{Verify(x, answer, cert)}: independent certificate checker;
+    \item \texttt{Meter}: a deterministic primitive-operation counter when available, plus reproducible wall-time, CPU, and memory measurements.
+\end{itemize}
+
+For SAT, \texttt{Sample} may generate random or planted CNF formulas; \texttt{Solve} is a frozen exact SAT solver; and \texttt{Verify} checks the satisfying assignment or unsatisfiability certificate.
+
+\subsection*{Pseudocode}
+\begin{Verbatim}[fontsize=\small]
+procedure TEST_HIGH_PROBABILITY_SETTLEMENT(
+        sizes, samples_per_size, sampler, solver, verifier,
+        budget_family, master_seed):
+
+    results = []
+
+    for n in sizes:
+        for j in 1 .. samples_per_size:
+            instance_seed = deterministic_subseed(
+                                master_seed, "instance", n, j)
+            x = sampler(n, instance_seed)
+
+            for budget in budget_family(n):
+                solver_seed = deterministic_subseed(
+                                  master_seed, "solver", n, j, budget)
+                outcome, cert, cost = solver(x, budget, solver_seed)
+
+                if outcome == YES or outcome == NO:
+                    if verifier(x, outcome, cert) == ACCEPT:
+                        settled = true
+                        verifier_failure = false
+                    else:
+                        settled = false
+                        verifier_failure = true
+                else:
+                    outcome = UNKNOWN
+                    settled = false
+                    verifier_failure = false
+
+                record(results,
+                       n, instance_seed, solver_seed, budget,
+                       settled, verifier_failure, outcome,
+                       cost.primitive_operations,
+                       cost.wall_time,
+                       cost.cpu_time,
+                       cost.peak_memory,
+                       size(cert))
+
+    return results
+\end{Verbatim}
+
+No line of the procedure guesses an answer after timeout. A randomized solver may be used, but its solver seed is logged separately from the instance-generator seed and certificate verification remains mandatory; randomness may change discovery time, not the truth standard. A verifier rejection is recorded as a correctness failure of the solver/certificate pipeline rather than aborting or being counted as an \UNKNOWN{} timeout. For cross-machine reproducibility, a deterministic primitive-operation counter (for example, conflicts, propagations, expansions, or another frozen problem-specific unit) should be the primary resource trace when available, with wall time retained as a hardware-dependent secondary measurement.
+
+\subsection*{Analysis protocol}
+For each $n$ and each candidate budget $p(n)$:
+\begin{enumerate}[label=(\arabic*)]
+    \item estimate the fraction of instances settled within budget;
+    \item for independently sampled instances, report an exact or conservative binomial confidence interval, not only a point estimate;
+    \item estimate upper quantiles of settlement cost among the declared distribution;
+    \item freeze any fitted polynomial or scaling law before evaluating larger held-out sizes;
+    \item repeat on at least one contrasting distribution family;
+    \item publish generator code, seeds, solver/version hash, verifier, hardware description, and raw logs.
+\end{enumerate}
+
+The experiment can falsify naive conjectures quickly. For example, if the timeout fraction stabilizes away from zero as $n$ grows under every tested polynomial budget, the data do not support high-probability polynomial settlement for that solver/distribution pair. Conversely, a falling timeout fraction across growing held-out sizes is evidence worth pursuing, but it is not an asymptotic proof.
+
+\section{Testing fair reduction rather than only a solver}
+The same harness can test whether a proposed reduction is experimentally fair.
+
+Given source instances $x\sim D_n$, compute $y=f(x)$ and record:
+\[
+|x|,\quad |y|,\quad T_f(x),\quad V_M(x)\text{ proxy},\quad V_N(y)\text{ proxy}.
+\]
+Because exact Bellman values are usually inaccessible on hard instances, the experiment may use reproducible upper bounds from best-known verified settlement runs and lower bounds from admissible heuristics, proof-complexity bounds, or certified search frontiers. When an executable policy is being evaluated, record $C_{M,\pi}$ separately from all Bellman proxies; an empirical near-geodesic ratio is evidence about navigation quality, not an exact Bellman value unless optimality is independently certified. The empirical question is whether the observed distortion is compatible with fixed polynomial envelopes that survive held-out sizes.
+
+A reduction should be rejected as a practical fairness candidate if its apparent simplification is paid for by one of the following hidden costs:
+\begin{itemize}
+    \item superpolynomial or rapidly exploding construction time;
+    \item explosive output size;
+    \item a target representation whose local operations are themselves expensive;
+    \item loss of a natural input distribution by concentrating almost all mass on atypical easy target instances;
+    \item expensive lifting of a target settlement certificate back to a source certificate.
+\end{itemize}
+
+This is the computational analogue of insisting that simulation witnesses preserve the structure that the theorem is meant to measure.
+
+\section{A general audience replication theorem}
+\begin{proposition}[Problem-independent testability]
+The experimental framework is not SAT-specific. Any decision problem with a reproducible instance sampler, an exact three-outcome budgeted solver (\textnormal{\textsc{yes}}/\textnormal{\textsc{no}}/\textnormal{\textsc{unknown}}), a sound certificate verifier for settled outcomes, a size measure, and a resource meter can be inserted into the same high-probability settlement protocol.
+\end{proposition}
+
+\begin{proof}
+The definitions of empirical settlement probability, quantile cost, timeout fraction, and fair-reduction distortion depend only on those interfaces, not on CNF syntax or SAT-specific inference rules.
+\end{proof}
+
+Thus a reader can test the theory on graph problems, scheduling, combinatorial design, theorem proving, or another NP search/decision setting, provided the certificate and distribution choices are made explicit.
+
+\section{Research program and open problems}
+The merged framework leaves several sharply stated problems.
+
+\begin{problem}[Infinite SIC antichains]
+Does $\Dclk$ contain an infinite antichain of finitely describable SICs?
+\end{problem}
+
+\begin{problem}[Scheduled-AMLD classification]
+Which global invariants classify or separate scheduled-execution AMLD degrees beyond the five constituent-channel degrees?
+\end{problem}
+
+\begin{problem}[Architecture-level AMLD preorder]
+Can one define a useful typed simulation preorder on the full reachable accepted-transition systems of AMLD architectures, over all admissible schedules, that composes cleanly and reduces to the scheduled preorder on a fixed execution?
+\end{problem}
+
+\begin{problem}[Natural fair reductions]
+Which standard reductions among NP-complete problems satisfy a nontrivial fair-settlement condition for natural exact solvers and declared cost models?
+\end{problem}
+
+\begin{problem}[Worst-case versus high-probability separation for SAT]
+For which natural SAT distributions, if any, does there exist an exact modern-computer-realizable solver with high-probability polynomial settlement while worst-case complexity remains unresolved or superpolynomial for that solver?
+\end{problem}
+
+\begin{problem}[Distribution robustness]
+If high-probability polynomial settlement holds for one natural distribution family, under what perturbations, mixtures, or reductions does it persist?
+\end{problem}
+
+\begin{problem}[Bellman distortion invariants]
+Can one construct computable lower and upper surrogates for $V$ that are strong enough to certify polynomial distortion of settlement geometry without already solving the underlying hard instances?
+\end{problem}
+
+\begin{problem}[AMLD Bellman control]
+For an AMLD global state $X$, define a resource-aware settlement value over scheduler actions and verified BANK transitions. Under what conditions does cross-channel lemma sharing strictly lower the optimal settlement value, rather than merely changing heuristic discovery order?
+\end{problem}
+
+\section{Conclusion}
+The central distinction of this paper is between \emph{structural simulation} and \emph{resource-sensitive settlement}. Clocked simulation gives a nontrivial preorder of SICs and, after quotienting, a genuine poset of simulation degrees. A typed scheduled-execution analogue does the same for scheduled AMLDs; a full architecture-level quotient is left open. Those relations are the right place to study faithful embedding, recoding, capacity, halting structure, and cooperative chronology.
+
+Complexity requires more. Because admissible clocks intentionally forgive timing differences, bounded settlement belongs to a different preorder. Fair settlement reductions preserve exact answers while controlling construction cost, representation growth, and Bellman distance-to-settlement. With an explicit input distribution, this produces a geometric high-probability notion of settlement that can coexist with hard worst cases; executable high-probability settlement follows only when a declared search policy is also controlled, for example by polynomial Bellman competitiveness.
+
+The proposed empirical program is therefore modest in its logical claim and ambitious in its measurement claim. It does not provide a probability-one chance of obtaining a correct SAT answer. It requires correctness on every reported answer and uses \textsc{unknown} on budget exhaustion. What is probabilistic is the event that an instance drawn from a declared distribution settles within a declared resource bound. That distinction makes the theory falsifiable on current computers without confusing empirical typical-case behavior with a solution of $P$ versus $NP$.
+
+\begin{thebibliography}{99}
+
+\bibitem{Bellman1957}
+R. Bellman,
+\emph{Dynamic Programming},
+Princeton University Press, 1957.
+
+\bibitem{Cook1971}
+S. A. Cook,
+``The Complexity of Theorem-Proving Procedures,''
+\emph{Proceedings of the Third Annual ACM Symposium on Theory of Computing},
+pp. 151--158, 1971.
+
+\bibitem{Karp1972}
+R. M. Karp,
+``Reducibility Among Combinatorial Problems,''
+in \emph{Complexity of Computer Computations},
+R. E. Miller and J. W. Thatcher, eds., pp. 85--103, Plenum Press, 1972.
+
+\bibitem{Levin1986}
+L. A. Levin,
+``Average Case Complete Problems,''
+\emph{SIAM Journal on Computing}, 15(1):285--286, 1986.
+
+\bibitem{Impagliazzo1995}
+R. Impagliazzo,
+``A Personal View of Average-Case Complexity,''
+\emph{Proceedings of the Tenth Annual IEEE Conference on Structure in Complexity Theory},
+pp. 134--147, 1995.
+
+\bibitem{BogdanovTrevisan2006}
+A. Bogdanov and L. Trevisan,
+``Average-Case Complexity,''
+\emph{Foundations and Trends in Theoretical Computer Science},
+2(1):1--106, 2006.
+
+\bibitem{BogdanovSafra2007}
+A. Bogdanov and M. Safra,
+``Hardness Amplification for Errorless Heuristics,''
+\emph{48th Annual IEEE Symposium on Foundations of Computer Science (FOCS 2007)},
+pp. 418--426, 2007.
+
+\bibitem{TennesonV48}
+B. Tenneson,
+\emph{Depths of Induction, ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness},
+Version 48, 2026.
+
+\bibitem{TennesonAddendum}
+B. Tenneson,
+\emph{Depths of Induction: Addendum to Version 48, Version 1: Clocked Simulation Degrees},
+2026.
+
+\bibitem{TennesonSettling}
+B. Tenneson,
+\emph{Conjecture Settling 001},
+2026.
+
+\bibitem{TennesonPNP}
+B. Tenneson,
+\emph{ATPs, P vs. NP, and Shortest Proofs},
+2026.
+
+\bibitem{TennesonMAPQUEST}
+B. Tenneson,
+\emph{MAPQUEST: Deductive Closure and Measurable Proof Navigation},
+2026.
+
+\end{thebibliography}
+
+\end{document}
