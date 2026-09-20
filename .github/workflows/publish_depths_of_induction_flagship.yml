@@ -1,0 +1,49 @@
+name: Publish Depths of Induction flagship
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/source.tex'
+      - 'scripts/publications.json'
+
+permissions:
+  contents: write
+
+jobs:
+  build-publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile flagship monograph
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: source.tex
+          working_directory: docs/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48
+          latexmk_use_xelatex: false
+
+      - name: Install catalog verifier
+        run: python -m pip install pymupdf==1.26.4
+
+      - name: Install rebuilt PDF and regenerate publication site
+        run: |
+          set -euo pipefail
+          D='docs/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48'
+          mv "$D/source.pdf" "$D/Depths_of_Induction_Version_48.pdf"
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+
+      - name: Commit rebuilt flagship publication
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs
+          if git diff --cached --quiet; then
+            echo 'No generated publication changes.'
+            exit 0
+          fi
+          git commit -m 'Publish Depths of Induction flagship monograph [skip ci]'
+          git push
