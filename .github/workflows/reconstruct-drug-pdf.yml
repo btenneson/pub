@@ -1,0 +1,31 @@
+name: Reconstruct drug PDF
+
+on:
+  push:
+    branches:
+      - agent/drug-pdf-transport
+
+permissions:
+  contents: write
+
+jobs:
+  reconstruct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct and verify PDF
+        shell: bash
+        run: |
+          cat .tmp_drug_pdf/part*.b64 | tr -d '\n' | base64 --decode > Multi-Dose_Concentration_Derivation_v2.pdf
+          test "$(wc -c < Multi-Dose_Concentration_Derivation_v2.pdf)" -eq 107603
+          echo "4c39102a27608869abe31f2bb5b19610b1b6f95a6c1e4576b628eff37b10ada2  Multi-Dose_Concentration_Derivation_v2.pdf" | sha256sum -c -
+      - name: Commit reconstructed PDF
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Multi-Dose_Concentration_Derivation_v2.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Reconstruct multi-dose concentration PDF"
+            git push
+          fi
