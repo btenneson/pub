@@ -1,0 +1,739 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setlength{\emergencystretch}{2em}
+
+\hypersetup{
+  pdftitle={Generalized Board Games: From Tic-Tac-Toe to Chess as xyz Formal Systems},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={Generalized board games as xyz formal systems; tic-tac-toe and chess examples}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\Succ}{\operatorname{Succ}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\DepthsRef}{\href{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}{\emph{Depths of Induction and Formalized Self-Awareness, \mbox{Version~48}}}}
+\newcommand{\EPT}{\mbox{\emph{Elements of Proof Theory}}}
+
+\title{\textbf{Generalized Board Games}\\[0.45em]
+\large From Tic-Tac-Toe to Chess as $xyz$ Formal Systems}
+\author{Brian Tenneson}
+\date{September 22, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Generalized board games (GBGs) form an unusually concrete class of $xyz$ formal systems. In the modern formulation used in \DepthsRef{}, an $xyz$ formal system $F=(x,y,z)$ has a nonempty alphabet $x$, a set $y$ of well-formed finite strings, and a set $z$ of finitary partial inference rules on $y$. A GBG specializes this framework by encoding rule-complete game states as well-formed formulas and legal moves as partial unary inference rules. A distinguished initial state acts as an axiom or initial hypothesis; finite legal reachability becomes theoremhood; a legal history becomes a sequential match-proof; and the match tree becomes the unfolding of the directed state graph.
+
+Two examples show the same formalism at radically different scales. Tic-tac-toe is the small exact model: every legal move reduces the number of empty squares by one, every maximal play has at most nine plies, the full reachable state set and match tree can be enumerated exactly, and backward induction gives a draw from the empty board under perfect play. Chess is the large model: rule-complete states require richer metadata, shallow match-tree counts grow from $20$ legal first moves to more than $6.9\times10^{13}$ ten-ply histories, and Shannon's classical $10^{120}$ estimate appears naturally as a branching estimate for match-proofs. The paper also develops exact match recursions, state-versus-history projection, certified-state reasoning, alternating forced-win regions, and a forced-win horizon. Tic-tac-toe supplies transparency; chess supplies scale; both instantiate the same $xyz$ proof-theoretic architecture.
+\end{abstract}
+
+\section{Why Board Games Belong Inside the \texorpdfstring{$xyz$}{xyz} Framework}
+
+The purpose of generalized board games is not to introduce a rival formalism beside $xyz$ systems. The point is the opposite: board games provide a particularly visible family of $xyz$ formal systems.
+
+We use the modern definition from \DepthsRef{} \cite{Tenneson2026}. If $y$ is a set, a $k$-ary rule on $y$ is a partial function
+\[
+r:y^k\rightharpoonup y,
+\]
+where $k\ge 1$. A finitary rule is a $k$-ary rule for some positive finite $k$. An $xyz$ formal system is an ordered triple
+\[
+F=(x,y,z),
+\]
+where $x$ is a nonempty alphabet, $y$ is a set of well-formed finite strings over $x$, and $z$ is a set of finitary rules on $y$. The elements of $z$ are the inference rules of the system.
+
+This continues the earlier $xyz$ framework of \EPT{}, where generalized board games already appeared as an example \cite{Tenneson2023}. The modern partial-function formulation makes the intended role of legal moves especially clean.
+
+The three coordinates may be remembered informally as
+\[
+\boxed{x=\text{symbols}},
+\qquad
+\boxed{y=\text{well-formed formal objects}},
+\qquad
+\boxed{z=\text{licensed formal transitions}}.
+\]
+
+A board game makes the third coordinate visible. A legal move is a formally licensed transition from one legal state to another. Thus, after a suitable finite encoding, a move can literally be an inference rule.
+
+\section{Rule-Complete States and Partial Move Rules}
+
+Let a game state contain whatever finite information is needed to determine all legal immediate continuations. For a board game one may begin with a location report
+\[
+\ell:C\longrightarrow H\cup\{E\},
+\]
+where $C$ is the set of board locations, $H$ is the set of piece or mark types, and $E$ denotes emptiness. Additional rule-relevant information may be required.
+
+\begin{definition}[Rule-complete state]
+A state is \emph{rule-complete} if it contains enough information to determine, from that state alone, whether every possible next move is legal, what successor state each legal move produces, and what rule-relevant terminal status results.
+\end{definition}
+
+A rule-complete state may therefore have schematic form
+\[
+s=(\ell,\tau,\eta),
+\]
+where $\tau$ records the player to move and $\eta$ contains any additional metadata. The tuple is understood through a fixed finite-string encoding in $y$.
+
+Let $\mathcal A$ be a set of canonical concrete move labels. For each $\mu\in\mathcal A$, associate a partial unary rule
+\[
+r_\mu:y\rightharpoonup y,
+\qquad
+D_\mu=\dom(r_\mu).
+\]
+The condition $s\in D_\mu$ means exactly that move $\mu$ is legal at state $s$; if so, $r_\mu(s)$ is the unique resulting state.
+
+\begin{definition}[GBG system]
+A \emph{generalized board game} is an $xyz$ formal system $F=(x,y,z)$ together with a distinguished initial state $s_0\in y$, a set $\mathcal A$ of canonical move labels, and a bijection
+\[
+\rho:\mathcal A\xrightarrow{\sim}z,
+\qquad
+\rho(\mu)=r_\mu,
+\]
+such that every element of $y$ encodes a rule-complete game state and every $r_\mu$ is a partial unary rule describing exactly one legal move rule.
+\end{definition}
+
+Thus
+\[
+\boxed{\text{applicable inference rule}=\text{available legal move}}.
+\]
+Partiality means only that a rule is not legal everywhere. It does not represent inaction. If a game permits passing, passing is represented by its own partial rule.
+
+\begin{definition}[Local finiteness]
+A GBG is \emph{locally finite} if every state admits only finitely many legal moves:
+\[
+|\{\mu\in\mathcal A:s\in D_\mu\}|<\infty
+\qquad(s\in y).
+\]
+\end{definition}
+
+Tic-tac-toe and ordinary chess are locally finite.
+
+\section{Theoremhood as Finite Reachability}
+
+Let the distinguished hypothesis set be
+\[
+\Gamma=\{s_0\}.
+\]
+Write
+\[
+\Con_F(\Gamma)=\{\varphi\in y:\Gamma\vdash_F\varphi\}
+\]
+for the consequence set.
+
+\begin{theorem}[Reachability--Theorem Correspondence]
+For every GBG,
+\[
+\boxed{
+s\in\Con_F(\{s_0\})
+\iff
+s\text{ is reachable from }s_0\text{ by finitely many, possibly zero, legal moves}.
+}
+\]
+\end{theorem}
+
+\begin{proof}
+A finite legal history
+\[
+s_0\to s_1\to\cdots\to s_n=s
+\]
+is a finite chain of applications of unary rules from $z$, hence a derivation of $s$ from $s_0$. Conversely, every inference rule of the GBG is a legal-move rule, so the dependency chain in a derivation from the single hypothesis $s_0$ is a finite legal state-transition path beginning at $s_0$.
+\end{proof}
+
+Hence, relative to the distinguished initial state,
+\[
+\boxed{\text{reachable state}=\text{theorem}}.
+\]
+
+\section{Match-Proofs, Match Trees, and State Graphs}
+
+A match carries stricter temporal structure than an arbitrary proof: each next state must follow from the immediately preceding state.
+
+\begin{definition}[Match-proof]
+An $n$-ply match-proof beginning at $s_0$ consists of states
+\[
+(s_0,s_1,\ldots,s_n)
+\]
+and move labels
+\[
+(\mu_0,\ldots,\mu_{n-1})
+\]
+such that
+\[
+s_{i+1}=r_{\mu_i}(s_i)
+\qquad(0\le i<n).
+\]
+\end{definition}
+
+\begin{theorem}[Match-Proof Correspondence]
+Legal move-labeled matches beginning at $s_0$ are in one-to-one correspondence with move-labeled match-proofs beginning at $s_0$.
+\end{theorem}
+
+\begin{proof}
+A legal match records its states and move labels and therefore determines a match-proof. Conversely, the defining equations of a match-proof state that every consecutive transition is legal, so they recover a legal match. The two constructions are inverse.
+\end{proof}
+
+\begin{definition}[Match tree]
+The \emph{match tree} $\mathcal T(s_0)$ is the rooted tree whose depth-$n$ nodes are the $n$-ply move-labeled match-proofs beginning at $s_0$.
+\end{definition}
+
+The move-labeled transition graph has vertex set $y$ and edge $(s,\mu,t)$ whenever $t=r_\mu(s)$. The associated state graph forgets the move label. Its reachable subgraph from $s_0$ has vertex set exactly $\Con_F(\{s_0\})$.
+
+Let $R_n(s_0)$ be the set of states reachable in exactly $n$ plies, and let $M_n(s_0)$ be the number of move-labeled match-proofs of exactly $n$ plies.
+
+\begin{proposition}[History-to-State Projection]
+The endpoint map from the depth-$n$ level of $\mathcal T(s_0)$ onto $R_n(s_0)$ is surjective. Hence, whenever $M_n(s_0)$ is finite,
+\[
+\boxed{|R_n(s_0)|\le M_n(s_0).}
+\]
+\end{proposition}
+
+Different histories may therefore prove the same theorem state. In board-game language this is transposition. Equality of states means equality of \emph{rule-complete} states, not merely equality of visible board diagrams.
+
+\section{Certified States}
+
+Suppose a state $s$ is supplied together with a certificate that
+\[
+s\in\Con_F(\{s_0\}).
+\]
+The certificate establishes that the state arose legally. Rule-completeness then allows future analysis to begin directly at $s$.
+
+\begin{proposition}[Certified-State Principle]
+If two legal match-proofs terminate at the same rule-complete state $s$, then they have exactly the same legal immediate continuations and the same successor state for each applicable move label.
+\end{proposition}
+
+\begin{proof}
+Applicability and successor values are functions of the rule-complete state $s$ itself. They do not depend on which proof of $s$ was supplied.
+\end{proof}
+
+\section{Local Branching and Exact Match Counting}
+
+Define
+\[
+\Succ(s)=\{r_\mu(s):s\in D_\mu\},
+\]
+\[
+b(s)=|\Succ(s)|,
+\qquad
+b_{\mathrm{move}}(s)=|\{\mu:s\in D_\mu\}|.
+\]
+Then
+\[
+b(s)\le b_{\mathrm{move}}(s),
+\]
+with equality whenever different legal moves always produce different successor states.
+
+Let $\mathcal M_n(s)$ be the set of move-labeled legal matches of exactly $n$ plies beginning at $s$, and put
+\[
+M_n(s)=|\mathcal M_n(s)|,
+\qquad M_0(s)=1.
+\]
+
+\begin{theorem}[Exact Match Recursion]
+For every $n\ge0$,
+\[
+\boxed{
+M_{n+1}(s)=\sum_{\mu:\,s\in D_\mu}M_n(r_\mu(s)).
+}
+\]
+The sum is a cardinal sum in general and an ordinary finite sum for locally finite games.
+\end{theorem}
+
+\begin{proof}
+Partition the $(n+1)$-ply histories according to their unique first move $\mu$. After that move, the remaining history is an $n$-ply history beginning at $r_\mu(s)$.
+\end{proof}
+
+\begin{corollary}[Uniform Branching Bound]
+If every state reachable before depth $n$ has at most $B$ legal moves, then
+\[
+\boxed{M_n(s_0)\le B^n.}
+\]
+\end{corollary}
+
+\begin{corollary}[Layerwise Branching Bound]
+If every state reachable after exactly $j$ plies has at most $B_j$ legal moves for $0\le j<n$, then
+\[
+\boxed{M_n(s_0)\le\prod_{j=0}^{n-1}B_j.}
+\]
+\end{corollary}
+
+\section{Forced Winning Regions and a Settlement Horizon}
+
+Let a two-player alternating GBG have players $P$ and $Q$. Partition its nonterminal states into $P$-to-move and $Q$-to-move states. Let $W_P$ be the terminal states in which $P$ wins. A maximal play is either an infinite legal history or a finite history ending in a terminal state.
+
+Define
+\[
+A_0=W_P.
+\]
+Inductively let
+\[
+A_{n+1}=A_n\cup E_n\cup U_n,
+\]
+where $E_n$ contains the nonterminal $P$-to-move states $s$ satisfying
+\[
+\exists t\in\Succ(s)\quad t\in A_n,
+\]
+and $U_n$ contains the nonterminal $Q$-to-move states $s$ satisfying
+\[
+\Succ(s)\neq\varnothing
+\quad\text{and}\quad
+\forall t\in\Succ(s),\;t\in A_n.
+\]
+Set
+\[
+W_P^*=\bigcup_{n=0}^\infty A_n.
+\]
+
+\begin{theorem}[Finite Forced-Win Characterization]
+In a locally finite two-player alternating GBG,
+\[
+\boxed{s\in W_P^*}
+\]
+if and only if $P$ has a strategy from $s$ under which every maximal compatible play reaches $W_P$ after finitely many plies.
+\end{theorem}
+
+\begin{proof}
+If $s\in A_n$ for least $n$, the defining existential/universal clauses let $P$ force the stage index to decrease until $A_0=W_P$ is reached. Conversely, suppose $P$ has a strategy under which every maximal compatible play reaches $W_P$ in finite time. The strategy tree is finitely branching. If it had unbounded finite depth, Koenig's lemma would produce an infinite compatible branch, contradicting the hypothesis. Hence the strategy tree has finite height, and backward induction places its root in some $A_N$.
+\end{proof}
+
+For $s\in W_P^*$ define the \emph{forced-win horizon}
+\[
+h_P(s)=\min\{n:s\in A_n\}.
+\]
+Then $h_P(s)=0$ on $W_P$, while at nonterminal forced-win states
+\[
+h_P(s)=1+\min_{t\in\Succ(s)\cap W_P^*}h_P(t)
+\]
+when it is $P$'s turn, and
+\[
+h_P(s)=1+\max_{t\in\Succ(s)}h_P(t)
+\]
+when it is $Q$'s turn.
+
+This horizon differs from ordinary shortest-proof length: a shortest proof chooses one successful derivation, whereas a forced-win horizon must survive the opponent's choices.
+
+\section{Tic-Tac-Toe: The Small Canonical GBG}
+
+Tic-tac-toe is the most transparent nontrivial GBG example. It has enough structure to distinguish reachability from strategy, history trees from state graphs, and theoremhood from forced winning, while remaining exactly enumerable.
+
+\subsection{Encoding}
+
+Let the board locations be
+\[
+C=\{1,2,\ldots,9\},
+\]
+and let a board report be
+\[
+\ell:C\to\{X,O,E\}.
+\]
+A rule-complete state records the board, whose turn it is when the game is ongoing, and whether the state is ongoing, an $X$ win, an $O$ win, or a draw. On reachable states the turn is already determined by the numbers of $X$ and $O$ marks, but recording it explicitly is harmless and keeps the presentation uniform.
+
+A particularly economical canonical move set is
+\[
+\mathcal A_{\mathrm{TTT}}=\{1,2,\ldots,9\},
+\]
+where move label $i$ means ``place the current player's mark in square $i$.'' The partial rule
+\[
+r_i:y\rightharpoonup y
+\]
+is defined exactly when square $i$ is empty and the current state is nonterminal. Its output fills square $i$ with the current player's mark, changes the player to move when appropriate, and records a terminal result if the new board ends the game.
+
+Thus tic-tac-toe is an $xyz$ formal system with nine canonical move rules.
+
+\subsection{A strict descent function}
+
+Let
+\[
+e(s)=\text{the number of empty squares in }s.
+\]
+
+\begin{proposition}[Tic-Tac-Toe Finiteness]
+For every legal tic-tac-toe move $s\to t$,
+\[
+\boxed{e(t)=e(s)-1.}
+\]
+Consequently every maximal tic-tac-toe match is finite, has at most nine plies, and the reachable state graph is acyclic.
+\end{proposition}
+
+\begin{proof}
+Every legal move fills exactly one previously empty square and never empties a square. Since $e(s_0)=9$ and $e(s)\ge0$, no legal history can have more than nine moves. A directed cycle would force $e$ to decrease and return to its previous value, which is impossible.
+\end{proof}
+
+This argument is stronger than local finiteness: it gives a global finite horizon for the entire game.
+
+\subsection{Exact history and theorem-state counts}
+
+Because the game is so small, the exact match recursion can be evaluated over the entire reachable graph. The following counts use ordinary $3\times3$ tic-tac-toe, stop play immediately when a win occurs, distinguish board orientations, and do not quotient rotations or reflections.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{r r r}
+\toprule
+Depth $n$ & Match-proofs $M_n(s_0)$ & Distinct reachable states $|R_n(s_0)|$ \\
+\midrule
+0 & 1 & 1 \\
+1 & 9 & 9 \\
+2 & 72 & 72 \\
+3 & 504 & 252 \\
+4 & 3,024 & 756 \\
+5 & 15,120 & 1,260 \\
+6 & 54,720 & 1,520 \\
+7 & 148,176 & 1,140 \\
+8 & 200,448 & 390 \\
+9 & 127,872 & 78 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The state counts sum to
+\[
+\boxed{5,478}
+\]
+reachable theorem states. The strict inequality
+\[
+|R_n(s_0)|<M_n(s_0)
+\]
+already appears at depth $3$: different move orders can produce the same rule-complete state. Tic-tac-toe therefore exhibits transposition long before chess-scale complexity appears.
+
+Since no win is possible before ply $5$, the falling-factorial count remains exact through depth $5$:
+\[
+M_n(s_0)=\frac{9!}{(9-n)!}
+\qquad(0\le n\le5).
+\]
+Beginning at depth $6$, wins occurring on ply $5$ prune continuations, so the falling-factorial count becomes only an upper bound.
+
+The complete maximal-history count is
+\[
+\boxed{255,168}.
+\]
+More precisely:
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{r r r r}
+\toprule
+Terminal ply & $X$ wins & $O$ wins & Draws \\
+\midrule
+5 & 1,440 & 0 & 0 \\
+6 & 0 & 5,328 & 0 \\
+7 & 47,952 & 0 & 0 \\
+8 & 0 & 72,576 & 0 \\
+9 & 81,792 & 0 & 46,080 \\
+\bottomrule
+\end{tabular}
+\end{center}
+These numbers are exact evaluations of the match recursion with terminal branches assigned no successors.
+
+\subsection{Reachable winning theorems are not forced wins}
+
+There are many reachable $X$-winning theorem states and many reachable $O$-winning theorem states. That alone does not tell us the value of the initial state.
+
+For the finite game define a minimax value
+\[
+v(s)\in\{-1,0,1\}
+\]
+by assigning $1$ to terminal $X$ wins, $-1$ to terminal $O$ wins, and $0$ to terminal draws. For nonterminal states define
+\[
+v(s)=\max_{t\in\Succ(s)}v(t)
+\]
+when $X$ is to move, and
+\[
+v(s)=\min_{t\in\Succ(s)}v(t)
+\]
+when $O$ is to move.
+
+The descent function $e(s)$ makes this recursion well-founded.
+
+\begin{proposition}[Perfect-Play Value of Tic-Tac-Toe]
+For the empty tic-tac-toe board $s_0$,
+\[
+\boxed{v(s_0)=0.}
+\]
+Hence perfect play yields a draw: neither player has a forced win from the initial state.
+\end{proposition}
+
+\begin{proof}
+Evaluate the displayed recurrence backward from terminal states in increasing order of the number of empty squares. This is a finite exact backward induction over the $5,478$ reachable states. Equivalently, one may enumerate the reachable state graph, assign the terminal values $1$, $0$, and $-1$, and propagate maxima at $X$-to-move states and minima at $O$-to-move states until the empty board is reached. This exhaustive procedure is deterministic and directly reproducible from the stated rules; it yields $v(s_0)=0$.
+\end{proof}
+
+Thus tic-tac-toe gives a particularly clean instance of
+\[
+\boxed{\text{reachable winning theorem}\neq\text{forced win}.}
+\]
+The game contains proofs of $X$-winning states, but $X$ cannot force every opponent response to remain on such a proof path.
+
+\section{Chess: The Large-Scale Canonical GBG}
+
+Chess exhibits the same formal architecture but at a dramatically larger scale. A rule-complete chess state contains the board position and side to move together with rule-relevant metadata such as castling rights, en-passant status, move counters, and whatever repetition information the chosen rules convention requires.
+
+Canonical concrete move labels may include, for example,
+\[
+e2-e4,
+\qquad Ng1-f3,
+\qquad O-O,
+\]
+with distinct labels for different promotion choices. Each label indexes a partial unary rule on the set of rule-complete chess states.
+
+Hence, exactly as in tic-tac-toe,
+\[
+\boxed{\text{legal chess move}=\text{application of a partial inference rule}.}
+\]
+
+\subsection{Finiteness under standard FIDE board rules}
+
+For the strategic interpretation of standard FIDE chess, the rule-complete state carries the information needed to implement the official draw rules. A draw may be claimed after $50$ moves by each player without a pawn move or capture, while $75$ such moves automatically draw the game; fivefold repetition is also automatic \cite{FIDE2023}. A claimable draw may be represented as a legal game-ending action, while an automatic draw is represented in the terminal status of the resulting state.
+
+\begin{proposition}[Finiteness of Standard FIDE Chess Matches]
+In a GBG encoding of standard FIDE chess in which the official automatic draw provisions are represented, every maximal board-rule chess match is finite.
+\end{proposition}
+
+\begin{proof}
+Only finitely many pawn moves can occur: each pawn advances in one direction and eventually either disappears or promotes. Only finitely many captures can occur because the game starts with finitely many pieces and promotion replaces a pawn rather than creating an additional independent piece. Hence every play has a last pawn move or capture. If the game has not already ended, Article~9.6.2 of the FIDE Laws then forces a draw after $75$ moves by each player without a pawn move or capture, with checkmate on the last move taking precedence \cite{FIDE2023}. Thus no infinite maximal play is possible.
+\end{proof}
+
+Resignation and clock forfeiture can be added as extra terminal actions in a tournament model, but they are not needed for the finiteness argument above.
+
+\subsection{Exact shallow match-tree counts}
+
+In computer chess, \emph{perft} counts legal move-generator paths from a position to a fixed depth. Under the standard perft convention of the cited enumeration, these are GBG move-labeled histories. From the standard initial position \cite{CPWPerft}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{r r}
+\toprule
+Depth $n$ (plies) & Exact $M_n(s_0)$ \\
+\midrule
+0 & 1 \\
+1 & 20 \\
+2 & 400 \\
+3 & 8,902 \\
+4 & 197,281 \\
+5 & 4,865,609 \\
+6 & 119,060,324 \\
+7 & 3,195,901,860 \\
+8 & 84,998,978,956 \\
+9 & 2,439,530,234,167 \\
+10 & 69,352,859,712,417 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The first theorem layer contains only $20$ one-ply match-proofs. Ten plies later the match tree already contains more than $6.9\times10^{13}$ legal histories at that depth.
+
+These are histories, not necessarily distinct theorem states. The general projection theorem still gives
+\[
+|R_n(s_0)|\le M_n(s_0).
+\]
+
+\subsection{Layerwise branching}
+
+OEIS A278830 records the following maximal legal-move counts attainable at the first ten chess plies \cite{OEIS278830}:
+\[
+20,20,31,32,46,48,52,55,61,63.
+\]
+Thus
+\[
+M_{10}(s_0)
+\le
+20\cdot20\cdot31\cdot32\cdot46\cdot48\cdot52\cdot55\cdot61\cdot63
+\]
+\[
+=9,629,575,667,712,000.
+\]
+The exact value is
+\[
+69,352,859,712,417.
+\]
+The gap measures the slack introduced when a maximum available somewhere on a layer is used as though it were attained on every history.
+
+\subsection{Shannon scale}
+
+Shannon's 1950 analysis used roughly $30$ legal moves per position and roughly $40$ moves per game, giving about $10^3$ possibilities per White--Black move pair and hence
+\[
+(10^3)^{40}=10^{120}
+\]
+possible variations at the resulting scale \cite{Shannon1950}. In GBG language this is immediately recognizable as an approximate branching calculation for match-proofs.
+
+Using $30$ branches for $80$ plies gives
+\[
+30^{80}\approx1.48\times10^{118},
+\]
+while Shannon's convenient approximation $30^2\approx10^3$ produces $10^{120}$. Neither figure is an exact game-tree count; both are scale estimates.
+
+Shannon also discussed a rough static arrangement count on the order of
+\[
+\frac{64!}{32!(8!)^2(2!)^6}\approx10^{43}.
+\]
+The contrast highlights a basic GBG distinction:
+\[
+\boxed{\text{match-tree nodes count histories}},
+\qquad
+\boxed{\text{reachable state-graph vertices count theorem states}}.
+\]
+Many histories may merge into the same rule-complete state.
+
+\section{Tic-Tac-Toe and Chess Side by Side}
+
+The two examples occupy opposite ends of the same framework.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.25\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth}}
+\toprule
+\textbf{Feature} & \textbf{Tic-tac-toe} & \textbf{Chess} \\
+\midrule
+State data & Board, turn, terminal status & Board, turn, castling, en-passant, counters, repetition data as required \\
+Canonical move rules & Nine square-placement rules & Concrete legal chess move rules \\
+Local finiteness & Immediate & Immediate \\
+Global play finiteness & At most $9$ plies & Finite under standard FIDE automatic-draw rules \\
+Reachable states & Exactly $5,478$ & Vast; no comparable small enumeration used here \\
+Complete histories & Exactly $255,168$ & Enormous; Shannon-scale estimates illustrate growth \\
+Perfect-play initial value & Draw & Not used as a theorem here \\
+Pedagogical role & Transparency and exact enumeration & Scale and realistic complexity \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The point is not that the two games have similar complexity. They plainly do not. The point is that their formal anatomy is the same:
+\[
+\boxed{\text{state}\in y},
+\qquad
+\boxed{\text{move}\in z},
+\qquad
+\boxed{\text{reachable state}=\text{theorem}}.
+\]
+
+Tic-tac-toe shows the architecture with essentially no combinatorial fog. Chess shows that the same architecture remains meaningful when the match tree becomes enormous.
+
+\section{Relation to General Proof Counting}
+
+The proof-counting development in \DepthsRef{} defines $P_F(\Gamma,\varphi,n)$ as the number of proofs of a specified theorem $\varphi$ having exactly $n$ proof lines. If the maximum rule arity is $a$ and
+\[
+\kappa_k=|z_k(F)|,
+\]
+then the general upper bound
+\[
+P_F(\Gamma,\varphi,n)
+\le
+\prod_{j=1}^{n}
+\left(
+|\Gamma|+\sum_{k=1}^{a}\kappa_k(j-1)^k
+\right)
+\]
+is available \cite{Tenneson2026}.
+
+GBG match-proofs are more temporally constrained. The premise of the next unary rule is fixed to be the immediately preceding state, so match counting is directed-path counting rather than arbitrary reuse of earlier proof lines. This explains why the exact GBG recursion is much sharper for game histories.
+
+For a specified endpoint $\varphi$, define
+\[
+M_n(s_0,\varphi)=
+|\{\pi\in\mathcal M_n(s_0):\operatorname{end}(\pi)=\varphi\}|.
+\]
+Then, when the level is finite,
+\[
+M_n(s_0)=\sum_{\varphi\in R_n(s_0)}M_n(s_0,\varphi).
+\]
+This is the natural GBG analogue of endpoint-sensitive proof counting.
+
+\section{What Is General and What Is Game-Specific}
+
+The following statements arise from the GBG formalism itself:
+\[
+\Con_F(\{s_0\})=\text{the set of states finitely reachable from }s_0;
+\]
+\[
+M_{n+1}(s)=\sum_{\mu:s\in D_\mu}M_n(r_\mu(s));
+\]
+\[
+|R_n(s_0)|\le M_n(s_0);
+\]
+the uniform and layerwise branching bounds; the match-tree/state-graph distinction; the certified-state principle; and, under local finiteness, the alternating characterization of finite forced wins.
+
+By contrast, the nine-ply cap, the $5,478$ reachable tic-tac-toe states, the $255,168$ complete tic-tac-toe histories, the perfect-play draw value, chess perft values, FIDE-specific termination rules, and Shannon's numerical estimates belong to the particular games and rule conventions being modeled.
+
+This separation is important. A general formalism should expose where game-specific parameters enter without pretending that the same parameters hold for every game.
+
+\section{Conclusion}
+
+Generalized board games are concrete $xyz$ formal systems. Their basic dictionary is
+\[
+\boxed{\text{rule-complete game state}=\text{well-formed formal object}},
+\]
+\[
+\boxed{\text{legal move}=\text{partial unary inference rule}},
+\]
+\[
+\boxed{\text{finite reachability}=\text{theoremhood}},
+\]
+\[
+\boxed{\text{legal history}=\text{match-proof}},
+\]
+\[
+\boxed{\text{match tree}=\text{tree of sequential match-proofs}},
+\]
+and
+\[
+\boxed{\text{strategy}=\text{adversarially controlled reachability}}.
+\]
+
+Tic-tac-toe belongs first because it makes every part of this dictionary visible. Its strict descent function proves global finiteness, its state graph and match tree can be counted exactly, and its perfect-play draw cleanly separates reachable winning theorems from forced winning. Chess belongs next because it shows that the same formal language survives an enormous increase in combinatorial scale. The progression is therefore deliberate:
+\[
+\boxed{\text{tic-tac-toe: transparency}\quad\longrightarrow\quad\text{chess: scale}.}
+\]
+
+The underlying lesson is simple. A formal system specifies what may legally follow from what. In proof theory that licensed step is called an inference. In a board game it is called a move. GBGs study those two descriptions as instances of the same mathematical structure.
+
+\begin{thebibliography}{9}
+
+\bibitem{Tenneson2023}
+Brian Tenneson,
+\emph{Elements of Proof Theory}, Version 2.36, January 30, 2023.
+
+\bibitem{Tenneson2026}
+Brian Tenneson,
+\href{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}{\emph{Depths of Induction and Formalized Self-Awareness, \mbox{Version~48}}}, 2026. Modern definition of finitary partial rules and $xyz$ formal systems. Available at \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}.
+
+\bibitem{Shannon1950}
+Claude E. Shannon,
+``Programming a Computer for Playing Chess,''
+\emph{Philosophical Magazine}, Series 7, Vol. 41, No. 314, pp. 256--275, March 1950.
+
+\bibitem{CPWPerft}
+Chess Programming Wiki,
+``Initial Position Summary,'' exact perft move-path enumerations for the standard initial chess position,
+accessed September 21, 2026,\\
+\url{https://www.chessprogramming.org/Initial_Position_Summary}.
+
+\bibitem{OEIS278830}
+OEIS Foundation Inc.,
+\emph{The On-Line Encyclopedia of Integer Sequences}, A278830,
+``Maximal number of possible moves at the $n$-th ply of a chess game,''
+accessed September 21, 2026,\\
+\url{https://oeis.org/A278830}.
+
+\bibitem{FIDE2023}
+FIDE,
+\emph{FIDE Laws of Chess taking effect from 1 January 2023}, Articles 9.2, 9.3, and 9.6,
+FIDE Handbook, accessed September 21, 2026,\\
+\url{https://handbook.fide.com/chapter/e012023}.
+
+\end{thebibliography}
+
+\end{document}
