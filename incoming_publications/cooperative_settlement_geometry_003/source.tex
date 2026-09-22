@@ -1,0 +1,1144 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=0.92in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,longtable}
+\usepackage{enumitem}
+\usepackage{xurl}
+\usepackage[hidelinks,bookmarksopen=true]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.48em}
+\setlist{leftmargin=2em,itemsep=0.22em,topsep=0.35em}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Cooperative Settlement Geometry}
+\rhead{Brian Tenneson}
+\cfoot{\thepage}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{conjecture}[definition]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{caution}[definition]{Caution}
+\newtheorem{question}[definition]{Open Question}
+
+\newcommand{\BANK}{\ensuremath{\mathrm{BANK}}}
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\Reach}{\operatorname{Reach}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Act}{\operatorname{Act}}
+\newcommand{\Next}{\operatorname{Next}}
+\newcommand{\Roles}{\operatorname{Roles}}
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Inf}{\infty}
+\newcommand{\dsett}{d_{\mathrm{set}}}
+
+\hypersetup{
+  pdftitle={Cooperative Settlement Geometry: Prover-Refuter Lemma Exchange, BANK Geodesics, Discrete Derivatives, and the Noncomputability of the Last Breakthrough},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={Automated theorem proving, AMLD settlement geometry, prover-refuter cooperation, BANK geodesics, horizon derivatives, and noncomputability},
+  pdfkeywords={automated theorem proving, AMLD, ALD, prover, refuter, lemma bank, settlement horizon, geodesic, Bellman defect, noncomputability}
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries Cooperative Settlement Geometry}\\[0.45em]
+{\Large Prover--Refuter Lemma Exchange, \BANK\ Geodesics, Discrete Derivatives,\\
+and the Noncomputability of the Last Breakthrough}\\[0.8em]
+{\large Brian Tenneson}\\[0.25em]
+{\normalsize Research Draft 003 -- September 22, 2026}\\[0.6em]
+{\small Synthesis and formal manuscript development assisted by OpenAI's ChatGPT.}
+\end{center}
+
+\begin{abstract}
+This paper develops a geometric synthesis of a research program that began with a minimal cooperative architecture: a prover $P$ searches for a proof of a target $T$, a refuter $R$ searches for a proof of $\neg T$, and both deposit verifier-accepted intermediate lemmas into a shared \BANK. The central observation is elementary but structurally important: the terminal goals of $P$ and $R$ are opposed, yet their certified intermediate lemmas are consequences of the same underlying theory and can therefore shorten one another's searches. The resulting object is not naturally described as two independent proof searches. It is a coupled state-space process.
+
+The paper first casts the reduced $P/R/\BANK$ architecture as a generalized-board-game-like $xyz$ formal system whose complete states include local search states and verified shared memory. Settlement is represented by a typed terminal region, and the intrinsic settlement horizon $H$ is the directed shortest-path cost to that region. For a legal action $a:X\to Y$ of cost $c(a)$, the discrete horizon derivative is $\Delta_aH(X)=H(Y)-H(X)$ and the Bellman defect is
+\[
+\delta_H(X,a,Y)=c(a)+H(Y)-H(X).
+\]
+When $H$ is the exact settlement distance, $\delta_H\ge 0$, zero defect characterizes geodesic-compatible moves when the relevant minima are attained, and every settling path satisfies the defect decomposition
+\[
+\Cost(\gamma)=H(X_0)+\sum_i \delta_H(X_i,a_i,X_{i+1}).
+\]
+Thus actual settlement cost equals intrinsic minimum cost plus accumulated local geodesic defect.
+
+The shared \BANK\ introduces a second derivative. For a verified deposit $L$, the intervention $X\mapsto X\oplus L$ has horizon effect
+\[
+D_LH(X)=H(X\oplus L)-H(X).
+\]
+Under route-preserving conservative extension this quantity is nonpositive; a negative value gives a mathematically exact notion of a settlement-improving lemma. This formalizes cross-agent assistance: one agent may rationally move away from its own local settlement objective in order to bank a lemma whose cost is more than repaid by the reduction it causes in another agent's remaining horizon.
+
+The same framework extends from the original two-role architecture to multi-role automated metalogical deciders (AMLDs), including the five-way ``Pac-Man'' model, Oracle/Omnicartographer guidance, and Universal Settlement Horizons. The geometric synthesis exposes a computability boundary. Individual certified horizon drops can be exact and finite in number, while no uniform algorithm can in general announce that the final strict drop has already occurred. Consequently, local geometric information can be exact without yielding effective knowledge of global completion. The paper distinguishes unconditional shortest-path facts, conservative-\BANK\ facts, and the conditional transfer assumptions still required to lift proof-horizon noncomputability to intended AMLD settlement compilations.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Motivation: from two searches to one cooperative process}
+
+The research program considered here grew from a simple modification of automated theorem proving. Instead of directing all search toward a certificate of one target, run two fair searches in parallel:
+\[
+P:\quad \Gamma\vdash T,
+\qquad
+R:\quad \Gamma\vdash \neg T.
+\]
+The scheduling idea itself is classical in spirit: dovetail the searches so that neither is permanently starved. If one side has a finite discoverable certificate and the underlying search is fair enough, that certificate can eventually be found.
+
+The more consequential step is to notice that $P$ and $R$ are opponents only at the level of their terminal objectives. Suppose $P$ proves a closed lemma $L$ from the common base theory $\Gamma$. Then
+\[
+\Gamma\vdash L.
+\]
+The fact that $L$ was discovered while trying to prove $T$ does not make it a ``prover-only'' fact. It is a theorem of $\Gamma$, so $R$ may use it while searching for $\neg T$. The same argument works in the opposite direction. A refutation search can prove intermediate mathematics that is useful to the proof search.
+
+This is the origin of the minimal architecture
+\[
+\boxed{P\qquad R\qquad \BANK.}
+\]
+The \BANK\ stores certified intermediate results. Once this shared memory becomes part of the machine, the natural mathematical question changes. One no longer asks only which branch finishes first. One asks how a certified discovery made anywhere changes the remaining route to settlement.
+
+The precursor manuscript \emph{Conjecture Settling II} records this transition explicitly. It describes the earlier two-sided settlement machine as simultaneously pursuing $T$ and $\neg T$ while allowing closed verified lemmas to cross the branch boundary; a branch that never settles the target can nevertheless contribute lemmas to the branch that does \cite{TennesonCSII}. The same manuscript later adds certified independence and typed transport, but the two-branch observation is logically prior to those generalizations.
+
+The purpose of the present paper is to isolate that core and study its geometry before rebuilding the larger architecture. This has two advantages. First, the notation remains small enough that the key mechanisms are visible. Second, any theorem proved in the reduced laboratory can be examined for the exact hypotheses needed when it is lifted to a full AMLD.
+
+\subsection{The mathematical rather than autobiographical story}
+
+The motivating history is worth recording briefly. The author's research in automated theorem proving began in 2015. In 2016, during a period in which machine game playing was making highly visible advances, the author gave a talk arguing that automated theorem proving could eventually achieve mathematically noteworthy, not merely novelty, success. The present paper is not offered as a history of those developments. The mathematical story begins where the research itself became structurally distinctive: two target-opposed proof searches can share certified lemmas because theoremhood is common to both.
+
+That elementary observation has since been elaborated through work on automated logical deciders, automated metalogical deciders, generalized board games, proof and settlement horizons, decision geometry, the five-way Pac-Man model, Oracle/Omnicartographer guidance, and Universal Settlement Horizons \cite{TennesonDepths48,TennesonGBG,TennesonPacMan,TennesonOracle,TennesonAMLDII,TennesonUSH}. The present manuscript attempts to place those developments on one line of thought.
+
+\section{Formal systems and generalized-board-game semantics}
+
+\subsection{\texorpdfstring{The $xyz$ base}{The xyz base}}
+
+The generalized-board-game formulation used throughout the author's recent work begins from an $xyz$ formal system
+\[
+F=(x,y,z),
+\]
+where $x$ is a nonempty alphabet, $y$ is a set of well-formed finite strings or encoded formal objects, and $z$ is a set of finitary partial inference functions on $y$ \cite{TennesonGBG,TennesonDepths48}. A $k$-ary inference rule has the form
+\[
+r:y^k\rightharpoonup y.
+\]
+Partiality records that a rule need not be applicable to every tuple of premises.
+
+The generalized-board-game specialization makes the transition structure unusually concrete. A rule-complete game state contains all information required to determine the legal immediate moves; each canonical legal move is represented by a partial unary inference rule. From a distinguished initial state $s_0$, theoremhood becomes finite legal reachability:
+\[
+s\in \Con_F(\{s_0\})
+\quad\Longleftrightarrow\quad
+s\text{ is reachable from }s_0\text{ by finitely many legal moves}.
+\]
+A move-labeled history is correspondingly a sequential proof. This is the sense in which tic-tac-toe and chess can be treated as formal systems without metaphorical looseness \cite{TennesonGBG}.
+
+The importance of the GBG viewpoint for AMLD theory is not that theorem proving literally becomes a recreational game. It is that the state-transition ontology is the same kind of object: complete states, legal partial transitions, reachable regions, terminal classes, path costs, and horizons.
+
+\subsection{Complete state is essential}
+
+A visible board diagram is not necessarily a complete chess state: castling rights, en-passant status, side to move, and repetition information can affect the legal next transitions. The analogous warning is even more important for a cooperative proof machine. The tuple ``current formula of $P$, current formula of $R$'' is not enough. Future legal actions and costs may depend on the contents of the \BANK, provenance data, typing information, cached certificates, branch status, and scheduler state.
+
+This motivates the following minimal state model.
+
+\begin{definition}[Minimal cooperative settlement state]
+Fix an effectively presented object theory $\Gamma$ and target sentence $T$. A minimal $P/R/\BANK$ state is a tuple
+\[
+X=(p,r,B,\sigma),
+\]
+where $p$ is the local prover search state, $r$ is the local refuter search state, $B$ is the verifier-accepted shared object-level \BANK, and $\sigma$ records whatever finite control metadata is required to determine the legal next accepted transitions.
+\end{definition}
+
+The exact internal types of $p,r,$ and $\sigma$ may vary across implementations. What matters for the geometry is Markov completeness: once $X$ is specified, the legal accepted successors and their costs are determined by the declared transition system.
+
+\begin{definition}[Settlement regions]
+Let $\Sigma_P$ be the set of complete states containing a verifier-accepted proof of $T$, and let $\Sigma_R$ be the set of complete states containing a verifier-accepted proof of $\neg T$. The two-way settlement region is
+\[
+\Sigma=\Sigma_P\cup\Sigma_R.
+\]
+\end{definition}
+
+If consistency of $\Gamma$ is assumed and the verifier is sound, these regions are mutually exclusive along correctly typed runs. If inconsistency is an explicit possible outcome, a contradiction region may instead be added, as in the broader ALD/AMLD architecture.
+
+\subsection{Cooperative geometry is not adversarial minimax}
+
+The GBG paper also defines forced-win horizons for genuine alternating adversarial games. At a player's own move the recurrence takes a minimum over successors; at an opponent move it takes a maximum, because a forced win must survive the opponent's choices \cite{TennesonGBG}. That is not the right recurrence for the cooperative AMLD problem considered here.
+
+The prover and refuter have different terminal regions, but once the global objective is ``obtain the first valid settlement certificate,'' the scheduler is not trying to maximize the distance to settlement on alternate turns. It is choosing among cooperative actions. Thus the basic AMLD horizon is a directed shortest-path quantity, not an adversarial minimax quantity.
+
+This distinction is important because the phrase ``board game'' can otherwise suggest a false analogy. The useful inheritance from GBGs is the complete-state and legal-transition formalism. The strategic objective is different.
+
+\section{The reduced \texorpdfstring{$P/R/\BANK$}{P/R/BANK} machine}
+
+\subsection{Accepted actions}
+
+Let $\Act(X)$ denote the finite or countable set of accepted logical actions enabled at state $X$. An action may represent one local inference expansion, one verifier-accepted lemma insertion, one retrieval-and-use step, one scheduler activation, or another explicitly costed operation. The transition function is partial:
+\[
+\Next(X,a)=Y
+\]
+when action $a$ is legal at $X$ and its accepted effect is the complete state $Y$.
+
+Each accepted action has cost
+\[
+c(X,a,Y)>0.
+\]
+Unit inference cost is a useful baseline, but the theory does not require unit weights. Verification, translation, or communication costs can be included when the application requires them.
+
+\begin{definition}[Settlement graph]
+The settlement graph $G_{\Gamma,T}$ is the directed weighted graph whose vertices are complete reachable $P/R/\BANK$ states and whose directed edges are accepted transitions
+\[
+X\xrightarrow{a}Y
+\]
+with weight $c(X,a,Y)$.
+\end{definition}
+
+A finite path
+\[
+\gamma=(X_0,a_0,X_1,a_1,\ldots,a_{n-1},X_n)
+\]
+has cost
+\[
+\Cost(\gamma)=\sum_{i=0}^{n-1}c(X_i,a_i,X_{i+1}).
+\]
+It is a settling path if $X_n\in\Sigma$.
+
+\subsection{Certified sharing}
+
+In the original two-branch object-level system, both branches work in the same theory. Hence a closed accepted theorem of $\Gamma$ may be shared without changing theory. In the later three-way and five-way systems, this simplicity disappears: object theory, model contexts, metatheory, and opposite assumption contexts must be typed, and cross-context transports require destination verification \cite{TennesonCSII}. The present reduced system deliberately postpones those complications.
+
+\begin{definition}[Conservative object-level deposit]
+A deposit $L$ into an object-level \BANK\ $B$ is conservative when $L$ is already derivable from the current frozen object theory or, equivalently for the intended implementation, when the accepted deposit does not change the deductive closure of the underlying theory.
+\end{definition}
+
+The Decision Geometry paper proves the corresponding invariance claim in its setting: verifier-accepted deposits that are derivable from the preceding object \BANK\ preserve deductive closure while changing available presentation and search geometry \cite{TennesonAMLDII}.
+
+The phrase ``same settlement; different geometry'' is therefore literal. A conservative deposit cannot turn a genuinely non-theorem into a theorem merely by being stored. What it can do is make an already valid route substantially shorter or easier to retrieve.
+
+\section{Intrinsic settlement horizons}
+
+\begin{definition}[Intrinsic settlement horizon]
+For a complete state $X$, define
+\[
+H(X)=\inf\{\Cost(\gamma):\gamma\text{ is a finite path from }X\text{ to }\Sigma\}.
+\]
+If no finite settling path exists, set $H(X)=\infty$.
+\end{definition}
+
+When costs are positive integers and the infimum is attained, $H(X)$ is simply the minimum settlement cost. More generally, $H$ is a directed distance-to-set quantity. Because the graph may be asymmetric, it need not arise from a symmetric metric.
+
+\begin{proposition}[Bellman recurrence]
+Suppose $X\notin\Sigma$ and there exists at least one finite settling path from $X$. If the minimum is attained, then
+\[
+H(X)=\min_{a\in\Act(X)}\left(c(X,a,Y_a)+H(Y_a)\right),
+\qquad Y_a=\Next(X,a),
+\]
+where successors with $H(Y_a)=\infty$ may be ignored.
+\end{proposition}
+
+\begin{proof}
+Every settling path from $X$ begins with some legal accepted action $a$ and then follows a settling path from $Y_a$. Therefore its total cost is the first-edge cost plus a tail cost bounded below by $H(Y_a)$. Taking the least achievable value over first actions gives the stated recurrence. Conversely, an action attaining the minimum followed by an optimal tail realizes the value.
+\end{proof}
+
+This is classical dynamic programming. The AMLD-specific question is what the vertices, terminal regions, legal actions, and shared-memory effects mean.
+
+\subsection{Role-restricted horizons}
+
+It is often useful to separate the distance to the prover and refuter regions:
+\[
+H_P(X)=d(X,\Sigma_P),
+\qquad
+H_R(X)=d(X,\Sigma_R).
+\]
+The joint first-settlement horizon is then
+\[
+H(X)=\min\{H_P(X),H_R(X)\}
+\]
+when the scheduler may choose any accepted cooperative action and the two terminal types are both admissible.
+
+In a five-role AMLD one analogously obtains a horizon vector
+\[
+\mathbf H(X)=\bigl(H_P(X),H_R(X),H_D(X),H_I(X),H_C(X)\bigr)
+\]
+or the corresponding role-specific distances used in the five-way Pac-Man formalism \cite{TennesonPacMan}. The scalar first-settlement horizon is the minimum over admissible terminal classes after costs and typing conventions are fixed.
+
+\section{Discrete derivatives and local geodesic defect}
+
+A shortest-path distance supplies a natural discrete analogue of a derivative. The word ``derivative'' here does not assert differentiable structure on the state graph. It records finite change along an accepted transition.
+
+\begin{definition}[Action derivative of the horizon]
+For an accepted transition $X\xrightarrow{a}Y$ with finite $H(X)$ and $H(Y)$, define
+\[
+\Delta_a H(X)=H(Y)-H(X).
+\]
+\end{definition}
+
+If $\Delta_aH(X)<0$, the successor is intrinsically closer to settlement. But cost matters. A move costing $10$ that decreases $H$ by $1$ is not locally optimal when unit-cost alternatives exist. This leads to the correct reduced cost.
+
+\begin{definition}[Bellman or geodesic defect]
+For an accepted edge $X\xrightarrow{a}Y$, define
+\[
+\boxed{\delta_H(X,a,Y)=c(X,a,Y)+H(Y)-H(X).}
+\]
+\end{definition}
+
+This is exactly the reduced-edge-cost algebra used in classical shortest-path potential methods and network-flow reduced-cost formulations \cite{Bellman1957,Ahuja1993}. The Five-Way Pac-Man paper explicitly identifies the same expression as a Bellman defect or one-step regret and notes its relation to classical dynamic programming and reduced costs \cite{TennesonPacMan}. The point of the present section is not to rename a classical identity, but to make its interpretation central to cooperative theorem-settlement geometry.
+
+\begin{theorem}[Nonnegativity of local defect]
+Assume $H(X)<\infty$, $H(Y)<\infty$, and $X\xrightarrow{a}Y$ is an accepted edge. Then
+\[
+\delta_H(X,a,Y)\ge 0.
+\]
+Moreover, $\delta_H(X,a,Y)=0$ if and only if the edge can be the first edge of an $H$-optimal settling path from $X$, assuming the relevant minima are attained.
+\end{theorem}
+
+\begin{proof}
+Bellman optimality gives
+\[
+H(X)\le c(X,a,Y)+H(Y).
+\]
+Rearranging gives nonnegativity. Equality holds exactly when the displayed action attains the Bellman minimum, in which case an optimal tail from $Y$ completes an optimal route from $X$. Conversely, the first edge of any optimal route must satisfy equality.
+\end{proof}
+
+Thus zero defect means that the local action preserves geodesic optimality. Positive defect measures exactly how much the chosen edge exceeds the local Bellman requirement.
+
+\begin{remark}[Derivative form]
+The defect may be written
+\[
+\delta_H(X,a,Y)=c(X,a,Y)+\Delta_aH(X).
+\]
+A zero-defect move therefore satisfies
+\[
+\Delta_aH(X)=-c(X,a,Y).
+\]
+In unit-cost geometry, an optimal step decreases the exact horizon by exactly one.
+\end{remark}
+
+\section{The central defect-decomposition theorem}
+
+\begin{theorem}[Settlement defect decomposition]
+Let
+\[
+\gamma:X_0\xrightarrow{a_0}X_1\xrightarrow{a_1}\cdots\xrightarrow{a_{n-1}}X_n
+\]
+be a finite settling path with $X_n\in\Sigma$, and suppose $H(X_i)<\infty$ along the path. If $H(X_n)=0$, then
+\[
+\boxed{
+\Cost(\gamma)=H(X_0)+\sum_{i=0}^{n-1}\delta_H(X_i,a_i,X_{i+1}).
+}
+\]
+\end{theorem}
+
+\begin{proof}
+By definition,
+\[
+\delta_H(X_i,a_i,X_{i+1})
+=c_i+H(X_{i+1})-H(X_i),
+\]
+where $c_i=c(X_i,a_i,X_{i+1})$. Summing gives
+\[
+\sum_i\delta_i
+=\sum_i c_i+\sum_i\bigl(H(X_{i+1})-H(X_i)\bigr).
+\]
+The second sum telescopes to $H(X_n)-H(X_0)=-H(X_0)$. Hence
+\[
+\sum_i\delta_i=\Cost(\gamma)-H(X_0),
+\]
+which rearranges to the stated identity.
+\end{proof}
+
+\begin{corollary}[Geodesic characterization]
+A settling path $\gamma$ has minimum possible cost $H(X_0)$ if and only if every edge on $\gamma$ has zero defect.
+\end{corollary}
+
+\begin{proof}
+Every defect is nonnegative. The decomposition shows
+\[
+\Cost(\gamma)-H(X_0)=\sum_i\delta_i.
+\]
+The left side is zero exactly when the nonnegative terms on the right all vanish.
+\end{proof}
+
+\begin{corollary}[Exact accounting of excess work]
+For any settling path,
+\[
+\Cost(\gamma)-H(X_0)
+\]
+is exactly the accumulated local geodesic defect. No additional residual term is required.
+\end{corollary}
+
+This is mathematically simple, but conceptually strong. The machine's global inefficiency can be decomposed into local occasions on which its accepted action failed to preserve the exact settlement horizon. The Five-Way Pac-Man paper develops the same identity for complete five-role AMLD states and calls the local quantity a one-step regret \cite{TennesonPacMan}. The current synthesis places that result immediately after the original $P/R/\BANK$ architecture so that its meaning is transparent before the full five-role notation appears.
+
+\subsection{What the theorem does and does not say}
+
+The theorem does not say that $H$ is efficiently computable. It is an identity about the true intrinsic distance. If an Omnicartographer supplies exact $H$, then the optimal next action is visible by a Bellman minimum. An ordinary search process may possess only estimates, lower bounds, upper bounds, or a partially discovered map.
+
+This distinction will become essential when noncomputability is introduced. Exact local statements about a known $H$ do not imply that a running AMLD can always know $H$.
+
+\section{The \texorpdfstring{\BANK}{BANK} as a geometric intervention}
+
+\subsection{A second discrete derivative}
+
+The action derivative measures motion along the state graph. A verified deposit can also be studied as an intervention on the available shared premises.
+
+Let $X\oplus L$ denote the complete state obtained after a verifier-accepted lemma packet $L$ has been added to the appropriate shared store, with all required metadata and provenance updated.
+
+\begin{definition}[BANK horizon derivative]
+For any role or joint horizon $H_J$ for which both values are finite, define
+\[
+\boxed{D_LH_J(X)=H_J(X\oplus L)-H_J(X).}
+\]
+The corresponding settlement dividend is
+\[
+\operatorname{Div}_J(L;X)=H_J(X)-H_J(X\oplus L)=-D_LH_J(X).
+\]
+\end{definition}
+
+This definition turns the informal question ``did the lemma help?'' into a counterfactual comparison. It is intentionally stronger than counting whether another branch happened to consume the lemma.
+
+The earlier \emph{Conjecture Settling II} manuscript proposes an empirical settlement dividend measured by ablation: rerun a frozen search with a particular import disabled and measure the additional expansions, materializations, or wall time \cite{TennesonCSII}. The present geometric dividend is an intrinsic analogue. The two need not coincide: a heuristic implementation can fail to exploit a geometrically valuable lemma, while an empirical speedup may include controller effects unrelated to shortest-path distance.
+
+\subsection{Route-preserving extension}
+
+A verified lemma should not be assumed automatically helpful under every operational cost model. It may increase indexing cost, disturb heuristic rankings, consume memory, or alter scheduling. The strongest clean monotonicity result therefore uses a structural hypothesis.
+
+\begin{definition}[Route-preserving BANK extension]
+The extension $X\mapsto X\oplus L$ is route preserving for settlement class $J$ when every finite $J$-settling path available from $X$ has a cost-preserving counterpart from $X\oplus L$.
+\end{definition}
+
+This is the two-role analogue of the role-path preserving BANK extension defined in the Five-Way Pac-Man paper \cite{TennesonPacMan}.
+
+\begin{proposition}[Horizon monotonicity under route preservation]
+If $X\mapsto X\oplus L$ is route preserving for settlement class $J$, then
+\[
+H_J(X\oplus L)\le H_J(X).
+\]
+If, in addition, $H_J(X)<\infty$, then route preservation implies $H_J(X\oplus L)<\infty$ and hence
+\[
+D_LH_J(X)\le 0.
+\]
+\end{proposition}
+
+\begin{proof}
+Every finite $J$-settling path from $X$ remains reproducible at the same cost after the extension. Therefore the minimum over paths from the extended state cannot exceed the old minimum.
+\end{proof}
+
+The proposition says that under a sufficiently conservative operational interface, adding a verified lemma cannot destroy an old optimal route. It may expose a new shorter route, in which case the derivative is strictly negative.
+
+\begin{definition}[Horizon-active lemma]
+A deposit $L$ is horizon active for role $J$ at $X$ when
+\[
+D_LH_J(X)<0.
+\]
+It is jointly horizon active when it strictly decreases the first-settlement horizon or strictly decreases at least two role-restricted horizons.
+\end{definition}
+
+This creates a precise language for cooperation. A theorem may be logically conservative yet geometrically active.
+
+\subsection{Conservative truth versus computational position}
+
+Suppose $L$ is already derivable from the frozen theory. Then adding $L$ to the \BANK\ does not enlarge the consequence set. Nevertheless,
+\[
+H_J(X\oplus L)<H_J(X)
+\]
+may hold because the system can now use $L$ as an explicit premise or verified reusable node rather than rederive it. This is the central separation developed in the Decision Geometry paper: conservative \BANK\ deposits preserve deductive closure while changing presentation, compression, and search horizon \cite{TennesonAMLDII}.
+
+In this sense the \BANK\ is neither merely a database nor a new axiom set. It is a geometric memory structure layered over a fixed deductive theory.
+
+\section{Cross-agent geodesic assistance}
+
+The most distinctive cooperative phenomenon occurs when one role deliberately performs work whose main benefit appears in another role's horizon.
+
+Suppose $R$ currently has a route of cost $h$ to $\Sigma_R$. A prover-side or auxiliary agent can produce a verifier-accepted lemma $L$ at cost $a$. After $L$ is deposited, the refuter's remaining horizon is $h'$. If
+\[
+\boxed{a+h'<h,}
+\]
+then the detour through the other agent is globally shorter than continuing along the old refuter-only route.
+
+\begin{proposition}[Cross-agent detour criterion]
+Let $X$ be a joint state. Assume:
+\begin{enumerate}[label=(\roman*)]
+\item there is a currently available $R$-settling route of cost $h$ from $X$;
+\item another agent can reach a verified deposit $L$ at cost $a$;
+\item after that deposit, the remaining $R$-horizon is $h'$.
+\end{enumerate}
+If $a+h'<h$, then every globally optimal policy whose alternative is constrained to the stated old route prefers some route no more expensive than the cross-agent detour over that old route.
+\end{proposition}
+
+\begin{proof}
+The detour gives a valid settling route of total cost $a+h'$. By hypothesis this is less than $h$, the cost of the comparator route. Hence the old route cannot be globally optimal among routes that include the detour alternative.
+\end{proof}
+
+The Oracle/Omnicartographer paper gives the same criterion in a five-Pioneer setting and illustrates it with a role that spends four certified steps to bank a lemma that reduces another role's remaining horizon from $35$ to $6$, giving a joint route of cost $10$ rather than $35$ \cite{TennesonOracle}.
+
+The conceptual consequence is important. Local role progress and global settlement progress are not the same quantity. A scheduler that insists every active role move monotonically toward its own terminal region can be globally suboptimal. A role can move ``sideways'' or even away from its own settlement class while producing a lemma that sharply decreases another role's horizon.
+
+\subsection{A vector derivative}
+
+For a multi-role system define
+\[
+\mathbf H(X)=\bigl(H_1(X),\ldots,H_m(X)\bigr).
+\]
+A deposit $L$ has vector effect
+\[
+D_L\mathbf H(X)=\mathbf H(X\oplus L)-\mathbf H(X).
+\]
+The sign pattern of this vector provides a local taxonomy:
+\begin{itemize}
+\item one negative component: role-specific assistance;
+\item several negative components: multi-role assistance;
+\item all zero components: no intrinsic horizon change under the chosen cost model;
+\item a positive component: evidence that route preservation has failed or that the state/cost model charges the deposit in a way that lengthens that role's effective route.
+\end{itemize}
+
+This vector viewpoint generalizes the reuse matrix of \emph{Conjecture Settling II}. A reuse matrix records who originated and who used a packet; the horizon derivative records what the packet did to the intrinsic geometry.
+
+\section{From two-way settlement to multi-role AMLD}
+
+\subsection{Why the two-role case should come first}
+
+The later AMLD literature in the author's library coordinates more than two roles. Version 48 describes a cooperative verifier-gated settlement architecture with five search roles sharing typed verified memory \cite{TennesonDepths48}. Decision Geometry uses five certificate channels for proof, refutation, dependence, independence, and contradiction \cite{TennesonAMLDII}. Five-Way Pac-Man makes the state geometry explicit and treats the \BANK\ as part of the complete state \cite{TennesonPacMan}.
+
+Those developments are easier to understand after the reduced model. The two-role architecture already contains:
+\begin{enumerate}
+\item opposed terminal objectives;
+\item a shared theorem environment;
+\item conservative lemma exchange;
+\item complete-state dependence on shared memory;
+\item directed settlement distance;
+\item geodesics and Bellman defects;
+\item cross-role horizon reduction;
+\item a distinction between deductive strength and search geometry.
+\end{enumerate}
+The additional AMLD roles enrich the settlement region and introduce typed cross-context transport, but they do not create these geometric ideas from nothing.
+
+\subsection{Five-way Pac-Man as a visualization}
+
+The Pac-Man analogy is useful because it separates three things that are easy to conflate:
+\begin{itemize}
+\item the maze, meaning the complete directed state graph;
+\item the Pioneers, meaning role-specialized search processes;
+\item the exits, meaning typed certified settlement regions.
+\end{itemize}
+There are no ghosts or treasures in the mathematical model. The analogy is purely navigational. Five conceptual joysticks exist, but a single accepted logical tick activates one role at a time; a \BANK\ deposit by one role may change the routes that are explicitly available to the others \cite{TennesonPacMan}.
+
+The exact list of five roles has varied across stages of the research program. This paper therefore uses $J\in\Roles$ abstractly when a result does not depend on a particular naming convention. The invariant structure is more important than the labels: several certified channels inhabit one complete shared state and terminate in typed settlement classes.
+
+\subsection{Typed transport}
+
+The reduced $P/R$ case permits simple theorem sharing because both searches derive consequences of the same $\Gamma$. Once independence, model construction, or metatheory is added, that assumption fails. \emph{Conjecture Settling II} addresses the issue by replacing one unlabelled global pool with a typed federation of stores. A packet carries its context, statement, certificate, origin, dependencies, cost, and permitted interfaces; a cross-context translation is accepted only after destination verification \cite{TennesonCSII}.
+
+This typing discipline should be regarded as part of the geometry. An edge that appears syntactically plausible but lacks a sound registered transport is not a legal edge. Consequently, the Omnicartographer's map must be a map of certified transitions, not merely formula similarity.
+
+\section{Oracle and Omnicartographer viewpoints}
+
+\subsection{Map knowledge versus logical truth}
+
+The Oracle/Omnicartographer theory separates verification from cartographic guidance \cite{TennesonOracle}. This distinction becomes especially natural after the horizon formalism.
+
+The verifier answers a local correctness question: does this certificate establish the claimed transition or settlement under the declared theory and typing rules? The Omnicartographer answers a navigational question: given the accepted map, which route or detour is shortest, and which lemma-producing action may reshape several roles' horizons?
+
+Neither function should be silently substituted for the other. An Omnicartographer that recommends an invalid proof step is unsound. A perfect verifier with no guidance may spend enormous resources exploring irrelevant regions.
+
+\subsection{Exact and discovered horizons}
+
+Let $H(X)$ denote the true intrinsic settlement horizon in the full declared state graph. A running system may possess only an estimate
+\[
+\widehat H_t(X)
+\]
+based on the part of the graph, proof DAG, or heuristic landscape discovered by time $t$.
+
+Several distinct questions arise:
+\begin{enumerate}
+\item Is $\widehat H_t$ an upper bound, lower bound, or neither?
+\item Does $\widehat H_t(X)$ converge to $H(X)$ as exploration proceeds?
+\item If convergence occurs, is there an effective stage at which the system can certify that equality has been reached?
+\item Can cross-role lemma search improve the convergence rate even when it does not immediately decrease the visible target distance?
+\end{enumerate}
+
+An ideal Omnicartographer is best viewed as a conceptual device that has enough global map information to evaluate the true or relevant horizon. The ordinary Pioneer operates on a revealed subgeometry. This distinction sets up the computability boundary of later sections.
+
+\section{Universal Settlement Horizons and breakthrough ladders}
+
+\subsection{Canonical minimum certificates}
+
+Universal Settlement Horizons develops a canonical minimum-cost view of AMLD settlement certificates and studies how those minima change under evolving verified \BANK\ contents \cite{TennesonUSH}. The present state-graph horizon and the source's restarted minimum certificate operator are closely related but should not be declared identical without matching their state representation, cost model, restart convention, and compilation assumptions.
+
+The correct synthesis is therefore conditional:
+\[
+\boxed{
+\text{GBG/state-graph distance}
+\longleftrightarrow
+\text{AMLD Bellman horizon}
+\longleftrightarrow
+\text{canonical settlement minimum}
+}
+\]
+when the formal states, terminal certificate classes, and costs have been aligned.
+
+Proving the exact equivalence under a chosen AMLD compilation is itself a useful theorem target. It should not be hidden as notation.
+
+\subsection{Finite strict improvement}
+
+Suppose an evolving conservative \BANK\ yields a sequence of integer-valued horizons
+\[
+H_0(T)\ge H_1(T)\ge H_2(T)\ge\cdots\ge 0.
+\]
+If $H_0(T)<\infty$, then only finitely many strict decreases are possible.
+
+\begin{proposition}[Finite strict-drop ladder]
+Let $(h_k)_{k\ge0}$ be a nonincreasing sequence in $\N$. Then the set
+\[
+\{k:h_{k+1}<h_k\}
+\]
+is finite and has cardinality at most $h_0-h_\infty$, where $h_\infty=\inf_k h_k$.
+\end{proposition}
+
+\begin{proof}
+Every strict decrease lowers the integer value by at least one. The sequence is bounded below by $h_\infty\ge0$.
+\end{proof}
+
+This is elementary discrete descent, but its interpretation matters. A \BANK\ can grow indefinitely while a fixed target's strict horizon-improvement events are finite. The system may keep learning true mathematics after that target has received its last strict geometric improvement.
+
+\subsection{Breakthrough derivative}
+
+If stage $k\to k+1$ deposits some accepted package $L_k$, define
+\[
+\Delta H_k=H_{k+1}(T)-H_k(T).
+\]
+A breakthrough is a stage with
+\[
+\Delta H_k<0.
+\]
+When the two consecutive horizons are effectively computed, the occurrence and size of that breakthrough are recognizable after the fact.
+
+The subtle question is not whether a past drop can be recognized. It is whether one can uniformly announce that no future drop will ever occur.
+
+\section{Noncomputability of the last breakthrough}
+
+\subsection{The proof-level theorem}
+
+Universal Settlement Horizons proves a sharp negative result for an explicit-premise proof-horizon family: there is no total computable functional that, for every effective conservative \BANK\ evolution in the stated class, always returns a stage after which the horizon never changes again. The impossibility already holds in a toy family where the only possible strict improvement is a single drop from $2$ to $1$ \cite{TennesonUSH}.
+
+The reduction is from the halting problem \cite{Turing1936}. A special lemma $\lambda$ is deposited exactly if a designated computation halts. Before $\lambda$ appears, the target requires two inference steps; after the deposit, the target can be obtained in one. If a universal ``last breakthrough alarm'' existed, its claimed stabilization stage would allow one to simulate the designated computation only that far and decide whether it will ever halt. This is impossible.
+
+\subsection{What this means geometrically}
+
+The theorem creates a sharp distinction between three kinds of knowledge.
+
+First, a certified transition is local and checkable. If an inference certificate is finite and the verifier is sound, the transition can be accepted or rejected mechanically.
+
+Second, when exact horizons at two stages are available, a strict decrease
+\[
+H_{k+1}<H_k
+\]
+can be measured exactly. Its magnitude is a finite integer difference.
+
+Third, from the fact that no improvement has occurred recently one cannot in general infer that no improvement will ever occur. There is no uniform computable stage selector that always certifies final stabilization for the full effective family covered by the theorem.
+
+This may be summarized as
+\[
+\boxed{
+\text{exact local change}
+\not\Rightarrow
+\text{effective knowledge of global completion}.
+}
+\]
+
+\begin{corollary}[Observed zero derivative does not certify final stabilization]
+In the effective family used by the last-breakthrough reduction, for every finite $N$ there is an input instance whose first $N$ observed horizon changes satisfy
+\[
+\Delta H_k=0
+\]
+through that prefix, but which has a strict negative horizon change at a later stage. Therefore no rule based solely on a finite prefix of observed zero changes can uniformly certify that all future derivatives vanish.
+\end{corollary}
+
+\begin{proof}
+Otherwise such a rule could be converted into a uniform stabilization detector for the family, contradicting the last-breakthrough noncomputability theorem.
+\end{proof}
+
+\subsection{Why this does not defeat AMLD}
+
+Noncomputability does not imply that useful targets cannot be settled. Nor does it imply that cooperation is futile. It says that a general architecture for sufficiently expressive theories cannot be required to halt with a correct complete classification on every input.
+
+This is exactly why the earlier ALD manuscript insists on certificate-producing partiality. PROVED, REFUTED, INDEPENDENT, and INCONSISTENT are mathematical outcomes only when accompanied by the required certificates; TIMEOUT, OVERFLOW, FAULT, or interrupted search carry no theorem-level meaning \cite{TennesonCSII}.
+
+The design principle is therefore:
+\[
+\boxed{
+\text{Do not require discovery to terminate universally; require every claimed settlement to be certified.}
+}
+\]
+
+\subsection{Conditional AMLD transfer}
+
+A critical source-discipline point must be preserved. Universal Settlement Horizons proves the proof-horizon last-breakthrough result directly, but its transfer to the intended AMLD settlement horizon is stated conditionally on a strict-drop-preserving compiled embedding; a fixed-additive cost-preserving embedding is sufficient but stronger than necessary \cite{TennesonUSH}.
+
+Thus the present paper does \emph{not} claim that every proposed AMLD formalization has already inherited the noncomputability theorem. Instead it identifies a clean bridge problem:
+
+\begin{conjecture}[Strict-drop-preserving $P/R/\BANK$ compilation]
+For the intended reduced cooperative settlement machine, there exists an effective compilation of the relevant explicit-premise prover evolution into complete $P/R/\BANK$ states such that every strict decrease in the source proof horizon induces a strict decrease in the compiled joint settlement horizon.
+\end{conjecture}
+
+A proof of this conjecture, or a stronger fixed-additive cost-preserving version, would transfer the last-breakthrough impossibility to that compiled settlement class.
+
+\section{The key computability boundary in one diagram}
+
+The geometric and computability results can be arranged as follows:
+\[
+\boxed{\text{finite certificate}}
+\Longrightarrow
+\boxed{\text{mechanically checkable local truth}}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{\text{accepted complete-state transition}}
+\Longrightarrow
+\boxed{\text{local horizon/defect statement if }H\text{ is known}}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{\text{finite sequence of certified breakthroughs}}
+\not\Longrightarrow
+\boxed{\text{uniformly computable final-breakthrough stage}}.
+\]
+
+The negative result lives at the last implication, not at the first. A verifier can be perfectly computable while the global question ``is this the final future improvement?'' is not uniformly decidable.
+
+This distinction is useful because discussions of undecidability sometimes collapse all machine reasoning into one impossibility claim. Here the boundary is more precise. Verification can remain small and exact. Search can be productive and cooperative. Geometric improvements can be measured. What fails is a universal guarantee of completed discovery.
+
+\section{A worked reduced example}
+
+Consider a toy theory in which the initial \BANK\ contains $A$ and the target-side rules include
+\[
+A\to L,
+\qquad
+L\to T.
+\]
+Suppose the prover can therefore settle $T$ in two unit-cost steps. Let the refuter or a lemma scout have an alternative search that can establish $L$ and deposit it directly into the shared \BANK\ at unit cost.
+
+At initial state $X_0$,
+\[
+H_P(X_0)=2.
+\]
+If the other agent deposits $L$, the new state $X_1=X_0\oplus L$ has
+\[
+H_P(X_1)=1.
+\]
+Hence
+\[
+D_LH_P(X_0)=-1.
+\]
+The deposit is horizon active for the prover even though the depositing agent did not settle anything itself. Because producing and depositing $L$ was assigned unit cost in this toy example, the two-step cooperative route (deposit $L$, then derive $T$) ties the original two-step prover route rather than strictly improving the total joint route. A strict global improvement requires the stronger comparison used below: if the auxiliary work costs $a$ and lowers a remaining horizon from $h$ to $h'$, then one needs $a+h'<h$.
+
+Now add a refutation route with initial cost $5$. If the same $L$ also serves as a premise in a refutation lemma that lowers the refuter horizon from $5$ to $3$, then
+\[
+D_L\mathbf H(X_0)=(-1,-2).
+\]
+One conservative theorem has shortened both role-restricted horizons.
+
+This example is intentionally elementary. Its purpose is to isolate the phenomenon before it becomes entangled with heuristic search, model finding, independence certificates, or complicated proof DAGs.
+
+\section{A more realistic causal distinction: use is not benefit}
+
+A shared lemma can be available without being used. It can be used without being necessary. It can be necessary for the realized heuristic run while having an equally short alternative in the intrinsic state graph. Consequently three quantities should remain distinct:
+\begin{enumerate}
+\item \emph{availability}: the packet was accepted into a destination store;
+\item \emph{use}: a downstream accepted certificate or search step actually referenced it;
+\item \emph{dividend}: removing or withholding it increases intrinsic or empirical settlement cost.
+\end{enumerate}
+
+The reuse matrix in \emph{Conjecture Settling II} separates availability from actual cross-agent use and proposes ablation to estimate branch-specific settlement dividends \cite{TennesonCSII}. The geometric derivative strengthens the causal question by comparing matched states with and without the deposit.
+
+\begin{caution}[Attribution requires a counterfactual]
+The fact that a foreign-origin lemma appears in the final proof does not by itself establish that the lemma reduced the minimum settlement horizon. It may have an equal-cost substitute. A causal claim requires a controlled comparison, such as a route-preserving state intervention or a frozen-search ablation.
+\end{caution}
+
+This point also matters for experimental claims about cooperative ATP performance. Sharing may be logically conservative yet operationally harmful under a bounded heuristic because it changes rankings, queue sizes, verification load, or memory use. The precursor paper therefore correctly retracts any unconditional speed theorem and proposes shadow-search controls \cite{TennesonCSII}.
+
+\section{Geodesic guidance versus heuristic guidance}
+
+If exact $H$ were computable and cheap, and if the Bellman minimum at $X$ is attained, an optimal controller could choose
+\[
+\pi^*(X)\in\arg\min_{a\in\Act(X)}\bigl(c(X,a,Y_a)+H(Y_a)\bigr).
+\]
+Equivalently, under the same attainment hypothesis, it would choose a zero-defect action.
+
+Real theorem proving is difficult precisely because the system normally does not possess this exact global potential. Practical search therefore uses surrogate potentials
+\[
+\widehat H(X),
+\]
+learned scores, proof-state embeddings, handcrafted heuristics, novelty measures, bandit allocations, or portfolios.
+
+The defect decomposition nevertheless remains useful as an evaluation ideal. If a benchmark is small enough that exact $H$ can be computed after the fact, one can measure where a heuristic accumulated regret. If exact $H$ is unavailable, admissible lower bounds and discovered upper bounds can bracket the true defect.
+
+\subsection{Potential training signal}
+
+Suppose training instances admit exact or certified near-exact horizons. One can assign each accepted training edge the target
+\[
+\delta_H(X,a,Y).
+\]
+A learned policy could then be trained to predict low-defect actions rather than merely imitate proofs. This is a research direction, not a theorem: it may or may not outperform existing guidance. But it gives the geometry an operational role beyond exposition.
+
+\subsection{Lemma scouting as geometric search}
+
+A dedicated lemma scout can likewise be reinterpreted. Instead of searching for any theorem with high syntactic novelty, it searches for deposits with large expected dividend
+\[
+\mathbb E\left[H(X)-H(X\oplus L)\right]
+\]
+per unit cost. In a multi-role system the objective may use a weighted vector dividend or the reduction in the joint minimum.
+
+This reframes ``interesting lemma'' as a target-relative geometric notion. A lemma can be profound mathematically yet irrelevant to the current settlement state; another can be elementary but remove a large search detour.
+
+\section{Interaction with generalized board games}
+
+The GBG formalism contributes more than an analogy. It supplies a disciplined method for distinguishing states, histories, and strategic horizons.
+
+\subsection{State versus history}
+
+Different legal histories can arrive at the same rule-complete state. In tic-tac-toe the number of move histories already exceeds the number of reachable states at shallow depth because different move orders transpose to the same board state \cite{TennesonGBG}. The same distinction is central to proof search. Different derivations can establish the same certified lemma and therefore lead to the same logical \BANK\ contents. They need not, however, determine the same complete computational state when provenance, certificate representation, accumulated cost, scheduler data, caches, or other rule-relevant metadata are retained.
+
+This suggests quotienting history trees only after specifying a verifier-respected equivalence on complete states or proof-DAG representations that preserves future legal transitions and their declared costs. Decision Geometry develops the shared \BANK\ as a proof-DAG compressor and distinguishes exponential unfolded history from potentially much smaller verified quotient structure \cite{TennesonAMLDII}.
+
+\subsection{Certified-state restart}
+
+The GBG certified-state principle says that once a rule-complete state is certified reachable, future legal continuations depend on the state itself rather than on the particular history used to reach it \cite{TennesonGBG}. The analogous AMLD principle is valuable for restart semantics: once a complete state $X$ and its certified \BANK\ are accepted, the future geometry can be analyzed from $X$ without replaying irrelevant historical details, provided every rule-relevant dependency is represented in the state.
+
+This is one reason ``complete state'' is not cosmetic. An incomplete restart state can make two histories look equivalent even though they admit different future legal transports or costs.
+
+\subsection{Forced-win horizons versus settlement horizons}
+
+The GBG forced-win horizon contains an adversarial max operator. The cooperative AMLD settlement horizon contains a global min over legal accepted actions. These are related dynamic-programming objects but answer different questions.
+
+A useful future generalization would allow mixed agency: some transitions are controlled by the settlement system, some by an adversarial environment, and some by nondeterministic verifier or resource events. The resulting horizon would be a min-max or stochastic shortest-path object. Nothing in the present paper requires that extension.
+
+\section{Open mathematical problems}
+
+The synthesis above produces a more focused set of questions than a generic list of future work.
+
+\begin{question}[Exact GBG--AMLD correspondence]
+For a fixed $P/R/\BANK$ implementation, can the complete settlement state and all accepted scheduler/inference transitions be encoded as an $xyz$ formal system in which finite legal reachability is exactly accepted run reachability and typed settlement is exactly reachability of designated theorem regions?
+\end{question}
+
+The answer should be yes for a carefully finite-encoded machine, but the proof must specify which control data belong in the well-formed state.
+
+\begin{question}[Canonical state quotient]
+When do two run histories determine the same future settlement geometry? Is equality of complete state sufficient, or should the canonical quotient identify distinct concrete stores whose certified consequences and costed interfaces are equivalent?
+\end{question}
+
+\begin{conjecture}[BANK quotient geodesic invariance]
+Under an exact verifier-respected quotient of proof histories by complete reusable certificate state, shortest settlement cost is invariant under passage from the unfolded history tree to the quotient directed graph whenever edge costs are transferred without hidden re-expansion cost. Acyclicity of the quotient is an additional property and is not assumed here.
+\end{conjecture}
+
+\begin{question}[Intrinsic versus empirical dividend]
+Under which scheduler assumptions and search-completeness conditions does the geometric dividend
+\[
+H(X)-H(X\oplus L)
+\]
+coincide with the asymptotic or expected ablation dividend measured in expansions or wall time?
+\end{question}
+
+\begin{question}[Local descent off every global geodesic]
+Can a move satisfy $H(Y)<H(X)$ while lying on no globally optimal settling path from $X$? Yes in ordinary weighted graphs when the decrease is too small relative to edge cost. Which proof-search examples exhibit this phenomenon naturally, and can such moves be detected from admissible bounds?
+\end{question}
+
+\begin{question}[Jointly active lemmas]
+How common are verifier-accepted lemmas $L$ for which
+\[
+D_LH_P(X)<0
+\qquad\text{and}\qquad
+D_LH_R(X)<0?
+\]
+In a five-role system, what is the empirical distribution of the number of negative components of $D_L\mathbf H$?
+\end{question}
+
+\begin{conjecture}[Cross-role geodesic necessity]
+There exist natural benchmark families for which every minimum-cost joint settlement path contains at least one horizon-active deposit produced by a role different from the role whose settlement region is eventually reached.
+\end{conjecture}
+
+This would formalize the strongest version of the claim that cooperation is not merely parallelism.
+
+\begin{question}[Strict-drop-preserving AMLD compilation]
+Can the missing transfer condition in Universal Settlement Horizons be proved for the intended AMLD compilation? In particular, can one construct an effective embedding in which strict decreases of the explicit-premise proof horizon are guaranteed to become strict decreases of the compiled settlement horizon?
+\end{question}
+
+\begin{question}[Approximating the true horizon]
+For which finite or effectively learnable regions does an ordinary Pioneer eventually acquire exact cartographic knowledge? What conditions ensure $\widehat H_t(X)\to H(X)$, and which forms of convergence can themselves be effectively recognized?
+\end{question}
+
+\begin{question}[Derivative-aware scheduling]
+Does a controller trained to minimize predicted Bellman defect or maximize expected \BANK\ dividend solve more frozen targets under equal verified-resource budgets than novelty-only, utility-only, or standard portfolio baselines?
+\end{question}
+
+These questions are mathematically and empirically separable. A theoretical paper should not convert the empirical ones into claims without experiment.
+
+\section{Experimental program}
+
+The precursor ALD manuscript already proposes a strong controlled design: compare single-target search, symmetric $P/R$ search without sharing, $P/R$ search with sharing, minimal independence-capable systems, and larger typed populations; freeze target parsing, theory versions, budgets, seeds, and anti-leakage exclusions before publication runs \cite{TennesonCSII}. The geometric framework suggests additional measurements.
+
+For each accepted packet $L$ and role $J$, record when feasible:
+\[
+D_LH_J,
+\qquad
+\text{empirical ablation dividend},
+\qquad
+\text{generation cost},
+\qquad
+\text{verification cost},
+\qquad
+\text{routing cost}.
+\]
+For each realized settling path, estimate or compute
+\[
+\sum_i\delta_i
+\]
+and compare it with the actual excess cost over a certified optimum on instances where the optimum is known.
+
+Three benchmark tiers are useful:
+\begin{enumerate}
+\item \textbf{Exact finite geometry.} Small synthetic or propositional systems where the full state graph and exact $H$ can be enumerated.
+\item \textbf{Certificate-complete but map-incomplete geometry.} Real ATP problems where final proofs are checkable but exact global horizons are not.
+\item \textbf{Metalogical settlement.} Typed proof/model/metatheory tasks where independence or contradiction certificates are possible and cross-context transport is itself part of the experiment.
+\end{enumerate}
+
+The first tier tests the mathematics of defect and dividend exactly. The second tests heuristic usefulness. The third tests whether the architecture remains coherent when the original shared-theory simplicity is removed.
+
+\section{Theorem-status and dependency ledger}
+
+Because this manuscript synthesizes several works at different levels of completion, theorem status should be explicit.
+
+\begin{longtable}{p{0.27\textwidth} p{0.29\textwidth} p{0.36\textwidth}}
+\toprule
+\textbf{Result or principle} & \textbf{Status here} & \textbf{Dependency}\\
+\midrule
+\endhead
+GBG reachability/theorem correspondence & Source result used as background & \emph{Generalized Board Games} \cite{TennesonGBG}.\\
+\addlinespace
+Conservative object-\BANK\ invariance & Source result used as background & \emph{Automated Metalogical Deciders II} \cite{TennesonAMLDII}.\\
+\addlinespace
+Bellman recurrence and reduced-cost algebra & Standard shortest-path/dynamic-programming fact specialized here & Classical mathematics; see Bellman and standard network-flow reduced-cost treatments; AMLD specialization appears in \emph{Five-Way Pac-Man} \cite{Bellman1957,Ahuja1993,TennesonPacMan}.\\
+\addlinespace
+Defect decomposition & Proved in this manuscript; algebraically a telescoping potential identity & Exact state graph and exact horizon.\\
+\addlinespace
+BANK derivative $D_LH$ & Definition introduced in this synthesis & Requires matched pre/post complete states and a declared cost model.\\
+\addlinespace
+Horizon monotonicity after deposit & Proved here under route preservation & Route-preserving BANK extension; five-role analogue in \emph{Five-Way Pac-Man} \cite{TennesonPacMan}.\\
+\addlinespace
+Cross-agent detour criterion & Proved here as direct cost comparison & Same principle appears in Oracle/Omnicartographer theory \cite{TennesonOracle}.\\
+\addlinespace
+Finite strict-drop ladder & Elementary discrete descent & Integer-valued monotone horizon.\\
+\addlinespace
+Last-breakthrough noncomputability for proof horizons & Source theorem & \emph{Universal Settlement Horizons} \cite{TennesonUSH}; halting reduction.\\
+\addlinespace
+Transfer of last-breakthrough noncomputability to intended AMLD settlement & Conditional, not claimed complete here & Requires strict-drop-preserving compiled embedding; explicitly unfinished in the source dependency ledger \cite{TennesonUSH}.\\
+\bottomrule
+\end{longtable}
+
+This ledger is intentionally conservative. The paper's strongest unconditional new synthesis is geometric: it puts prover--refuter sharing, complete-state shortest paths, local horizon derivatives, defect decomposition, and conservative \BANK\ interventions in one formal line. The strongest noncomputability claim remains exactly where its source proves it, with AMLD transfer stated only under the declared bridge condition.
+
+\section{Relation to the surrounding corpus}
+
+The present manuscript is best read as a bridge rather than a replacement for the surrounding works.
+
+\paragraph{Depths of Induction, Version 48.}
+Version 48 supplies the broader formal-system, induction, proof-horizon, self-awareness, learned-search, and cooperative AMLD context. It explicitly treats AMLD chronology as five local role chronologies plus one verifier-accepted shared chronology and notes that conservative object-\BANK\ growth can lower explicit proof horizons without changing deductive strength \cite{TennesonDepths48}.
+
+\paragraph{Generalized Board Games.}
+The GBG paper supplies the exact complete-state and partial-rule viewpoint. Tic-tac-toe is the transparent finite example; chess shows scale. For the present synthesis, its most important lesson is that a legal move can literally be an inference rule and that state, history, reachability, and strategic horizon must be separated carefully \cite{TennesonGBG}.
+
+\paragraph{Conjecture Settling II.}
+The precursor manuscript records the transition from two-sided proof and refutation search with shared verified lemmas to a partial ALD that produces certificates and supports typed three-way exchange. It also supplies an empirical language of cross-branch reuse, tri-use, settlement dividends, and controlled ablation \cite{TennesonCSII}.
+
+\paragraph{Automated Metalogical Deciders II.}
+Decision Geometry distinguishes decision-boundary effects from conservative \BANK\ effects. A conservative lemma cannot change what the frozen theory proves, but it can compress proof DAGs and shorten search horizons. This is exactly the distinction needed for the derivative developed here \cite{TennesonAMLDII}.
+
+\paragraph{Five-Way Pac-Man.}
+The Pac-Man paper makes complete AMLD state-space geometry explicit, defines Bellman settlement horizons and one-step regrets, proves their telescoping accounting identity, and formalizes route-preserving BANK extensions. The present paper moves that geometry backward to the original two-role laboratory and forward to the computability boundary \cite{TennesonPacMan}.
+
+\paragraph{Oracle and Omnicartographer Theory.}
+The Omnicartographer separates verification from map guidance and formalizes cross-channel geodesic assistance. The present paper interprets that assistance through the BANK derivative and highlights the distinction between exact global $H$ and a Pioneer's discovered approximation \cite{TennesonOracle}.
+
+\paragraph{Universal Settlement Horizons.}
+USH supplies the canonical minimum-certificate and finite-breakthrough perspective and proves that the last strict proof-horizon improvement cannot be uniformly detected, even when the horizon can fall only once from $2$ to $1$. Its own dependency ledger correctly leaves the settlement-level transfer conditional on a suitable compiled embedding \cite{TennesonUSH}.
+
+\section{Conclusion}
+
+The research program can be understood from a surprisingly small beginning. A prover searches for $T$. A refuter searches for $\neg T$. Both are proving theorems of the same base theory along the way. Therefore their intermediate certified lemmas can be shared.
+
+Once the shared \BANK\ is made part of the complete state, the architecture stops looking like two independent searches and starts looking like a cooperative geometry. The state graph has typed settlement regions. Its intrinsic distance function defines a settlement horizon. Legal actions have discrete horizon derivatives. The Bellman defect
+\[
+\delta=c+\Delta H
+\]
+measures local departure from geodesic optimality, and the total excess cost of any completed settlement path is exactly the sum of those local defects.
+
+The \BANK\ then becomes a geometric intervention rather than passive storage. A conservative theorem can preserve deductive closure while decreasing one or several role-restricted horizons. Cross-agent cooperation is beneficial precisely when the cost of obtaining and depositing a lemma is outweighed by the horizon reduction it creates elsewhere. The five-way AMLD generalization adds typed settlement modes and richer transports, but the core phenomenon is already visible in $P/R/\BANK$.
+
+The geometric viewpoint also clarifies the role of noncomputability. A machine may verify local transitions exactly. It may recognize individual horizon improvements. Under integer monotone horizons, a fixed target may even have only finitely many strict breakthroughs. Yet no uniform algorithm can in general announce that the last future improvement has already occurred in the proof-horizon family used by Universal Settlement Horizons. With an appropriate strict-drop-preserving compilation, the same obstruction transfers to AMLD settlement.
+
+Thus the important boundary is not ``computers can or cannot do mathematics.'' It is finer:
+\[
+\boxed{
+\text{certified local mathematical progress can be exact and highly cooperative}
+}
+\]
+while
+\[
+\boxed{
+\text{complete effective knowledge that no better future route remains can fail uniformly}.
+}
+\]
+This is compatible with an ambitious automated theorem-proving program. It suggests the right standard for such a program: search as creatively and cooperatively as possible, expose the geometry of what was found, and require a checkable certificate for every claimed settlement.
+
+\appendix
+
+\section{Notation summary}
+
+\begin{longtable}{p{0.2\textwidth}p{0.7\textwidth}}
+\toprule
+Symbol & Meaning\\
+\midrule
+\endhead
+$\Gamma$ & Frozen object theory or axiom base.\\
+$T$ & Target sentence.\\
+$P$ & Prover role, searching for a certificate of $T$.\\
+$R$ & Refuter role, searching for a certificate of $\neg T$.\\
+$B$ or $\BANK$ & Shared verifier-accepted lemma store.\\
+$X$ & Complete cooperative settlement state.\\
+$\Sigma_P,\Sigma_R$ & Prover and refuter settlement regions.\\
+$\Sigma$ & Joint admissible settlement region.\\
+$H(X)$ & Intrinsic minimum cost from $X$ to $\Sigma$.\\
+$H_J(X)$ & Role-restricted settlement horizon.\\
+$\Delta_aH(X)$ & Action derivative $H(Y)-H(X)$ along $X\xrightarrow{a}Y$.\\
+$\delta_H$ & Bellman/geodesic defect $c+H(Y)-H(X)$.\\
+$X\oplus L$ & Complete state after verifier-accepted deposit of lemma $L$.\\
+$D_LH(X)$ & BANK derivative $H(X\oplus L)-H(X)$.\\
+$\operatorname{Div}_J(L;X)$ & Horizon dividend $H_J(X)-H_J(X\oplus L)$.\\
+$\widehat H_t$ & Horizon estimate from map knowledge available at stage $t$.\\
+\bottomrule
+\end{longtable}
+
+\section{Minimal pseudocode for a certificate-producing two-way machine}
+
+The following schematic algorithm is not offered as a complete ATP implementation. It isolates the logical discipline of the reduced architecture.
+
+\begin{verbatim}
+INPUT: theory Gamma, target T, verified initial BANK B0, resource policy
+initialize prover state P for Gamma |- T
+initialize refuter state R for Gamma |- not T
+BANK := B0
+
+while resources remain:
+    choose role J in {P,R} under a fair or declared policy
+    proposals := advance_one_local_step(J, BANK)
+
+    for candidate packet L in proposals:
+        if verifier_accepts(Gamma, L):
+            BANK.insert(L with provenance and proof)
+            notify(P, L)
+            notify(R, L)
+
+    if verifier_accepts(proof_of_T):
+        return PROVED with certificate
+
+    if verifier_accepts(proof_of_not_T):
+        return REFUTED with certificate
+
+return operational_stop_reason
+\end{verbatim}
+
+The absence of a return value PROVED or REFUTED has no theorem-level meaning. Independence requires a separate positive certificate in a richer typed architecture.
+
+\section{Candidate theorem sequence for a follow-up paper}
+
+A follow-up formal-development paper could aim to establish the following sequence for one fully specified implementation.
+
+\begin{enumerate}[label=\textbf{T\arabic*.}]
+\item \textbf{Complete-state encoding theorem.} Every accepted run configuration has a finite $xyz$ encoding, and every accepted machine action is a partial inference rule on encoded complete states.
+\item \textbf{Reachability correspondence.} Accepted finite runs from the initialized machine correspond exactly to derivations from the initial encoded state.
+\item \textbf{Settlement-distance equivalence.} The canonical restarted settlement minimum equals directed state-graph distance to the certified settlement region under the declared unit-cost model.
+\item \textbf{Conservative-BANK route preservation.} Every accepted object-level conservative deposit preserves each old costed route after state lifting.
+\item \textbf{BANK monotonicity.} Each role-restricted horizon is nonincreasing under such lifted deposits.
+\item \textbf{Defect decomposition.} Realized excess settlement cost equals accumulated local Bellman defect.
+\item \textbf{Cross-role assistance theorem.} If an auxiliary lemma costs $a$ and lowers another role's remaining horizon from $h$ to $h'$ with $a+h'<h$, then the old $h$-route is not globally optimal.
+\item \textbf{Finite breakthrough theorem.} Integer-valued monotone settlement horizons admit only finitely many strict drops for each initially finitely settleable target.
+\item \textbf{Strict-drop-preserving embedding.} Embed the explicit-premise proof-horizon family used in the halting reduction into the reduced AMLD while preserving strict drops.
+\item \textbf{Last-breakthrough transfer.} Conclude that no total computable functional uniformly returns a final strict-settlement-drop stage for the compiled family.
+\end{enumerate}
+
+This sequence would connect the original prover--refuter idea to the strongest current computability question without requiring the full five-role architecture at the outset.
+
+\begin{thebibliography}{99}
+
+\bibitem{TennesonCSII}
+B. Tenneson,
+\emph{Conjecture Settling II: Automated Logical Deciders and Three-Way Lemma Exchange},
+Draft 001, August 2026.
+
+\bibitem{TennesonDepths48}
+B. Tenneson,
+\emph{Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness -- Version 48},
+Reconciled Edition, September 19, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}
+
+\bibitem{TennesonGBG}
+B. Tenneson,
+\emph{Generalized Board Games -- From Tic-Tac-Toe to Chess as xyz Formal Systems},
+September 22, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001/}
+
+\bibitem{TennesonPacMan}
+B. Tenneson,
+\emph{Five-Way Pac-Man -- Cooperative Search Geometry for Automated Metalogical Deciders},
+Research Revision 003, September 19, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/five_way_pac_man_amld_003/}
+
+\bibitem{TennesonOracle}
+B. Tenneson,
+\emph{Oracle and Omnicartographer Theory -- A Running Mathematical Development},
+Research Edition 003, September 19, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/oracle_omnicartographer_theory_003/}
+
+\bibitem{TennesonAMLDII}
+B. Tenneson,
+\emph{Automated Metalogical Deciders II -- Decision Geometry, Verified BANK Compression, and Five-Role Cooperative Settlement Theory},
+Research Edition 002, September 18, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/automated_metalogical_deciders_ii_decision_geometry_002/}
+
+\bibitem{TennesonUSH}
+B. Tenneson,
+\emph{Universal Settlement Horizons -- Canonical Minimum AMLD Certificates, Finite Breakthrough Ladders, and the Noncomputability of the Last Breakthrough},
+Corrected Research Synthesis 002, September 18, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/}
+
+\bibitem{Bellman1957}
+R. Bellman,
+\emph{Dynamic Programming},
+Princeton University Press, 1957.
+
+\bibitem{Ahuja1993}
+R. K. Ahuja, T. L. Magnanti, and J. B. Orlin,
+\emph{Network Flows: Theory, Algorithms, and Applications},
+Prentice Hall, 1993.
+
+\bibitem{Turing1936}
+A. M. Turing,
+``On Computable Numbers, with an Application to the Entscheidungsproblem,''
+\emph{Proceedings of the London Mathematical Society}, 42 (1936--1937), 230--265.
+
+\end{thebibliography}
+
+\end{document}
