@@ -1,0 +1,400 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fundamental Theorem of Round-Robin AMLD Settlement — Finite-Settlement Completeness, GBG Reachability, CSG Horizons, and the No-Uniform-Deadline Boundary — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/fundamental_theorem_round_robin_amld_settlement_002/">Back to publication</a><h1>Fundamental Theorem of Round-Robin AMLD Settlement — Finite-Settlement Completeness, GBG Reachability, CSG Horizons, and the No-Uniform-Deadline Boundary</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/fundamental_theorem_round_robin_amld_settlement_002/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=0.9in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs,tabularx}
+\usepackage{xurl}
+\usepackage[hidelinks,bookmarksopen=true]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{lastpage}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.48em}
+\setlength{\emergencystretch}{3em}
+\setlist{leftmargin=2em,itemsep=0.25em,topsep=0.35em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Fundamental Theorem of Round-Robin AMLD Settlement}
+\rhead{Brian Tenneson}
+\cfoot{\thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{caution}[definition]{Caution}
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\BANK}{\ensuremath{\mathrm{BANK}}}
+\newcommand{\Sett}{\operatorname{SETTLED}}
+\newcommand{\Hist}{\operatorname{Hist}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Reach}{\operatorname{Reach}}
+\newcommand{\Act}{\operatorname{Act}}
+\newcommand{\RR}{\mathrm{RR}}
+\newcommand{\AMLD}{\mathrm{AMLD}}
+\newcommand{\GBG}{\mathrm{GBG}}
+\newcommand{\Con}{\operatorname{Con}}
+
+\hypersetup{
+  pdftitle={Fundamental Theorem of Round-Robin AMLD Settlement},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={Finite-settlement completeness for round-robin automated metalogical deciders},
+  pdfkeywords={AMLD, round robin, settlement, completeness, generalized board games, cooperative settlement geometry, noncomputability, Omnicartographer}
+}
+
+\title{\textbf{Fundamental Theorem of Round-Robin AMLD Settlement}\\[0.25em]
+\large Finite-Settlement Completeness, GBG Reachability, CSG Horizons,\\
+and the No-Uniform-Deadline Boundary}
+\author{Brian Tenneson\\[1mm]
+\small Formal proof synthesis and manuscript development assisted by OpenAI&#x27;s ChatGPT}
+\date{September 22, 2026\\Research Note 002}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note isolates a theorem that is implicit in the author&#x27;s recent round-robin AMLD, generalized-board-game, Five-Way Pac-Man, and cooperative-settlement manuscripts.  A fixed finite AMLD team is represented by complete verifier-accepted states, one active Pioneer per accepted logical tick, a shared typed \BANK, certificate-backed settlement classes, and a round-robin service pointer.  The settlement horizon $H(X)$ is the intrinsic minimum cost from a complete state $X$ to the union of the certified settlement classes, with $H(X)=\infty$ when no finite settling path exists.
+
+Under the exact history compilation already developed for AMLDs as settlement ATPs, together with inner branch-covering fairness, four conditions are equivalent: finite settlement horizon, existence of a finite legal settlement history, derivability of the compiled token $\Sett(T)$, and eventual settlement by the actual compiled AMLD search.  Thus, whenever at least one certified settlement is finitely reachable, the branch-covering round-robin AMLD eventually reaches a certified settlement.  The result is a completeness theorem, not an efficiency theorem: round robin supplies outer inter-role nonstarvation, while branch covering supplies the stronger inner coverage needed for completeness.  No Omnicartographer is required for completeness, although any cartographic policy preserving the required fairness may reorder search without destroying the theorem.
+
+The note also records the corresponding computability boundary.  For any effective AMLD family whose finite-settlement set is undecidable, there can be no total computable function giving a universal pre-run deadline by which every finitely settleable input must settle.  Hence the theorem has the characteristic form ``finite settlement implies eventual settlement&#x27;&#x27; without a general computable completion clock.
+\end{abstract}
+
+\section{Purpose and theorem status}
+
+The result below is a \emph{synthesis theorem}.  Its ingredients are already present in the current AMLD corpus:
+\begin{itemize}
+\item \emph{AMLDs as Settlement ATPs} supplies the exact compiled formal system $F_{\mathcal A}$, the finite-history/derivability equivalence, and the strong branch-covering target-search theorem~\cite{SettlementATP}.
+\item \emph{Five-Way Pac-Man AMLD} supplies complete accepted states, one active Pioneer per accepted logical tick, certificate-backed settlement classes, and the union-of-exits first-settlement semantics~\cite{PacMan}.
+\item \emph{Cooperative Settlement Geometry} supplies the intrinsic settlement horizon as directed distance to the settlement region and the multi-role first-settlement geometry~\cite{CSG}.
+\item \emph{Generalized Board Games} supplies the rule-complete-state viewpoint and the equivalence between finite legal reachability and theoremhood for a GBG encoding~\cite{GBG}.
+\end{itemize}
+
+The contribution of this note is to place those facts into one explicit equivalence theorem and to separate carefully what follows from round robin, what additionally requires inner branch covering, and what is prohibited by the computability boundary.
+
+\begin{remark}[Fixed team size]
+The intended AMLD architecture has a fixed team, canonically five roles $P,R,D,I,C$ in the five-role presentation.  The theorem is stated for an arbitrary finite number $m$ only because the proof uses finiteness rather than the numeral five.  No team-reduction or variable-team-size claim is made.
+\end{remark}
+
+\section{Formal setting}
+
+\begin{definition}[Fixed finite round-robin AMLD]
+Fix a target $T$ and a finite nonempty role set
+\[
+\mathcal J=\{J_0,\ldots,J_{m-1}\}.
+\]
+A complete accepted AMLD state is a finite record
+\[
+X=(S_{J_0},\ldots,S_{J_{m-1}},B_{\rm obj},B_{\rm meta},\Pi,\Sigma,t_{\rm set},q),
+\]
+where the $S_J$ are the accepted local role states, $B_{\rm obj}$ and $B_{\rm meta}$ are typed \BANK\ components, $\Pi$ is accepted provenance, $\Sigma$ records accepted settlement classes, $t_{\rm set}$ records first settlement, and $q$ contains the scheduler state needed to make the transition relation Markovian.
+
+For strict round robin, $q$ contains a turn pointer
+\[
+j(X)\in\{0,\ldots,m-1\},
+\]
+and, before settlement, a service tick activates $J_{j(X)}$ and advances the pointer by
+\[
+j\longmapsto j+1\pmod m.
+\]
+Only one Pioneer is activated per accepted logical tick.
+\end{definition}
+
+\begin{definition}[Accepted transition graph]
+Let $G_{\mathcal A}=(\mathcal X,\mathcal E)$ be the directed graph whose vertices are reachable accepted complete states and whose edges are the legal serial AMLD transitions
+\[
+X\xrightarrow{a}Y.
+\]
+Each edge has a finite positive integer cost $c(a)\in\N_{&gt;0}$.  Logical trust is determined by the declared object-theoretic and metatheoretic certificate rules and their verifier interfaces.
+\end{definition}
+
+\begin{definition}[Settlement classes and boundary]
+For each role $J\in\mathcal J$, let $E_J\subseteq\mathcal X$ be the states in which the declared certificate condition for role $J$ has been accepted with provenance.  If a role certificate is formulated relative to a BANK that may later change, the protocol must either record the frozen base to which the certificate refers or provide a preservation theorem showing that later accepted BANK updates preserve its settlement semantics.  Define the full first-settlement boundary
+\[
+E:=\bigcup_{J\in\mathcal J}E_J.
+\]
+A run settles at its first entry into $E$.  In the compiled first-settlement projection, settlement is absorbing: once the distinguished settlement marker has appeared, it remains present.
+\end{definition}
+
+\begin{definition}[Intrinsic settlement horizon]
+For $X\in\mathcal X$, define
+\[
+H(X):=\inf\{\Cost(\gamma):\gamma\text{ is a finite legal path from }X\text{ to }E\}.
+\]
+If no finite legal path from $X$ reaches $E$, set $H(X)=\infty$.
+\end{definition}
+
+Because every edge has finite positive cost, the definition immediately yields
+\[
+H(X)&lt;\infty
+\quad\Longleftrightarrow\quad
+\text{there exists a finite legal path from $X$ to $E$}.
+\]
+No effective procedure for deciding which side of this equivalence holds is assumed.
+
+\section{Round robin and branch fairness}
+
+Round robin gives a strong but limited fairness guarantee.
+
+\begin{lemma}[Round-robin nonstarvation]
+Before settlement, after $r$ complete rounds every role in $\mathcal J$ has received exactly $r$ service opportunities.  In particular, every role receives infinitely many service opportunities along any infinite unsettled run.
+\end{lemma}
+
+\begin{proof}
+One round consists of the cyclic sequence
+\[
+J_0,J_1,\ldots,J_{m-1}.
+\]
+Thus every block of $m$ successive service opportunities contains one service opportunity for each role.  Repeating this observation for $r$ blocks proves the first statement.  The second follows by letting $r\to\infty$ along an infinite unsettled run.
+\end{proof}
+
+\begin{caution}[Round robin is not by itself search completeness]
+Round robin prevents \emph{inter-role} starvation.  It does not imply that a role&#x27;s internal theorem search eventually explores every branch needed by a finite certificate.  A constituent search can receive infinitely many turns while repeatedly neglecting one necessary internal branch.  The fundamental theorem therefore requires a separate branch-covering hypothesis.
+\end{caution}
+
+\begin{definition}[Branch-covering compiled search]
+Let $F_{\mathcal A}$ be the effective compiled formal system whose formulas encode finite tagged AMLD history prefixes and whose distinguished target token is $\Sett(T)$, as in~\cite{SettlementATP}.  The actual compiled controller is \emph{branch-covering} if it maintains an effective dovetailed frontier of finite legal history codes such that every finite prefix lying on a finite derivation of $\Sett(T)$ is eventually simulated and checked.  A simulated settlement history must carry finite provenance sufficient to replay its winning certificate against the declared trust-anchor environments; successful replay causes the actual controller to append $\Sett(T)$.
+\end{definition}
+
+This condition searches finite coded histories.  It does not require the physical controller to execute mutually incompatible candidate histories as one literal trajectory.
+
+\section{The fundamental theorem}
+
+\begin{theorem}[Fundamental Theorem of Round-Robin AMLD Settlement]\label{thm:fundamental}
+Let $\mathcal A$ be a fixed finite-role AMLD satisfying the following hypotheses.
+\begin{enumerate}[label=(\roman*)]
+\item Accepted configurations are represented by complete states and accepted steps by effective finite tagged events.
+\item The unsettled service discipline is fixed round robin.
+\item Settlement classes are certificate-backed and their union is $E$; the compiled first-settlement marker is persistent.
+\item The exact AMLD history compilation $F_{\mathcal A}$ is used, so finite legal settlement histories correspond exactly to finite derivations of $\Sett(T)$.
+\item The actual compiled search is branch-covering in the sense above, and certificate replay is exact for the declared trust-anchor rules.
+\end{enumerate}
+Hypothesis (ii) supplies outer nonstarvation only; hypothesis (v) is the additional search-coverage assumption that carries the substantive completeness burden.
+
+Let $X_0$ be the initial complete state and let $\Gamma_I$ be the corresponding compiled initial data.  Then the following are equivalent:
+\begin{align*}
+\textnormal{(A)}\;&amp;H(X_0)&lt;\infty;\\
+\textnormal{(B)}\;&amp;\text{there exists a finite legal accepted AMLD history from $X_0$ into $E$};\\
+\textnormal{(C)}\;&amp;\Gamma_I\vdash_{F_{\mathcal A}}\Sett(T);\\
+\textnormal{(D)}\;&amp;\text{the actual branch-covering round-robin AMLD eventually settles.}
+\end{align*}
+Consequently,
+\[
+\boxed{H(X_0)&lt;\infty\quad\Longleftrightarrow\quad\text{eventual certified AMLD settlement}.}
+\]
+\end{theorem}
+
+\begin{proof}
+We prove the cycle
+\[
+(A)\Longleftrightarrow(B)\Longleftrightarrow(C)\Longrightarrow(D)\Longrightarrow(B).
+\]
+
+\emph{$(A)\Longleftrightarrow(B)$.}
+By definition, $H(X_0)$ is the infimum of the costs of finite legal paths from $X_0$ to $E$, and it is explicitly set to $\infty$ when no such finite path exists.  Since every accepted edge has finite positive cost, every finite path has finite total cost.  Hence $H(X_0)&lt;\infty$ exactly when at least one finite legal path from $X_0$ reaches $E$.
+
+\emph{$(B)\Longleftrightarrow(C)$.}
+By the exact history-compilation construction, the initialization rule produces the initial history-prefix object, each legal AMLD history extension is represented by a legal-extension rule, and the settlement-projection rule produces $\Sett(T)$ exactly from a finite history containing an accepted typed settlement certificate.  Therefore a finite legal settlement history yields a finite $F_{\mathcal A}$-derivation of $\Sett(T)$.  Conversely, a derivation of $\Sett(T)$ can terminate only through the settlement-projection rule after finitely many legal history-prefix extensions, so it determines a finite legal settlement history.  This is the finite-history/derivability equivalence established in the settlement-ATP compilation.
+
+\emph{$(C)\Longrightarrow(D)$.}
+Assume $\Gamma_I\vdash_{F_{\mathcal A}}\Sett(T)$.  A proof is finite, so choose one finite target derivation.  By branch covering, every finite prefix on that derivation is eventually simulated and checked by the effective dovetailed frontier.  At the terminal simulated history, the winning typed certificate and its finite provenance are replayed against the declared trust anchor.  Exact replay accepts the certificate, and by hypothesis the actual compiled controller appends $\Sett(T)$.  Thus the actual AMLD reaches settlement at some finite global stage.
+
+The round-robin hypothesis ensures that no constituent role is permanently denied service while this search proceeds.  It is not the whole reason for completeness: the inner branch-covering hypothesis is what prevents a repeatedly serviced role from permanently omitting a necessary certificate branch.
+
+\emph{$(D)\Longrightarrow(B)$.}
+If the actual compiled AMLD settles, then at some finite global stage it appends the settlement marker only after replay and acceptance of a typed certificate with finite provenance.  By the branch-covering compilation hypothesis, that successful replay is attached to a finite coded legal settlement history from the initial data.  The replayed history, rather than necessarily the literal controller trajectory that happened to discover it, is therefore a finite legal accepted AMLD history from $X_0$ into some $E_J\subseteq E$.  Hence (B) holds.
+
+All four conditions are therefore equivalent.
+\end{proof}
+
+\begin{remark}[Why this is a completeness theorem rather than a speed theorem]
+The theorem states an existential completeness property: whenever at least one finite legal certified settlement history exists in the compiled search space, the fair branch-covering controller eventually realizes a certified settlement.  It does not assert that every reachable settlement class is eventually visited, and it does not compare wall-clock speed, number of candidate expansions, memory use, or regret against another controller.
+\end{remark}
+
+\section{GBG and CSG forms of the theorem}
+
+\begin{corollary}[GBG reachability form]\label{cor:gbg}
+Assume in addition that the complete AMLD states admit an exact rule-complete GBG encoding in which accepted AMLD transitions are precisely the legal unary move rules and the initial AMLD state is the distinguished GBG initial state $s_0$.  Let $E^{\!*}$ be the encoded settlement boundary.  Then
+\[
+H(X_0)&lt;\infty
+\quad\Longleftrightarrow\quad
+E^{\!*}\cap \Reach(s_0)\neq\varnothing
+\quad\Longleftrightarrow\quad
+\text{some settlement state is a GBG theorem from }s_0,
+\]
+and these conditions are equivalent to eventual certified AMLD settlement under the hypotheses of Theorem~\ref{thm:fundamental}.
+\end{corollary}
+
+\begin{proof}
+The first equivalence is the definition of finite settlement horizon transported through the exact state encoding.  The second is the GBG Reachability--Theorem Correspondence: finite legal reachability from $s_0$ is exactly derivability from the distinguished initial hypothesis.  The final equivalence is Theorem~\ref{thm:fundamental}.
+\end{proof}
+
+\begin{corollary}[First-settlement horizon across roles]
+For role-specific settlement regions $E_J$, define
+\[
+H_J(X):=d(X,E_J).
+\]
+Then the scalar first-settlement horizon is
+\[
+H(X)=d\!\left(X,\bigcup_{J\in\mathcal J}E_J\right)
+     =\min_{J\in\mathcal J}H_J(X),
+\]
+with the convention that the minimum may be $\infty$.
+\end{corollary}
+
+\begin{proof}
+A finite path reaches the union $E$ exactly when it reaches at least one $E_J$.  The least cost of doing so is therefore the least among the role-specific least costs.  Because $\mathcal J$ is finite, the infimum over the finite family is its minimum in the extended nonnegative reals.
+\end{proof}
+
+This is the CSG form of the same first-settlement idea: one certified exit settles the target, even though all Pioneers remain part of the fixed AMLD architecture.
+
+\section{Omnicartographic guidance is optional for completeness}
+
+The theorem requires fairness and certificate correctness, not global map knowledge.
+
+\begin{corollary}[Cartographic preservation of completeness]\label{cor:omni}
+Suppose an Omnicartographic or heuristic policy changes the order in which legal candidate histories or legal local actions are prioritized, but preserves:
+\begin{enumerate}[label=(\alph*)]
+\item fixed outer round-robin service among the Pioneers, and
+\item inner branch covering of every finite target derivation.
+\end{enumerate}
+Then the equivalences in Theorem~\ref{thm:fundamental} remain valid.
+\end{corollary}
+
+\begin{proof}
+The proof of Theorem~\ref{thm:fundamental} uses the order of search only through the assertion that every finite prefix on a finite target derivation is eventually simulated and checked.  Reordering that preserves this property leaves the implication $(C)\Rightarrow(D)$ unchanged.  The other implications are semantic and do not depend on search order.
+\end{proof}
+
+\begin{remark}[Completeness versus navigation]
+The verifier answers whether an accepted certificate is valid.  Round robin answers which Pioneer receives the next service opportunity.  An Omnicartographer may answer which legal branch or detour is promising.  The first two, together with inner branch covering, suffice for the completeness theorem; the Omnicartographer is a navigation layer whose purpose is to reduce waste, not to make finite settlement logically possible.
+\end{remark}
+
+\section{The no-uniform-deadline boundary}
+
+The existence of a finite settlement time on every positive instance does not imply a computable function that predicts such a time uniformly from the input.
+
+\begin{theorem}[No uniform computable settlement deadline]\label{thm:deadline}
+Let $\{\mathcal A_I:I\in\mathcal I\}$ be a uniformly effective family of AMLD inputs satisfying the hypotheses of Theorem~\ref{thm:fundamental}.  Assume additionally that each global stage terminates, that there is a uniform effective procedure for simulating the AMLD stage by stage from $I$, and that presence of a valid settlement marker in a simulated stage is decidable.  Assume the finite-settlement set
+\[
+S:=\{I\in\mathcal I:H_I(X_{0,I})&lt;\infty\}
+\]
+is undecidable.  Then there is no total computable function
+\[
+B:\mathcal I\to\N
+\]
+with the property that for every $I\in S$, the actual AMLD on input $I$ settles by global stage $B(I)$.
+\end{theorem}
+
+\begin{proof}
+Assume such a total computable $B$ exists.  On input $I$, compute $B(I)$.  By uniform effective stage simulation and termination of each global stage, simulate the AMLD through stage $B(I)$; by decidability of the settlement marker, test whether a valid marker has appeared.  If it has, output YES; otherwise output NO.
+
+If $I\in S$, Theorem~\ref{thm:fundamental} gives eventual settlement, and the defining property of $B$ guarantees settlement no later than stage $B(I)$, so the procedure outputs YES.  If $I\notin S$, no finite legal settlement exists; sound verifier-gated settlement therefore cannot occur at any stage, so the procedure outputs NO.  The procedure would decide $S$, contradicting the assumed undecidability of $S$.  Hence no such total computable deadline exists.
+\end{proof}
+
+\begin{remark}[What the theorem does not prohibit]
+Theorem~\ref{thm:deadline} does not say that no useful bound is ever available.  For a particular input, an independently known certificate can give an explicit finite route and therefore an explicit upper bound.  After an actual run settles, its realized settlement time is of course known.  The prohibition is against one total computable pre-run deadline that works uniformly over an undecidable family.
+\end{remark}
+
+\begin{remark}[Relation to the last-breakthrough theorem]
+The no-uniform-deadline theorem above is a direct consequence of undecidability of finite settlement for the chosen effective family.  It should be distinguished from the stronger-looking but different ``last breakthrough&#x27;&#x27; result in \emph{Universal Settlement Horizons} and \emph{Cooperative Settlement Geometry}, which rules out a uniform computable stage that always recognizes final horizon stabilization in a specific effective proof-horizon family~\cite{USH,CSG}.  The current CSG dependency ledger states conservatively that transferring that last-breakthrough theorem to every intended AMLD settlement formalization still requires the declared strict-drop-preserving compilation hypothesis.  The fundamental completeness theorem does not depend on that unfinished transfer.
+\end{remark}
+
+\section{Conceptual form}
+
+Under the stated hypotheses, the same finite-settlement phenomenon has four equivalent descriptions:
+\[
+\boxed{
+\begin{array}{c}
+\text{CSG: }H(X_0)&lt;\infty\\[1mm]
+\Updownarrow\\[-1mm]
+\text{AMLD state graph: finite legal path to a certified exit}\\[1mm]
+\Updownarrow\\[-1mm]
+\text{compiled formal system: }\Gamma_I\vdash_{F_{\mathcal A}}\Sett(T)\\[1mm]
+\Updownarrow\\[-1mm]
+\text{fair branch-covering round-robin AMLD: eventual settlement.}
+\end{array}}
+\]
+
+When an exact GBG encoding is also present, ``finite legal path&#x27;&#x27; is simultaneously GBG theoremhood.  Thus the theorem connects architecture, reachability, proof, and geometry without claiming a total decider or a universal completion clock.
+
+The shortest verbal form is:
+\begin{quote}
+\textbf{If at least one certified settlement lies at finite settlement distance, a branch-covering finite round-robin AMLD eventually reaches a certified settlement; in general no uniform computable deadline need reveal when.}
+\end{quote}
+
+\section{Dependencies and boundaries}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}p{0.31\textwidth}X@{}}
+\toprule
+\textbf{Statement} &amp; \textbf{Dependency / status}\\
+\midrule
+Round-robin nonstarvation &amp; Elementary consequence of finite cyclic service.\\
+Finite history $\Longleftrightarrow$ derivability of $\Sett(T)$ &amp; Source result from the exact AMLD history compilation~\cite{SettlementATP}.\\
+Derivability $\Longrightarrow$ eventual actual settlement &amp; Source strong target-search refinement under dovetailed branch covering and certificate replay~\cite{SettlementATP}.\\
+$H(X)&lt;\infty\Longleftrightarrow$ finite settling path &amp; Definition of intrinsic settlement horizon in CSG~\cite{CSG}.\\
+First settlement is entry into union of role exit classes &amp; Five-Way Pac-Man settlement semantics~\cite{PacMan}.\\
+GBG theoremhood $\Longleftrightarrow$ finite reachability &amp; GBG Reachability--Theorem Correspondence~\cite{GBG}.\\
+Omnicartographer not required for completeness &amp; New corollary here: follows because fairness, not priority order, is used in the proof.\\
+No uniform computable deadline on undecidable family &amp; New conditional corollary here by a standard decision-by-bounded-simulation contradiction, assuming uniform effective stage simulation and decidable settlement detection.\\
+Uniform recognition of the last horizon breakthrough &amp; Separate noncomputability result in USH; AMLD transfer remains conditional as stated in CSG~\cite{USH,CSG}.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Conclusion}
+
+The fixed-team AMLD picture is enough.  Five specialized Pioneers, one typed shared \BANK, one accepted chronology, a round-robin turn pointer, and a union of certificate-backed exit classes determine a complete first-settlement process.  Round robin guarantees that no Pioneer is forgotten; inner branch covering guarantees that no finite winning derivation is forgotten.  The former is an outer scheduling guarantee; the latter is the additional completeness condition.  The exact history compilation turns finite settlement into theoremhood of the formal token $\Sett(T)$, while CSG turns the same event into finiteness of the intrinsic settlement horizon.
+
+The resulting equivalence is therefore not a claim that AMLD defeats undecidability.  It identifies the positive theorem that survives it: whenever a certified settlement exists at finite distance and the declared fair search hypotheses hold, settlement is eventually realized.  What cannot be demanded in general is a total computable clock announcing in advance when that realization must occur.
+
+\begin{thebibliography}{99}
+
+\bibitem{SettlementATP}
+B. Tenneson,
+\emph{AMLDs as Settlement ATPs: History Compilation, Round-Robin Fairness, and ATP-to-AMLD Transfer},
+Corrected and Strengthened Theorem Paper 002, September 18, 2026.
+
+\bibitem{PacMan}
+B. Tenneson,
+\emph{Five-Way Pac-Man AMLD}, Research Revision 003, September 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/five_way_pac_man_amld_003/}
+
+\bibitem{GBG}
+B. Tenneson,
+\emph{Generalized Board Games: From Tic-Tac-Toe to Chess as xyz Formal Systems}, September 22, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001/}
+
+\bibitem{CSG}
+B. Tenneson,
+\emph{Cooperative Settlement Geometry: Prover--Refuter Lemma Exchange, BANK Geodesics, Discrete Derivatives, and the Noncomputability of the Last Breakthrough}, Research Draft 003, September 22, 2026.
+
+\bibitem{USH}
+B. Tenneson,
+\emph{Universal Settlement Horizons: Canonical Minimum AMLD Certificates, Finite Breakthrough Ladders, and the Noncomputability of the Last Breakthrough}, Corrected Research Synthesis 002, September 18, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/}
+
+\bibitem{Depths48}
+B. Tenneson,
+\emph{Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness}, Version 48, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}
+
+\bibitem{Oracle}
+B. Tenneson,
+\emph{Oracle--Omnicartographer Theory}, Research Edition 003, 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/oracle_omnicartographer_theory_003/}
+
+\end{thebibliography}
+
+\end{document}</pre></main></body></html>
