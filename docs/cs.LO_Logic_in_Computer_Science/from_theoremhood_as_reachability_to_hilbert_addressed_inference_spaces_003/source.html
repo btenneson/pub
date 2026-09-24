@@ -1,0 +1,985 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>From Theoremhood as Reachability to Hilbert-Addressed Inference Spaces — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/from_theoremhood_as_reachability_to_hilbert_addressed_inference_spaces_003/">Back to publication</a><h1>From Theoremhood as Reachability to Hilbert-Addressed Inference Spaces</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/from_theoremhood_as_reachability_to_hilbert_addressed_inference_spaces_003/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,enumitem}
+\usepackage{microtype}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\Reach}{\operatorname{Reach}}
+\newcommand{\Succ}{\operatorname{Succ}}
+\newcommand{\ar}{\operatorname{ar}}
+\newcommand{\last}{\operatorname{last}}
+\newcommand{\lastop}{\operatorname{last}_{\mathrm{op}}}
+\newcommand{\Exec}{\operatorname{Exec}}
+\newcommand{\Try}{\operatorname{Try}}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\bigsqcupdot}{\mathop{\bigsqcup}\limits}
+
+\title{\textbf{From Theoremhood as Reachability to Hilbert-Addressed Inference Spaces}}
+\author{Brian Tenneson\\[3pt]\small Research synthesis and manuscript development assisted by OpenAI&#x27;s ChatGPT}
+\date{Draft 0.2 --- September 24, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This article develops a common formal language for generalized board games (GBGs), automated theorem proving (ATP), and Hilbert-style geometric navigation. The starting point is an $xyz$ formal system $F=(x,y,z)$: symbols live in $x$, well-formed formal objects live in $y$, and licensed inference rules live in $z$. A generalized board game makes this structure concrete. Rule-complete game states are well-formed objects, concrete legal moves are partial unary inference rules, and theoremhood is finite reachability from an initial state. After lifting an ATP from object-level formulas to complete machine-search states, the same GBG semantics applies: a finite ATP execution is a sequential match-proof, and discovery of a target theorem is finite reachability of a target winning region.
+
+Hilbert navigation is then introduced as a nonattached special structure on the candidate-action spaces carried by such search states. A $d$-ary inference rule generates a $d$-dimensional premise-action component. Exact rank coordinates give one-grid-point/one-tuple coverage, while rational premise-slot labels support finite-resolution geometric locality through bucketed cells. Finite Hilbert traversals turn either representation into a reproducible one-dimensional schedule without changing theoremhood. For breadth-first target search, Hilbert order can be used only inside frozen proof-depth layers, preserving the proof horizon while changing the within-layer target-discovery offset.
+
+Several consequences are derived from combining the GBG and Hilbert viewpoints: finite ATP executions correspond to GBG match-proofs; the represented restricted proof horizon becomes a winning-region horizon at the macro level; future-complete operational states admit a transposition quotient by terminal operational state; each such state carries a finite declared action fiber on which Hilbert navigation may operate; and a synchronized two-dimensional Hilbert atlas can display a finite $d$-dimensional inference component with exactly the same traversal tick. The resulting architecture separates identity, machine-level attemptability, formal legality, navigation, verification, and execution while showing precisely how geometric navigation can become an operational tool in ATP.
+\end{abstract}
+
+\tableofcontents
+
+\section{Generalized Board Games, \texorpdfstring{$xyz$}{xyz} Formal Systems, and Geometric Navigation in Automated Theorem Proving}
+
+The purpose of this article is to place three ideas in a single hierarchy without collapsing their distinct roles.
+
+\begin{enumerate}[label=\textbf{\arabic*.},leftmargin=2em]
+\item An $xyz$ formal system supplies the underlying formal ontology: an alphabet, well-formed objects, and licensed inference rules.
+\item A generalized board game gives a particularly transparent realization of theoremhood as legal finite reachability.
+\item Hilbert labels and Hilbert traversals provide optional coordinate and navigation structures on finite spaces of candidate inference actions.
+\end{enumerate}
+
+The order is important. Hilbert geometry is not the source of theoremhood. It neither changes the formal consequence relation nor makes an illegal inference legal. Instead, it can determine \emph{where a search procedure looks next} among candidates already described by the formal system. This is the nonattachment principle emphasized in the earlier Hilbert-geometry work \cite{TennesonHilbertPartI,TennesonHilbertSearch}.
+
+The central conceptual chain developed below is
+\[
+\boxed{\begin{aligned}
+\text{$xyz$ formal system}
+&amp;\longrightarrow \text{GBG reachability semantics}\\
+&amp;\longrightarrow \text{ATP search-state lifting}\\
+&amp;\longrightarrow \text{Hilbert-addressed action spaces}.
+\end{aligned}}
+\]
+
+A second chain records execution:
+\[
+\boxed{
+S
+\longrightarrow
+\mathcal A(S)
+\xrightarrow{\text{navigation}}
+a
+\xrightarrow{\text{machine attempt }\Try}
+S&#x27;.
+}
+\]
+Here $S$ is a complete operational ATP search state, $\mathcal A(S)$ is its currently declared action space, $a$ is one candidate action selected from that space, and $S&#x27;$ is the successor operational state if that machine-level attempt is available. A successful object-level inference is a further property of the attempted action, not the definition of the machine move itself.
+
+\section{The \texorpdfstring{$xyz$}{xyz} formal-system backbone}
+
+Let
+\[
+F=(x,y,z)
+\]
+be an effective formal system in the $xyz$ sense used throughout the author&#x27;s proof-theoretic work \cite{TennesonElements}. The set $x$ is a nonempty alphabet, $y$ is a set of well-formed finite strings or other finitely encoded well-formed objects, and $z$ is a collection of finitary partial inference functions. A rule of arity $d$ has the form
+\[
+r:D_r\rightharpoonup y,
+\qquad D_r\subseteq y^d.
+\]
+The partiality is semantic: $r(\varphi_1,\ldots,\varphi_d)$ is defined exactly when that inference application is licensed by the system.
+
+For a set of hypotheses $\Gamma\subseteq y$, write
+\[
+\Con_F(\Gamma)=\{\varphi\in y:\Gamma\vdash_F\varphi\}
+\]
+for the ordinary finite-proof consequence set.
+
+\subsection{Exact syntactic identity precedes geometry}
+
+A recurring source of confusion in geometric proof-search discussions is the failure to separate formula identity from navigation coordinates. The earlier proof-horizon work fixes this separation by effectively enumerating WFFs through an injective coding of finite strings and a decidable WFF predicate \cite{TennesonUPH}.
+
+\begin{proposition}[Effective WFF indexing]\label{prop:wff-index}
+Suppose $y$ is countably infinite, finite strings have an injective G\&quot;odel coding by natural numbers, and there is a total computable predicate deciding whether a code represents a WFF. Then there is a total computable bijection
+\[
+ n\longmapsto \varphi_n,
+ \qquad n\in\N,
+\]
+from $\N$ onto $y$.
+\end{proposition}
+
+\begin{proof}
+Scan natural-number codes in increasing order and retain exactly those that satisfy the WFF predicate. Because the predicate is decidable and $y$ is infinite, the $n$th retained code is found after finitely many tests. Injectivity of the string coding prevents duplicate formulas, and every WFF is eventually encountered.
+\end{proof}
+
+The value $n$ in Proposition~\ref{prop:wff-index} answers \emph{which formula is this?} It is not intrinsically a Hilbert coordinate. A distinct navigation layer may later assign a rational premise-slot label
+\[
+\lambda(\varphi)\in \Q\cap[0,1),
+\]
+or place a frozen theorem list on a finite rank grid. The explicit surjection $\N\twoheadrightarrow\Q$ with a least-preimage pseudo-inverse developed in \cite{TennesonNQ} can supply canonical rational representatives when desired, but that construction is likewise separate from theoremhood and from the Hilbert traversal itself.
+
+\section{Generalized board games as formal systems}
+
+Generalized board games provide concrete instances of the $xyz$ viewpoint \cite{TennesonGBG20,TennesonGBGPublic}. A rule-complete state contains enough information to determine the legality and result of every possible next move. In a game such as chess, this generally requires more than the visible location report: side to move and any other rule-relevant state data must also be included.
+
+Let $s_0\in y$ be the distinguished initial game state. For a concrete move label $\mu$, associate the partial unary rule
+\[
+r_\mu:D_\mu\rightharpoonup y.
+\]
+Then $r_\mu(s)=t$ means precisely that move $\mu$ is legal at $s$ and produces state $t$.
+
+\begin{theorem}[Reachability--theorem correspondence]\label{thm:gbg-reach}
+For a GBG whose inference rules are exactly its concrete legal moves,
+\[
+ s\in\Con_F(\{s_0\})
+ \quad\Longleftrightarrow\quad
+ s\text{ is reachable from }s_0\text{ by finitely many legal moves}.
+\]
+\end{theorem}
+
+\begin{proof}
+A finite legal move sequence
+\[
+s_0\to s_1\to\cdots\to s_n=s
+\]
+is a finite derivation because every transition is an application of a rule in $z$. Conversely, every GBG rule is unary and corresponds to a legal move, so following the dependency chain of a finite proof backward from $s$ reaches $s_0$; reversing the chain gives a legal game history.
+\end{proof}
+
+Thus in a GBG,
+\[
+\boxed{\text{theoremhood}=\text{finite legal reachability}.}
+\]
+
+\subsection{Match-proofs}
+
+A legal game has a stronger temporal structure than an arbitrary proof: the next state must be derived from the immediately current state.
+
+\begin{definition}[Match-proof]
+An $n$-ply match-proof beginning at $s_0$ is a state sequence
+\[
+\pi=(s_0,s_1,\ldots,s_n)
+\]
+together with move labels $(\mu_0,\ldots,\mu_{n-1})$ such that
+\[
+ s_{i+1}=r_{\mu_i}(s_i)
+\]
+for each $i&lt;n$.
+\end{definition}
+
+Legal move-labeled matches and move-labeled match-proofs are therefore the same finite data \cite{TennesonGBG20}. Several distinct match-proofs may end at the same theorem; this is the board-game form of a transposition.
+
+\subsection{Winning theorems versus forced wins}
+
+If $W\subseteq y$ is a designated terminal winning set, then a winning theorem is simply a reachable state in
+\[
+\Con_F(\{s_0\})\cap W.
+\]
+This is existential reachability. In a two-player game, a forced win is stronger because the strategy must survive the opponent&#x27;s choices. The GBG forced-win construction alternates existential and universal conditions according to whose turn it is \cite{TennesonGBG20}. This distinction will matter later: ordinary ATP target discovery is single-agent existential reachability, not adversarial forced reachability.
+
+\section{Lifting an ATP to a generalized board game}
+
+Object-level theorem proving need not itself be unary: a rule may use many premises. The correct GBG object is therefore not an individual theorem but the \emph{complete search state of the machine}.
+
+\begin{definition}[Future-complete operational ATP state]\label{def:complete-state}
+A complete operational search state $S$ is a finite encoding containing exactly the information needed to determine all future machine-level search transitions. Depending on the implementation it may contain
+\[
+S=(C,P,\text{cursors},e,h,B,M,\ldots),
+\]
+where $C$ is the trusted theorem set, $P$ is the proof/provenance information needed for future verification, the cursors identify unfinished search components, $e$ is an epoch or breadth-layer identifier, $h$ is a navigation cursor such as a Hilbert tick, $B$ records remaining budgets, and $M$ records memoized outcomes or other data that can affect future execution.
+
+An append-only audit log or full historical trace may accompany $S$, but it is not part of the \emph{operational identity} of $S$ unless some future legality or transition genuinely depends on it. If such history does matter, the relevant summary of that history must be incorporated into $S$. We henceforth use ``complete state&#x27;&#x27; to mean this future-complete operational state.
+\end{definition}
+
+\begin{theorem}[Search-state lifting]\label{thm:lifting}
+Suppose an ATP has finitely encodable complete operational states and every elementary machine action can be made deterministic by including all auxiliary choices in a finite label $\mu$. Then the ATP transition system admits a single-player GBG representation in which positions are valid complete-state encodings and legal moves are partial unary machine-transition rules
+\[
+R_\mu:\mathcal S\rightharpoonup\mathcal S.
+\]
+A label may denote an \emph{attempt} to test a candidate inference. Such an attempt may be a legal machine move even when the tested object-level inference is undefined, fails a side condition, is rejected by verification, or yields no novel theorem; the successor may still advance a cursor, consume budget, memoize the result, or update an audit record. Finite legal histories in the lifted GBG are exactly finite executable ATP histories.
+\end{theorem}
+
+\begin{proof}
+Choose a finite alphabet for encodings of complete operational ATP states and let $\mathcal S$ be the set of valid encodings. For each finite canonical machine-action label $\mu$, define $R_\mu(S)$ to be the unique successor state when the ATP is permitted to perform that attempt or control action at $S$, and leave it undefined otherwise. Because all choices relevant to the resulting operational state are included in $\mu$ and $S$, each $R_\mu$ is a partial unary function. Whether the attempted candidate also constitutes a successful object-level inference is a separate predicate on the transition. The resulting move-labeled paths are precisely the ATP&#x27;s finite execution histories.
+\end{proof}
+
+\begin{theorem}[ATP match-proof correspondence]\label{thm:atp-match}
+Under the hypotheses of Theorem~\ref{thm:lifting}, finite executable ATP histories beginning at $S_0$ are in one-to-one correspondence with match-proofs of the lifted GBG beginning at $S_0$.
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:lifting} identifies each executable ATP microstep with one partial unary GBG move. Applying the match-proof correspondence componentwise gives the desired bijection.
+\end{proof}
+
+This is the first major synthesis: an ATP run is not merely analogous to a game history. After state lifting, it \emph{is} a sequential proof in the GBG sense.
+
+\section{Target winning regions and provability}
+
+Fix a target WFF $T$. Let $C(S)$ denote the trusted theorem set stored in search state $S$.
+
+\begin{definition}[Target winning region]
+Define
+\[
+W_T=\{S\in\mathcal S:T\in C(S)\}.
+\]
+\end{definition}
+
+Let $\Reach(S_0)$ denote the states reachable from the initial search state by finitely many legal lifted moves.
+
+\begin{theorem}[Target reachability]\label{thm:target-reach}
+The ATP discovers and admits $T$ in a finite run if and only if
+\[
+W_T\cap\Reach(S_0)\neq\varnothing.
+\]
+Equivalently, there are legal action labels $\mu_1,\ldots,\mu_n$ such that
+\[
+R_{\mu_n}\circ\cdots\circ R_{\mu_1}(S_0)\in W_T.
+\]
+\end{theorem}
+
+\begin{proof}
+A successful finite run is a finite legal execution ending at some $S_n$ with $T\in C(S_n)$, hence $S_n\in W_T\cap\Reach(S_0)$. Conversely, membership in that intersection gives a finite legal execution ending in a state whose trusted theorem set contains $T$.
+\end{proof}
+
+\begin{corollary}[Sound target reachability]\label{cor:sound-reach}
+Assume every addition to $C(S)$ is verifier-approved and every verifier-approved admitted conclusion corresponds to a legal inference of $F$. If
+\[
+W_T\cap\Reach(S_0)\neq\varnothing,
+\]
+then
+\[
+T\in\Con_F(\Gamma),
+\qquad \Gamma=C(S_0).
+\]
+\end{corollary}
+
+\begin{proof}
+Trace the stored provenance of $T$ backward through the finite execution. Each trusted addition is supported by previously trusted premises and a legal inference. The finite trace therefore yields a finite proof from $\Gamma$.
+\end{proof}
+
+\subsection{Single-player strategy collapse}
+
+In a two-player GBG, reachable winning theorem and forced win are distinct because of adversarial universal branches. In the lifted ATP GBG there is only the search controller.
+
+\begin{proposition}[Single-player winning-strategy collapse]\label{prop:single-player-collapse}
+Assume labeled moves are deterministic partial functions. Then the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+\item $W_T\cap\Reach(S_0)\neq\varnothing$;
+\item there exists a finite legal action sequence from $S_0$ into $W_T$;
+\item there exists a finite history-dependent single-player policy whose realized play from $S_0$ reaches $W_T$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+The equivalence of (i) and (ii) is the definition of finite reachability. Given a witnessing path for (ii), define a policy that chooses the next path action on each encountered prefix, yielding (iii). Conversely, the realized finite policy play in (iii) is a legal path witnessing (ii).
+\end{proof}
+
+Thus ordinary theorem-search success is existential reachability, not minimax strategy.
+
+\section{Finite complete epochs and eventual winning-state reachability}
+
+A production ATP may represent all of $F$ or only a declared effective fragment. Let $F_{\mathrm{rep}}$ denote the represented inference system: its legal inference instances are exactly those instances expressible by the ATP&#x27;s action language and accepted by its exact verification semantics. Let $D_{\mathrm{rep}}(C)$ be its one-step direct-consequence operator.
+
+Suppose the search uses frozen epochs
+\[
+C_{e+1}=D_{\mathrm{rep}}(C_e).
+\]
+
+\begin{theorem}[Represented provability--winning-region equivalence]\label{thm:prov-win}
+Assume:
+\begin{enumerate}[label=(\arabic*)]
+\item $C_0=\Gamma$, with $\Gamma$ finite;
+\item all represented inference rules are effective and finitary;
+\item every independently variable substitution, side condition, or auxiliary choice is explicit in the action description;
+\item every finite epoch state $C_e$ is finite, and the complete declared action set for that frozen $C_e$ is finite and effectively listable;
+\item verification is sound and complete for the represented applications;
+\item each epoch completes its declared action set and commits exactly the newly verified direct consequences of $F_{\mathrm{rep}}$; and
+\item epochs continue until the target is reached or the represented direct-consequence process stabilizes.
+\end{enumerate}
+Then for every target WFF $T$,
+\[
+T\in\Con_{F_{\mathrm{rep}}}(\Gamma)
+\quad\Longleftrightarrow\quad
+W_T\cap\Reach(S_0)\neq\varnothing.
+\]
+\end{theorem}
+
+\begin{proof}
+If $T\in\Con_{F_{\mathrm{rep}}}(\Gamma)$, choose a finite represented proof and assign each proof line its derivational depth. Let $r$ be the maximum depth. By induction on depth, every proof line of depth at most $j$ lies in $D_{\mathrm{rep}}^j(\Gamma)$, hence $T\in D_{\mathrm{rep}}^r(\Gamma)$. Complete epochs give $C_e=D_{\mathrm{rep}}^e(\Gamma)$. The finite-action hypothesis makes the first $r$ epochs a finite machine execution, so some reachable state contains $T$.
+
+Conversely, if a reachable state lies in $W_T$, every trusted addition on the witnessing finite history is verifier-approved as a represented legal inference. Tracing provenance backward therefore produces a finite $F_{\mathrm{rep}}$-proof of $T$ from $\Gamma$.
+\end{proof}
+
+\begin{corollary}[Full-system equivalence under representation completeness]\label{cor:full-system-equivalence}
+If, in addition, the ATP representation is inference-complete for $F$ over $\Gamma$, in the sense that
+\[
+\Con_{F_{\mathrm{rep}}}(\Gamma)=\Con_F(\Gamma),
+\]
+then
+\[
+T\in\Con_F(\Gamma)
+\quad\Longleftrightarrow\quad
+W_T\cap\Reach(S_0)\neq\varnothing.
+\]
+\end{corollary}
+
+This separation prevents an implementation claim from silently becoming a claim about an unrepresented rule system. Under the corollary&#x27;s explicit completeness hypothesis,
+\[
+\boxed{
+T\in\Con_F(\Gamma)
+\Longleftrightarrow
+\text{finite verified proof of $T$}
+\Longleftrightarrow
+\text{finite winning match-proof in the lifted GBG}.
+}
+\]
+
+\section{Rule arity creates a base inference dimension}
+
+Hilbert navigation enters only after the logical objects and legal inference mechanisms are fixed.
+
+Fix a finite trusted theorem set $C\subseteq y$. If a rule $r$ has arity $d\ge 1$, its ordered premise candidates lie in
+\[
+C^d.
+\]
+Thus, for a rule represented as an actual partial function of its explicit premises, the base navigation dimension belongs to the \emph{inference application}, not to the individual WFF. A production rule schema may require additional independent coordinates for substitutions, unification choices, side-condition witnesses, or other auxiliary data; in that case the full action-space dimension can exceed the rule arity.
+
+For heterogeneous rules $r_1,\ldots,r_m$ of arities $d_1,\ldots,d_m$, the natural candidate premise-action space is the tagged coproduct
+\[
+\mathcal A_F(C)
+=
+\bigsqcup_{i=1}^m
+\bigl(\{r_i\}\times C^{d_i}\bigr),
+\]
+not the artificial product $C^{d_1+\cdots+d_m}$. Each rule component should be navigated in its own intrinsic arity dimension \cite{TennesonHilbertPartI,TennesonHilbertSearch}.
+
+\subsection{Exact rank realization}
+
+Freeze
+\[
+C=(\theta_0,\ldots,\theta_{M-1}),
+\qquad M\ge 1.
+\]
+Let $\rho_C(\theta_j)=j$, put
+\[
+p=\lceil\log_2 M\rceil,
+\qquad N=2^p
+\]
+with $N=1$ when $M=1$, and use a bijective finite Hilbert traversal
+\[
+H_{d,p}:\{0,\ldots,N^d-1\}\overset{\sim}{\longrightarrow}\{0,\ldots,N-1\}^d.
+\]
+
+\begin{theorem}[Exact finite Hilbert coverage]\label{thm:exact-hilbert}
+A complete pass through $H_{d,p}$ visits every valid ordered premise tuple in $C^d$ exactly once after padding cells with some coordinate $\ge M$ are discarded.
+\end{theorem}
+
+\begin{proof}
+$H_{d,p}$ is a bijection on the padded grid. Each valid grid point $(j_1,\ldots,j_d)$ with all $j_i&lt;M$ corresponds to exactly one tuple $(\theta_{j_1},\ldots,\theta_{j_d})$, and every such tuple defines exactly one valid grid point.
+\end{proof}
+
+This theorem is a coverage theorem, not a performance theorem. The completed component still contains $M^d$ valid premise tuples.
+
+\subsection{Rational navigation and bucketed coverage}
+
+Now let
+\[
+\lambda:C\hookrightarrow \Q\cap[0,1)
+\]
+be an injective premise-slot code intended to express structural locality. At resolution $q\ge 0$, put $L=2^q$ and define
+\[
+J_q(u)=\lfloor Lu\rfloor.
+\]
+Distinct rational codes may quantize to the same cell. Define the finite bucket
+\[
+\mathcal B_j=\{\varphi\in C:J_q(\lambda(\varphi))=j\}.
+\]
+
+\begin{theorem}[Bucketed Hilbert coverage]\label{thm:bucket}
+Let $r$ have arity $d\ge 1$. Traverse all cells of
+\[
+H_{d,q}:\{0,\ldots,L^d-1\}\overset{\sim}{\longrightarrow}\{0,\ldots,L-1\}^d
+\]
+in Hilbert order. At a visited hypercell $(j_1,\ldots,j_d)$, enumerate
+\[
+\mathcal B_{j_1}\times\cdots\times\mathcal B_{j_d}
+\]
+without duplication. Then the completed pass enumerates every tuple in $C^d$ exactly once.
+\end{theorem}
+
+\begin{proof}
+Every premise $\varphi_i$ has a unique quantized index $j_i=J_q(\lambda(\varphi_i))$, so every tuple belongs to exactly one bucket product. Hilbert bijectivity visits that hypercell exactly once, and local duplicate-free enumeration visits the tuple exactly once.
+\end{proof}
+
+The two realizations separate exact identity from geometric locality. Rank geometry gives exact one-cell/one-tuple placement; rational geometry may coarsen several formulas into one finite cell while still retaining exhaustive coverage through buckets.
+
+\begin{remark}[Implemented versus proposed geometric realization]\label{rem:implemented-proposed}
+Version 0.5.3 of \emph{Hilbert Space Filling Curve-Style Theorem Search} makes an important implementation distinction \cite{TennesonHilbertSearch}. The current prototype uses the \emph{exact-rank realization} to determine Hilbert adjacency and visitation order: formulas are sorted by WFF line number in a frozen theorem list, and the Hilbert traversal runs on their finite rank tuples. Rational $n$-cube coordinates are presently stored as global address/provenance information; they do not yet determine the prototype&#x27;s Hilbert metric.
+
+Accordingly, Theorem~\ref{thm:bucket} is a general coverage theorem for a \emph{proposed experimental realization}: if rational or structural premise-slot coordinates are used to define finite Hilbert cells and the bucket products are completely enumerated, exhaustive coverage is retained. The theorem does not assert that the current prototype already schedules by those rational cells.
+\end{remark}
+
+\section{Breadth-first proof horizon and Hilbert micro-navigation}
+
+The canonical breadth-first target-search machine studied in \cite{TennesonDepths48} separates proof depth from within-layer enumeration. This gives a controlled setting in which Hilbert order can be introduced without changing proof depth.
+
+Let $Y\subseteq y$ be a finite effectively coded search universe, $\Gamma\subseteq Y$, and $T\in Y$. Let $F_{\mathrm{rep}}\!\upharpoonright\!Y$ denote the represented system restricted to proofs whose WFFs lie in $Y$, and define
+\[
+D_Y(C)=D_{\mathrm{rep}}(C)\cap Y.
+\]
+Completed breadth layers are
+\[
+C_0=\Gamma,
+\qquad
+C_{m+1}=D_Y(C_m).
+\]
+Freeze $C_m$ while computing $C_{m+1}$. For a rule $r_i$ of arity $d_i$, rank the frozen theorem set canonically and use the inverse Hilbert tick of the corresponding rank tuple as the within-rule key.
+
+\begin{definition}[Hilbert breadth-first target search]
+Hilbert breadth-first target search (HBF) is ordinary breadth-first target search for $F_{\mathrm{rep}}\!\upharpoonright\!Y$ at the macro level, with candidate premise tuples inside each frozen rule component ordered by their exact-rank Hilbert keys. Newly verified conclusions are committed simultaneously at the end of the layer.
+\end{definition}
+
+\begin{theorem}[Layer invariance and restricted proof-horizon preservation]\label{thm:hbf-layer}
+Assume $Y$ is finite and effectively coded, the represented restricted direct-consequence relation is decidable, candidate enumeration is complete for $F_{\mathrm{rep}}\!\upharpoonright\!Y$, and verification is deterministic and exact. Then HBF and ordinary canonical breadth-first target search for the same restricted system have the same completed trusted set after every breadth layer. Consequently, if
+\[
+\Gamma\vdash_{F_{\mathrm{rep}}\upharpoonright Y}T,
+\]
+the first completed HBF macro-stage containing $T$ equals the restricted proof horizon
+\[
+h_T^Y(\Gamma)
+:=
+\|T\|_{F_{\mathrm{rep}}\upharpoonright Y}(\Gamma).
+\]
+\end{theorem}
+
+\begin{proof}
+Induct on $m$. At stage $0$ both begin with $\Gamma$. If their completed stage-$m$ sets agree, both freeze the same finite $C_m$ and expose the same finite candidate actions needed to compute $D_Y(C_m)$. Their schedulers differ only by a permutation. Deterministic exact verification therefore yields the same accepted conclusion set, so simultaneous commitment gives the same $C_{m+1}$. Ordinary breadth-first search in the restricted system reaches a target for the first time at its minimum represented proof depth, yielding the stated horizon equality.
+\end{proof}
+
+\begin{corollary}[When the restricted horizon equals the full horizon]\label{cor:y-full-horizon}
+Suppose $F_{\mathrm{rep}}$ is inference-complete for $F$ on a shortest $F$-proof of $T$ from $\Gamma$, and at least one shortest $F$-proof of $T$ has every WFF in $Y$. Then
+\[
+h_T^Y(\Gamma)=\|T\|_F(\Gamma).
+\]
+Hence HBF also preserves the ordinary full-system proof horizon under these additional hypotheses.
+\end{corollary}
+
+\begin{proof}
+Every restricted represented proof is an $F$-proof, so the restricted horizon cannot be smaller than $\|T\|_F(\Gamma)$. By hypothesis, a shortest full-system proof is represented and lies entirely in $Y$, so it is also a restricted represented proof. The restricted horizon therefore cannot be larger either.
+\end{proof}
+
+\subsection{A two-coordinate search horizon}
+
+Hilbert navigation is therefore permitted to change only a finer-grained quantity inside the invariant target layer.
+
+\begin{definition}[Macro--micro search coordinate]\label{def:macro-micro}
+For a within-layer scheduler $\sigma$, let $\kappa_\sigma(\Gamma,T)$ be the index of the first candidate attempt in the target layer that produces $T$, with $\infty$ if the completed target layer does not produce it. Define
+\[
+\mathcal H_\sigma^Y(\Gamma,T)
+=
+\bigl(h_T^Y(\Gamma),\kappa_\sigma(\Gamma,T)\bigr).
+\]
+\end{definition}
+
+\begin{proposition}[Logical invariance, navigational variability]\label{prop:macro-micro}
+Under the hypotheses of Theorem~\ref{thm:hbf-layer}, matched complete breadth-first schedulers have the same first coordinate $h_T^Y(\Gamma)$ whenever $T$ is provable in the represented restricted system. Their second coordinates $\kappa_\sigma(\Gamma,T)$ may differ.
+\end{proposition}
+
+\begin{proof}
+The first statement is Theorem~\ref{thm:hbf-layer}. The second follows because different within-layer permutations can place a target-producing candidate at different offsets.
+\end{proof}
+
+Thus the natural empirical question is not whether Hilbert order shortens the logical proof horizon under this intervention. It is whether it improves the \emph{micro-navigation coordinate} under realistic budgets.
+
+\section{Proof horizon as a GBG winning-region horizon}
+
+The previous two viewpoints can now be identified at the macro level.
+
+\begin{definition}[Macro GBG]\label{def:macro-gbg}
+The macro GBG has as positions the completed breadth states
+\[
+\widehat S_m=(C_m,\text{completed provenance at depth }m),
+\]
+and one macro move sends $\widehat S_m$ to $\widehat S_{m+1}$ by completing the entire declared next-layer consequence computation.
+\end{definition}
+
+Let
+\[
+\widehat W_T=\{\widehat S_m:T\in C_m\}.
+\]
+
+\begin{theorem}[Proof horizon equals winning-region horizon]\label{thm:horizon-win}
+Under the hypotheses of Theorem~\ref{thm:hbf-layer}, if $T$ is provable in $F_{\mathrm{rep}}\!\upharpoonright\!Y$, then
+\[
+\boxed{
+h_T^Y(\Gamma)
+=
+\min\{m:\widehat S_m\in\widehat W_T\}.
+}
+\]
+The same equality holds for HBF because HBF preserves every completed breadth layer. Under the hypotheses of Corollary~\ref{cor:y-full-horizon}, this common value is also $\|T\|_F(\Gamma)$.
+\end{theorem}
+
+\begin{proof}
+By breadth-first construction, $C_m$ contains exactly the restricted represented conclusions obtainable within depth at most $m$. Therefore the least $m$ with $T\in C_m$ is $h_T^Y(\Gamma)$. Theorem~\ref{thm:hbf-layer} gives the same completed $C_m$ for HBF. Corollary~\ref{cor:y-full-horizon} supplies the optional identification with the unrestricted $F$-horizon.
+\end{proof}
+
+This is a useful unification of language:
+\[
+\boxed{\text{proof horizon}=\text{single-player winning-region horizon at macro scale}.}
+\]
+The Hilbert scheduler can change how quickly the machine reaches the target \emph{inside} the winning macro-layer without changing which macro-layer first wins.
+
+\section{Action fibers over complete search states}
+
+We now formalize the ``board attached to every board position&#x27;&#x27; picture while separating a \emph{machine-level attempt} from a \emph{successful object-level inference}.
+
+\begin{definition}[Declared action fiber]\label{def:action-fiber}
+For a complete operational search state $S$, let $\mathcal A(S)$ be the finite set of declared candidate actions currently available for scheduling. In an explicit-premise frozen state with trusted theorem set $C(S)$ and rule library $r_1,\ldots,r_m$, a canonical base form is
+\[
+\mathcal A(S)
+=
+\bigsqcup_{i=1}^m
+\bigl(\{r_i\}\times C(S)^{d_i}\bigr),
+\qquad d_i=\ar(r_i),
+\]
+possibly augmented by explicit substitution, unification, side-condition, or other independently variable coordinates.
+\end{definition}
+
+The adjective ``fiber&#x27;&#x27; is set-theoretic and architectural here; no topological fiber-bundle claim is intended.
+
+\begin{definition}[Attempt transition and successful-inference subset]\label{def:try}
+For $a\in\mathcal A(S)$, let
+\[
+\Try(S,a)
+\]
+be the successor operational state when the machine is permitted to test candidate $a$ at $S$; $\Try$ is left undefined when that machine-level attempt is not available. Define the attemptable subfiber
+\[
+\mathcal T(S)=\{a\in\mathcal A(S):\Try(S,a)\text{ is defined}\}.
+\]
+Within it, let $\mathcal L_F(S)\subseteq\mathcal T(S)$ denote those attempts whose tested object-level rule instance is legal and verifier-approved. An element of $\mathcal T(S)\setminus\mathcal L_F(S)$ may still be a genuine machine move: it can consume budget, advance a cursor, or memoize a failed test without adding a theorem.
+\end{definition}
+
+\begin{theorem}[Action-fiber decomposition]\label{thm:action-fiber}
+Suppose every elementary ATP transition from a complete state $S$ is determined by selecting a finite label $a$ from $\mathcal A(S)$ and performing the corresponding machine-level attempt when available. Then the lifted ATP transition relation factors as
+\[
+S
+\longmapsto
+\mathcal A(S)
+\xrightarrow{\text{select }a}
+a
+\xrightarrow{\Try}
+S&#x27;,
+\]
+where $\Try(S,a)$ is a partial function. Conversely, every defined pair $\Try(S,a)=S&#x27;$ gives one legal lifted GBG move. Whether that move also realizes a successful object-level inference is recorded separately by membership in $\mathcal L_F(S)$.
+\end{theorem}
+
+\begin{proof}
+By hypothesis, every elementary machine transition arises from some declared label $a\in\mathcal A(S)$. Completeness of $S$ and the action label makes the resulting operational state deterministic whenever the attempt is available, so define $\Try(S,a)=S&#x27;$ for that unique successor and leave it undefined otherwise. Conversely, any defined value of this partial attempt map is by construction an elementary legal ATP transition. The verifier outcome distinguishes successful formal inference from mere machine execution.
+\end{proof}
+
+This decomposition isolates the role of Hilbert geometry. The GBG state graph records \emph{where the machine is}; the action fiber records \emph{what it may examine next}; a Hilbert traversal gives one possible order on that fiber; and formal legality plus verification determine which tested candidates contribute trusted consequences.
+
+\subsection{Candidate volume and machine branching}
+
+In the explicit-premise case,
+\[
+|\mathcal A(S)|=
+\sum_{i=1}^m |C(S)|^{d_i}
+\]
+before any additional auxiliary coordinates are counted.
+
+\begin{proposition}[Action-volume branching bound]\label{prop:branch-bound}
+For the lifted machine-level GBG,
+\[
+b_{\mathrm{move}}(S)=|\mathcal T(S)|
+\le
+|\mathcal A(S)|.
+\]
+In the explicit-premise base case,
+\[
+b_{\mathrm{move}}(S)
+\le
+\sum_{i=1}^m |C(S)|^{d_i}.
+\]
+If every declared candidate in the frozen fiber is machine-attemptable, then $\mathcal T(S)=\mathcal A(S)$ and the first inequality is equality.
+\end{proposition}
+
+\begin{proof}
+Every legal lifted machine move is represented by one attemptable declared action, so $\mathcal T(S)\subseteq\mathcal A(S)$. The explicit-premise cardinality is the sum of the sizes of the tagged rule components.
+\end{proof}
+
+This connects the $d$-dimensional candidate geometry to the ordinary GBG branching quantities studied in \cite{TennesonGBG20}, while avoiding the mistake of counting only theorem-producing attempts as machine transitions.
+
+\begin{proposition}[Scheduler nonattachment to local legality]\label{prop:branch-invariance}
+Fix a complete state $S$, its declared action fiber $\mathcal A(S)$, the machine attempt semantics, the formal rules, and the verifier. Replacing one total ordering of $\mathcal A(S)$ by another does not change $\mathcal T(S)$, $\mathcal L_F(S)$, or $b_{\mathrm{move}}(S)$.
+\end{proposition}
+
+\begin{proof}
+Attemptability, object-level legality, verification outcome, and successor state depend on $S$, the action label, and the fixed machine/formal semantics, not on the label&#x27;s position in an enumeration.
+\end{proof}
+
+Hence Hilbert scheduling changes navigation through the local board but not the underlying local machine-move structure or formal legality.
+
+\subsection{Exact counting of lifted ATP histories}
+
+The exact match-count recursion from GBG 2.0 transfers to the machine-level lifted ATP.
+
+\begin{definition}[Execution-history count]
+Let $M_n^{\mathrm{ATP}}(S)$ be the number of move-labeled executable ATP histories of exactly $n$ elementary machine steps beginning at complete state $S$. Put $M_0^{\mathrm{ATP}}(S)=1$.
+\end{definition}
+
+\begin{theorem}[Exact ATP history recursion]\label{thm:atp-history-recursion}
+For every $n\ge 0$,
+\[
+M_{n+1}^{\mathrm{ATP}}(S)
+=
+\sum_{a\in\mathcal T(S)}
+M_n^{\mathrm{ATP}}(\Try(S,a)).
+\]
+Consequently, if every state reachable during the first $n$ steps has machine-move branching at most $B$, then
+\[
+M_n^{\mathrm{ATP}}(S_0)\le B^n.
+\]
+\end{theorem}
+
+\begin{proof}
+Every $(n+1)$-step executable history has a unique first attempt label $a\in\mathcal T(S)$. After that move, the remaining $n$ steps form an executable history beginning at $\Try(S,a)$. Partitioning histories by their first action gives the exact recursion. The uniform bound follows by induction, exactly as for GBG match counting.
+\end{proof}
+
+This is a counting statement about machine search histories, not about successful object-level inferences and not about distinct reachable states. Transpositions can make the history tree much larger than the quotient state graph developed next.
+
+\section{Transpositions, complete states, and history quotienting}
+
+GBG 2.0 emphasizes the certified-state principle: if two legal histories end at the same rule-complete state, their immediate legal continuations are the same \cite{TennesonGBG20}. The lifted ATP version gives a useful theorem for search engineering.
+
+\begin{theorem}[ATP transposition theorem]\label{thm:transposition}
+Let $S$ be a complete operational ATP state in the sense of Definition~\ref{def:complete-state}. If two finite executable histories $\pi$ and $\pi&#x27;$ have the same terminal operational state $S$ (even if their external audit logs or provenance histories differ), then they have exactly the same set of legal immediate continuation labels and, for each such label, the same successor operational state.
+\end{theorem}
+
+\begin{proof}
+Future-completeness means that all information relevant to machine attemptability, formal legality, verification behavior, and deterministic operational execution is already contained in $S$. Therefore the legal continuation domain and successor function are functions of $S$, not of the particular external history used to reach it.
+\end{proof}
+
+Define an equivalence relation on finite search histories by
+\[
+\pi\sim\pi&#x27;
+\quad\Longleftrightarrow\quad
+\lastop(\pi)=\lastop(\pi&#x27;).
+\]
+
+\begin{theorem}[History-quotient search theorem]\label{thm:history-quotient}
+Under the hypotheses of Theorem~\ref{thm:transposition}, future finite reachability factors through the quotient of executable histories by $\sim$. In particular, two equivalent histories have the same set of reachable future complete states. Therefore duplicate histories ending in the same complete state may be merged without changing target reachability.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:transposition}, equivalent histories have the same one-step continuation relation. Induction on continuation length gives equality of their states reachable in exactly $n$ further steps for every finite $n$. Taking the union over $n$ gives the same future reachability set.
+\end{proof}
+
+This theorem gives a clean formal justification for transposition tables, duplicate-state elimination, and memoization when the stored state is genuinely complete. It also clarifies a practical warning: if hidden history can affect future legality, then the representation was not rule-complete and the quotient is unsound.
+
+\section{Expanding inference boards}
+
+Suppose theorem accumulation is monotone:
+\[
+C_e\subseteq C_{e+1}.
+\]
+For explicit-premise rules define the epoch premise-action board
+\[
+B_e=
+\bigsqcup_{i=1}^m
+\bigl(\{r_i\}\times C_e^{d_i}\bigr).
+\]
+
+\begin{theorem}[Expanding premise-board theorem]\label{thm:expanding-board}
+Assume a finite rule library and finite $C_e$ at every finite epoch. Then each $B_e$ is finite, $B_e$ embeds canonically into $B_{e+1}$, and if
+\[
+C_\infty=\bigcup_{e&lt;\omega}C_e,
+\]
+then every finite premise tuple over $C_\infty$ appears on some finite $B_e$.
+\end{theorem}
+
+\begin{proof}
+Each rule component has size $|C_e|^{d_i}$, so $B_e$ is finite. Inclusion $C_e\subseteq C_{e+1}$ induces componentwise inclusion. Any finite tuple over $C_\infty$ uses finitely many formulas, each of which appears at some finite epoch; all therefore occur together by the maximum of those epochs.
+\end{proof}
+
+Thus a potentially unbounded proof-search universe can be realized operationally as a directed union
+\[
+B_0\subseteq B_1\subseteq B_2\subseteq\cdots
+\]
+of finite playable/navigation boards. No implementation need instantiate the infinite union at once.
+
+\section{Synchronized two-dimensional atlases for \texorpdfstring{$d$}{d}-dimensional action components}
+
+High-dimensional inference geometry need not be displayed literally. The finite Hilbert tick itself supplies a common coordinate between a two-dimensional overview and a $d$-dimensional action component.
+
+Fix resolution $q\ge 0$, put $N=2^q$, and let
+\[
+H_{d,q}:\{0,\ldots,N^d-1\}\overset{\sim}{\longrightarrow}\{0,\ldots,N-1\}^d
+\]
+be a chosen finite Hilbert traversal. If $qd$ is even, set
+\[
+s=\frac{qd}{2}.
+\]
+Then a two-dimensional Hilbert grid of side $2^s$ has the same number of cells as the $d$-dimensional grid.
+
+\begin{theorem}[Synchronized $2$D-to-$d$D Hilbert atlas]\label{thm:atlas}
+Assume $qd$ is even. Let
+\[
+H_{2,s}:\{0,\ldots,2^{2s}-1\}\overset{\sim}{\longrightarrow}\{0,\ldots,2^s-1\}^2
+\]
+and define
+\[
+A_{d,q}=H_{d,q}\circ H_{2,s}^{-1}.
+\]
+Then
+\[
+A_{d,q}:\{0,\ldots,2^s-1\}^2
+\overset{\sim}{\longrightarrow}
+\{0,\ldots,2^q-1\}^d
+\]
+is a bijection. Moreover, if $u_t=H_{2,s}(t)$ is the $t$th cell in the $2$D Hilbert traversal, then
+\[
+A_{d,q}(u_t)=H_{d,q}(t).
+\]
+Thus the two displays have exactly synchronized Hilbert path order.
+\end{theorem}
+
+\begin{proof}
+Both Hilbert maps are bijections on sets of cardinality $2^{qd}$. Their composition is therefore a bijection, and
+\[
+A_{d,q}(H_{2,s}(t))
+=
+H_{d,q}(H_{2,s}^{-1}(H_{2,s}(t)))
+=
+H_{d,q}(t).
+\]
+\end{proof}
+
+If the finite Hilbert conventions are face-adjacent, consecutive $2$D path cells map to consecutive face-adjacent $d$-dimensional hypercells. Arbitrary Euclidean neighborhood structure in the $2$D picture is not asserted to coincide with intrinsic $d$-dimensional neighborhood structure; what is exact is tick identity and path succession.
+
+\subsection{Componentwise atlas for an action fiber}
+
+Because the full action fiber is a tagged coproduct across rule arities, a faithful interface should normally use one synchronized panel per rule component, or a visibly tagged disjoint union of panels. A unary rule remains one-dimensional intrinsically even if displayed in a two-dimensional interface; a binary rule has a two-dimensional premise board; higher-arity rules obtain their own $d$-dimensional Hilbert components.
+
+\section{Dual certificates: theorem proof and search proof}
+
+The synthesis reveals two distinct kinds of certificate.
+
+\begin{proposition}[Dual-certificate principle]\label{prop:dual-cert}
+Suppose a successful lifted ATP run reaches $S\in W_T$ and stores complete provenance for admitted formulas. Then the run determines:
+\begin{enumerate}[label=(\roman*)]
+\item an object-level proof certificate establishing $T\in\Con_{F_{\mathrm{rep}}}(\Gamma)$, and therefore $T\in\Con_F(\Gamma)$ whenever the represented inference instances are sound instances of $F$; and
+\item a search-level match-proof
+\[
+S_0\to S_1\to\cdots\to S
+\]
+certifying the legal machine execution that reached a target-winning state.
+\end{enumerate}
+These certificates have different verification questions and should not be conflated.
+\end{proposition}
+
+\begin{proof}
+The object-level certificate is obtained from the stored represented-inference provenance of $T$. Because represented verifier-approved inferences are assumed sound for $F$, that certificate is also an $F$-proof certificate; representation completeness is needed only for the converse claim that every $F$-theorem is eventually reachable. The search-level certificate is the finite sequence of lifted partial-unary machine transitions. Soundness of the former checks formal deduction; validity of the latter checks reproducible machine execution.
+\end{proof}
+
+The distinction is useful experimentally. A scheduler comparison may produce the same final theorem certificate through different search-level match-proofs.
+
+\section{What Hilbert navigation can and cannot change}
+
+The logical and geometric layers can now be separated sharply.
+
+\begin{theorem}[Navigation nonattachment]\label{thm:nonattachment}
+Fix a frozen complete state $S$, its finite declared action fiber $\mathcal A(S)$, the formal rules, and the verifier. Any two schedulers that attempt exactly the same actions and complete the entire fiber produce the same set of verifier-approved conclusions. Therefore a change of scheduler cannot change theoremhood or the completed direct-consequence set.
+\end{theorem}
+
+\begin{proof}
+The scheduler only permutes the same finite action set. Legality and conclusion are determined by the action and the formal system; verification is fixed. Hence the accepted conclusion set is independent of order after complete enumeration.
+\end{proof}
+
+What can change is the finite prefix encountered before an interruption. For a scheduler $\sigma$ and budget $B$, define
+\[
+P_B(\sigma)=\{\sigma(1),\ldots,\sigma(B)\}.
+\]
+Hilbert navigation is useful only if its geometric ordering makes these prefixes better under a declared objective: earlier target discovery, more useful lemma discovery, more uniform spatial coverage, better cache behavior, or lower variance under uncertain stopping times.
+
+The toy sanity check in the Hilbert-filled inference-space manuscript illustrates the correct pattern rather than proving a performance advantage: matched lexicographic, Hilbert, and random schedules preserved proof depth and completed-layer expansion totals while moving the target to different within-layer microsteps \cite{TennesonHilbertFilled03}. This is exactly what Theorem~\ref{thm:hbf-layer} and Proposition~\ref{prop:macro-micro} permit.
+
+\section{The resulting architecture}
+
+The combined framework can be summarized in five layers.
+
+\begin{center}
+\begin{tabular}{&gt;{\raggedright\arraybackslash}p{0.22\textwidth}p{0.68\textwidth}}
+\toprule
+\textbf{Layer} &amp; \textbf{Role}\\
+\midrule
+Syntax / identity &amp; Effective WFF coding and enumeration identify formal objects exactly.\\
+Formal legality &amp; The partial inference rules of $F$ determine which object-level applications are licensed.\\
+GBG execution &amp; Complete operational ATP states are positions; elementary machine attempts or control actions are partial unary moves.\\
+Action geometry &amp; Rule arity creates finite candidate components; rank or rational premise-slot coordinates place actions in grids or buckets.\\
+Navigation &amp; Hilbert, lexicographic, random, learned, or other schedulers decide the order in which candidates are examined.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The architecture may be pictured schematically as follows.
+
+\begin{center}
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+node distance=12mm and 20mm,
+box/.style={draw,rounded corners,align=center,inner sep=6pt,text width=29mm},
+arr/.style={-{Latex[length=2.2mm]},thick},
+lab/.style={font=\small,fill=white,inner sep=1.5pt}
+]
+\node[box] (S) {complete operational\\GBG/ATP state\\$S$};
+\node[box,right=of S,text width=38mm] (A) {declared action fiber\\$\mathcal A(S)=\bigsqcup_r \{r\}\times C(S)^{\ar(r)}$};
+\node[box,right=of A] (a) {scheduled candidate\\$a$};
+\node[box,right=of a] (Sp) {successor operational\\state $S&#x27;$};
+\draw[arr] (S)-- node[lab,above]{expose} (A);
+\draw[arr] (A)-- node[lab,above]{navigate} (a);
+\draw[arr] (a)-- node[lab,above]{$\Try$} (Sp);
+\end{tikzpicture}%
+}
+\end{center}
+
+This diagram captures the division of labor:
+\[
+\boxed{
+\text{the GBG tells us where the machine is;}
+\quad
+\text{the Hilbert layer tells it where to look next.}
+}
+\]
+
+\section{Consequences and research program}
+
+The synthesis supports several conclusions.
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Theoremhood and reachability share one formal language.} GBGs show that finite legal reachability can literally be theoremhood in an $xyz$ system, not merely an analogy.
+
+\item \textbf{ATP execution can inherit the same semantics.} Search-state lifting turns a machine run into a single-player GBG match-proof.
+
+\item \textbf{Represented provability becomes target-winning reachability.} Under finite complete epochs and exact verification,
+\[
+T\in\Con_{F_{\mathrm{rep}}}(\Gamma)
+\Longleftrightarrow
+W_T\cap\Reach(S_0)\neq\varnothing.
+\]
+If the representation is inference-complete for $F$ over $\Gamma$, this is also equivalent to $T\in\Con_F(\Gamma)$.
+
+\item \textbf{Proof depth and navigation depth separate.} In HBF, the represented $Y$-restricted proof horizon is preserved while the within-layer offset $\kappa_\sigma$ remains scheduler dependent. It equals the unrestricted $F$-horizon when the shortest-proof representation hypotheses of Corollary~\ref{cor:y-full-horizon} hold.
+
+\item \textbf{High-dimensional inference spaces can be traversed operationally.} Exact-rank Hilbert grids and rational bucketed grids both admit complete finite coverage. The current Version 0.5.3 prototype implements rank-based Hilbert scheduling; rational/structural bucket geometry is a mathematically covered experimental extension, not yet the implemented metric.
+
+\item \textbf{Future-complete operational states support transposition quotienting.} Duplicate histories ending at the same operational state have identical future reachability and may be merged even when their external audit logs differ.
+
+\item \textbf{Every search position carries a local action geometry.} This gives a precise ``board attached to every board position&#x27;&#x27; architecture, with Hilbert navigation as one optional local scheduler.
+
+\item \textbf{A two-dimensional overview can be exact with respect to Hilbert tick order.} When cell counts match, a $2$D Hilbert board and a $d$-dimensional Hilbert grid can be synchronized by a bijection preserving traversal succession.
+\end{enumerate}
+
+The principal open empirical question is correspondingly narrow and testable:
+\begin{center}
+\fbox{\parbox{0.88\textwidth}{\centering\textbf{When does Hilbert ordering improve finite-budget discovery over matched alternative schedulers?}}}
+\end{center}
+A convincing experiment should hold fixed the formal system, initial trusted set, target, verifier, canonical formula ranks or rational labels, rule-tag order, breadth layers, and candidate set. Only the within-component scheduler should change. Primary measurements should include proof depth, within-layer target offset, cumulative expansions to target, full completed-layer expansions, wall-clock time, memory, duplicate or memoized actions, and the final proof certificate.
+
+The action-fiber and history-quotient theorems suggest two additional implementation directions. First, navigation may be made state-local: each complete state exposes a fresh finite action fiber whose geometry can be scheduled independently. Second, duplicate complete states can be merged before future navigation, converting a potentially enormous history tree into a smaller reachable-state graph without altering target reachability when state completeness is satisfied.
+
+\section{Conclusion}
+
+The common thread is the $xyz$ formal system. Generalized board games make the thread visible: a well-formed state is a formal object, a legal move is a partial inference, and a reachable state is a theorem. Automated theorem proving enters the same framework after lifting from object-level formulas to future-complete operational search states. At that lifted level, a legal GBG move is a deterministic machine transition---possibly only an attempted inference test---while successful verifier-approved object-level inferences remain governed by the underlying formal system. A finite ATP execution then becomes a GBG match-proof, and successful target discovery becomes finite reachability of a winning region.
+
+Hilbert geometry occupies a deliberately narrower but operationally meaningful role. A $d$-ary rule creates a $d$-dimensional candidate premise space. Exact ranks or rational premise-slot labels turn that space into finite cells or finite buckets; a Hilbert traversal supplies a complete reproducible route through them. In breadth-first target search, Hilbert order can operate below the represented restricted proof-horizon scale, preserving that logical depth while changing the target&#x27;s within-layer discovery position; under the stated shortest-proof coverage hypotheses, the restricted horizon coincides with the full-system horizon. At the state level, each GBG position carries a finite declared action fiber that can be Hilbert-addressed and displayed through a synchronized two-dimensional atlas. Selecting a candidate produces a machine-level attempt transition; only verifier-approved legal object-level instances contribute trusted consequences.
+
+The resulting statement is stronger than a geometric metaphor but weaker than an unsupported complexity claim:
+
+\begin{quote}
+\textbf{Hilbert space-filling geometry can be used as an executable navigation layer inside automated theorem proving. The $xyz$ formal system supplies the objects and legal inferences; the generalized-board-game lifting supplies state-and-move semantics; the Hilbert-addressed action space supplies a route through multidimensional candidate attempts; and formal legality plus verification determine which tested candidates become trusted theorems.}
+\end{quote}
+
+What remains open is the performance question. The theory identifies exactly where a Hilbert advantage could reside---in finite prefixes, local discovery order, and interruption-sensitive behavior---without attributing to geometry powers that belong to formal deduction itself.
+
+\begin{thebibliography}{99}
+
+\bibitem{TennesonElements}
+Brian Tenneson.
+\newblock \emph{Elements of Proof Theory}.
+\newblock Version 2.36, January 30, 2023.
+
+\bibitem{TennesonGBG20}
+Brian Tenneson.
+\newblock \emph{Generalized Board Games 2.0: Proofs, Match Trees, and Winning Regions}.
+\newblock Manuscript, September 21, 2026.
+
+\bibitem{TennesonGBGPublic}
+Brian Tenneson.
+\newblock \emph{Generalized Board Games: From Tic-Tac-Toe to Chess as xyz Formal Systems}.
+\newblock September 22, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001/}
+
+\bibitem{TennesonHilbertFilled03}
+Brian Tenneson.
+\newblock \emph{Hilbert-Filled Inference Spaces for Automated Theorem Proving: An Executable Navigation Layer, Its Generalized-Board-Game Interpretation, and Target-Reachability Proofs}.
+\newblock Draft 0.3, September 23, 2026.
+
+\bibitem{TennesonHilbertSearch}
+Brian Tenneson.
+\newblock \emph{Hilbert Space Filling Curve-Style Theorem Search: A Mathematical Specification, Constrained-Search Study, and Research Program}.
+\newblock Version 0.5.3, August 7, 2026.
+
+\bibitem{TennesonHilbertPartI}
+Brian Tenneson.
+\newblock \emph{Hilbert Geometry for Automated Theorem Proving, Part I: Zero-Dimensional WFFs, Rational Premise-Slot Codes, Coproduct Rule Spaces, and Nonattached Navigation}.
+\newblock Draft 0.1, September 6, 2026.
+
+\bibitem{TennesonUPH}
+Brian Tenneson.
+\newblock \emph{The Universal Proof-Horizon Operator: From MIU and the nth Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders}.
+\newblock Version 1.0, August 3, 2026.
+
+\bibitem{TennesonDepths48}
+Brian Tenneson.
+\newblock \emph{Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness}.
+\newblock Version 48 -- Reconciled Flagship Edition, September 19, 2026.
+\newblock \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}
+
+\bibitem{TennesonNQ}
+Brian Tenneson.
+\newblock \emph{A Closed-Form Surjection from $\N$ onto $\Q$ -- With Its Pseudo-Inverse}.
+\newblock Version 2.2, July 17, 2026.
+
+\bibitem{Hilbert1891}
+David Hilbert.
+\newblock Ueber die stetige Abbildung einer Linie auf ein Flaechenstueck.
+\newblock \emph{Mathematische Annalen}, 38:459--460, 1891.
+
+\bibitem{Butz1971}
+Arthur R. Butz.
+\newblock Alternative algorithm for Hilbert&#x27;s space-filling curve.
+\newblock \emph{IEEE Transactions on Computers}, C-20(4):424--426, 1971.
+
+\bibitem{Skilling2004}
+John Skilling.
+\newblock Programming the Hilbert curve.
+\newblock \emph{AIP Conference Proceedings}, 707:381--387, 2004.
+
+\bibitem{Haverkort2017}
+Herman Haverkort.
+\newblock Sixteen space-filling curves and traversals for $d$-dimensional cubes and simplices.
+\newblock arXiv:1711.04473, 2017.
+
+\end{thebibliography}
+
+\end{document}</pre></main></body></html>
