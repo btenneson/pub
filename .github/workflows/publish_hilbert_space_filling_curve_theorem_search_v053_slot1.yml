@@ -19,7 +19,7 @@ jobs:
       - name: Install LaTeX and PDF verification dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-pictures lmodern
+          sudo apt-get install -y texlive-xetex texlive-latex-extra texlive-fonts-recommended texlive-pictures fonts-dejavu-core lmodern
           python -m pip install pymupdf==1.26.4
 
       - name: Compile source
@@ -32,7 +32,7 @@ jobs:
           grep -q '\\end{document}' .build/hilbert_space_filling_curve_theorem_search_v053/source.tex
           cd .build/hilbert_space_filling_curve_theorem_search_v053
           for i in 1 2 3 4; do
-            pdflatex -interaction=nonstopmode -halt-on-error source.tex
+            xelatex -interaction=nonstopmode -halt-on-error source.tex
           done
           test -s source.pdf
 
