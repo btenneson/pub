@@ -62,8 +62,8 @@ jobs:
               'moving target',
           ]:
               assert phrase in full_norm, f'Missing expected Version 49 text: {phrase}'
-          quote = ('That is the stopping point of this edition. The next substantial theme should begin '
-                   'in a later version rather than make Version 49 a moving target.')
+          quote = ('The next substantial theme should begin in a later version rather than make '
+                   'Version 49 a moving target.')
           qnorm = re.sub(r'\\s+', ' ', quote).strip()
           quote_page = None
           for i in range(len(doc)):
@@ -106,8 +106,8 @@ jobs:
           pages = len(doc)
           assert pages == 191
           digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-          quote = ('That is the stopping point of this edition. The next substantial theme should begin '
-                   'in a later version rather than make Version 49 a moving target.')
+          quote = ('The next substantial theme should begin in a later version rather than make '
+                   'Version 49 a moving target.')
           quote_page = int((root / '.build/depths_of_induction_v49/quote_page.txt').read_text())
           card_text = (
               'Latest version of the primary text for the library. Version 49 preserves the Version 48 '
