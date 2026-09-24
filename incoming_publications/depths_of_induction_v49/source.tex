@@ -997,4 +997,445 @@ Now suppose the first channel certifies $c$ and deposits it conservatively. Then
 B_1=\{a,b,c\}
 \]
 and
+\[H_F^{\mathrm{inf}}(B_1,d)=1,
+\]
+while
 \[
+\Con_F(B_1)=\Con_F(B_0).
+\]
+The theorem set did not grow. The explicit route shortened.
+
+Finally, add a scheduler that controls whether the prover receives a local step. If the scheduler may starve forever, the logical horizon remains $2$ but no finite forced global horizon exists. If the scheduler must grant one prover step per round, settlement is forced within two prover-service rounds. One toy system therefore exhibits all three distinctions:
+\[
+\text{logical distance},\qquad
+\text{operational discovery},\qquad
+\text{scheduler-robust settlement}.
+\]
+
+\section{The five AMLD roles as settlement regions}
+
+Version 48 uses the roles
+\[
+P,R,D,I,C
+\]
+with typed object-level and metatheoretic certificate interfaces. In the global-state graph these naturally define settlement regions:
+\[
+W_P,\quad W_R,\quad W_D,\quad W_I,\quad W_C,
+\]
+where membership means that the corresponding verifier-certified record has been accepted.
+
+The overall first-settlement region is
+\[
+W_{\mathrm{set}}
+=
+W_P\cup W_R\cup W_D\cup W_I\cup W_C.
+\]
+The Version 48 identity
+\[
+\tau_{\mathcal A}^{\mathrm{set}}
+=
+\min\{\tau_{\mathcal A}^P,
+\tau_{\mathcal A}^R,
+\tau_{\mathcal A}^D,
+\tau_{\mathcal A}^I,
+\tau_{\mathcal A}^C\}
+\]
+is then the realized-run hitting-time counterpart of distance to a union of target regions.
+
+There is an important typing restriction: $D$ and $I$ live in a declared metatheory and cannot be treated as ordinary object-level target formulas merely because they share the same architecture. The GBG state graph may include both typed components, but legal moves must preserve the type boundary.
+
+\section{A proposed strategic settlement hierarchy for Depths}
+
+The combined framework supports the following hierarchy.
+
+\begin{definition}[Intrinsic settlement horizon]
+For a fixed target settlement region $W$ in a frozen logical or certificate transition graph,
+\[
+H_{\mathrm{intr}}(s,W)=\dist(s,W).
+\]
+\end{definition}
+
+\begin{definition}[Policy discovery horizon]
+For a deterministic seeded policy $\pi$ producing trajectory $s_0,s_1,\ldots$, define
+\[
+H_{\pi}^{\mathrm{hit}}(W)
+=
+\min\{n:s_n\in W\},
+\]
+with value $\infty$ if the trajectory never hits $W$. Randomized policies produce random hitting times or censored observations under finite budgets.
+\end{definition}
+
+\begin{definition}[Forced settlement horizon]
+For a controller/environment partition, $H_{\mathrm{force}}(s,W)$ is the least worst-case number of legal transitions in which the controller can guarantee reaching $W$, with value $\infty$ if no finite forcing strategy exists.
+\end{definition}
+
+These quantities answer different questions:
+\begin{center}
+\begin{tabular}{p{0.28\textwidth}p{0.62\textwidth}}
+\toprule
+$H_{\mathrm{intr}}$ & How close is a settlement certificate in the best legal case?\\
+$H_{\pi}^{\mathrm{hit}}$ & How long does this particular navigation policy actually take?\\
+$H_{\mathrm{force}}$ & Can settlement be guaranteed despite all admissible choices not controlled by the navigator?\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For deterministic single-agent proof construction with complete control and unit costs, $H_{\mathrm{force}}=H_{\mathrm{intr}}$. In multi-agent or scheduled systems the quantities can separate sharply.
+
+\section{What this adds to the induction story}
+
+The GBG synthesis does not introduce a new induction axiom. This is consistent with Version 48's ``no fifth foundational induction principle'' result for AMLDs.
+
+Instead, it clarifies where existing induction acts:
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Derivation induction} proves properties along finite logical paths.
+\item \textbf{Search-stage induction} proves invariants along operational ATP transitions.
+\item \textbf{AMLD global-state induction} proves properties along the accepted shared chronology.
+\item \textbf{Backward induction} computes finite forced-settlement regions in locally finite strategic games.
+\end{enumerate}
+
+The first three are forward inductions over generated histories or stage numbers. The fourth reasons backward from a terminal target region. They are methodologically complementary, not competing foundational principles.
+
+\section{Boundaries and nonclaims}
+
+The synthesis is strongest when its boundaries are explicit.
+
+\begin{enumerate}[label=\textbf{B\arabic*.},leftmargin=3em]
+\item \textbf{Reachability is not strategy.} A theorem may be reachable even when no controller can force it under the declared external-choice model.
+\item \textbf{Logical distance is not runtime.} A short proof can be hard for a heuristic to discover; extra BANK material can shorten logical distance while worsening indexing or branching.
+\item \textbf{A transposition key must be future-complete.} Equality of visible or partial state descriptions is insufficient when hidden metadata affects legal continuations.
+\item \textbf{BANK conservation is not primitive-proof shortening.} A certified lemma may be a macro whose expansion is long.
+\item \textbf{Forced-horizon monotonicity needs move-set hypotheses.} Adding information can change both controller and environment options at the implementation level.
+\item \textbf{Independence is not failed reachability search.} Version 48's metatheoretic certificate requirement remains intact.
+\item \textbf{No total-decider conclusion follows.} A finite forced horizon exists only on states satisfying the relevant forcing hypotheses; undecidability and incompleteness boundaries are untouched.
+\item \textbf{No literature-priority claim is made here.} Reachability games, dynamic programming, minimax recurrences, state-space search, and transposition techniques are broad established subjects. The contribution of this article is the internal synthesis with the specific Version 48 formal architecture.
+\end{enumerate}
+
+\section{Research consequences}
+
+The new strategic layer suggests a sequence of concrete problems.
+
+\begin{question}[Robust AMLD horizon]
+For a frozen AMLD architecture and an explicit admissible scheduler class, characterize the states from which first settlement can be forced and compute or bound the corresponding horizon.
+\end{question}
+
+\begin{question}[BANK-sensitive minimax]
+Under what practical restrictions on candidate generation and scheduling does conservative BANK growth provably preserve or decrease a robust settlement horizon, rather than merely the intrinsic logical proof horizon?
+\end{question}
+
+\begin{question}[Transposition quotient]
+What is the smallest future-complete state representation for a given ATP or AMLD? In particular, which queues, caches, provenance fields, random seeds, and BANK summaries can be quotiented away without changing future legal behavior?
+\end{question}
+
+\begin{question}[A* and admissible settlement heuristics]
+Can a computable lower bound on intrinsic settlement distance be used as an admissible A* heuristic on a finite or bounded operational subgraph while retaining verifier sovereignty and a complete fallback?
+\end{question}
+
+\begin{question}[Professor or oracle guidance]
+If an external guide supplies certified or calibrated distance-to-settlement estimates but does not control legality, when does that information reduce expected discovery cost, worst-case forced horizon, or both? These are different performance claims and should be tested separately.
+\end{question}
+
+\begin{question}[Geodesic defect versus strategic regret]
+Later settlement-geometry papers define geodesic and local-defect notions. A natural strategic extension is to compare a realized route not only with a shortest path but with the value of an optimal robust policy under the same admissible external-choice model.
+\end{question}
+
+
+
+\clearpage
+\part*{Version 49 Integration C: Scheduled GBG Clocked Simulation Degrees}
+\addcontentsline{toc}{part}{Version 49 Integration C: Scheduled GBG Clocked Simulation Degrees}
+
+\section{Scheduled GBG clocked simulation degrees}
+
+The phrase \emph{GBG simulation degree} is used here in a deliberately controlled sense.
+A full branching board game contains choices and potentially adversarial strategies, whereas the
+Version 48 relation \(\preclk\) compares deterministic stage evolutions.
+The direct bridge therefore begins with a scheduled or deterministic presentation.
+
+\begin{definition}[Scheduled deterministic GBG presentation]
+A scheduled deterministic GBG presentation is a rule-governed state system equipped with:
+a state space \(S_G\), a stage evolution map \(C_G:S_G\times\Npos\to S_G\), and a binary terminal or
+settlement observation \(H_G:S_G\times\Npos\to\{0,1\}\).
+All scheduling choices, tie breaks, random seeds, and other data needed to make future evolution
+deterministic are regarded as part of the complete state or the fixed schedule.
+\end{definition}
+
+\begin{definition}[Clocked simulation of scheduled GBGs]
+For scheduled deterministic presentations \(G\) and \(H\), write
+\[
+G\preceq_{\mathrm{GBG,clk}}H
+\]
+when there are an injective \(f:S_G\to S_H\) and a nondecreasing unbounded clock
+\(\rho:\Npos\to\Npos\), with \(\rho(1)=1\), satisfying
+\[
+f(C_G(p,m))=C_H(f(p),\rho(m)),
+\qquad
+H_G(p,m)=H_H(f(p),\rho(m))
+\]
+for every state \(p\) and stage \(m\).
+Mutual simulation defines a scheduled GBG clocked degree.
+\end{definition}
+
+\begin{proposition}
+Clocked simulation of scheduled deterministic GBG presentations is a preorder, and mutual simulation
+induces a partial order on the corresponding degrees.
+\end{proposition}
+
+\begin{proof}
+The identity state map and identity clock give reflexivity.
+For transitivity, compose the injective state maps and compose the two nondecreasing unbounded clocks.
+The two preservation equations then compose directly.
+Passing to mutual-simulation equivalence classes converts the preorder to a partial order.
+\end{proof}
+
+\begin{remark}[What is transferred and what is not]
+Whenever a GBG chronology is represented by deterministic evolution and settlement data of the same
+formal type used in the Version 48 clocked relation, the preorder and mutual-simulation quotient machinery
+apply to that presentation~\cite{TennesonDepths48}.  SIC-specific theorems transfer only after the SIC
+axioms and any additional hypotheses used by those theorems have been separately verified.
+This does \emph{not} by itself define the correct simulation notion for an unrestricted branching,
+two-player, or imperfect-information game.
+For those systems, one may additionally require branching, player ownership, legal-choice sets,
+winning regions, or strategies to be preserved.
+That strategy-preserving theory is left as a refinement rather than silently identified with
+\(\preceq_{\mathrm{GBG,clk}}\).
+\end{remark}
+
+\section{Degree structure versus theoremhood}
+
+The purpose of a degree is to record chronological structure that theoremhood alone forgets.
+For systems written in the same theorem language one may have
+\[
+\Con_F(B)=\Con_{F'}(B'),
+\]
+and for different theorem languages the corresponding statement should be made only after fixing an
+explicit translation that identifies the compared consequences.  Such systems may also preserve the same
+shortest object-level proof depth while differing in the order, synchronization, or cost with which
+operational states are exposed.
+
+Accordingly,
+\[
+\boxed{\text{same theoremhood alone does not establish the same clocked simulation degree}.}
+\]
+A distinct-degree conclusion still requires a specific nonsimulation theorem or invariant.
+What must be tested is an injective chronology-preserving simulation in each direction, not merely equality
+(or translated correspondence) of target sets.
+
+\section{Deterministic hitting-time distortion under a clocked embedding}
+
+For a scheduled deterministic GBG presentation \(G\), a state \(s\), and a target region \(T_G\), define the
+target-hitting stage
+\[
+h_G(s,T_G):=\min\{m\in\Npos:C_G(s,m)\in T_G\},
+\]
+with value \(\infty\) if the set is empty.  Let \((f,\rho)\) witness
+\(G\preceq_{\mathrm{GBG,clk}}H\).  Assume target preservation
+\[
+f[T_G]\subseteq T_H
+\]
+and an explicit quantitative clock bound
+\[
+\rho(n)\le \tau(n)
+\qquad(n\in\Npos)
+\]
+for a nondecreasing function \(\tau\).
+
+If \(h_G(s,T_G)=n<\infty\), then
+\[
+C_G(s,n)\in T_G.
+\]
+The simulation equation and target preservation give
+\[
+C_H(f(s),\rho(n))=f(C_G(s,n))\in T_H,
+\]
+so
+\[
+h_H(f(s),T_H)\le \rho(n)\le \tau(n)
+      =\tau\bigl(h_G(s,T_G)\bigr).
+\]
+Thus the clock controls distortion of deterministic target-hitting stages under the stated hypotheses.
+It does not, by itself, compare shortest paths in an unrestricted branching graph; such a graph-distance
+claim requires an edge/path-preserving simulation notion.
+
+This illustrates the qualified link
+\[
+\boxed{\text{clocked embedding}+\text{clock bound}\quad\Longrightarrow\quad
+       \text{controlled deterministic hitting-time distortion}.}
+\]
+
+\section{Case study: Hilbert-addressed operational ATPs}
+
+The paper \emph{From Theoremhood as Reachability to Hilbert-Addressed Inference Spaces}~\cite{TennesonHilbertReach} provides a
+natural Version 49 case study.
+It lifts ATP execution to future-complete operational states, represents elementary deterministic
+machine attempts as partial unary GBG moves, distinguishes histories from terminal operational states,
+and places optional Hilbert navigation on the finite candidate-action fibers exposed by each state.
+It also separates represented proof depth from within-layer discovery offset.
+
+Fix the underlying formal system, candidate-generation protocol, verification rule, budgets, and
+complete operational state representation.
+Consider scheduled ATP/GBG presentations such as
+\[
+G_{\mathrm{lex}},\qquad
+G_{\mathrm{Hilbert}},\qquad
+G_{\mathrm{random}},\qquad
+G_{\mathrm{learned}},
+\]
+where a random seed is included in the state whenever needed to make a run deterministic.
+
+These systems can agree on theoremhood while differing in the chronology of candidate examination.
+For breadth-first variants with ordering only inside frozen depth layers, they can also agree on
+represented proof horizon while moving the target to different within-layer microsteps.
+
+Version 49 therefore poses the concrete comparison problem
+\[
+G_{\mathrm{lex}}\preceq_{\mathrm{GBG,clk}}G_{\mathrm{Hilbert}}?
+\qquad
+G_{\mathrm{Hilbert}}\preceq_{\mathrm{GBG,clk}}G_{\mathrm{lex}}?
+\]
+and similarly for other matched schedulers.
+
+\begin{remark}[No separation theorem is asserted]
+The Hilbert-addressed paper supplies the operational objects needed to ask the degree question;
+it does not by itself prove that Hilbert and lexicographic schedules lie in distinct degrees.
+A separation requires an invariant or obstruction showing failure of one of the required clocked
+embeddings.
+Conversely, an equivalence result requires explicit simulations in both directions.
+\end{remark}
+
+\section{Why the infinite-antichain theorem matters for GBGs}
+
+Theorem~\ref{thm:inf-antichain} shows that a chronology-preserving simulation order can have genuine
+infinite width even among finite, finitely describable systems.
+The result cautions against expecting all executable rule-governed search systems to line up on one
+simple ladder of ``more powerful'' and ``less powerful.''
+
+For GBG-style operational search spaces the analogous program is:
+\begin{enumerate}[leftmargin=2em]
+\item choose the exact state information whose preservation makes future behavior complete;
+\item choose whether the simulation must preserve only chronology, or also branching and strategies;
+\item find monotone invariants such as synchronized observation spectra, target-region behavior,
+      or bounded horizon distortion;
+\item construct chains and antichains under that fixed notion.
+\end{enumerate}
+
+The old SIC antichain is therefore not merely historical background.
+It is a worked order-theoretic model of the kind of complexity a GBG simulation-degree theory may
+need to accommodate.
+
+\section{Strategic extension: beyond deterministic clocked degrees}
+
+For a branching game, preserving one scheduled chronology may be too weak.
+A stronger relation could require:
+\begin{itemize}[leftmargin=2em]
+\item legal successors to map to legal successors or bounded legal paths;
+\item controller-owned and environment-owned choices to remain distinguished;
+\item target or settlement regions to be preserved;
+\item every winning controller strategy in the source to translate to a winning strategy in the target;
+\item a quantitative bound on the distortion of forced-settlement horizons.
+\end{itemize}
+
+This suggests a progression of increasingly demanding definitions:
+\[
+\begin{array}{c}
+\text{reachability-preserving simulation}\\[0.2em]
+\downarrow\ \text{add chronological and clock requirements}\\[0.2em]
+\text{clocked chronological simulation}\\[0.2em]
+\downarrow\ \text{add strategy-preservation requirements}\\[0.2em]
+\text{strategy-preserving clocked simulation}.
+\end{array}
+\]
+The downward arrows here mean ``add requirements''; they are not logical implication arrows. Once precise
+relations are fixed, their inclusion direction should be stated separately.
+
+\section{Version 49 research boundary}
+
+Version 49 closes with the following questions rather than adding further architectures.
+
+\begin{question}[Greatest degree]
+Does the original SIC degree poset \(\Dclk\) have a greatest degree?
+\end{question}
+
+\begin{question}[GBG infinite width]
+For a fixed, explicitly defined strategy-preserving GBG simulation relation, can one construct a
+countably infinite antichain of finite, finitely describable GBGs?
+\end{question}
+
+\begin{question}[Hilbert degree comparison]
+Under a frozen operational ATP model, do Hilbert and lexicographic within-layer schedulers occupy
+the same scheduled GBG clocked degree?  If not, which synchronized invariant separates them?
+\end{question}
+
+\begin{question}[Forced-horizon preservation]
+Which simulation hypotheses are sufficient to preserve finiteness of a forced-settlement horizon,
+and which give a quantitative distortion bound?
+\end{question}
+
+\section{Version 49 conclusion}
+
+Version 49 consolidates rather than opens another branch of the project.
+The retained Version 48 core supplies the \(xyz\) formal systems, SICs, ATPs, induction principles,
+proof horizons, search metrics, AMLDs, BANK, and formalized self-awareness.
+The clocked-simulation addendum is no longer merely an exploratory preorder:
+its quotient degree structure has a countably infinite antichain of finite finitely describable
+machines, nonlattice behavior, synchronized monotone invariants, and the same phenomena under
+effective presentation.
+Within the finitely describable class, the antichain's cardinality \(\aleph_0\) is the largest possible.
+
+The GBG integration then provides an operational geometry for the same objects.
+Finitary inference becomes legal motion on complete derivation states;
+theoremhood becomes target-region reachability;
+proof horizon becomes directed distance under a declared cost convention;
+and transposition quotienting separates histories from future-complete states.
+At the strategic level, proof distance, discovery effort, and forced settlement become different
+quantities rather than competing names for one quantity.
+AMLD nonstarvation constrains the environment, while conservative BANK growth can shorten certified
+routes without changing logical consequence closure.
+
+Finally, clocked simulation degrees acquire a GBG reading for scheduled deterministic chronologies.
+The Hilbert-addressed ATP architecture supplies a concrete case study in which theoremhood and
+represented proof depth may remain fixed while operational ordering changes.
+Version 49 does not assume that such schedulers occupy distinct degrees; it turns that intuition into
+an explicit simulation problem.
+
+That is the stopping point of this edition.
+The next substantial theme should begin in a later version rather than make Version 49 a moving target.
+
+\clearpage
+\section*{Version 49 references}
+\addcontentsline{toc}{section}{Version 49 references}
+
+\begin{thebibliography}{99}
+
+\bibitem{TennesonDepths48}
+Brian Tenneson.
+\newblock \emph{Depths of Induction and Formalized Self-Awareness, Version 48}.
+\newblock 2026.
+\newblock \url{\depthsurl}
+
+\bibitem{TennesonGBG}
+Brian Tenneson.
+\newblock \emph{Generalized Board Games: From Tic-Tac-Toe to Chess as $xyz$ Formal Systems}.
+\newblock 2026.
+\newblock \url{\gbgurl}
+
+\bibitem{TennesonHilbertReach}
+Brian Tenneson.
+\newblock \emph{From Theoremhood as Reachability to Hilbert-Addressed Inference Spaces}.
+\newblock 2026.
+\newblock \url{\hilberturl}
+
+\bibitem{TennesonSettlements}
+Brian Tenneson.
+\newblock \emph{Depths of Induction: Settlements of Open Problems 9.1, 9.3, 9.4, and 9.5}.
+\newblock Companion note to the Addendum to Version 48, 2026.
+
+\bibitem{SpielmanBona}
+D. A. Spielman and M. B\'ona.
+\newblock ``An Infinite Antichain of Permutations.''
+\newblock \emph{The Electronic Journal of Combinatorics} 7 (2000), No.~N2.
+\newblock DOI: 10.37236/1540.
+
+\end{thebibliography}
+
+\end{document}
