@@ -55,13 +55,14 @@ jobs:
           assert 'Depths of Induction' in first and 'Version 49' in first
           assert all(doc[i].get_text().strip() for i in range(len(doc))), 'Unreadable or empty PDF page'
           full = '\n'.join(doc[i].get_text() for i in range(len(doc)))
+          full_norm = re.sub(r'\\s+', ' ', full).strip()
           for phrase in [
               'countably infinite antichain',
               'Greatest clocked-simulation degree',
               'moving target',
               'GBG Simulation Degrees',
           ]:
-              assert phrase in full, f'Missing expected Version 49 text: {phrase}'
+              assert phrase in full_norm, f'Missing expected Version 49 text: {phrase}'
           quote = ('That is the stopping point of this edition. The next substantial theme should begin '
                    'in a later version rather than make Version 49 a moving target.')
           qnorm = re.sub(r'\\s+', ' ', quote).strip()
