@@ -71,7 +71,7 @@ jobs:
               if qnorm in p:
                   quote_page = i + 1
                   break
-          assert 'GBG Simulation Degrees' in (root / '.build/depths_of_induction_v49/source.tex').read_text()
+          assert 'Scheduled GBG Clocked Simulation Degrees' in (root / '.build/depths_of_induction_v49/source.tex').read_text()
           assert quote_page is not None, 'Could not locate the closing moving-target quote'
           (root / '.build/depths_of_induction_v49/quote_page.txt').write_text(str(quote_page))
           print(f'PASS: Version 49 compiled to 191 readable pages; closing quote is on page {quote_page}.')
