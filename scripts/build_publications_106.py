@@ -79,8 +79,8 @@ def main():
     original = CATALOG.read_bytes()
     try:
         expanded = expanded_catalog()
-        if len(expanded["items"]) != 128:
-            raise SystemExit(f"Expected 128 cards after restoration, got {len(expanded['items'])}")
+        if len(expanded["items"]) != 129:
+            raise SystemExit(f"Expected 129 cards after restoration, got {len(expanded['items'])}")
         CATALOG.write_text(json.dumps(expanded, ensure_ascii=False, indent=2) + "\n")
         subprocess.run([sys.executable, str(BUILDER)], cwd=ROOT, check=True)
         css_path = DOCS / "publications.css"

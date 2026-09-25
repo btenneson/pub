@@ -1,0 +1,1081 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Singleton Enumeration as a Generalized Board Game — Proof Horizons, Ocean Navigation, and Password Search — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/singleton_enumeration_as_a_generalized_board_game/">Back to publication</a><h1>Singleton Enumeration as a Generalized Board Game — Proof Horizons, Ocean Navigation, and Password Search</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/singleton_enumeration_as_a_generalized_board_game/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{definition}{Definition}
+\newtheorem{principle}{Principle}
+\newtheorem{remark}{Remark}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Tset}{\mathcal{T}}
+\newcommand{\Wset}{\mathcal{W}}
+\newcommand{\atlasnote}{\par\smallskip\noindent\textit{[Added and proved by Atlas, a ChatGPT ATP/AMLD add/on designed by Brian Tenneson]}\par\smallskip}
+
+\title{\textbf{Singleton Enumeration as a Generalized Board Game}\\
+\large Proof Horizons, Ocean Navigation, and Password Search}
+\author{Brian Tenneson}
+\date{September 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This note develops a common language for three seemingly different problems:
+universal proof search, navigation through a proof Ocean, and password search.
+The unifying feature is \emph{singleton enumeration}: there may be only one
+designated target, while the space of possible candidate histories leading to
+that target is enormous. Generalized board games (GBGs) provide a natural
+formalism for separating the cardinality of the target set from the complexity
+of the surrounding search space. The Universal Proof-Horizon perspective
+supplies the corresponding proof-search interpretation: one may know exactly
+what theorem is sought while still facing a combinatorially enormous or practically prohibitive space of
+candidate derivations. The central distinction developed here is between
+\emph{structured singleton search}, where observable local features correlate
+with progress toward the target, and \emph{opaque singleton search}, where no
+such navigational signal is available.
+\end{abstract}
+
+\section{The central question}
+
+A singleton target can still induce an enormous search problem. If the target
+set is
+\[
+\Tset=\{t\},
+\]
+then
+\[
+|\Tset|=1,
+\]
+but this says almost nothing about the number of legal states, legal moves, or
+candidate histories that must be considered before reaching \(t\).
+
+This observation is important for automated theorem proving. A theorem prover
+may be given exactly one conjecture. It is not choosing among millions of
+possible goals. Nevertheless, it may have to distinguish among an enormous
+number of possible inference paths, intermediate states, lemmas, branches, and
+dead ends.
+
+The same basic shape occurs in password search. There is one accepted
+password, but there may be an astronomical number of possible candidates.
+
+Thus the relevant difficulty is not necessarily the number of targets. It is
+the size and information structure of the space that surrounds the target.
+
+\section{Universal Proof Horizon and enumeration}
+
+The Universal Proof-Horizon viewpoint begins with a fixed effective proof
+system, a mechanically checkable proof relation, and a computable proof-cost
+measure \cite{tenneson-uph}. One may enumerate candidate proofs in increasing cost and return the
+first valid proof of the target. When a proof exists, this gives a canonical
+minimum-cost proof under the chosen presentation and cost measure. When no
+proof exists, the computation need not terminate.
+
+The theoretical point is positive but the practical problem is severe:
+enumeration may be computationally disastrous.
+
+The proof target can be fixed in advance. The difficulty lies in the size of
+the candidate proof space:
+\[
+\{\pi : \pi \text{ is a syntactically admissible candidate proof object}\}.
+\]
+
+This leads naturally to a singleton-search interpretation. For a fixed
+theorem \(T\), the prover seeks one acceptable certificate:
+\[
+\Wset_T
+=
+\{\pi : \pi \text{ verifies as a proof of }T\}.
+\]
+In the most extreme formulation one may select a canonical proof, in which
+case the designated target certificate itself can be treated as a singleton.
+
+The important distinction is therefore
+\[
+\text{one desired outcome}
+\quad\not\Rightarrow\quad
+\text{small search problem}.
+\]
+
+\section{The Ocean as a one-player generalized board game}
+
+Consider a finite directed graph
+\[
+G=(V,E)
+\]
+with distinguished source \(s\) and target \(t\). An edge
+\[
+u\to v
+\]
+represents one legal inference step.
+
+This can be interpreted as a one-player generalized board game in the sense of the GBG framework \cite{tenneson-gbg}.
+
+\begin{definition}[Ocean GBG]
+The Ocean generalized board game has:
+\begin{itemize}[leftmargin=2em]
+    \item game states \(V\);
+    \item initial state \(s\);
+    \item legal moves given by the directed edges \(E\);
+    \item winning set
+    \[
+    \Wset=\{t\}.
+    \]
+\end{itemize}
+A play is a directed path beginning at \(s\), and a winning play is a path that
+reaches \(t\).
+\end{definition}
+
+Under unit edge cost, the minimum winning length is
+\[
+L^*=d_G(s,t),
+\]
+the shortest directed-path distance from \(s\) to \(t\).
+
+Thus the proof horizon and the game-theoretic winning horizon coincide:
+\[
+\boxed{
+L^*
+=
+\text{minimum number of legal moves needed to reach the unique winning state}.
+}
+\]
+
+The fact that the winning set has one element does not make the game trivial.
+The directed graph may contain a very large number of states and an even larger
+number of legal histories.
+
+\section{The search process as a higher-level game}
+
+A theorem prover does not merely occupy one graph vertex. Its actual state
+contains information about what it has already discovered.
+
+A more faithful search state may be represented schematically as
+\[
+S=
+(D,F,X,P,\Sigma,\ldots),
+\]
+where
+\begin{itemize}[leftmargin=2em]
+    \item \(D\) is the set of discovered states;
+    \item \(F\) is the current frontier;
+    \item \(X\) is the set of expanded states;
+    \item \(P\) is a predecessor or certificate map;
+    \item \(\Sigma\) contains heuristic scores, reconnaissance data, or other
+    navigational information.
+\end{itemize}
+
+A search move is then something such as
+\[
+\operatorname{Expand}(v),
+\qquad v\in F.
+\]
+
+This creates a second GBG: the board is no longer merely the Ocean graph but
+the prover&#x27;s evolving knowledge of the Ocean.
+
+In this interpretation, a system such as DATA MIND is playing a game whose
+moves determine which part of the underlying proof game becomes visible next.
+
+\section{Password space as a generalized board game}
+
+Password space can also be formalized as a GBG in more than one way.
+
+\subsection{Prefix-construction game}
+
+Let \(\A\) be a finite alphabet with
+\[
+|\A|=k,
+\]
+and suppose passwords have fixed length \(m\). Let the hidden accepted
+password be
+\[
+w^*\in\A^m.
+\]
+
+The initial state is the empty prefix:
+\[
+s_0=\epsilon.
+\]
+
+For every symbol \(a\in\A\), define the legal move
+\[
+r_a(u)=ua
+\]
+whenever
+\[
+|u|&lt;m.
+\]
+
+The state space is
+\[
+\Sset=\A^{\le m},
+\]
+and the winning set is
+\[
+\Wset=\{w^*\}.
+\]
+
+The resulting state graph is a rooted \(k\)-ary tree. There are
+\[
+k^m
+\]
+terminal strings of length \(m\), although exactly one is winning.
+
+Define
+\[
+d(u)=m-|u|.
+\]
+Then every legal character-extension move satisfies
+\[
+d(r_a(u))=d(u)-1.
+\]
+
+Thus the game is finite, acyclic, and has a single winning leaf.
+
+\subsection{Password-testing game and the observation map}
+
+For search, the full game state must remain rule-complete: it must contain the
+hidden password even though the searcher is not allowed to observe it.  Let
+\[
+\Omega=\A^m
+\]
+be the set of all candidate passwords, and let the hidden accepted password be
+\(W\in\Omega\).  A full state is
+\[
+x=(W,G,U,R),
+\]
+where
+\begin{itemize}[leftmargin=2em]
+    \item \(G\subseteq\Omega\) is the set of candidates already guessed;
+    \item \(U=\Omega\setminus G\) is the set of untested candidates; and
+    \item \(R\) is the transcript of responses obtained so far.
+\end{itemize}
+The initial full state associated with \(W\) is
+\[
+x_0(W)=(W,\varnothing,\Omega,\varnothing).
+\]
+
+A legal move is
+\[
+\operatorname{Guess}(q),
+\qquad q\in U.
+\]
+Because \(W\) is part of the full state, the transition is deterministic.  If
+\(q=W\), the successor is a terminal winning state with the response
+``correct.&#x27;&#x27;  Otherwise the successor satisfies
+\[
+G&#x27;=G\cup\{q\},
+\qquad
+U&#x27;=U\setminus\{q\},
+\]
+and appends ``incorrect&#x27;&#x27; to the transcript.
+
+The searcher does not observe the complete state.  Instead define the
+observation map
+\[
+O(W,G,U,R)=(G,U,R).
+\]
+Thus the underlying GBG remains a deterministic rule-complete transition
+system, while the password seeker acts under partial observation.  This
+separation is the formal version of the distinction between the board itself
+and what the player is permitted to know about the board.  It is also the
+right setting for comparing password search with resource-sensitive settlement
+geometry and proof-search navigation \cite{tenneson-gbg,tenneson-fair}.
+
+This formulation is structurally close to ATP search:
+\[
+\operatorname{Guess}(q)
+\quad\leftrightarrow\quad
+\operatorname{Expand}(v).
+\]
+In both cases an agent must decide which candidate to inspect next, but the
+information available for making that choice may differ dramatically.
+
+\subsection{Observation-constrained settlement geometry}
+
+The observation map allows intrinsic state geometry to be separated from the
+information geometry available to an executable policy.
+
+\begin{definition}[Observation-admissible policy]
+Let \(X\) be a deterministic settlement or GBG state space and let
+\(O:X\to\mathcal O\) be an observation map.  A policy is
+\emph{\(O\)-admissible} if its action at each stage depends only on its own
+randomness and on the history of observations and actions, not on hidden
+coordinates of the full state.
+\end{definition}
+
+\begin{definition}[Observation-constrained expected settlement value]
+Let \(\mu\) be a probability distribution over possible initial full states,
+and let \(C_\pi\) denote the total settlement cost incurred by a policy
+\(\pi\).  Define
+\[
+V^{O,\mu}_{\mathrm{Bayes}}
+:=\inf_{\pi\in\Pi_O}\mathbb E_{X_0\sim\mu,\pi}[C_\pi(X_0)],
+\]
+where \(\Pi_O\) is the class of \(O\)-admissible policies.  With full
+observation \(O=\mathrm{id}\), the corresponding value is denoted
+\(V^{\mathrm{id},\mu}_{\mathrm{Bayes}}\).
+\end{definition}
+
+This quantity is intentionally distinct from the intrinsic Bellman value
+\(V(x)\) of a fully specified state.  The intrinsic value measures the cheapest
+settling trajectory that exists from \(x\); the observation-constrained value
+measures the best expected cost attainable when the policy cannot see all of
+\(x\).  In a password game these quantities can differ exponentially.  In a
+proof Ocean, by contrast, local graph structure may expose navigational signal
+that substantially narrows the gap.
+
+\section{Why password search and Ocean search are not identical}
+
+The password analogy becomes most useful when its limitation is made explicit.
+
+Suppose an ideal password oracle returns only
+\[
+\text{correct}
+\quad\text{or}\quad
+\text{incorrect}
+\]
+after a complete candidate is submitted. Assume further that the hidden
+password is uniformly distributed and that no side-channel information is
+available.
+
+Then, before testing, the untried candidates are symmetric. A failed guess
+does not reveal that a nearby candidate is more promising.
+
+There is no useful local geometry.
+
+By contrast, a structured proof Ocean can contain local information. Some
+branches may terminate quickly, some may continue for many levels, some may
+have distinctive branching patterns, and some local configurations may
+correlate with eventual reachability of the target.
+
+A navigation policy can exploit such differences.
+
+This gives the following comparison.
+
+\begin{center}
+\begin{tabular}{&gt;{\raggedright\arraybackslash}p{0.29\textwidth}
+                &gt;{\centering\arraybackslash}p{0.27\textwidth}
+                &gt;{\centering\arraybackslash}p{0.27\textwidth}}
+\toprule
+ &amp; \textbf{Structured Ocean search} &amp; \textbf{Ideal password search} \\
+\midrule
+Unique target &amp; Yes &amp; Yes \\
+Large candidate space &amp; Yes &amp; Yes \\
+Branching &amp; Yes &amp; Yes \\
+Observable local structure varies &amp; Often &amp; No, ideally \\
+Dead-end or continuation clues &amp; Possible &amp; Absent \\
+Navigation can exploit local signal &amp; Yes &amp; Not without extra information \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Structured and opaque singleton search}
+
+The preceding comparison suggests a useful distinction.
+
+\begin{definition}[Structured singleton search]
+Relative to an observation map \(O\), a singleton search problem is
+\emph{structured} when observable features of nonterminal states contain
+information correlated with accessibility, distance, or probability of
+eventual success at the unique target.
+\end{definition}
+
+\begin{definition}[Opaque singleton search]
+Relative to an observation map \(O\), a singleton search problem is
+\emph{opaque} when states or untested candidates that remain possible under the
+current observation history are indistinguishable with respect to all
+information available to the searcher, except through direct testing.
+\end{definition}
+
+The Ocean is intended to model the first situation. Ideal password guessing
+models the second.
+
+\begin{principle}[Singleton Navigation Principle]
+A singleton target does not prevent intelligent navigation. What matters is
+whether the observable search state contains information correlated with
+progress toward the unique winning state.
+\end{principle}
+
+This principle separates two questions that are easy to conflate:
+\[
+\text{How many targets are there?}
+\]
+and
+\[
+\text{How informative is the surrounding search space?}
+\]
+
+The first may equal one while the second remains highly nontrivial.
+
+\section{DATA MIND in the GBG interpretation}
+
+Under this framework, DATA MIND is not successful merely because it can
+``enumerate toward one answer.&#x27;&#x27; Its potential advantage arises when the game
+contains navigational signal.
+
+Its task can be written abstractly as:
+\[
+\text{choose }v\in F
+\text{ so as to maximize expected progress toward }t.
+\]
+
+A heuristic value function may be written
+\[
+V(v)\approx
+\text{estimated usefulness of expanding }v
+\text{ for eventually reaching }t.
+\]
+
+The essential role of such a value is to change the \emph{order of
+exploration}. It does not change the legal moves, the target, or the
+verification standard.
+
+Thus:
+\[
+\text{heuristic navigation}
+\longrightarrow
+\text{candidate ordering},
+\]
+while
+\[
+\text{formal verifier}
+\longrightarrow
+\text{certificate acceptance}.
+\]
+
+This is compatible with the Universal Proof-Horizon viewpoint. The exhaustive
+procedure supplies a universal baseline; the navigation policy attempts to
+avoid examining almost all irrelevant candidates.
+
+\section{A hierarchy of singleton-search regimes}
+
+The discussion suggests a useful spectrum:
+\[
+\boxed{
+\begin{gathered}
+\text{opaque guessing}\;\longrightarrow\;\text{weakly structured navigation}\\
+\longrightarrow\;\text{strongly structured navigation}\;\longrightarrow\;
+\text{exact shortest-path knowledge}
+\end{gathered}
+}
+\]
+
+At the left extreme, intelligent reordering cannot outperform symmetry except
+through prior information or side channels.
+
+At the right extreme, an exact distance-to-target function
+\[
+h(v)=d(v,t)
+\]
+makes navigation trivial: always choose a successor whose distance decreases
+by one.
+
+Most interesting ATP systems lie between these extremes. They do not know the
+true proof horizon in advance, but they try to estimate which legal actions
+reduce the hidden remaining distance.
+
+\section{Connection to proof horizons}
+
+For a unit-cost finite proof graph, the true distance
+\[
+h^*(v)=d_G(v,t)
+\]
+is a proof-horizon function.
+
+At the initial state,
+\[
+h^*(s)=L^*.
+\]
+
+An ideal navigator would always select a successor \(u\) satisfying
+\[
+h^*(u)=h^*(v)-1.
+\]
+
+A learned or heuristic navigator instead uses an approximation
+\[
+\widehat{h}(v)\approx h^*(v).
+\]
+
+The resulting ATP problem can therefore be viewed as a game of repeatedly
+estimating the hidden proof horizon while preserving exact verification at the
+end.
+
+This yields the synthesis:
+\[
+\boxed{
+\text{Universal Proof Horizon}
++
+\text{Generalized Board Games}
++
+\text{singleton enumeration}
++
+\text{navigation}
+}
+\]
+as a common framework for understanding proof search.
+
+\section{What the password analogy teaches}
+
+The password model is not merely an analogy to proof search. It is a useful
+control case.
+
+If an ATP benchmark were completely opaque in the same sense as ideal password
+guessing, then no generic navigation method could extract useful directional
+information from local structure because no such structure would be present.
+
+If a method performs substantially better than indiscriminate enumeration on a
+singleton benchmark, one should therefore ask:
+
+\begin{enumerate}[leftmargin=2em]
+    \item What observable structure was available?
+    \item Which features of that structure correlated with eventual success?
+    \item Did the method exploit legitimate local signal or hidden benchmark
+    metadata?
+    \item How much candidate work was avoided?
+    \item How close was the resulting certificate to the true proof horizon?
+\end{enumerate}
+
+These questions separate genuine navigation from accidental leakage.
+
+
+\section{Cross-domain theorem additions}
+
+\paragraph{Provenance note.}
+The bracketed Atlas note attached to each theorem below records that Atlas added
+and proved the statement in this manuscript.  It is a manuscript-provenance
+statement, not a claim that every underlying mathematical fact is historically
+new.  Several results are elementary consequences of standard search arguments
+or of the definitions developed in the cited Tenneson frameworks.
+
+
+The preceding framework suggests several statements that can be proved without
+assuming that a singleton target is easy to locate.  The results in this
+section make precise the distinction between the size of a target set, the
+intrinsic distance to that target, the information visible to a searcher, and
+the work actually spent locating a certificate.  They also provide explicit
+bridges among password seeking, CNF/3-CNF, generalized board games, the
+Universal Proof-Horizon viewpoint, DATA MIND-style navigation, and fair
+settlement geometry.
+
+\subsection{Information-constrained Bellman gap for opaque passwords}
+
+The ordinary Bellman value of a fully specified state assumes that the state
+contains whatever information is needed to choose among legal actions.  A
+password searcher generally does not observe the hidden password itself.  This
+creates a useful distinction between a full-information Bellman value and an
+observation-constrained value.
+
+Let $\Omega$ be a set of $N\geq 1$ candidate passwords, let $W$ be uniformly
+distributed on $\Omega$, and use the full state and observation map defined
+above.  A query $q\in\Omega$ receives only the answer ``correct&#x27;&#x27; when $q=W$
+and ``incorrect&#x27;&#x27; otherwise.  An admissible search policy is required to be
+$O$-admissible, nonrepeating on failed queries, and to continue until success.
+Let $T_\pi$ be its number of guesses.  For every full state the intrinsic
+full-information Bellman cost is one guess.
+
+\begin{theorem}[Information-Constrained Bellman Gap]
+For the equality-only password game above, every admissible possibly
+randomized nonrepeating policy $\pi$ satisfies, for $0\leq k\leq N$,
+\[
+    \Pr(T_\pi\leq k)=\frac{k}{N}
+\]
+and
+\[
+    \mathbb{E}[T_\pi]=\frac{N+1}{2}.
+\]
+If
+\[
+V^{\mathrm{id},\mu}_{\mathrm{Bayes}}=1
+\]
+is the full-observation expected settlement value and
+\[
+V^{O,\mu}_{\mathrm{Bayes}}
+   :=\inf_{\pi\in\Pi_O}\mathbb E[T_\pi],
+\]
+then
+\[
+    \boxed{\frac{V^{O,\mu}_{\mathrm{Bayes}}}
+    {V^{\mathrm{id},\mu}_{\mathrm{Bayes}}}
+    =\frac{N+1}{2}.}
+\]
+In particular, for $N=2^n$ the information-constrained Bellman gap is
+exponential in $n$.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+Condition first on the internal randomness of $\pi$.  Until the successful
+query occurs, every observed answer is ``incorrect.&#x27;&#x27;  Consequently a
+nonrepeating deterministic realization of the policy specifies an ordering
+\[
+    q_1,q_2,\ldots,q_N
+\]
+of the candidates.  Since $W$ is uniform on $\Omega$, its rank in this ordering
+is uniform on $\{1,\ldots,N\}$.  Hence
+\[
+    \Pr(T_\pi\leq k)=\frac{k}{N}
+\]
+and
+\[
+    \mathbb{E}[T_\pi]
+    =\frac{1}{N}\sum_{j=1}^N j
+    =\frac{N+1}{2}.
+\]
+These identities hold for every fixed realization of the policy&#x27;s randomness,
+so averaging over that randomness leaves them unchanged.  A full-information controller guesses $W$ immediately, giving
+$V^{\mathrm{id},\mu}_{\mathrm{Bayes}}=1$.  The stated ratio follows.
+\end{proof}
+
+\paragraph{Discussion.}
+This theorem formalizes the sense in which an ideal password problem is an
+\emph{opaque} singleton GBG.  The winning set has one element, but the
+searcher is not allowed to observe the coordinate that identifies that element.
+The theorem therefore separates geometric accessibility from informational
+accessibility.  In the full state space the winning state is one legal action
+away; under the observation map available to the searcher, the expected number
+of tests is $(N+1)/2$.
+
+This suggests an extension of settlement geometry in which a declared
+observation map $O:X\to\mathcal O$ restricts the policies that may act on a
+state.  The intrinsic full-state Bellman value and the observation-constrained expected value
+$V^{O,\mu}_{\mathrm{Bayes}}$ can then differ enormously.  This is precisely the kind of distinction
+needed when comparing a structurally informative proof Ocean with an opaque
+password oracle.  It also explains why a short route existing in a state graph
+does not by itself imply that a searcher can identify that route cheaply.
+
+\subsection{Opaque passwords cannot settle with high probability in polynomially many guesses}
+
+The first theorem immediately gives an asymptotic statement.  If the password
+has $n$ uniformly random bits, the candidate set has size $2^n$.  A solver that
+is exact---that is, it never reports success without receiving the positive
+oracle response---may use a bounded number of guesses and otherwise return
+\textsc{unknown}.  This is the equality-query analogue of verifier-gated high-probability
+settlement: correctness is exact, while completion is resource bounded.  The
+observation-constrained model is an extension of, rather than an identification
+with, the fully visible settlement systems of Fair Settlement Geometry
+\cite{tenneson-fair}.
+
+\begin{theorem}[Opaque Singleton No-Polynomial-Settlement]
+Let $W$ be a uniformly random $n$-bit password and suppose the only feedback
+from a guess is equality with $W$.  If an exact target-blind policy makes at
+most $q(n)$ distinct guesses, then
+\[
+    \Pr(\text{settlement within }q(n)\text{ guesses})
+    \leq\min\left\{1,\frac{q(n)}{2^n}\right\}.
+\]
+Equality holds when the policy is prepared to test exactly
+$\min\{q(n),2^n\}$ distinct candidates unless success occurs earlier.
+Consequently, for every polynomial $q$,
+\[
+    \Pr(\text{settlement within }q(n)\text{ guesses})\longrightarrow 0.
+\]
+Thus, in the observation-constrained equality-query model, the uniform
+opaque-password family has no high-probability polynomial settlement policy.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+A policy using at most $q(n)$ guesses tests at most
+$\min\{q(n),2^n\}$ distinct members of the candidate set.  Conditional on any
+fixed realization of the policy&#x27;s internal randomness, those tested candidates
+occupy at most that many positions in the induced ordering.  Since $W$ is
+uniform, the probability that its rank lies among them is at most
+\[
+\min\left\{1,\frac{q(n)}{2^n}\right\}.
+\]
+If the policy continues through exactly that many distinct candidates unless
+success occurs earlier, the bound is attained.  If $q$ is polynomial, then
+$q(n)/2^n\to 0$.
+\end{proof}
+
+\paragraph{Discussion.}
+This result supplies a zero-navigation-information control for the broader
+program.  A system can be perfectly sound, can have an unambiguous singleton
+target, and can even possess a one-step full-information route to success, yet
+an observation-limited searcher still fails with probability tending to one
+under every polynomial query budget.
+
+The relevance to DATA MIND is negative but important: if a benchmark were
+truly password-like in this equality-only sense, no amount of clever local
+navigation could create information that is absent from the interface.
+Therefore strong performance on a singleton benchmark is evidence either that
+useful structure is observable, that informative prior knowledge is available,
+or that the benchmark leaks information.  A contamination-safe experiment
+must distinguish these possibilities.
+
+\subsection{Constraint revelation in CNF and 3-CNF}
+
+Password space becomes more interesting when it is compared with SAT.  A
+known CNF formula exposes constraints before a complete assignment is tested.
+Partial assignments can already falsify clauses, and those clauses prune the
+prefix tree.  The next theorem quantifies this effect.  Although motivated by
+3-CNF, the proof works for arbitrary CNF.
+
+Fix a variable ordering $x_1,\ldots,x_n$ and let $\varphi$ be a satisfiable
+CNF formula.  Let $P_k(\varphi)$ be the set of assignments to
+$x_1,\ldots,x_k$ that have not yet falsified any clause of $\varphi$, and write
+\[
+    W_k:=|P_k(\varphi)|.
+\]
+Define the prefix-pruning, or constraint-revelation, index
+\[
+    J_k:=\log_2\!\left(\frac{2^k}{W_k}\right)
+        =k-\log_2 W_k.
+\]
+
+\begin{theorem}[CNF Prefix-Pruning Monotonicity]
+If $\varphi$ is a satisfiable CNF formula on $x_1,\ldots,x_n$, then
+\[
+    W_0=1,\qquad 1\leq W_k\leq 2^k,\qquad
+    W_{k+1}\leq 2W_k,
+\]
+and
+\[
+    W_n=\#\operatorname{SAT}(\varphi).
+\]
+Consequently,
+\[
+    \boxed{0=J_0\leq J_1\leq\cdots\leq J_n
+    =n-\log_2\#\operatorname{SAT}(\varphi).}
+\]
+In the uniquely satisfiable case, $W_n=1$ and hence $J_n=n$.  The same
+statement applies in particular to satisfiable and uniquely satisfiable 3-CNF
+formulas.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+The empty assignment is the unique length-zero prefix, so $W_0=1$.  The
+restriction of any satisfying assignment to the first $k$ variables cannot
+falsify a clause; hence satisfiability gives $W_k\geq 1$.  Trivially
+$W_k\leq 2^k$.
+
+Every surviving $k$-prefix has at most two one-variable extensions, obtained by
+setting $x_{k+1}$ to $0$ or $1$.  Some extensions may falsify a clause, so
+\[
+    W_{k+1}\leq 2W_k.
+\]
+At depth $n$, a complete assignment fails to falsify any clause exactly when it
+satisfies the CNF formula.  Therefore
+\[
+W_n=\#\operatorname{SAT}(\varphi).
+\]
+Finally,
+\[
+    J_{k+1}-J_k
+    =1-\log_2\!\left(\frac{W_{k+1}}{W_k}\right)\geq 0,
+\]
+because $W_{k+1}/W_k\leq 2$.  Also $J_0=0$ and
+\[
+J_n=n-\log_2\#\operatorname{SAT}(\varphi).
+\]
+If the satisfying assignment is unique, this endpoint is $n$.
+\end{proof}
+
+\paragraph{Discussion.}
+The quantity $J_k$ provides a concrete bridge between password seeking and
+SAT/3-CNF.  In an equality-only password problem, no prefix is rejected merely
+because of its internal symbols: before complete candidates are individually
+tested, the observable prefix tree remains symmetric.  A CNF formula, by
+contrast, exposes local logical constraints that can eliminate prefixes long
+before depth $n$.
+
+The theorem does \emph{not} say that unique 3-SAT is easy, nor does monotone
+pruning imply that a polynomial-work navigation policy exists.  It says
+something more modest and useful for the present framework: SAT can possess an
+observable information geometry that the ideal password oracle lacks.  The
+index $J_k$ measures accumulated pruning along a chosen variable order and can
+therefore be studied as a possible feature of a SAT GBG or as one component of
+a navigation heuristic.
+
+\subsection{Equivalence of four singleton horizons}
+
+The Ocean construction, generalized board games \cite{tenneson-gbg}, the Universal Proof-Horizon
+viewpoint \cite{tenneson-uph}, and Bellman settlement geometry \cite{tenneson-fair} all contain a notion of ``distance
+to success.&#x27;&#x27;  Under a unit-cost one-player proof game these notions coincide
+exactly.
+
+\begin{theorem}[Singleton GBG--Proof-Horizon--Bellman Equivalence]
+Let $G=(V,E)$ be an effectively generated, locally finite, directed one-player
+GBG with initial state $s$ and singleton winning set $\{t\}$.  Suppose each legal move has unit cost and the reachable GBG transition system
+is step-for-step identical to the associated sequential proof system: every
+legal GBG move is one admissible inference step, and every admissible inference
+step from a reachable proof state is represented by a legal GBG move.  If $t$ is reachable from $s$, let
+\begin{itemize}[leftmargin=2em]
+    \item $L^*$ be the minimum winning match length;
+    \item $h(t)$ be the minimum number of inference steps in a proof of $t$;
+    \item $V(s)$ be the Bellman settlement value with unit action costs; and
+    \item $d_G(s,t)$ be the directed graph distance.
+\end{itemize}
+Then
+\[
+    \boxed{L^*=h(t)=V(s)=d_G(s,t).}
+\]
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+By the step-for-step identity hypothesis, legal matches from $s$ to $t$ are exactly
+the admissible sequential proof paths from the initial proof state to the target.  Therefore the minimum match
+length equals the minimum proof length, so $L^*=h(t)$.  Both quantities are by
+definition the minimum number of directed edges in an $s$--$t$ path, hence
+they equal $d_G(s,t)$.  Since every legal action has cost one, the accumulated
+cost of any settling trajectory is exactly its number of edges.  Taking the
+minimum over settling trajectories gives $V(s)=d_G(s,t)$.
+\end{proof}
+
+\paragraph{Discussion.}
+This theorem identifies a common invariant across four vocabularies.  In the
+Ocean benchmark, $L^*$ is not merely a convenient graph statistic: under the
+declared unit-cost proof-game interpretation it is simultaneously the shortest
+winning game, the shortest proof horizon, the directed distance to the target,
+and the optimal Bellman settlement cost.
+
+The equality is valuable experimentally because it tells us what may be used
+as an objective denominator when measuring navigation.  A search policy can be
+compared with the same $L^*$ whether one speaks the language of GBGs, proof
+horizons, or settlement geometry.  What the equality does \emph{not} determine
+is how much search work an executable policy must perform before discovering a
+route of that length or nearly that length.  That is the subject of the next
+theorem.
+
+\subsection{Shortest certificates do not control search overhead}
+
+\begin{definition}[Irrelevant expansion]
+In a singleton-target directed search graph with target $t$, an expansion of a
+vertex $v$ is called \emph{irrelevant} if
+\[
+d_G(v,t)=\infty,
+\]
+so no continuation from $v$ can contribute to a certificate reaching $t$.
+\end{definition}
+
+A proof can be optimal even when the search that found it was extremely
+wasteful.  This matters directly for interpreting a DATA MIND Ocean run: proof
+length, expansion count, reconnaissance probes, memory, and wall time are
+different observables.
+
+\begin{theorem}[Horizon--Execution Separation]
+For every pair of integers $L\geq 1$ and $M\geq 1$, there exists a finite
+singleton-target one-player GBG together with an exact search policy $\pi$ such
+that
+\[
+    L^*=V(s)=L,
+\]
+the certificate eventually returned by $\pi$ has exactly $L$ legal moves, but
+$\pi$ performs at least $M$ irrelevant state expansions before completing that
+certificate.  Hence certificate stretch
+\[
+    \frac{\text{returned certificate length}}{L^*}=1
+\]
+does not bound search overhead.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+Construct a directed graph with a source $s$, a unique successful path
+\[
+    s=v_0\to v_1\to\cdots\to v_L=t,
+\]
+and at least $M$ additional decoy states reachable from $s$ (or from a retained
+frontier) that do not lead to $t$.  Give every edge unit cost.  Then the unique
+shortest successful path has length $L$, so $L^*=V(s)=L$.
+
+Now consider the higher-level search game whose state records the discovered
+frontier and whose legal search actions expand frontier vertices.  Define
+$\pi$ to expand the $M$ decoy states first and then to expand the vertices on
+the successful path until $t$ is reached.  The predecessor map retained by the
+search reconstructs the original $L$-edge path, so the returned certificate is
+optimal even though at least $M$ irrelevant expansions were spent before the
+search completed it.  Since $M$ is arbitrary, no bound on search overhead
+follows from certificate stretch alone.
+\end{proof}
+
+\paragraph{Discussion.}
+This theorem is the formal reason to keep certificate quality and search
+quality separate.  The Fair Settlement Geometry framework \cite{tenneson-fair} distinguishes an
+intrinsic best-route value $V_M(w)$ from the actual resource cost
+$C_{M,\pi}(w)$ incurred by a policy.  Horizon--Execution Separation shows that
+this distinction is not cosmetic: even a policy that ultimately returns an
+optimal proof may incur arbitrarily large irrelevant work.
+
+The Ocean experiment discussed in the surrounding research provides an
+empirical illustration.  DATA MIND can be evaluated by how close its returned
+certificate lies to $L^*$, but its expansion count and bounded-reconnaissance
+probes must still be reported independently.  A near-horizon proof is evidence
+of good certificate navigation; it is not, by itself, a theorem of low total
+search cost.
+
+\subsection{Efficient GBG isomorphisms preserve fair settlement degree}
+
+The GBG paper treats different games as formal transition systems, while Fair
+Settlement Geometry compares exact settlement systems through reductions that
+preserve answer semantics, construction cost, certificate transport, and
+Bellman geometry up to polynomial distortion.  A sufficiently efficient GBG
+isomorphism therefore gives an immediate bridge between the two theories.
+
+\begin{theorem}[Efficient GBG Isomorphism Preserves Fair Settlement Degree]
+Consider two families of finitely encoded, exact singleton-target GBGs,
+$\mathcal G$ and $\mathcal H$, equipped with settlement systems $M_G$ and
+$M_H$.  Let
+\[
+L_{\mathcal G}:=\{\langle I\rangle:\text{the designated target of }I
+\text{ is reachable}\}
+\]
+and define $L_{\mathcal H}$ analogously.  Suppose there are mutually inverse
+translations $f$ and $g$, computable with polynomial declared primitive work,
+between their encoded instances and corresponding state/action representations
+such that:
+\begin{enumerate}[label=(\roman*),leftmargin=2.4em]
+    \item initial states and yes/no settlement status are preserved;
+    \item legal moves and their transitions are preserved bijectively;
+    \item action costs are preserved exactly;
+    \item encoded sizes are polynomially related in both directions; and
+    \item terminal certificates and verifier acceptance are transportable with
+    polynomial declared primitive work in both directions.
+\end{enumerate}
+Then the associated decision/settlement pairs fairly reduce to one another,
+so
+\[
+    (L_{\mathcal G},M_G)\sim_{\mathrm{fair}}(L_{\mathcal H},M_H).
+\]
+In particular, they lie in the same fair settlement degree.  Moreover, for
+corresponding states $x$ and $f(x)$,
+\[
+    \boxed{V_{M_G}(x)=V_{M_H}(f(x)).}
+\]
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+Because $f$ maps legal actions and transitions bijectively while preserving
+action costs, every finite settling trajectory in $\mathcal G$ has an
+$f$-image in $\mathcal H$ of exactly the same accumulated cost.  Applying the
+inverse translation $g$ shows the converse.  Taking infima over settling
+trajectories therefore yields
+\[
+    V_{M_G}(x)=V_{M_H}(f(x)).
+\]
+The assumed polynomial declared primitive work for construction, polynomial size
+relation, answer preservation, and polynomial certificate transport satisfy the
+corresponding requirements of a fair settlement reduction from
+$(L_{\mathcal G},M_G)$ to $(L_{\mathcal H},M_H)$ \cite{tenneson-fair}.
+The inverse translation gives the reverse fair reduction.  Mutual fair
+reducibility is exactly equality of fair settlement degree.
+\end{proof}
+
+\paragraph{Discussion.}
+This theorem links generalized-board-game representation directly to the
+resource-sensitive preorder of Fair Settlement Geometry.  It says that a
+mere change of notation or efficiently invertible presentation does not create
+a new fair settlement degree when the transition structure, costs, and
+certificates are genuinely preserved.  Thus a proof-search problem can be
+recast as a GBG without changing its resource geometry, provided the recoding
+is efficient and faithful in the strong sense stated above.
+
+The theorem also clarifies why weaker correspondences are insufficient.  A map
+that preserves only reachability could collapse a difficult region to an
+artificially cheap one, hide expensive preprocessing, or make certificate
+lifting costly.  Fair settlement equivalence requires preservation of the
+computational geometry rather than merely preservation of the final yes/no
+answer.
+
+\subsection{Synthesis: what singleton cardinality does not determine}
+
+Taken together, the six results support a precise version of the main theme of
+this note.  Target cardinality alone is not a complexity measure.  Even after
+the intrinsic horizon is fixed, the difficulty experienced by a search policy
+can vary dramatically because information, observable constraints, and search
+overhead remain separate variables.
+
+The password theorems identify the opaque extreme: a unique target can have an
+exponential observation-constrained search cost despite a trivial
+full-information distance.  The CNF theorem identifies one source of structure:
+known clauses can destroy prefix symmetry and progressively expose constraints.
+The GBG--Proof-Horizon--Bellman theorem gives a common intrinsic distance for
+unit-cost proof games.  Horizon--Execution Separation shows that this intrinsic
+distance still does not determine executable search work.  Finally, the fair
+settlement theorem identifies when two different GBG presentations preserve
+that resource geometry.
+
+This yields a layered view of singleton search:
+\[
+\boxed{
+\begin{array}{c}
+\text{target cardinality}\\[2pt]
+\downarrow\\[-1pt]
+\text{intrinsic proof/settlement horizon}\\[2pt]
+\downarrow\\[-1pt]
+\text{observable information geometry}\\[2pt]
+\downarrow\\[-1pt]
+\text{executable navigation policy}\\[2pt]
+\downarrow\\[-1pt]
+\text{actual measured settlement cost}
+\end{array}}
+\]
+No arrow is reversible in general.  That non-equivalence is the conceptual
+space in which DATA MIND-style navigation is intended to operate.
+
+\section{Conclusion}
+
+A one-element target set can support a very difficult search problem. The
+difficulty belongs not to the cardinality of the target set but to the number,
+structure, and information content of the candidate histories surrounding it.
+
+Password space supplies a clean GBG model of singleton search. In its ideal
+opaque form, it represents the limiting case in which no useful local
+navigation signal exists. A proof Ocean represents a contrasting case in
+which local graph structure may contain information correlated with eventual
+success.
+
+This distinction clarifies the role of an intelligent ATP navigator. Its job
+is not to create new logical consequences or redefine proof. Its job is to
+order legal exploration so that the unique target is reached while examining
+as little irrelevant search space as possible.
+
+In that sense, theorem proving can be understood as a one-player generalized
+board game played toward a singleton winning state, while the Universal
+Proof-Horizon framework \cite{tenneson-uph} supplies the objective horizon against which the
+quality of that play can be measured.
+
+\begin{thebibliography}{9}
+
+\bibitem{tenneson-uph}
+Brian Tenneson,
+\emph{The Universal Proof-Horizon Operator: From MIU and the nth Well-Formed
+Formula to ZFC, Predator, and Automated Logical Deciders},
+Version 1.0, August 3, 2026.
+
+\bibitem{tenneson-gbg}
+Brian Tenneson,
+\emph{Generalized Board Games: From Tic-Tac-Toe to Chess},
+2026.
+Available at:
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001/}.
+
+
+\bibitem{tenneson-fair}
+Brian Tenneson,
+\emph{Preorders and Fair Settlement Geometry: From SIC and AMLD Simulation
+Degrees to a High-Probability Complexity Framework for SAT},
+September 2026.
+Available at:
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/preorders_and_fair_settlement_geometry_001/}.
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
