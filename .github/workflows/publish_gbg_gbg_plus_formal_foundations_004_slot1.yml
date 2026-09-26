@@ -1,0 +1,245 @@
+name: Publish GBG and GBG+ Formal Foundations 004 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_gbg_gbg_plus_formal_foundations_004_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LaTeX and PDF verification dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install pymupdf==1.26.4
+
+      - name: Reconstruct and compile the reviewed source
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILD='.build/gbg_gbg_plus_formal_foundations_004'
+          STAGE='incoming_publications/gbg_and_gbg_plus_formal_foundations_004'
+          mkdir -p "$BUILD"
+          : > "$BUILD/source.tex"
+          for f in "$STAGE"/source.b64_00 "$STAGE"/source.b64_01 "$STAGE"/source.b64_02 "$STAGE"/source.b64_03 "$STAGE"/source.b64_04 "$STAGE"/source.b64_05 "$STAGE"/source.b64_06 "$STAGE"/source.b64_07; do
+            test -s "$f"
+            base64 -d "$f" >> "$BUILD/source.tex"
+          done
+          test "$(wc -c < "$BUILD/source.tex")" -eq 43572
+          test "$(sha256sum "$BUILD/source.tex" | awk '{print $1}')" = "c0e2919d0122adffccfe1e39cb711492124fc95cefdaeb6ce5673bd2b026bb43"
+          grep -q '\\end{document}' "$BUILD/source.tex"
+          cd "$BUILD"
+          for i in 1 2 3; do
+            pdflatex -interaction=nonstopmode -halt-on-error source.tex
+          done
+          test -s source.pdf
+
+      - name: Verify paper and stage publication files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, re
+          root = Path('.')
+          build = root / '.build/gbg_gbg_plus_formal_foundations_004'
+          pdf = build / 'source.pdf'
+          tex = build / 'source.tex'
+          doc = fitz.open(pdf)
+          assert len(doc) == 17, f'Expected 17 pages, got {len(doc)}'
+          assert all(doc[i].get_text().strip() for i in range(len(doc))), 'Unreadable or empty PDF page'
+          first = re.sub(r'\s+', ' ', doc[0].get_text()).strip()
+          assert 'Generalized Board Games' in first
+          source = tex.read_text()
+          required = [
+              'Reachability--Theorem Correspondence',
+              'Match-Proof Correspondence',
+              'Exact Match Recursion',
+              'Finite Forced-Win Characterization',
+              'Passive Board Extension',
+              'Projection-conservativity',
+              'GBG$^{+}$-5: board-directed player-label operator',
+          ]
+          for phrase in required:
+              assert phrase in source, phrase
+          quote = ('A legal move is therefore not merely analogous to an inference rule: '
+                   'after a fixed finite encoding, it is represented by one.')
+          qnorm = re.sub(r'\s+', ' ', quote).strip()
+          quote_page = None
+          for i in range(len(doc)):
+              page = re.sub(r'\s+', ' ', doc[i].get_text()).strip()
+              if qnorm in page:
+                  quote_page = i + 1
+                  break
+          assert quote_page is not None, 'Could not locate catalog quote in compiled PDF'
+          (build / 'quote_page.txt').write_text(str(quote_page))
+          print(f'PASS: 17-page GBG/GBG+ foundation compiled; core theorems and extension axioms verified; quote is on page {quote_page}.')
+          PY
+
+          PUB='cs.LO_Logic_in_Computer_Science/gbg_and_gbg_plus_formal_foundations_004'
+          PDF='GBG_and_GBG_Plus_Formal_Foundations_004.pdf'
+          mkdir -p "$PUB" "docs/$PUB"
+          cp .build/gbg_gbg_plus_formal_foundations_004/source.pdf "$PUB/$PDF"
+          cp .build/gbg_gbg_plus_formal_foundations_004/source.pdf "docs/$PUB/$PDF"
+          cp .build/gbg_gbg_plus_formal_foundations_004/source.tex "docs/$PUB/source.tex"
+
+      - name: Promote publication to card slot 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json, re, fitz
+
+          root = Path('.')
+          pub_id = 'cs.LO_Logic_in_Computer_Science/gbg_and_gbg_plus_formal_foundations_004'
+          pdf_name = 'GBG_and_GBG_Plus_Formal_Foundations_004.pdf'
+          archive = root / pub_id / pdf_name
+          doc_pdf = root / 'docs' / pub_id / pdf_name
+          source = root / 'docs' / pub_id / 'source.tex'
+          assert archive.is_file() and archive.stat().st_size > 0
+          assert doc_pdf.is_file() and doc_pdf.stat().st_size > 0
+          assert source.is_file() and source.stat().st_size == 43572
+          assert hashlib.sha256(source.read_bytes()).hexdigest() == 'c0e2919d0122adffccfe1e39cb711492124fc95cefdaeb6ce5673bd2b026bb43'
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == hashlib.sha256(doc_pdf.read_bytes()).hexdigest()
+
+          doc = fitz.open(archive)
+          pages = len(doc)
+          assert pages == 17
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          quote = ('A legal move is therefore not merely analogous to an inference rule: '
+                   'after a fixed finite encoding, it is represented by one.')
+          quote_page = int((root / '.build/gbg_gbg_plus_formal_foundations_004/quote_page.txt').read_text())
+          card_text = (
+              'A self-contained axiomatic reference for the generalized-board-game formalism and the '
+              'GBG+ extension that models the board as a distinguished player. It consolidates '
+              'rule-complete states, legal moves as partial unary inference rules, theoremhood as finite '
+              'reachability, match-proofs, exact match counting and finite forced-win horizons; then adds '
+              'the board-player interface, proves a passive extension/projection theorem and '
+              'projection-conservativity, and separates optional certification, memory, handoff, '
+              'scheduling, federation, reflection, and controlled-mutation packages for later ATP and '
+              'multi-agent work.'
+          )
+
+          cat = root / 'scripts/publications.json'
+          data = json.loads(cat.read_text())
+          already = any(x.get('id') == pub_id for x in data['items'])
+          old = [x for x in data['items'] if x.get('id') != pub_id]
+          orders = [x.get('order') for x in old if isinstance(x.get('order'), (int, float))]
+          new_order = (min(orders) - 10) if orders else -10
+          item = {
+              'title': 'Generalized Board Games and GBG+ — A Self-Contained Formal Foundation with the Board as a Player',
+              'kind': 'Foundational reference',
+              'quote': quote,
+              'quote_page': quote_page,
+              'card_text': card_text,
+              'subject': 'cs.LO_Logic_in_Computer_Science',
+              'id': pub_id,
+              'href': pub_id + '/',
+              'pdf': pub_id + '/' + pdf_name,
+              'archive_path': pub_id + '/' + pdf_name,
+              'sha256': digest,
+              'pages': pages,
+              'order': new_order,
+              'source': pub_id + '/source.html',
+              'authors': 'Brian Tenneson',
+              'source_file': pub_id + '/source.tex',
+              'classification_note': (
+                  'Foundational reference, September 26, 2026. Self-contained axiomatic GBG foundation '
+                  'and provisional GBG+ board-player extension, including passive structural relative '
+                  'consistency and projection-conservativity, with optional packages for later multi-agent '
+                  'and ATP architectures. Subject classification: cs.LO — Logic in Computer Science.'
+              )
+          }
+          data['items'] = [item] + old
+          cat.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+          search = json.loads((root / 'docs/search-index.json').read_text())
+          old_count = int(search['count'])
+          expected = old_count if already else old_count + 1
+          (root / '.build/gbg_gbg_plus_formal_foundations_004/expected_count.txt').write_text(str(expected))
+
+          wrapper = root / 'scripts/build_publications_106.py'
+          w = wrapper.read_text()
+          w2, n1 = re.subn(
+              r'if len\(expanded\["items"\]\) != \d+:',
+              f'if len(expanded["items"]) != {expected}:',
+              w,
+              count=1
+          )
+          w2, n2 = re.subn(
+              r'Expected \d+ cards after restoration',
+              f'Expected {expected} cards after restoration',
+              w2,
+              count=1
+          )
+          assert n1 == 1 and n2 == 1, 'Could not update expected publication count'
+          wrapper.write_text(w2)
+          print(f'Catalog prepared for {expected} cards; new paper is canonical slot #1 with order {new_order}.')
+          PY
+
+      - name: Rebuild publication site and verify slot 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+
+          root = Path('.')
+          docs = root / 'docs'
+          pub_id = 'cs.LO_Logic_in_Computer_Science/gbg_and_gbg_plus_formal_foundations_004'
+          title = 'Generalized Board Games and GBG+ — A Self-Contained Formal Foundation with the Board as a Player'
+          phrase = 'A self-contained axiomatic reference for the generalized-board-game formalism'
+          expected = int((root / '.build/gbg_gbg_plus_formal_foundations_004/expected_count.txt').read_text())
+
+          search = json.loads((docs / 'search-index.json').read_text())
+          assert search['count'] == expected, search['count']
+          assert search['items'][0]['id'] == pub_id, 'GBG/GBG+ foundation is not slot #1'
+          assert search['items'][0]['pages'] == 17
+          assert phrase in search['items'][0].get('card_text', '')
+
+          index = (docs / 'index.html').read_text()
+          first_card = index.split('<article class="card"', 1)[1].split('</article>', 1)[0]
+          assert title in first_card
+          assert phrase in first_card
+
+          pub_docs = docs / pub_id
+          for name in ['index.html', 'source.html', 'source.tex', 'GBG_and_GBG_Plus_Formal_Foundations_004.pdf']:
+              assert (pub_docs / name).is_file(), name
+          reader = (pub_docs / 'index.html').read_text()
+          assert '/pub/pdf-reader.html?file=' in reader
+          assert 'GBG_and_GBG_Plus_Formal_Foundations_004.pdf' in reader
+          assert 'Source' in reader
+          print('PASS: GBG/GBG+ foundation is slot #1; reader, PDF, source, quote, and catalog card all verified.')
+          PY
+
+      - name: Remove one-time staging and build payload
+        run: |
+          rm -rf incoming_publications/gbg_and_gbg_plus_formal_foundations_004
+          rm -rf .build/gbg_gbg_plus_formal_foundations_004
+
+      - name: Commit verified publication and rebuilt library
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Publish GBG and GBG+ Formal Foundations 004 as card 1 [skip ci]'
+            git push
+          fi
