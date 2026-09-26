@@ -1,0 +1,160 @@
+Every $r_\mu\in z$ is a partial unary rule describing exactly one canonical legal move label $\mu$, and every legal canonical move label is represented by exactly one such rule.
+\end{axiom}
+
+\begin{axiom}[GBG-3: distinguished start]
+The element $s_0\in y$ is the distinguished initial state from which the game and its associated theoremhood relation are evaluated.
+\end{axiom}
+
+Thus
+\[
+\boxed{\text{applicable inference rule}=\text{available legal move}.}
+\]
+Partiality records that a move is not legal at every state.  It does not encode inaction.  If passing is legal, passing receives its own move label and partial rule.
+
+\begin{definition}[Locally finite GBG]
+A GBG is \emph{locally finite} if every state has only finitely many applicable move rules:
+\[
+\bigl|\{\mu\in\mathcal A:s\in D_\mu\}\bigr|<\infty
+\qquad(s\in y).
+\]
+\end{definition}
+
+Local finiteness is an additional property, not part of the bare definition of GBG.
+
+\section{Theoremhood as finite reachability}
+
+Let
+\[
+\Gamma=\{s_0\}.
+\]
+Write
+\[
+\Conseq_F(\Gamma)=\{\varphi\in y:\Gamma\vdash_F\varphi\}
+\]
+for the consequence set under the inference rules $z$.
+
+\begin{theorem}[Reachability--Theorem Correspondence]
+For every GBG,
+\[
+\boxed{
+s\in\Conseq_F(\{s_0\})
+\iff
+s\text{ is reachable from }s_0\text{ by finitely many, possibly zero, legal moves}.
+}
+\]
+\end{theorem}
+
+\begin{proof}
+A finite legal history
+\[
+s_0\to s_1\to\cdots\to s_n=s
+\]
+is a chain of applications of unary inference rules from $z$, hence a derivation of $s$ from $s_0$.  Conversely, because every inference rule in a GBG is exactly a legal move rule, a derivation from the single hypothesis $s_0$ traces a finite legal state-transition path beginning at $s_0$.
+\end{proof}
+
+Accordingly, relative to the distinguished start,
+\[
+\boxed{\text{reachable state}=\text{theorem}.}
+\]
+
+\section{Match-proofs, match trees, and state graphs}
+
+\begin{definition}[Match-proof]
+An $n$-ply match-proof beginning at $s_0$ consists of states
+\[
+(s_0,s_1,\ldots,s_n)
+\]
+and move labels
+\[
+(\mu_0,\ldots,\mu_{n-1})
+\]
+such that
+\[
+s_{i+1}=r_{\mu_i}(s_i)
+\qquad(0\le i<n).
+\]
+\end{definition}
+
+\begin{theorem}[Match-Proof Correspondence]
+Legal move-labeled matches beginning at $s_0$ are in one-to-one correspondence with move-labeled match-proofs beginning at $s_0$.
+\end{theorem}
+
+\begin{proof}
+A legal match records its states and move labels and therefore determines a match-proof.  Conversely, the defining equations of a match-proof state that each consecutive transition is legal and recover the legal match.
+\end{proof}
+
+\begin{definition}[Match tree]
+The \emph{match tree} $\mathcal T(s_0)$ is the rooted tree whose depth-$n$ nodes are the $n$-ply move-labeled match-proofs beginning at $s_0$.
+\end{definition}
+
+\begin{definition}[Move-labeled transition graph and state graph]
+The move-labeled transition graph has vertex set $y$ and an edge $(s,\mu,t)$ whenever $t=r_\mu(s)$.  Its associated state graph forgets the move label.  The reachable subgraph from $s_0$ has vertex set exactly $\Conseq_F(\{s_0\})$.
+\end{definition}
+
+Let $R_n(s_0)$ be the states reachable in exactly $n$ plies, and let $M_n(s_0)$ be the number of move-labeled match-proofs of exactly $n$ plies when this cardinal is finite.
+
+\begin{proposition}[History-to-State Projection]
+The endpoint map from the depth-$n$ level of $\mathcal T(s_0)$ onto $R_n(s_0)$ is surjective.  Hence
+\[
+\boxed{|R_n(s_0)|\le M_n(s_0)}
+\]
+whenever $M_n(s_0)$ is finite.
+\end{proposition}
+
+Different histories may prove the same theorem state.  Equality here means equality of complete rule-relevant states, not merely equality of visible board diagrams.
+
+\section{Certified states}
+
+Suppose a state $s$ is supplied together with a certificate establishing
+\[
+s\in\Conseq_F(\{s_0\}).
+\]
+The certificate proves that $s$ arose legally.  Rule completeness then permits future analysis to begin at $s$ itself.
+
+\begin{proposition}[Certified-State Principle]
+If two legal match-proofs terminate at the same rule-complete state $s$, then they have exactly the same legal immediate continuations and the same successor for each applicable move label.
+\end{proposition}
+
+\begin{proof}
+Applicability and successor values are functions of the rule-complete state $s$, not of the particular history used to reach $s$.
+\end{proof}
+
+\section{Successors, branching, and exact match counting}
+
+Define
+\[
+\Succ(s)=\{r_\mu(s):s\in D_\mu\},
+\]
+\[
+b(s)=|\Succ(s)|,
+\qquad
+b_{\mathrm{move}}(s)=|\{\mu:s\in D_\mu\}|.
+\]
+Then
+\[
+b(s)\le b_{\mathrm{move}}(s),
+\]
+with equality whenever distinct legal move labels always produce distinct successors.
+
+Let $\mathcal M_n(s)$ denote the move-labeled legal histories of exactly $n$ plies beginning at $s$, and put
+\[
+M_n(s)=|\mathcal M_n(s)|,
+\qquad M_0(s)=1.
+\]
+
+\begin{theorem}[Exact Match Recursion]
+For every $n\ge0$,
+\[
+\boxed{
+M_{n+1}(s)=\sum_{\mu:\,s\in D_\mu} M_n(r_\mu(s)).
+}
+\]
+The sum is cardinal in general and finite for locally finite games.
+\end{theorem}
+
+\begin{proof}
+Partition each $(n+1)$-ply history according to its unique first move $\mu$.  After that first move, the remainder is an $n$-ply history beginning at $r_\mu(s)$.
+\end{proof}
+
+\begin{corollary}[Uniform Branching Bound]
+If every state reachable before depth $n$ has at most $B$ legal move labels, then
