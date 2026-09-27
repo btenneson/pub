@@ -25,6 +25,7 @@ def links(x,reader=False):
   result+='<a href="'+p+'" download>Download PDF</a>'
  if x.get('download'):result+='<a href="'+url(x['download'])+'" download>Download DOCX</a>'
  if x.get('source'):result+='<a href="'+url(x['source'])+'">Source</a>'
+ if x.get('source_package'):result+='<a href="'+url(x['source_package'])+'" download>Download Source + PDF ZIP</a>'
  return '<nav class="links" aria-label="Publication links">'+result+'</nav>'
 def card(x):
  return '<article class="card" data-subject="'+esc(x['category'])+'" data-kind="'+esc(x['kind'])+'" data-title="'+esc(x['title'])+'"><h2><a href="'+url(x['href'])+'">'+esc(x['title'])+'</a></h2><div class="meta">'+esc(x['kind']+' · '+x['category'])+'</div>'+('<p>'+esc(x['card_text'])+'</p>' if x.get('card_text') else quote_block(x))+('<p class="status">'+esc(x['status'])+'</p>' if x.get('status') else '')+links(x)+'</article>'
