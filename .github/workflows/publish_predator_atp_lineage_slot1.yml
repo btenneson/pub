@@ -1,5 +1,5 @@
 name: Publish Predator ATP Lineage in slot 1
-# publication trigger after source repair
+# publication trigger after verified source repair
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
           BUILD='.build/predator_atp_lineage'
           STAGE='incoming_publications/predator_atp_lineage'
           mkdir -p "$BUILD"
-          cat "$STAGE"/source.part_00 "$STAGE"/source.part_01 "$STAGE"/source.part_02 "$STAGE"/source.part_03 "$STAGE"/source.part_03b "$STAGE"/source.part_04 "$STAGE"/source.part_05 "$STAGE"/source.part_06 "$STAGE"/source.part_07 > "$BUILD/source.b64"
+          cat "$STAGE"/source.part_00 "$STAGE"/source.part_01 "$STAGE"/source.part_02 "$STAGE"/source.part_03a "$STAGE"/source.part_03b2 "$STAGE"/source.part_04 "$STAGE"/source.part_05 "$STAGE"/source.part_06 "$STAGE"/source.part_07 > "$BUILD/source.b64"
           base64 -d "$BUILD/source.b64" > "$BUILD/source.tex"
           test "$(wc -c < "$BUILD/source.tex")" -eq 31914
           test "$(sha256sum "$BUILD/source.tex" | awk '{print $1}')" = "98da6d105816e92cade8a28d3bae3f27cc932b4f23fa9b06998188fd0e6a23a4"
