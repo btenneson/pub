@@ -1,0 +1,922 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Generalized Board Games and GBG+ — A Self-Contained Formal Foundation with the Board as a Player — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/gbg_and_gbg_plus_formal_foundations_004/">Back to publication</a><h1>Generalized Board Games and GBG+ — A Self-Contained Formal Foundation with the Board as a Player</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/gbg_and_gbg_plus_formal_foundations_004/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setlength{\emergencystretch}{2em}
+
+\hypersetup{
+  pdftitle={Generalized Board Games and GBG+: A Self-Contained Formal Foundation},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={Axiomatic GBG foundations and the GBG+ extension with the board as a player}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\GBG}{\mathrm{GBG}}
+\newcommand{\GBGp}{\mathrm{GBG}^{+}}
+\newcommand{\GBGmin}{\mathrm{GBG}^{+}_{\min}}
+\newcommand{\GBGpass}{\mathrm{GBG}^{+}_{\mathrm{pass}}}
+\newcommand{\Conseq}{\operatorname{Con}}
+\newcommand{\Succ}{\operatorname{Succ}}
+\newcommand{\Legal}{\operatorname{Legal}}
+\newcommand{\Fix}{\operatorname{Fix}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\Board}{B^{\star}}
+\newcommand{\V}{\operatorname{V}}
+\newcommand{\Source}{\operatorname{Source}}
+\newcommand{\N}{\mathbb{N}}
+
+\title{\textbf{Generalized Board Games and GBG$^{+}$}\\[0.45em]
+\large A Self-Contained Formal Foundation with the Board as a Player}
+\author{Brian Tenneson}
+\date{September 26, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document is intended to serve as a self-contained formal reference for generalized board games (GBGs) and for the provisional extension called GBG$^{+}$, in which the board is represented by a distinguished additional player.  The first part restates the general GBG framework in axiomatic form: $xyz$ formal systems, rule-complete states, partial unary move rules, theoremhood as finite reachability, match-proofs, match trees and state graphs, certified states, exact match counting, and finite forced-win regions and horizons.  These are the general ingredients developed in the original GBG article, rather than game-specific facts about tic-tac-toe or chess.
+
+The second part adds the board-player $P_0=B^{\star}$ and the player-label operator
+\[
+F(r)=\max(0,r-1)
+\]
+on $\{0,1,\ldots,N\}$.  The base GBG$^{+}$ axioms deliberately require only an underlying GBG, a unique board-player, rule completeness, board legality/non-sovereignty, and the label operator.  Certification, memory, handoff, reflection, scheduling, federation, and controlled board mutation are presented as optional extension packages.  A passive subclass supplies an explicit section/projection pair
+\[
+\GBG\xrightarrow{E}\GBGpass\xrightarrow{U}\GBG,
+\qquad U\circ E=\id_{\GBG},
+\]
+which establishes structural relative consistency in the precise sense defined here.  The resulting document is designed as a springboard: later work on schedulers, multi-agent settlement systems, ATP federations, and related architectures may cite one source for both the GBG substrate and the GBG$^{+}$ extension interface.
+\end{abstract}
+
+\section{Purpose and source relationship}
+
+The formal starting point is Brian Tenneson&#x27;s original article
+\href{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001/}{\emph{Generalized Board Games: From Tic-Tac-Toe to Chess as $xyz$ Formal Systems}} \cite{TennesonGBG}.  Its live GitHub Pages publication and the corresponding repository directory are both cited in the bibliography.  The original article develops GBGs as concrete $xyz$ formal systems: rule-complete states are formal objects, legal moves are partial unary inference rules, finite reachability is theoremhood, and legal histories are match-proofs.
+
+The present document has a different role.  It packages the \emph{general formal content} of GBG into one reusable axiomatic reference and then places GBG$^{+}$ directly on top of that substrate.  Game-specific enumerations for tic-tac-toe, chess perft values, Shannon-scale estimates, and FIDE-specific facts remain in the original article; they are examples and measurements rather than axioms needed to define GBG or GBG$^{+}$.
+
+\section{Authorship, ChatGPT assistance, and audit provenance}
+Brian Tenneson is the named author and supplied the underlying GBG framework and the GBG$^{+}$ board-player proposal developed here.  OpenAI&#x27;s ChatGPT, referred to as ``Atlas&#x27;&#x27; in the working dialogue, was used as an interactive research and editorial assistant.  Its role included organizing definitions and axioms, testing formulations for internal coherence, identifying ambiguities and counterexamples, proposing revisions, preparing and revising the LaTeX source, and performing repeated mathematical and typesetting audits.
+
+The displayed arguments remain mathematical arguments open to ordinary independent checking; they are not an institutional certification by OpenAI and this document has not thereby received external peer review.  ChatGPT is not listed as a coauthor.  Responsibility for the final selection of definitions, claims, terminology, and publication decisions remains with the named human author.
+
+\part{The GBG Foundation}
+
+\section{The ambient \texorpdfstring{$xyz$}{xyz} formal system}
+
+\begin{definition}[Finitary partial rule]
+Let $y$ be a set.  A $k$-ary rule on $y$ is a partial function
+\[
+r:y^k\rightharpoonup y,
+\]
+where $k\ge 1$.  A rule is \emph{finitary} if it is $k$-ary for some positive finite $k$.
+\end{definition}
+
+\begin{definition}[$xyz$ formal system]
+An $xyz$ formal system is an ordered triple
+\[
+F=(x,y,z),
+\]
+where:
+\begin{enumerate}[label=(\roman*),leftmargin=1.7em]
+\item $x$ is a nonempty alphabet;
+\item $y$ is a set of well-formed finite strings over $x$;
+\item $z$ is a set of finitary partial rules on $y$.
+\end{enumerate}
+The members of $z$ are the inference rules.
+\end{definition}
+
+For GBGs the intended dictionary is
+\[
+\boxed{x=\text{symbols}},\qquad
+\boxed{y=\text{rule-complete game states}},\qquad
+\boxed{z=\text{licensed game transitions}}.
+\]
+A legal move is therefore not merely analogous to an inference rule: after a fixed finite encoding, it is represented by one.
+
+\section{Rule-complete states and move rules}
+
+Let a game state contain all information needed to determine legal immediate continuations.  A visible board diagram alone may be insufficient: side to move, terminal status, repetition data, counters, permissions, or other metadata can matter.
+
+\begin{definition}[Rule-complete state]
+A state $s$ is \emph{rule-complete} if $s$ alone determines:
+\begin{enumerate}[label=(\roman*),leftmargin=1.7em]
+\item which concrete moves are legal at $s$;
+\item the unique successor produced by each legal move;
+\item the rule-relevant terminal status after that move.
+\end{enumerate}
+\end{definition}
+
+A rule-complete state may be written schematically as
+\[
+s=(\ell,\tau,\eta),
+\]
+where $\ell$ records the visible location report, $\tau$ records the player to move when that is part of the game, and $\eta$ contains any additional metadata required for rule completeness.  The tuple is represented by a fixed finite-string encoding in $y$.
+
+Let $\mathcal A$ be a set of canonical concrete move labels.  For each $\mu\in\mathcal A$, let
+\[
+r_\mu:y\rightharpoonup y,
+\qquad
+D_\mu=\operatorname{dom}(r_\mu).
+\]
+Then $s\in D_\mu$ means that move $\mu$ is legal at state $s$, and $r_\mu(s)$ is the resulting rule-complete state.
+
+\section{Axiomatic definition of a GBG}
+
+\begin{definition}[Generalized board game]
+A \emph{generalized board game} is data
+\[
+G=(F,s_0,\mathcal A,\rho),
+\]
+where $F=(x,y,z)$ is an $xyz$ formal system, $s_0\in y$ is a distinguished initial state, $\mathcal A$ is a set of canonical move labels, and
+\[
+\rho:\mathcal A\xrightarrow{\sim}z,
+\qquad \rho(\mu)=r_\mu,
+\]
+is a bijection, subject to the following GBG axioms.
+\end{definition}
+
+\begin{axiom}[GBG-1: rule-complete state space]
+Every element of $y$ encodes a rule-complete state of the game.
+\end{axiom}
+
+\begin{axiom}[GBG-2: move-rule exactness]
+Every $r_\mu\in z$ is a partial unary rule describing exactly one canonical legal move label $\mu$, and every legal canonical move label is represented by exactly one such rule.
+\end{axiom}
+
+\begin{axiom}[GBG-3: distinguished start]
+The element $s_0\in y$ is the distinguished initial state from which the game and its associated theoremhood relation are evaluated.
+\end{axiom}
+
+Thus
+\[
+\boxed{\text{applicable inference rule}=\text{available legal move}.}
+\]
+Partiality records that a move is not legal at every state.  It does not encode inaction.  If passing is legal, passing receives its own move label and partial rule.
+
+\begin{definition}[Locally finite GBG]
+A GBG is \emph{locally finite} if every state has only finitely many applicable move rules:
+\[
+\bigl|\{\mu\in\mathcal A:s\in D_\mu\}\bigr|&lt;\infty
+\qquad(s\in y).
+\]
+\end{definition}
+
+Local finiteness is an additional property, not part of the bare definition of GBG.
+
+\section{Theoremhood as finite reachability}
+
+Let
+\[
+\Gamma=\{s_0\}.
+\]
+Write
+\[
+\Conseq_F(\Gamma)=\{\varphi\in y:\Gamma\vdash_F\varphi\}
+\]
+for the consequence set under the inference rules $z$.
+
+\begin{theorem}[Reachability--Theorem Correspondence]
+For every GBG,
+\[
+\boxed{
+s\in\Conseq_F(\{s_0\})
+\iff
+s\text{ is reachable from }s_0\text{ by finitely many, possibly zero, legal moves}.
+}
+\]
+\end{theorem}
+
+\begin{proof}
+A finite legal history
+\[
+s_0\to s_1\to\cdots\to s_n=s
+\]
+is a chain of applications of unary inference rules from $z$, hence a derivation of $s$ from $s_0$.  Conversely, because every inference rule in a GBG is exactly a legal move rule, a derivation from the single hypothesis $s_0$ traces a finite legal state-transition path beginning at $s_0$.
+\end{proof}
+
+Accordingly, relative to the distinguished start,
+\[
+\boxed{\text{reachable state}=\text{theorem}.}
+\]
+
+\section{Match-proofs, match trees, and state graphs}
+
+\begin{definition}[Match-proof]
+An $n$-ply match-proof beginning at $s_0$ consists of states
+\[
+(s_0,s_1,\ldots,s_n)
+\]
+and move labels
+\[
+(\mu_0,\ldots,\mu_{n-1})
+\]
+such that
+\[
+s_{i+1}=r_{\mu_i}(s_i)
+\qquad(0\le i&lt;n).
+\]
+\end{definition}
+
+\begin{theorem}[Match-Proof Correspondence]
+Legal move-labeled matches beginning at $s_0$ are in one-to-one correspondence with move-labeled match-proofs beginning at $s_0$.
+\end{theorem}
+
+\begin{proof}
+A legal match records its states and move labels and therefore determines a match-proof.  Conversely, the defining equations of a match-proof state that each consecutive transition is legal and recover the legal match.
+\end{proof}
+
+\begin{definition}[Match tree]
+The \emph{match tree} $\mathcal T(s_0)$ is the rooted tree whose depth-$n$ nodes are the $n$-ply move-labeled match-proofs beginning at $s_0$.
+\end{definition}
+
+\begin{definition}[Move-labeled transition graph and state graph]
+The move-labeled transition graph has vertex set $y$ and an edge $(s,\mu,t)$ whenever $t=r_\mu(s)$.  Its associated state graph forgets the move label.  The reachable subgraph from $s_0$ has vertex set exactly $\Conseq_F(\{s_0\})$.
+\end{definition}
+
+Let $R_n(s_0)$ be the states reachable in exactly $n$ plies, and let $M_n(s_0)$ be the number of move-labeled match-proofs of exactly $n$ plies when this cardinal is finite.
+
+\begin{proposition}[History-to-State Projection]
+The endpoint map from the depth-$n$ level of $\mathcal T(s_0)$ onto $R_n(s_0)$ is surjective.  Hence
+\[
+\boxed{|R_n(s_0)|\le M_n(s_0)}
+\]
+whenever $M_n(s_0)$ is finite.
+\end{proposition}
+
+Different histories may prove the same theorem state.  Equality here means equality of complete rule-relevant states, not merely equality of visible board diagrams.
+
+\section{Certified states}
+
+Suppose a state $s$ is supplied together with a certificate establishing
+\[
+s\in\Conseq_F(\{s_0\}).
+\]
+The certificate proves that $s$ arose legally.  Rule completeness then permits future analysis to begin at $s$ itself.
+
+\begin{proposition}[Certified-State Principle]
+If two legal match-proofs terminate at the same rule-complete state $s$, then they have exactly the same legal immediate continuations and the same successor for each applicable move label.
+\end{proposition}
+
+\begin{proof}
+Applicability and successor values are functions of the rule-complete state $s$, not of the particular history used to reach $s$.
+\end{proof}
+
+\section{Successors, branching, and exact match counting}
+
+Define
+\[
+\Succ(s)=\{r_\mu(s):s\in D_\mu\},
+\]
+\[
+b(s)=|\Succ(s)|,
+\qquad
+b_{\mathrm{move}}(s)=|\{\mu:s\in D_\mu\}|.
+\]
+Then
+\[
+b(s)\le b_{\mathrm{move}}(s),
+\]
+with equality whenever distinct legal move labels always produce distinct successors.
+
+Let $\mathcal M_n(s)$ denote the move-labeled legal histories of exactly $n$ plies beginning at $s$, and put
+\[
+M_n(s)=|\mathcal M_n(s)|,
+\qquad M_0(s)=1.
+\]
+
+\begin{theorem}[Exact Match Recursion]
+For every $n\ge0$,
+\[
+\boxed{
+M_{n+1}(s)=\sum_{\mu:\,s\in D_\mu} M_n(r_\mu(s)).
+}
+\]
+The sum is cardinal in general and finite for locally finite games.
+\end{theorem}
+
+\begin{proof}
+Partition each $(n+1)$-ply history according to its unique first move $\mu$.  After that first move, the remainder is an $n$-ply history beginning at $r_\mu(s)$.
+\end{proof}
+
+\begin{corollary}[Uniform Branching Bound]
+If every state reachable before depth $n$ has at most $B$ legal move labels, then
+\[
+M_n(s_0)\le B^n.
+\]
+\end{corollary}
+
+\begin{corollary}[Layerwise Branching Bound]
+If every state reachable after exactly $j$ plies has at most $B_j$ legal move labels for $0\le j&lt;n$, then
+\[
+M_n(s_0)\le\prod_{j=0}^{n-1}B_j.
+\]
+\end{corollary}
+
+\section{Endpoint-sensitive match counting and relation to proof counting}
+For a specified endpoint $\varphi\in y$, let $\operatorname{end}(\pi)$ denote the endpoint state of a match-proof $\pi$ and define
+\[
+M_n(s_0,\varphi)=
+\bigl|\{\pi\in\mathcal M_n(s_0):\operatorname{end}(\pi)=\varphi\}\bigr|.
+\]
+When the depth-$n$ level is finite, the match count decomposes by endpoint:
+\[
+\boxed{
+M_n(s_0)=\sum_{\varphi\in R_n(s_0)}M_n(s_0,\varphi).
+}
+\]
+Thus GBG counting may distinguish the number of histories from the number of distinct theorem states and from the number of histories proving a particular theorem state.
+
+The original GBG article also places this sequential counting beside general proof counting for $xyz$ systems.  If $P_F(\Gamma,\varphi,n)$ denotes the number of $n$-line proofs of $\varphi$, the maximum rule arity is $a$, $z_k(F)\subseteq z$ denotes the set of $k$-ary rules, and $\kappa_k=|z_k(F)|$, the general bound quoted there is
+\[
+P_F(\Gamma,\varphi,n)
+\le
+\prod_{j=1}^{n}
+\left(
+|\Gamma|+\sum_{k=1}^{a}\kappa_k(j-1)^k
+\right).
+\]
+GBG match-proofs are more temporally constrained: the next unary move rule acts on the immediately preceding state.  The exact match recursion above is therefore directed-path counting rather than unrestricted reuse of earlier proof lines \cite{TennesonGBG,TennesonDepths}.
+
+\section{Alternating forced-win regions and settlement horizon}
+
+This section applies to a two-player alternating GBG with players $P$ and $Q$.  Partition nonterminal states into $P$-to-move and $Q$-to-move states.  Let $W_P$ be the terminal states in which $P$ wins.  A maximal play is either an infinite legal history or a finite history ending in a terminal state.
+
+Define
+\[
+A_0=W_P.
+\]
+Inductively put
+\[
+A_{n+1}=A_n\cup E_n\cup U_n,
+\]
+where $E_n$ contains nonterminal $P$-to-move states $s$ such that
+\[
+\exists t\in\Succ(s)\quad t\in A_n,
+\]
+and $U_n$ contains nonterminal $Q$-to-move states $s$ such that
+\[
+\Succ(s)\neq\varnothing
+\quad\text{and}\quad
+\forall t\in\Succ(s),\ t\in A_n.
+\]
+Set
+\[
+W_P^*=\bigcup_{n=0}^{\infty}A_n.
+\]
+
+\begin{theorem}[Finite Forced-Win Characterization]
+In a locally finite two-player alternating GBG,
+\[
+\boxed{s\in W_P^*}
+\]
+if and only if $P$ has a strategy from $s$ under which every maximal compatible play reaches $W_P$ after finitely many plies.
+\end{theorem}
+
+\begin{proof}
+If $s\in A_n$ for least $n$, the existential clause at $P$-states and universal clause at $Q$-states allow $P$ to force the stage index to decrease until $A_0=W_P$ is reached.  Conversely, if $P$ has a strategy under which every maximal compatible play reaches $W_P$ in finite time, its strategy tree is finitely branching.  If it had unbounded finite depth, Koenig&#x27;s lemma would yield an infinite compatible branch, contradicting the assumption.  Hence the strategy tree has finite height, and backward induction places the root in some $A_N$.
+\end{proof}
+
+\begin{definition}[Forced-win horizon]
+For $s\in W_P^*$ define
+\[
+h_P(s)=\min\{n:s\in A_n\}.
+\]
+Then $h_P(s)=0$ on $W_P$.  At nonterminal forced-win states,
+\[
+h_P(s)=1+\min_{t\in\Succ(s)\cap W_P^*}h_P(t)
+\]
+when it is $P$&#x27;s turn, while
+\[
+h_P(s)=1+\max_{t\in\Succ(s)}h_P(t)
+\]
+when it is $Q$&#x27;s turn.
+\end{definition}
+
+This differs from ordinary shortest-proof length: a shortest proof selects one successful derivation, whereas a forced-win horizon must survive all opponent responses allowed by the strategy game.
+
+\section{Player-indexed interface for later extensions}
+
+The original GBG definition does not require a separate player sort: player-to-move information can be encoded inside rule-complete states.  For constructions that manipulate players explicitly, this document uses the following conservative interface layer.  It does not change the underlying GBG consequence or reachability relation.
+
+\begin{definition}[Player-indexed GBG presentation]
+Let $G=(F,s_0,\mathcal A,\rho)$ be a GBG and let
+\[
+J_N=\{1,\ldots,N\},\qquad N\ge1.
+\]
+A \emph{player-indexed presentation} of $G$ consists of an authorization map
+\[
+\mathsf{Auth}:\{(s,\mu):s\in D_\mu\}
+\longrightarrow \mathcal P(J_N)\setminus\{\varnothing\}.
+\]
+For $i\in J_N$, define
+\[
+\Legal_i(s)=\{\mu:s\in D_\mu\text{ and }i\in\mathsf{Auth}(s,\mu)\}.
+\]
+Thus every applicable move has at least one authorized player.  Shared or joint authorization is permitted; in an ordinary turn-based presentation each applicable move has a singleton authorization set.
+\end{definition}
+
+\begin{proposition}[Existence of a player-indexed presentation]
+Every GBG admits at least one player-indexed presentation without changing its states, move rules, reachability relation, or match-proofs.
+\end{proposition}
+
+\begin{proof}
+Take $N=1$ and authorize player $1$ for every applicable move.  More informative presentations may of course use the game&#x27;s intended player set and turn structure.
+\end{proof}
+
+The authorization structure records who may perform an already-declared GBG move.  It does not create new successors or alter the partial move rules.  Private memories, local policies, ownership metadata, or enabledness conventions may be added as auxiliary data provided the complete state remains rule-complete.
+
+\begin{remark}[Relabeling and indexed structure]
+The underlying unindexed GBG does not canonically order its players.  Once labels $1,\ldots,N$ are chosen, that indexing becomes part of the presentation used by GBG$^{+}$.  In particular, the operator $F(r)=\max(0,r-1)$ introduced below is structure on the chosen indexing; it is not invariant under arbitrary relabeling unless the relabeling is required to preserve $F$.
+\end{remark}
+
+\begin{remark}[Why this foundation is sufficient for ATP and settlement work]
+Nothing in the preceding axioms requires physical boards, human players, or competitive utility.  A ``state&#x27;&#x27; may be a proof-search state; a ``move&#x27;&#x27; may be an inference, solver action, lemma deposit, verifier action, or scheduler decision; and a terminal winning set may be replaced by a settlement region.  The formal requirement is that the resulting system be represented by rule-complete states and declared transitions.  Thus GBG is already broad enough to serve as the substrate for multi-agent settling systems and ATP architectures.
+\end{remark}
+
+\part{\texorpdfstring{GBG$^{+}$}{GBG+}: Adding the Board as a Player}
+
+\section{The minimal \texorpdfstring{GBG$^{+}$}{GBG+} data}
+
+Let $G$ be an ordinary GBG with ordinary player labels
+\[
+J_N=\{1,\ldots,N\}.
+\]
+Define the enlarged player-label set
+\[
+I_N=\{0,1,\ldots,N\}.
+\]
+The new label $0$ is reserved for the board-player
+\[
+P_0=\Board.
+\]
+The board-state coordinate, when one is explicitly represented, will still be denoted by $B$.  Thus $B$ and $\Board$ are not the same type of object: $B$ is state data, while $\Board$ is the distinguished participant associated with the board.
+
+\begin{definition}[Minimal GBG$^{+}$ structure]
+Fix a player-indexed presentation of an ordinary GBG $G$ on $J_N$.  A minimal GBG$^{+}$ over $G$ is data
+\[
+G^{+}=(G,H,\mathsf{Auth}^{+},\Board,F),
+\]
+where $H$ is an enlarged GBG, $\mathsf{Auth}^{+}$ is an $I_N$-indexed authorization interface for its applicable moves, $\Board=P_0$ is the distinguished board-player, and $F:I_N\to I_N$ is the label operator specified below.  The data satisfy axioms GBG$^{+}$-1 through GBG$^{+}$-5.
+\end{definition}
+
+\begin{axiom}[GBG$^{+}$-1: underlying GBG]
+Every GBG$^{+}$ carries a designated player-indexed ordinary GBG $G$ on the ordinary labels $1,\ldots,N$.  The structural projection that returns this designated underlying game is denoted by
+\[
+U(G^{+})=G.
+\]
+\end{axiom}
+
+\begin{axiom}[GBG$^{+}$-2: distinguished board-player]
+There is a unique distinguished additional participant
+\[
+P_0=\Board.
+\]
+The ordinary players remain labeled $P_1,\ldots,P_N$.
+\end{axiom}
+
+\begin{axiom}[GBG$^{+}$-3: enlarged rule completeness and authorization]
+The enlarged game $H$ is represented by rule-complete states and declared partial transition rules.  For every applicable enlarged move $(S,\mu)$, the nonempty set $\mathsf{Auth}^{+}(S,\mu)\subseteq I_N$ specifies its authorized participants.  Equivalently,
+\[
+\Legal_i(S)=\{\mu:S\in D_\mu^{+}\text{ and }i\in\mathsf{Auth}^{+}(S,\mu)\}
+\]
+is determined for every $i\in I_N$, and every legal move has a uniquely determined successor in $H$.
+\end{axiom}
+
+\begin{axiom}[GBG$^{+}$-4: board legality and non-sovereignty]
+Every action of the board-player belongs to $\Legal_0(S)$.  The board-player has no extra-system authority to perform undeclared interventions.  Any scheduling, memory write, handoff, certification, broadcast, rule update, or board mutation attributed to the board must itself be represented by a legal transition of the enlarged game.
+\end{axiom}
+
+\begin{axiom}[GBG$^{+}$-5: board-directed player-label operator]
+The player labels carry the total map
+\[
+F:I_N\to I_N,
+\qquad
+F(r)=\max(0,r-1).
+\]
+The operator acts on player names only unless an additional GBG$^{+}$ extension explicitly lifts it to other structures.
+\end{axiom}
+
+These five axioms constitute the base GBG$^{+}$ package used in this document.  In particular, memory, certification, handoff, reflection, scheduling, federation, and board mutation are not required for membership in GBG$^{+}$.
+
+\section{The player-label geometry}
+
+\begin{proposition}[Iterates and fixed point of $F$]
+For every $k\ge0$ and $r\in I_N$,
+\[
+\boxed{F^k(r)=\max(0,r-k).}
+\]
+Consequently,
+\[
+\Fix(F)=\{0\}
+\]
+and
+\[
+F^N(r)=0
+\qquad(r\in I_N).
+\]
+\end{proposition}
+
+\begin{proof}
+Induction on $k$ gives the displayed iterate formula.  The fixed-point and stabilization claims follow immediately.
+\end{proof}
+
+Let
+\[
+\pi_N:I_N\twoheadrightarrow\{0\}
+\]
+be the co-restriction of $F^N$ to codomain $\{0\}$, and let
+\[
+\iota:\{0\}\hookrightarrow I_N
+\]
+be inclusion.  Then
+\[
+\boxed{\pi_N\circ\iota=\id_{\{0\}}.}
+\]
+Hence $0$ is the unique fixed player label, and the singleton $\{0\}$ is the image of the canonical retraction $\pi_N$ of the finite player-label dynamics.
+
+\begin{remark}
+The map $F$ itself is not generally a projection on all of $I_N$ because $F^2(r)\neq F(r)$ for $r\ge2$.  The stabilized map $F^N$, co-restricted to $\{0\}$, is the relevant projection.
+\end{remark}
+
+\section{Passive/conservative \texorpdfstring{GBG$^{+}$}{GBG+}}
+
+The base theory allows active board behavior.  For structural comparison with the underlying GBG, a weaker passive subclass is useful.
+
+\begin{definition}[Passive board action]
+A passive board action $\varepsilon$ is an administrative board move authorized only for $P_0$ that leaves the underlying ordinary GBG state unchanged.  In the canonical passive extension below, an auxiliary bit $b\in\{0,1\}$ makes $\varepsilon$ available only at $b=0$ when at least one ordinary move is available, and
+\[
+r_\varepsilon^{+}(\langle s,0\rangle)=\langle s,1\rangle.
+\]
+Every ordinary move resets the bit to $0$.  Hence at most one $\varepsilon$ can occur between consecutive ordinary moves, no infinite $\varepsilon$-only tail exists, and $\varepsilon$ has ordinary-game ply cost $0$ under the history projection.
+\end{definition}
+
+\begin{definition}[Passive/conservative GBG$^{+}$]
+A minimal GBG$^{+}$ over $G$ is \emph{passive/conservative} if the board-player has no ordinary-game-changing action and there is a history projection $\bar U$ that erases board-only coordinates and $\varepsilon$-stuttering, sending every enlarged history to a legal history of $G$ while preserving its ordinary move sequence, terminal status, and ordinary ply count.
+\end{definition}
+
+Here $U$ denotes the structural projection on complete GBG$^{+}$ objects, while $\bar U$ denotes the induced projection on passive histories.
+
+\section{Structural relative consistency}
+
+\begin{definition}[Canonical passive board extension]
+Let $G=(F,s_0,\mathcal A,\rho)$ be a GBG equipped with a fixed player-indexed presentation $(J_N,\mathsf{Auth})$.  Define $E(G)$ by the following fixed tagged construction.
+\begin{enumerate}[label=(\roman*),leftmargin=1.7em]
+\item Adjoin $P_0=\Board$ and set $I_N=\{0,1,\ldots,N\}$.
+\item Replace each state $s\in y$ by the two fixed finite-string encodings $\langle s,0\rangle$ and $\langle s,1\rangle$.  The second coordinate is an administrative board bit, not part of the underlying GBG state.  The initial enlarged state is $\langle s_0,0\rangle$.
+\item For every ordinary move label $\mu\in\mathcal A$, define
+\[
+r_\mu^{+}(\langle s,b\rangle)=\langle r_\mu(s),0\rangle\qquad(b\in\{0,1\})
+\]
+whenever $s\in D_\mu$, with exactly the same ordinary authorization set as in $G$.
+\item Add one new move label $\varepsilon$, authorized only for $P_0$.  It is defined exactly at states $\langle s,0\rangle$ for which at least one ordinary move is applicable, and
+\[
+r_\varepsilon^{+}(\langle s,0\rangle)=\langle s,1\rangle.
+\]
+Thus $\varepsilon$ cannot repeat until an ordinary move occurs, and it is unavailable at an ordinary dead end.
+\item Retain every ordinary terminal, winning, and settlement condition through the tagged copy, define $F(r)=\max(0,r-1)$ on $I_N$, and add no optional package beyond minimal GBG$^{+}$.
+\end{enumerate}
+The structural projection $U$ removes the administrative bit and board-player interface, and the history projection $\bar U$ additionally erases occurrences of $\varepsilon$.
+\end{definition}
+
+\begin{theorem}[Passive Board Extension]
+Every player-indexed ordinary GBG $G$ admits the canonical passive minimal GBG$^{+}$ extension $E(G)$ satisfying
+\[
+\boxed{U(E(G))=G.}
+\]
+Consequently,
+\[
+\boxed{U\circ E=\id_{\GBG}.}
+\]
+Moreover, $\bar U$ preserves the ordinary move sequence, ordinary ply count, terminal status, winning/settlement status, and maximality of passive histories.
+\end{theorem}
+
+\begin{proof}
+The tagged state set is again a set of finitely encoded rule-complete states.  Each lifted ordinary rule has exactly the successor prescribed by $G$ and resets the administrative bit to $0$.  The sole new rule $r_\varepsilon^{+}$ changes only that bit, is authorized only for the board-player, and can occur at most once before the next ordinary move.  Thus the enlarged system is a GBG with the required $I_N$ authorization interface and satisfies GBG$^{+}$-1 through GBG$^{+}$-5.  Removing the administrative bit and board-player interface and deleting the $\varepsilon$ move rule returns exactly the original state space, ordinary move labels, partial rules, authorizations, initial state, and terminal conditions.  Hence $U(E(G))=G$.  Since $\varepsilon$ neither changes the underlying state nor creates an infinite administrative tail, $\bar U$ preserves ordinary move sequences, ordinary ply counts, terminal status, and maximality of histories.
+\end{proof}
+
+\begin{definition}[Structural relative consistency]
+Minimal GBG$^{+}$ is \emph{structurally consistent relative to GBG} if there exist maps
+\[
+E:\GBG\to\GBGmin,
+\qquad
+U:\GBGmin\to\GBG
+\]
+such that
+\[
+U\circ E=\id_{\GBG}.
+\]
+Here the maps act on player-indexed presentations.  By the existence proposition above, every unindexed GBG admits such a presentation; forgetting the authorization interface recovers its original GBG transition structure.
+\end{definition}
+
+\begin{corollary}[Structural relative consistency of GBG$^{+}$]
+Minimal GBG$^{+}$ is structurally consistent relative to GBG in the preceding sense.  The witness $E$ lands in the passive subclass $\GBGpass$.
+\end{corollary}
+
+\begin{corollary}[Nonemptiness equivalence]
+\[
+\boxed{\GBG\neq\varnothing\iff\GBGmin\neq\varnothing.}
+\]
+The same equivalence holds with $\GBGpass$ in place of $\GBGmin$.
+\end{corollary}
+
+\begin{proof}
+If an ordinary GBG exists, the passive extension theorem constructs a member of $\GBGpass\subseteq\GBGmin$.  Conversely, GBG$^{+}$-1 supplies a designated underlying ordinary GBG for every member of $\GBGmin$ or $\GBGpass$.
+\end{proof}
+
+\begin{remark}[What is, and is not, being claimed]
+The comparison theory here is GBG, not ZFC.  The theorem above is an explicit structural section/projection result.  A later paper may formalize theories $T_{\GBG}$ and $T_{\GBGp}$ in a chosen logic and derive a corresponding syntactic relative-consistency theorem, but no such unchosen proof calculus is silently assumed here.
+\end{remark}
+
+\section{Projection-conservativity}
+
+\begin{definition}[Lift of an underlying-GBG property]
+For any property $Q$ of ordinary GBGs, define
+\[
+Q^{+}(H):=Q(U(H)).
+\]
+\end{definition}
+
+\begin{theorem}[Projection-conservativity]
+For every ordinary GBG $G$ and every property $Q$ of ordinary GBGs,
+\[
+\boxed{Q^{+}(E(G))\iff Q(G).}
+\]
+\end{theorem}
+
+\begin{proof}
+By definition,
+\[
+Q^{+}(E(G))=Q(U(E(G)))=Q(G).
+\]
+\end{proof}
+
+This is the unconditional conservativity result established by the present foundation.  A stronger semantic or syntactic conservativity statement for a specified logical language is a separate question.
+
+\part{Optional \texorpdfstring{GBG$^{+}$}{GBG+} Extension Packages}
+
+\section{Certified board-player package}
+
+\begin{axiom}[C-1: no ex nihilo certification]
+If the board-player promotes $x$ into trusted certified state, then some declared certificate $c$ is accepted:
+\[
+\operatorname{Trust}_B(x)
+\Longrightarrow
+\exists c\;\V(c,x)=1.
+\]
+Here $\operatorname{Trust}_B(x)$ means that $x$ has been admitted to the board&#x27;s trusted certified state; it is not an independent proof relation.
+\end{axiom}
+
+\begin{axiom}[C-2: provenance preservation]
+Whenever a certified object is stored, transformed, or handed off by the board-player, the system retains enough provenance to identify the legal certified history responsible for the trusted version of that object.
+\end{axiom}
+
+These axioms define a \emph{certified GBG$^{+}$} subclass.  They are intentionally not part of minimal GBG$^{+}$.
+
+\section{Memory package}
+
+Let $M_B(t)$ denote board memory at time $t$.
+
+\begin{axiom}[M-1: declared memory transition]
+Board memory evolves only through a declared transition law
+\[
+M_B(t+1)=\Phi(M_B(t),\mathrm{inputs}_t).
+\]
+The law may implement perfect, bounded, fading, refreshed, or other explicitly specified memory dynamics.
+\end{axiom}
+
+\begin{axiom}[M-2: authorized read/write]
+Every board-memory read or write is a legal GBG$^{+}$ action, and any certification requirement imposed on trusted writes is enforced by the chosen certified package.
+\end{axiom}
+
+\section{Handoff package}
+
+A board-mediated handoff has the schematic form
+\[
+P_i\longrightarrow\Board\longrightarrow P_j.
+\]
+A packet may be represented by
+\[
+H=(x,c,i,j,t),
+\]
+where $x$ is content and $c$ is a certificate or provenance object.
+
+\begin{axiom}[H-1: legal deposit and delivery]
+Depositing and delivering a handoff packet are declared legal GBG$^{+}$ actions and respect any authorization policy of the system.
+\end{axiom}
+
+\begin{axiom}[H-2: content/provenance discipline]
+The board may not silently alter the certified semantic content of a packet.  Any transformation of trusted content requires a separately declared legal transformation with corresponding provenance.
+\end{axiom}
+
+\section{Scheduler package}
+
+Let
+\[
+\operatorname{Enabled}(S)\subseteq\{1,\ldots,N\}
+\]
+be the ordinary players enabled at enlarged state $S$.
+
+\begin{axiom}[S-1: scheduler legality]
+A scheduling action of the board chooses only some
+\[
+i\in\operatorname{Enabled}(S).
+\]
+Scheduling may select among enabled participants but may not, merely by selection, convert an illegal ordinary action into a legal one.
+\end{axiom}
+
+Fairness is not part of the base scheduler package.  A later architecture may add weak fairness, strong fairness, budget fairness, priority rules, learned scheduling, derivative-aware scheduling, or another declared policy and audit that stronger subclass separately.
+
+\section{Federation package}
+
+Let $M_i$ be the local memory of ordinary player $P_i$ and $M_B$ the trusted board memory.
+
+\begin{axiom}[F-1: verified origin]
+For every trusted item $x$,
+\[
+\boxed{
+x\in M_B
+\Longrightarrow
+\exists i\in\{1,\ldots,N\}\;\exists c\;
+\bigl(\Source(i,x)\land x\in M_i\land\V(c,x)=1\bigr).
+}
+\]
+\end{axiom}
+
+A separate broadcast rule may determine whether an accepted item in $M_B$ is copied into some or all authorized local memories.  Verified origin and broadcast are distinct requirements.
+
+\section{Reflective package}
+
+Let $\operatorname{Board}_{\mathcal A}(\Board)$ denote a formal statement that the distinguished board-player satisfies a chosen axiom package $\mathcal A$.  A reflective GBG$^{+}$ may support expressions such as
+\[
+K_B(\operatorname{Board}_{\mathcal A}(\Board))
+\]
+or
+\[
+K_BK_B(\operatorname{Board}_{\mathcal A}(\Board)).
+\]
+These are characteristics of particular systems, not axioms of GBG$^{+}$ in general.  A verifier-grounded reading may define $K_B(\varphi)$ to mean that the board stores an accepted certificate for $\varphi$.  No phenomenological interpretation is implied or required.
+
+\section{Mutable-board package}
+
+A stronger GBG$^{+}$ may allow
+\[
+B_t\to B_{t+1}
+\]
+through declared board or meta-rules.
+
+\begin{axiom}[E-1: legal board evolution]
+Every board mutation is itself a legal transition of the enlarged game.
+\end{axiom}
+
+\begin{axiom}[E-2: no undeclared meta-sovereignty]
+The fact that the board is a player does not license arbitrary changes to the move rules, state space, player set, or terminal conditions.  Any such change must be permitted by already declared transition structure or by an explicitly declared higher-level rule package.
+\end{axiom}
+
+Active mutable-board systems need not lie in the passive/conservative subclass.
+
+\part{A Reusable Interface for Future Systems}
+
+\section{How to specify a new \texorpdfstring{GBG$^{+}$}{GBG+} architecture}
+
+A future scheduler, multi-agent settlement system, or ATP federation can be specified by giving the following items.  This list is a design interface, not an additional axiom package.
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{Underlying GBG.}  Specify the ordinary rule-complete state space, initial state, canonical actions, and partial transition rules.
+\item \textbf{Ordinary player interface.}  Identify $P_1,\ldots,P_N$ and state which actions or resources belong to each participant.
+\item \textbf{Board-player actions.}  Declare $\Legal_0(S)$ and the successor of each legal board action.
+\item \textbf{Optional packages.}  State explicitly which of certification, memory, handoff, scheduling, federation, reflection, or mutation are present.
+\item \textbf{Verifier.}  If trusted facts or lemmas are shared, specify the verifier relation $\V(c,x)$ and the trusted-memory policy.
+\item \textbf{Settlement or winning region.}  Identify the terminal condition, target region, proof certificate, or other settlement criterion.
+\item \textbf{Cost model.}  State what counts as a ply, expansion, verifier call, inference, communication step, memory operation, or other resource.
+\item \textbf{Fairness or scheduling assumptions.}  If scheduling matters, state them explicitly rather than treating them as inherited from GBG$^{+}$.
+\item \textbf{Projection question.}  State whether the architecture is intended to remain passive/conservative relative to an underlying GBG or intentionally creates new dynamics.
+\item \textbf{Audit target.}  Specify whether the desired theorem concerns existence, reachability, settlement, optimality, relative consistency, projection invariance, fairness, or empirical performance.
+\end{enumerate}
+
+\section{Canonical specialization to multi-agent settlement}
+
+A multi-agent settlement system fits the framework by taking a complete state to contain, as needed,
+\[
+S=(q,M_1,\ldots,M_N,M_B,\sigma,\Pi),
+\]
+where $q$ is the current formal problem/search state, $M_i$ are local memories, $M_B$ is trusted board memory, $\sigma$ is scheduler state, and $\Pi$ contains provenance/certificates.  Ordinary players propose legal progress actions; the board-player can be given verifier, routing, storage, or scheduling actions according to the selected optional packages.  Settlement is represented by entry into a declared settlement region or by deposit of an accepted certificate.
+
+The general GBG theoremhood/reachability dictionary then remains available:
+\[
+\boxed{\text{legal multi-agent evolution}=\text{path in the enlarged state graph}.}
+\]
+What changes from system to system is the declared transition structure, not the underlying formal vocabulary.
+
+\section{Canonical specialization to ATP federations}
+
+An ATP federation may take each ordinary player $P_i$ to be a prover, search policy, or specialized proof engine.  The rule-complete enlarged state can record each engine&#x27;s frontier, local lemmas, trusted shared lemmas, verifier status, budgets, and scheduling data.  Legal moves may include
+\[
+\operatorname{Expand}_i(v),\quad
+\operatorname{Propose}_i(\ell),\quad
+\operatorname{Verify}(c,\ell),\quad
+\operatorname{Deposit}(\ell),\quad
+\operatorname{Schedule}(i),
+\]
+provided each is represented by a declared partial rule with a uniquely determined successor.
+
+A theorem-proving architecture therefore becomes a GBG$^{+}$ only after its operational rules are made explicit.  Merely calling an ATP a player is not sufficient; the rule-complete state and legal transition semantics are what make the identification formal.
+
+\section{What later papers may cite from this document}
+
+A later paper may cite the present foundation for the following package without rederiving it:
+\begin{enumerate}[leftmargin=1.6em]
+\item the GBG definition and the rule-complete-state/move-rule dictionary;
+\item theoremhood as finite reachability;
+\item match-proofs, match trees, state graphs, and history-to-state projection;
+\item the certified-state principle, exact match recursion, and endpoint-sensitive match counting;
+\item finite forced-win regions and horizons for locally finite alternating two-player GBGs;
+\item the player-indexed authorization interface used by later multi-agent extensions;
+\item the GBG$^{+}$ base axioms GBG$^{+}$-1 through GBG$^{+}$-5;
+\item the player-label operator $F(r)=\max(0,r-1)$ and its stabilized projection onto $\{0\}$;
+\item the passive extension theorem $U(E(G))=G$ and structural relative consistency;
+\item projection-conservativity;
+\item the optional extension vocabulary for certification, memory, handoff, scheduling, federation, reflection, and controlled mutation.
+\end{enumerate}
+
+A later architecture should still state which optional packages it adopts and any additional axioms peculiar to that architecture.
+
+\section{Audit boundary}
+
+The foundational audit proves the passive extension theorem and the resulting structural relative-consistency and projection-conservativity statements.  It does \emph{not} automatically prove that every stronger optional package admits an extension over every GBG.  In particular, mandatory fairness, mandatory active scheduling, mandatory reflection, mandatory broadcast, or mandatory board mutation may require additional hypotheses.
+
+This boundary is intentional.  If a stronger subclass later fails to admit a model or an extension theorem, the failure concerns that stronger package rather than the base GBG$^{+}$ construction.
+
+The present audit is an internal mathematical and document audit performed during drafting with ChatGPT assistance.  It checks the stated definitions against one another, checks the displayed proofs and type distinctions used in this document, compares the GBG foundation with the general (non-game-specific) formal material of the cited original GBG article, and checks the compiled artifact for typesetting defects.  It is not external peer review and does not assert historical priority for standard facts used in the proofs.
+
+\section{Conclusion}
+
+The complete formal picture developed here can be summarized in two layers.
+
+The GBG layer is
+\[
+\boxed{\text{rule-complete state}=\text{formal object}},
+\]
+\[
+\boxed{\text{legal move}=\text{partial unary inference rule}},
+\]
+\[
+\boxed{\text{finite reachability}=\text{theoremhood}},
+\]
+\[
+\boxed{\text{legal history}=\text{match-proof}}.
+\]
+
+The GBG$^{+}$ layer adds
+\[
+\boxed{P_0=\text{the board-player}}
+\]
+while retaining ordinary players $P_1,\ldots,P_N$ and requiring all board actions to remain inside the declared legal transition system.  The player-name operator
+\[
+F(r)=\max(0,r-1)
+\]
+has unique fixed point $0$ and stabilizes to the projection onto the board-player label.  The canonical passive construction proves
+\[
+\boxed{\GBG\xrightarrow{E}\GBGpass\xrightarrow{U}\GBG,
+\qquad U\circ E=\id_{\GBG}.}
+\]
+and its history projection $\bar U$ preserves the ordinary move sequence and ordinary-game ply count.
+
+Thus this single document can be used as a formal starting point for later scheduler, multi-agent settlement, and ATP constructions.  Those later systems need not redefine GBG or GBG$^{+}$; they need only declare their additional state coordinates, board-player actions, optional packages, costs, fairness assumptions, and settlement conditions.
+
+\begin{thebibliography}{9}
+
+\bibitem{TennesonGBG}
+Brian Tenneson,
+\emph{Generalized Board Games: From Tic-Tac-Toe to Chess as $xyz$ Formal Systems},
+September 22, 2026.\\
+\href{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001/}{Live GitHub Pages publication}.\\
+\href{https://github.com/btenneson/pub/tree/main/docs/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001}{GitHub repository source directory}.
+
+\bibitem{TennesonDepths}
+Brian Tenneson,
+\emph{Depths of Induction and Formalized Self-Awareness, Version 48},
+2026.  Source of the modern finitary partial-rule and $xyz$ formal-system formulation used by the original GBG article.\\
+\href{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}{Live publication}.
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
