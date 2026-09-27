@@ -1,0 +1,155 @@
+name: Publish Predator ATP Lineage in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_predator_atp_lineage_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Predator ATP Lineage
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern zip >/dev/null
+          python -m pip install -q pymupdf==1.26.4
+
+          BUILD='.build/predator_atp_lineage'
+          STAGE='incoming_publications/predator_atp_lineage'
+          mkdir -p "$BUILD"
+          cat "$STAGE"/source.part_{00,01,02,03,04,05,06,07} > "$BUILD/source.b64"
+          base64 -d "$BUILD/source.b64" > "$BUILD/source.tex"
+          test "$(wc -c < "$BUILD/source.tex")" -eq 31914
+          test "$(sha256sum "$BUILD/source.tex" | awk '{print $1}')" = "98da6d105816e92cade8a28d3bae3f27cc932b4f23fa9b06998188fd0e6a23a4"
+          cd "$BUILD"
+          for i in 1 2 3; do pdflatex -interaction=nonstopmode -halt-on-error source.tex >/dev/null; done
+          cd ../..
+
+          python - <<'PY'
+          from pathlib import Path
+          import fitz
+          p=Path('.build/predator_atp_lineage/source.pdf')
+          d=fitz.open(p)
+          assert len(d)==15, len(d)
+          text=' '.join(x.get_text() for x in d)
+          for s in ['Predator ATP','Predator 8.018','Predator 9','Dense Closure Distillation']:
+              assert s in text, s
+          PY
+
+          PUB='cs.LO_Logic_in_Computer_Science/predator_atp_lineage'
+          PDF='Predator_ATP_Version_Summaries_and_Design_Lineage.pdf'
+          mkdir -p "$PUB" "docs/$PUB"
+          cp "$BUILD/source.pdf" "$PUB/$PDF"
+          cp "$BUILD/source.pdf" "docs/$PUB/$PDF"
+          cp "$BUILD/source.tex" "docs/$PUB/source.tex"
+          (cd "$BUILD" && zip -q Predator_ATP_Lineage_Source_and_PDF.zip source.tex source.pdf)
+          cp "$BUILD/Predator_ATP_Lineage_Source_and_PDF.zip" "docs/$PUB/Predator_ATP_Lineage_Source_and_PDF.zip"
+
+      - name: Put publication in slot 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, hashlib, json, re
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/predator_atp_lineage'
+          pdf_name='Predator_ATP_Version_Summaries_and_Design_Lineage.pdf'
+          pdf=root/pub_id/pdf_name
+          pages=len(fitz.open(pdf))
+          digest=hashlib.sha256(pdf.read_bytes()).hexdigest()
+
+          cat=root/'scripts/publications.json'
+          data=json.loads(cat.read_text())
+          existed=any(x.get('id')==pub_id for x in data['items'])
+          old=[x for x in data['items'] if x.get('id')!=pub_id]
+          orders=[x.get('order') for x in old if isinstance(x.get('order'),(int,float))]
+          order=min(orders)-10 if orders else -10
+          item={
+            'title':'Predator ATP Lineage',
+            'kind':'Technical reconstruction',
+            'quote':'The final Metamath certificate remains the authority.',
+            'quote_page':15,
+            'card_text':(
+              'A reconstruction of the Predator automated-theorem-prover design lineage from the early '
+              'learned propositional searcher through premise selection, geodesic policy learning, full '
+              'Metamath search, unification and certificate verification, and the later settlement-control '
+              'sequence culminating in Predator 8.018. It separates implemented and tested systems from '
+              'proposed branches, preserves known reconstruction gaps, and closes with Predator 9 as the '
+              'proposed next major information-rich verified-search generation.'
+            ),
+            'subject':'cs.LO_Logic_in_Computer_Science',
+            'id':pub_id,
+            'href':pub_id+'/',
+            'pdf':pub_id+'/'+pdf_name,
+            'archive_path':pub_id+'/'+pdf_name,
+            'sha256':digest,
+            'pages':pages,
+            'order':order,
+            'source':pub_id+'/source.html',
+            'authors':'Brian Tenneson',
+            'source_file':pub_id+'/source.tex',
+            'classification_note':(
+              'Technical reconstruction, September 26, 2026. Predator ATP version summaries and design '
+              'lineage from Predator 1 through the implemented Predator 8.018, with branch status and '
+              'reconstruction gaps preserved, and Predator 9 identified as a proposed next major generation. '
+              'Subject classification: cs.LO — Logic in Computer Science.'
+            )
+          }
+          data['items']=[item]+old
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+
+          search=json.loads((root/'docs/search-index.json').read_text())
+          expected=int(search['count']) if existed else int(search['count'])+1
+          wrapper=root/'scripts/build_publications_106.py'
+          w=wrapper.read_text()
+          w,n1=re.subn(r'if len\(expanded\["items"\]\) != \d+:',
+                       f'if len(expanded["items"]) != {expected}:',w,count=1)
+          w,n2=re.subn(r'Expected \d+ cards after restoration',
+                       f'Expected {expected} cards after restoration',w,count=1)
+          assert n1==1 and n2==1
+          wrapper.write_text(w)
+          (root/'.build/predator_atp_lineage/expected.txt').write_text(str(expected))
+          print('slot order',order,'expected',expected)
+          PY
+
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('.')
+          s=json.loads((root/'docs/search-index.json').read_text())
+          expected=int((root/'.build/predator_atp_lineage/expected.txt').read_text())
+          assert s['count']==expected
+          assert s['items'][0]['id']=='cs.LO_Logic_in_Computer_Science/predator_atp_lineage'
+          assert s['items'][0]['pages']==15
+          for f in [
+            'docs/cs.LO_Logic_in_Computer_Science/predator_atp_lineage/index.html',
+            'docs/cs.LO_Logic_in_Computer_Science/predator_atp_lineage/source.html',
+            'docs/cs.LO_Logic_in_Computer_Science/predator_atp_lineage/source.tex',
+            'docs/cs.LO_Logic_in_Computer_Science/predator_atp_lineage/Predator_ATP_Version_Summaries_and_Design_Lineage.pdf',
+            'docs/cs.LO_Logic_in_Computer_Science/predator_atp_lineage/Predator_ATP_Lineage_Source_and_PDF.zip'
+          ]:
+              assert (root/f).is_file(), f
+          PY
+
+          rm -rf incoming_publications/predator_atp_lineage .build/predator_atp_lineage
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m 'Publish Predator ATP Lineage as card 1 [skip ci]'
+          git push
