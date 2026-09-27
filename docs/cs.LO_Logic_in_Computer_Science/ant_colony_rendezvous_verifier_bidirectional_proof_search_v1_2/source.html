@@ -1,0 +1,836 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ant-Colony Rendezvous for Verifier-Backed Bidirectional Proof Search — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/ant_colony_rendezvous_verifier_bidirectional_proof_search_v1_2/">Back to publication</a><h1>Ant-Colony Rendezvous for Verifier-Backed Bidirectional Proof Search</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/ant_colony_rendezvous_verifier_bidirectional_proof_search_v1_2/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Ant-Colony Rendezvous}
+\rhead{Tenneson / ChatGPT working theorem draft}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{assumption}[definition]{Assumption}
+\newtheorem{principle}[definition]{Principle}
+\newtheorem{example}[definition]{Example}
+
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\Pred}{\mathrm{Pred}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\Meet}{\operatorname{Meet}}
+\newcommand{\Rend}{\operatorname{Rend}}
+\newcommand{\MRTD}{\operatorname{MRTD}}
+\newcommand{\Cn}{\operatorname{Cn}}
+\newcommand{\Th}{\operatorname{Th}}
+\newcommand{\N}{\mathbb{N}}
+
+\title{\textbf{Ant-Colony Rendezvous for Verifier-Backed Bidirectional Proof Search}\\
+\large Certified Regression, Scout Fusion, Bridge Bounds, and Proof-Horizon Estimates}
+\author{Brian Tenneson\\
+\small Framework synthesis, theorem formalization, and editorial assistance by OpenAI&#x27;s ChatGPT}
+\date{September 2026\\Revised Working Theorem Draft 1.2}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper formalizes a bidirectional proof-search mechanism motivated by the F-AMLD5 ``Buffalo Bill&#x27;&#x27; model. A forward colony grows verifier-accepted proof states from an initial trusted base $B_0$, while a backward colony does not reverse inference rules but instead regresses the target through legal target-closing doorways, carrying finite open-obligation sets together with certified proof suffixes. A forward state and backward obligation state rendezvous exactly when every open obligation is already available in the forward trusted state. At that moment the two proof fragments splice into a complete replayable certificate. More generally, the remaining bridge between them is itself a target-relative proof-distance problem.
+
+We prove sound regression, exact rendezvous, bridge fusion, proof-consistent meeting along a fixed finite proof, an incremental rendezvous-indexing result, a collective-BANK rendezvous theorem, and several quantitative bounds. The main contribution is not the elementary exact-rendezvous splice in isolation, but a verifier-safe architecture in which backward search carries certified obligation suffixes, contact is detected exactly, collective verified work can be fused through provenance, and heuristic ACO guidance remains separate from logical certification. We distinguish rigorous proof-length bounds from heuristic ACO guidance. If a returned proof has cost $L$ and an admissible lower bound $\ell$ on the optimum is known, then the unknown optimality ratio satisfies $N^*/L\in[\ell/L,1]$; when $\ell&gt;0$, the proof stretch satisfies $L/N^*\le L/\ell$. In an idealized tree model with equal forward and backward branching factor $b$ and shortest depth $N$, forward exhaustive work scales as $\Theta(b^N)$ whereas balanced bidirectional work scales as $\Theta(b^{N/2})$; this is an explanatory model, not a runtime theorem for theorem proving. We also derive scheduler-dependent tick bounds and specify how ant-colony pheromone should reward verified bridge closure, premise hits, and completed fusion rather than mere local doorway attractiveness. The resulting architecture treats proof search as factorization into a verified prefix, a bridge, and a certified suffix.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Purpose and relation to Universal Theorem Geometry}
+
+Universal Theorem Geometry (UTG) separates intrinsic proof geometry from extrinsic MAPQUEST address geometry. In the monotone certificate-accumulating setting, a formal presentation supplies trusted proof states, legal verifier-backed transitions, and a directed proof distance. Separately, MAPQUEST assigns premise-slot coordinates and a rectilinear residual to represented target-closing doorways. These quantities must not be identified: address proximity is a search signal, not automatically proof proximity \cite{UTGI,UTGII,GLC}.
+
+The present paper adds a bidirectional search layer. Its motivating question is simple. Suppose a forward prover can establish a verified prefix from $B_0$, while a backward process can identify a legal suffix into a target $T$. Can ``scout ants&#x27;&#x27; tell when the two fragments are near one another, and can they fuse the fragments into a complete proof when they meet?
+
+\begin{quote}
+``One of the strategies that inspired this paper is to imagine scout ants surrounding the winning territory, then taking on proof obligations and effectively retreating from it until they rendezvous with a forward probe. At rendezvous, the scouts&#x27; certified route can guide the forward proof through the remaining territory and toward the win.&#x27;&#x27;
+\end{quote}
+
+The answer is yes, provided the backward process is formalized correctly. It must not treat inference as reversible. Instead it stores \emph{open obligations} together with a certified suffix showing that discharge of those obligations is sufficient for $T$. Exact meeting is then a verifier-checkable set-containment event.
+
+The resulting structure has three pieces:
+\begin{equation}
+\boxed{\pi = \pi^{+}\;\Vert\;\beta\;\Vert\;\sigma^{-}},
+\end{equation}
+where $\pi^+$ is a verified forward prefix, $\sigma^-$ is a certified backward-generated suffix, and $\beta$ is the remaining bridge. Exact rendezvous is the special case in which the bridge has zero cost.
+
+The exact splice theorem that follows is deliberately simple once these objects are defined. The substantive contribution is the surrounding architecture: backward states are certified obligation objects rather than reversed proof paths; near-contact is treated as a verifier-backed bridge problem; a shared BANK can support collective rendezvous through stored provenance; and ACO influences search allocation without acquiring any role in proof acceptance.
+
+\paragraph{Source discipline.}
+The definitions of intrinsic proof distance, MAPQUEST doorway residuals, calibrated admissible heuristics, target-relative value functions, quotient lower bounds, proof-horizon distortion, and BANK macros are drawn from or aligned with the UTG and Trading Theorem manuscripts \cite{UTGI,UTGII,UTGIII,GLC,Trading}. The rendezvous constructions and theorems below are proposed extensions developed in this paper.
+
+\section{Verifier-backed proof states}
+
+\begin{definition}[Presented verifier-backed system]
+Let
+\[
+F=(\Sigma,\Gamma,R,V,w)
+\]
+consist of a formal language $\Sigma$, designated hypotheses $\Gamma$, a family $R$ of finitary inference rules, a verifier $V$ for finite certificates, and a nonnegative edge-cost function $w$. Let
+\[
+B_0=\Gamma\cup\operatorname{Ax}(F)
+\]
+be the initial trusted state.
+\end{definition}
+
+A concrete legal inference is written
+\[
+a=(r;P_1,\ldots,P_k;\xi),\qquad P_1,\ldots,P_k\Longrightarrow C,
+\]
+where $\xi$ records substitutions, witnesses, side conditions, or other finite rule data. When $P_1,\ldots,P_k\in B$ and the inference is verifier-accepted, the monotone proof state advances to
+\[
+B&#x27; = B\cup\{C\}.
+\]
+
+\begin{definition}[Intrinsic target-set distance]
+Let $S_F$ be the reachable proof-state graph. For a state $B\in S_F$ and a target set $C\subseteq S_F$, define
+\[
+d_F(B,C)=\inf\{\cost(P):P:B\rightsquigarrow B&#x27;,\ B&#x27;\in C\},
+\]
+with value $\infty$ if no state in $C$ is reachable from $B$. For a target state $B&#x27;\in S_F$, write $d_F(B,B&#x27;):=d_F(B,\{B&#x27;\})$. For a target formula $T$, let
+\[
+C_T=\{B&#x27;\in S_F:T\in B&#x27;\}
+\]
+and write
+\[
+d_F(B,T):=d_F(B,C_T).
+\]
+\end{definition}
+
+This is the intrinsic quantity developed in UTG I and II \cite{UTGI,UTGII}. In the unit-cost case it is shortest inference depth.
+
+\section{Forward probes and backward certified regression}
+
+\subsection{Forward probes}
+
+\begin{definition}[Forward probe]
+A forward probe is a pair
+\[
+\mathfrak f=(B,\pi^+)
+\]
+where $\pi^+$ is a verifier-accepted derivation from $B_0$ to the trusted state $B$. Its realized prefix cost is
+\[
+g^+(\mathfrak f)=\cost(\pi^+).
+\]
+\end{definition}
+
+The forward probe therefore carries an actual certificate for
+\[
+B_0\rightsquigarrow B.
+\]
+Its realized cost need not equal the optimal distance $d_F(B_0,B)$.
+
+\subsection{Backward probes are obligation states, not reversed proofs}
+
+\begin{definition}[Backward obligation probe]
+A backward probe is a pair
+\[
+\mathfrak b=(O,\sigma^-),
+\]
+where $O$ is a finite set of open formulas and $\sigma^-$ is a finite certificate schema establishing
+\[
+B_0\cup O\vdash_F T.
+\]
+Its suffix cost is
+\[
+g^-(\mathfrak b)=\cost(\sigma^-).
+\]
+\end{definition}
+
+The initial backward probe is
+\[
+\mathfrak b_0=(\{T\},\varepsilon),
+\]
+where $\varepsilon$ is the empty suffix: if $T$ is already available, no inference is needed to conclude $T$.
+
+\begin{definition}[One-step certified regression]
+Suppose $P\in O$ and a legal concrete inference
+\[
+a:Q_1,\ldots,Q_k\Longrightarrow P
+\]
+is represented. Define
+\[
+O&#x27;=(O\setminus\{P\})\cup\{Q_1,\ldots,Q_k\}.
+\]
+The regressed suffix $\sigma&#x27;^-$ is obtained by first using $a$ to establish $P$ from its premises and then replaying $\sigma^-$. We write
+\[
+(O,\sigma^-)\xleftarrow{a}(O&#x27;,\sigma&#x27;^-).
+\]
+\end{definition}
+
+\begin{theorem}[Sound Regression Theorem]
+Every finite sequence of certified regressions from $(\{T\},\varepsilon)$ produces a pair $(O,\sigma^-)$ satisfying
+\[
+B_0\cup O\vdash_F T.
+\]
+If cost is additive along the stored suffix, each regression through $a$ adds $w(a)$ to the suffix cost.
+\end{theorem}
+
+\begin{proof}
+Induct on the number of regression steps. The initial pair is sound. For the induction step, suppose $B_0\cup O\vdash_F T$ and replace one open obligation $P\in O$ by premises $Q_1,\ldots,Q_k$ of a legal inference $a$ concluding $P$. From $B_0\cup O&#x27;$ the verifier can apply $a$, recovering $P$, after which the previous suffix is replayable. Additivity gives the cost statement.
+\end{proof}
+
+\begin{remark}[Proof DAGs rather than simple paths]
+With multi-premise rules the natural backward object is a proof-obligation DAG or forest, not necessarily a single linear path. The set notation $O$ records the current leaves of that partially expanded proof DAG.
+\end{remark}
+
+\section{Exact rendezvous and proof fusion}
+
+\begin{definition}[Exact rendezvous]
+For a forward probe $\mathfrak f=(B,\pi^+)$ and backward probe $\mathfrak b=(O,\sigma^-)$ define
+\[
+\Meet(\mathfrak f,\mathfrak b)\iff O\subseteq B.
+\]
+\end{definition}
+
+\begin{theorem}[Scout-Ant Rendezvous Theorem]
+If $\Meet(\mathfrak f,\mathfrak b)$, then the forward prefix and backward suffix splice into a verifier-accepted proof of $T$. In particular,
+\[
+d_F(B_0,T)\le g^+(\mathfrak f)+g^-(\mathfrak b).
+\]
+\end{theorem}
+
+\begin{proof}
+The forward certificate establishes every member of $B$, hence every member of $O$. Since $B_0\subseteq B$, every assumption required by the stored suffix is available. Replay $\sigma^-$ to derive $T$. The concatenated certificate has additive cost $g^++g^-$. The optimum cannot exceed the cost of this realized proof.
+\end{proof}
+
+\begin{corollary}[Zero-bridge factorization]
+At exact rendezvous the complete proof factors as
+\[
+\pi=\pi^+\Vert\sigma^-.
+\]
+Thus exact rendezvous is the zero-bridge case of the more general factorization
+\[
+\pi=\pi^+\Vert\beta\Vert\sigma^-.
+\]
+\end{corollary}
+
+\section{Near rendezvous and bridge geometry}
+
+\begin{definition}[Missing-obligation set and deficiency]
+For a pair $(B,O)$ define
+\[
+M(B,O)=O\setminus B,
+\qquad
+m(B,O)=|O\setminus B|.
+\]
+Thus $m(B,O)=0$ if and only if exact rendezvous occurs.
+\end{definition}
+
+Counting missing formulas is useful but crude. Three missing premises might share one cheap lemma, while one missing premise might be extremely deep. The appropriate intrinsic object is therefore a joint target-set distance.
+
+\begin{definition}[Obligation target set and bridge distance]
+For a finite obligation set $O$, define
+\[
+C_O=\{B&#x27;\in S_F:O\subseteq B&#x27;\}.
+\]
+The bridge distance from $B$ to $O$ is
+\[
+\Delta(B,O)=d_F(B,C_O).
+\]
+\end{definition}
+
+\begin{theorem}[Bridge Fusion Theorem]
+Let $\mathfrak f=(B,\pi^+)$ and $\mathfrak b=(O,\sigma^-)$. If a verified bridge certificate $\beta$ carries $B$ to some $B&#x27;\in C_O$, then
+\[
+B_0\vdash_F T
+\]
+and
+\[
+d_F(B_0,T)\le g^+(\mathfrak f)+\cost(\beta)+g^-(\mathfrak b).
+\]
+\end{theorem}
+
+\begin{proof}
+Concatenate the verified forward prefix, the verified bridge, and the stored suffix. At the end of the bridge all members of $O$ are available, so the suffix is replayable.
+\end{proof}
+
+\begin{definition}[Rendezvous certificate vector]
+Operationally, a scout pair may maintain
+\[
+\mathcal R(B,O)=\bigl(m(B,O),\;L(B,O),\;\widehat\Delta(B,O),\;U(B,O)\bigr),
+\]
+where
+\begin{itemize}[nosep]
+\item $L(B,O)\le\Delta(B,O)$ is a certified lower bound,
+\item $\widehat\Delta(B,O)$ is a heuristic prediction,
+\item $U(B,O)$ is the cheapest verified bridge cost found so far, or $\infty$ if none is known.
+\end{itemize}
+\end{definition}
+
+Only $U&lt;\infty$ supplies a genuine proof upper bound. A small heuristic prediction is not a certificate.
+
+\section{Annuli and meeting along a fixed proof}
+
+\begin{definition}[Forward proof annulus]
+For $0\le r_1\le r_2$, define
+\[
+\mathcal A^+_{r_1,r_2}(B_0)=\{B:r_1\le d_F(B_0,B)\le r_2\}.
+\]
+\end{definition}
+
+\begin{definition}[Backward regression annulus]
+Define
+\[
+\mathcal A^-_{s_1,s_2}(T)
+=
+\{(O,\sigma^-):s_1\le g^-(O,\sigma^-)\le s_2\}.
+\]
+This is a regression-cost annulus, not an ordinary ball in the forward state graph.
+\end{definition}
+
+The distinction matters: backward nodes are obligation states equipped with suffix certificates.
+
+\begin{theorem}[Proof-Consistent Rendezvous Lemma, unit-cost form]
+Let
+\[
+\pi=(e_1,\ldots,e_N)
+\]
+be a dependency-respecting linearization of the finite proof DAG for $T$, with no inference nodes irrelevant to the derivation of $T$. Let $B_i$ be the trusted state after the first $i$ proof steps. Regress from $T$ through the final $j$ inferences $e_N,e_{N-1},\ldots,e_{N-j+1}$ in reverse topological order, expanding only a currently open obligation by the inference that establishes it, and let $O_j$ be the resulting open-obligation set. Then
+\[
+O_j\subseteq B_{N-j}.
+\]
+Consequently,
+\[
+i+j\ge N\qquad\Longrightarrow\qquad O_j\subseteq B_i.
+\]
+\end{theorem}
+
+\begin{proof}
+Because $\pi$ is a dependency-respecting linearization of the dependency DAG for $T$, every premise exposed by reversing one of the final $j$ inference nodes is either in $B_0$ or is established by an earlier node among $e_1,\ldots,e_{N-j}$. After the $j$ certified regressions, every open leaf therefore belongs to $B_{N-j}$. Hence $O_j\subseteq B_{N-j}$. Monotonicity of trusted states gives $B_{N-j}\subseteq B_i$ whenever $i\ge N-j$.
+\end{proof}
+
+\begin{example}[The 100-step picture]
+Suppose a particular proof has 100 unit-cost steps. A forward probe at depth 30 and a backward regression suffix of depth 20 leave a proof-consistent gap of 50 steps. If scouts extend another $u$ forward steps and $v$ backward regression steps along compatible pieces of that same proof, then
+\[
+30+u+20+v\ge100
+\]
+is sufficient for exact rendezvous. Thus $u+v\ge50$ suffices in the same-proof idealization; $u=v=25$ is the balanced split. This does \emph{not} say arbitrary 30- and 20-balls must intersect.
+\end{example}
+
+\section{Incremental rendezvous recognition}
+
+Finding a useful meeting can be hard; recognizing an exact meeting need not be.
+
+\begin{definition}[Obligation inverted index]
+For each backward probe $\mathfrak b_j=(O_j)\,\sigma_j^-)$ maintain a counter
+\[
+c_j=|O_j\setminus B_t|.
+\]
+Maintain an inverted index
+\[
+I(P)=\{j:P\in O_j\}.
+\]
+When a newly verified formula $P$ is deposited into the shared BANK, update only counters indexed by $I(P)$.
+\end{definition}
+
+\begin{theorem}[Incremental Rendezvous Detection]
+Assume formulas have canonical equality identifiers and BANK growth is monotone. If each backward obligation set is registered in the inverted index, then an exact rendezvous is detected precisely when some counter $c_j$ reaches zero. No all-pairs comparison between forward and backward scouts is required.
+\end{theorem}
+
+\begin{proof}
+Initially $c_j$ eyuals the number of obligations absent from the current BANK. A formula can leave the missing set only when that exact canonical formula is deposited. The index updates every obligation set containing the deposited formula. Monotonicity prevents a satisfied obligation from becoming unsatisfied. Therefore $c_j=0$ exactly when $O_j\subseteq B_t$.
+\end{proof}
+
+\begin{remark}[Computational significance]
+The hard problem is steering search so that useful obligations become satisfied. The exact contact test itself can be made close to bookkeeping cost: register obligation incidences once, then process only incidences touched by BANK deposits.
+\end{remark}
+
+\begin{definition}[Provenance-complete global BANK]
+A monotone global BANK $B_t$ is provenance-complete if every formula $P\in B_t$ has finite verifier-replayable provenance from $B_0$. If $P\in B_0$, its provenance $D_P$ may be the trivial zero-step certificate. If $P\notin B_0$, $D_P$ is a finite verifier-accepted derivation DAG from $B_0$ to $P$ stored when $P$ is deposited.
+
+For a finite set $O\subseteq B_t$, let
+\[
+D(O)=\bigcup_{P\in O} D_P
+\]
+denote a finite acyclic verifier-replayable provenance merge. Identical verifier-backed nodes or sub-DAGs may be shared; if no safe sharing is identified, the disjoint union of the $D_P$ is always permitted. Let $\cost(D(O))$ be the realized replay cost of the chosen merge under the declared cost model.
+\end{definition}
+
+\begin{theorem}[Collective-BANK Rendezvous Theorem]
+Let $\mathfrak b=(O,\sigma^-)$ be a backward obligation probe satisfying
+\[
+B_0\cup O\vdash_F T.
+\]
+If $O\subseteq B_t$ for a provenance-complete monotone global BANK $B_t$, then the dependency union $D(O)$ followed by the certified suffix $\sigma^-$ yields a finite verifier-replayable proof of $T$. Consequently,
+\[
+d_F(B_0,T)\le \cost(D(O))+g^-(\mathfrak b).
+\]
+The obligations in $O$ need not have been established along one forward trajectory or by one forward agent.
+\end{theorem}
+
+\begin{proof}
+For every $P\in O$, provenance completeness supplies either the trivial zero-step certificate when $P\in B_0$ or a finite verifier-accepted derivation DAG $D_P$ from $B_0$ to $P$. Since $O$ is finite, an allowed provenance merge $D(O)$ is finite, acyclic, and topologically replayable from $B_0$, establishing every member of $O$. The stored suffix $\sigma^-$ is then replayable because its open obligations are available. Appending the suffix to the replay of $D(O)$ therefore gives a verifier-accepted proof of $T$. The distance bound follows because a concrete proof of the displayed realized cost has been exhibited. In particular, using the disjoint provenance union gives the always-safe coarser bound
+\[
+d_F(B_0,T)\le \sum_{P\in O}\cost(D_P)+g^-(\mathfrak b).
+\]
+\end{proof}
+
+\begin{remark}[Why collective rendezvous is stronger than a single-prefix splice]
+A zero counter in the shared BANK need not identify one forward probe whose state contains all of $O$. Different obligations may have been proved by different agents or on different branches. The provenance DAG, not a single linear prefix, is therefore the correct forward certificate for collective rendezvous.
+\end{remark}
+
+\section{ACO rendezvous scoring}
+
+Ant-colony optimization is not required for soundness. It is a policy for allocating search effort among many legal forward moves, regressions, and bridge attempts.
+
+\subsection{What pheromone should represent}
+A local doorway can look attractive while its premises are very far from $B_0$. Therefore pheromone should not reward doorway visitation alone. For a candidate backward regression producing $\mathfrak b&#x27;=(O&#x27;,\sigma&#x27;^-)$, a useful pair score is
+\begin{equation}
+J(\mathfrak f,O&#x27;)
+=
+ g^+(\mathfrak f)
+ + \widehat\Delta(B,O&#x27;)
+ + g^-(\mathfrak b&#x27;)
+ + \lambda m(B,O&#x27;)
+ + \mu R_{\mathrm{nav}}(B,O&#x27;),
+\end{equation}
+with smaller score preferred. Here $R_{\mathrm{nav}}$ may be a MAPQUEST/Hilbert navigation residual, but it is not a proof-cost certificate unless calibrated as in UTG II and III \cite{UTGII,UTGIII}.
+
+\begin{principle}[Rendezvous-aware pheromone]
+The reward hierarchy should satisfy, qualitatively,
+\begin{align*}
+\text{complete verified fusion}
+&amp;\gg \text{verified bridge}
+\gg \text{new exact premise hit},\\
+\text{new exact premise hit}
+&amp;\gg \text{reduced calibrated bridge estimate}
+\gg \text{mere address proximity}.
+\end{align*}
+\end{principle}
+
+One possible update for an edge $e$ lying on a newly completed fused proof of realized cost $L$ is
+\[
+\tau_e\leftarrow(1-\rho)\tau_e + \frac{Q}{\varepsilon+L},
+\]
+with evaporation parameter $\rho\in(0,1)$, scale $Q&gt;0$, and small $\varepsilon&gt;0$. Partial rewards can be assigned to verified premise hits or verified bridge improvements. The exact choice is empirical; the soundness of the final proof never depends on pheromone.
+
+\begin{remark}[Do not reward a shrinking lower bound as progress]
+A lower bound $L(B,O)\le\Delta(B,O)$ is useful for pruning and optimality arguments, but a smaller lower bound is not evidence that the true bridge became shorter. Progress rewards should instead use exact premise hits, a decreasing consistent heuristic evaluated along a legal trajectory, improved verified upper bounds, or completed fusion.
+\end{remark}
+
+\section{Quotients, trading, and bridge lower bounds}
+
+The Trading Theorem manuscript proves that relaxed quotient distance can provide an admissible lower bound on original proof distance, and that consequence-preserving trading may expose useful quotients not obvious in the original presentation \cite{Trading}. Applied to a rendezvous bridge, a quotient map $q$ can yield
+\[
+\dist_Q(q(B),q(C_O))\le \Delta(B,O).
+\]
+Hence quotient geometry can safely identify pairs that are definitely not as close as raw address geometry suggests.
+
+\begin{proposition}[Quotient bridge pruning]
+Suppose a quotient lower bound gives
+\[
+L_Q(B,O)\le\Delta(B,O).
+\]
+If a complete proof of cost $U^*$ is already known and
+\[
+g^+(\mathfrak f)+L_Q(B,O)\ge U^*,
+\]
+then no completion that preserves the realized prefix $\pi^+$ and reaches $C_O$ can improve the incumbent proof, so the pair may be pruned from a branch-and-bound shortest-proof search.
+\end{proposition}
+
+\begin{proof}
+Any such completion has already paid the realized prefix cost $g^+(\mathfrak f)$ and must pay bridge cost at least $\Delta(B,O)\ge L_Q(B,O)$ before reaching $C_O$. All later inference costs are nonnegative. Hence its total cost is at least $g^+(\mathfrak f)+L_Q(B,O)\ge U^*$.
+\end{proof}
+
+\begin{remark}[Do not use realized suffix cost as a pruning lower bound]
+The stored suffix cost $g^-(\mathfrak b)$ is a realized \emph{upper} bound on one way to continue from satisfied obligations to $T$, not generally a lower bound on unavoidable post-bridge work: the forward prefix or bridge may already establish formulas internal to the stored suffix. A positive suffix term may be added to the pruning inequality only when it is independently certified as a lower bound on all compatible post-bridge completions.
+\end{remark}
+
+\begin{remark}[Trading changes geometry]
+Consequence-preserving trading preserves theoremhood but need not preserve numerical proof horizons \cite{Trading}. Therefore forward and backward fragments from different presentations must not be spliced blindly. A cross-presentation rendezvous requires a certified proof translation, shared verified theorem with provenance, or another explicit compatibility certificate.
+\end{remark}
+
+\section{Proof-length ratios and optimality certificates}
+
+Let
+\[
+N^*:=d_F(B_0,T)
+\]
+denote the optimal infimum proof cost from $B_0$ to $T$ under a fixed presentation and cost model. When this infimum is attained---in particular, in the usual discrete unit-cost setting for a reachable target---$N^*$ is the true shortest proof cost. Suppose rendezvous or bridge fusion returns a verified proof of cost
+\[
+L=g^++b+g^-.
+\]
+Then always
+\[
+N^*\le L.
+\]
+If an admissible lower bound $\ell$ on $N^*$ is also available, then
+\[
+\ell\le N^*\le L.
+\]
+
+\begin{theorem}[Optimality-ratio interval]
+Given a verified proof of cost $L&gt;0$ and a certified lower bound $0\le\ell\le N^*$,
+\[
+\boxed{\frac{\ell}{L}\le \frac{N^*}{L}\le1.}
+\]
+When $\ell&gt;0$ (and hence $N^*&gt;0$), the proof stretch
+\[
+\operatorname{stretch}=\frac{L}{N^*}
+\]
+satisfies
+\[
+\boxed{1\le\operatorname{stretch}\le\frac{L}{\ell}}.
+\]
+\end{theorem}
+
+\begin{proof}
+Divide $\ell\le N^*\le L$ by $L$, then invert the positive inequalities as appropriate.
+\end{proof}
+
+\begin{example}
+If rendezvous produces a 100-step proof and a certified lower bound is 80, then
+\[
+0.8\le N^*/100\le1,
+\qquad
+1\le 100/N^*\le1.25.
+\]
+Thus the proof is certified to be within 25\% multiplicative stretch of optimal. If later the lower bound rises to 100, the proof is certified shortest.
+\end{example}
+
+\begin{example}[A rendezvous can beat the proof that motivated it]
+Suppose one knows a 100-step proof exists, but a forward prefix of cost 34 rendezvouses with a certified suffix of cost 41. Then a 75-step proof has been constructed, proving that the 100-step proof was not shortest. The meeting mechanism is therefore not restricted to rediscovering the original route.
+\end{example}
+
+\section{Idealized search-work estimates}
+
+No honest wall-clock prediction follows from the current theory alone. The following formulas are complexity models intended to explain where bidirectional search can gain and where it can fail.
+
+\subsection{Equal branching factor}
+Suppose, unrealistically but instructively, that search is a tree with effective branching factor $b&gt;1$, a unique target at shortest depth $N$, negligible duplicate detection, and equally difficult forward and backward expansion.
+
+Forward exhaustive work through depth $N$ is
+\[
+W_{\mathrm{fwd}}(N,b)=\sum_{i=0}^{N}b^i
+=\frac{b^{N+1}-1}{b-1}.
+\]
+A balanced bidirectional search through depth approximately $N/2$ on each side has work
+\[
+W_{\mathrm{bi}}(N,b)
+\approx
+2\sum_{i=0}^{\lceil N/2\rceil}b^i
+=
+\Theta(b^{N/2}).
+\]
+Hence the asymptotic work ratio is
+\[
+\frac{W_{\mathrm{bi}}}{W_{\mathrm{fwd}}}
+=\Theta(b^{-N/2}),
+\]
+and the idealized speedup is of order
+\[
+\Theta(b^{N/2}).
+\]
+
+For $N=100$, the exact geometric-series model gives the following illustrative values.
+
+\begin{center}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+$b$ &amp; $\log_{10}W_{\mathrm{fwd}}$ &amp; $\log_{10}W_{\mathrm{bi}}$ &amp; idealized speedup \\
+\midrule
+2 &amp; 30.40 &amp; 15.65 &amp; $5.6\times10^{14}$ \\
+3 &amp; 47.89 &amp; 24.33 &amp; $3.6\times10^{23}$ \\
+4 &amp; 60.33 &amp; 30.53 &amp; $6.3\times10^{29}$ \\
+10 &amp; 100.05 &amp; 50.35 &amp; $5.0\times10^{49}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These numbers are \emph{not predictions for F-AMLD5}. Real theorem search has merging states, highly nonuniform rule arities, unification, side conditions, asymmetric backward branching, learned policies, BANK reuse, quotient pruning, verifier costs, and potentially many target-closing doorways.
+
+\subsection{Asymmetric branching}
+Let effective forward and backward branching factors be $b_+$ and $b_-$. If a split explores depth $f$ forward and $N-f$ backward, the leading-order work model is
+\[
+W(f)\approx b_+^f+b_-^{N-f}.
+\]
+Balancing the two terms suggests
+\[
+f^*\approx
+\frac{N\log b_-}{\log b_+ + \log b_-}.
+\]
+Thus the best meeting point is not necessarily the halfway depth. If backward regression branches much more heavily than forward inference, the optimal split should push farther forward; if the reverse holds, it should regress farther from the target.
+
+\subsection{ACO as an effective-branching controller}
+ACO can be viewed heuristically as trying to lower the effective branching factor on promising corridors. Because work depends exponentially on depth in a tree model, even modest reductions in effective branching can matter greatly. This is why ACO may be competitive even though it contributes nothing to logical soundness. The empirical question is whether pheromone concentration reduces useful search work enough to offset pheromone maintenance, exploration noise, and premature concentration.
+
+\section{Tick and scheduling bounds}
+
+The Global/Local Coupling paper uses bounded service functions to separate proof cost from scheduler time \cite{GLC}. The same discipline applies here.
+
+\begin{assumption}[Bounded service on a fixed proof corridor]
+Fix a proof $\pi$ and a chosen split into a forward prefix of $p$ steps and backward regression suffix of $q$ steps. Suppose the scheduler selects and services each required forward step $i$ within at most $W_i^+$ ticks after that step becomes enabled, and selects and services each required backward regression $j$ within at most $W_j^-$ ticks after that regression becomes enabled. Suppose also that exact rendezvous is detected within $W_R$ ticks after it becomes true and that final replay/verification completes within $W_V$ ticks. Thus the $W_i^+$ and $W_j^-$ bounds include scheduler waiting time as well as service time.
+\end{assumption}
+
+\begin{theorem}[Sequential scheduler rendezvous bound]
+Under the bounded-service assumption, a scheduler that time-shares the two searches sequentially has the conservative bound
+\[
+\tau_{\mathrm{settle}}
+\le
+\sum_{i=1}^{p}W_i^+
++
+\sum_{j=1}^{q}W_j^-
++W_R+W_V.
+\]
+\end{theorem}
+
+\begin{proof}
+Along the fixed corridor, the required forward chain can be charged at most $\sum_i W_i^+$ ticks from successive enablements, and the required backward chain at most $\sum_j W_j^-$ ticks. For a sequential time-sharing scheduler, charging both sums is conservative even if some waiting intervals overlap conceptually. Once both required corridor fragments have made rendezvous true, detection and final replay add at most $W_R+W_V$ ticks.
+\end{proof}
+
+\begin{theorem}[Parallel colony rendezvous bound]
+If forward and backward colonies run concurrently on independent service capacity under the bounded-service assumption, then the corresponding idealized wall-clock tick bound is
+\[
+\tau_{\mathrm{settle}}
+\le
+\max\left\{
+\sum_{i=1}^{p}W_i^+,
+\sum_{j=1}^{q}W_j^-
+\right\}
++W_R+W_V.
+\]
+\end{theorem}
+
+\begin{proof}
+With independent service capacity, the forward corridor completes within $\sum_iW_i^+$ ticks and the backward corridor within $\sum_jW_j^-$ ticks, measured from their respective initial enablements. Both are therefore complete by the larger of those two bounds. Rendezvous detection and final replay then add at most $W_R+W_V$ ticks.
+\end{proof}
+
+\begin{remark}[What these bounds do not say]
+The bounds are conditional on finite bounded-service constants $W_i^+$ and $W_j^-$. ACO without a fairness floor can starve a low-pheromone but necessary branch, in which case such finite constants need not exist. A practical design should reserve nonzero exploration or fair service for candidate families required by any completeness guarantee one wishes to impose.
+\end{remark}
+
+\subsection{Converting ticks to rough time}
+If measured mean service times are $t_+$ seconds per forward expansion, $t_-$ seconds per backward regression, $t_B$ seconds per bridge expansion, and $t_V$ seconds for final verification, then a purely empirical first-order estimate is
+\[
+\widehat t
+\approx
+n_+t_+ + n_-t_- + n_B t_B + t_V
+\]
+for sequential execution, with the forward/backward components replaced by a maximum rather than a sum under ideal parallelism. This formula is only as good as the measured service-time stationarity. It should be reported with medians, percentiles, and tail behavior rather than a single mean when theorem instances are heavy-tailed.
+
+\section{A rendezvous-aware Buffalo Bill controller}
+
+A practical controller can separate three layers.
+
+\subsection*{Layer A: sound objects}
+\begin{enumerate}[nosep]
+\item Forward probes carry verifier-accepted prefixes.
+\item Backward probes carry open-obligation sets and certified suffix DAGs.
+\item Bridges count only when verifier-accepted.
+\item Exact meeting for one forward probe is $O\subseteq B$; collective BANK meeting is $O\subseteq B_t$ together with provenance-complete reconstruction.
+\end{enumerate}
+
+\subsection*{Layer B: certified bounds}
+\begin{enumerate}[nosep]
+\item Quotient or calibrated UTG heuristics may provide lower bounds on bridge distance.
+\item A verified bridge provides an upper bound.
+\item An incumbent complete proof supplies branch-and-bound pruning.
+\end{enumerate}
+
+\subsection*{Layer C: ACO policy}
+\begin{enumerate}[nosep]
+\item Pheromone ranks which forward move, regression doorway, or bridge attempt is serviced next.
+\item Successful complete fusions receive the largest deposit.
+\item Exact premise hits and verified bridge improvements receive intermediate reward.
+\item Mere coordinate closeness receives weak reward unless calibrated.
+\item Evaporation and an explicit exploration floor are used to resist permanent lock-in; any formal completeness guarantee still requires an explicit fair-service condition.
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\[
+\boxed{B_0}
+\xRightarrow[\text{verified prefix}]{\pi^+}
+\boxed{B}
+\xRightarrow[\text{bridge search}]{\beta}
+\boxed{O\subseteq B&#x27;}
+\xRightarrow[\text{certified suffix}]{\sigma^-}
+\boxed{T}
+\]
+\caption{Certified rendezvous factorization. The backward colony constructs the right-hand suffix by regression, but final replay always runs in the legal forward inference direction.}
+\end{figure}
+
+\section{Pseudocode}
+
+\begin{verbatim}
+INPUT: verified base B0, target T, verifier V
+
+ForwardFrontier &lt;- {(B0, empty_prefix)}
+BackwardFrontier &lt;- {({T}, empty_suffix)}
+BANK &lt;- B0
+register backward obligation set {T}
+
+while budget remains:
+    choose action by ACO + fairness floor
+
+    if action is FORWARD:
+        apply a legal inference from a forward state
+        verify it
+        if accepted:
+            extend prefix
+            deposit conclusion in BANK
+            update inverted obligation index
+
+    if action is BACKWARD:
+        choose obligation P in O
+        choose represented legal doorway Q1,...,Qk =&gt; P
+        replace P by {Q1,...,Qk}
+        extend stored certified suffix DAG
+        register/update obligation counters
+
+    if action is BRIDGE:
+        choose promising pair (B,O)
+        search for verified steps from B toward C_O
+
+    if any obligation counter reaches zero:
+        reconstruct collective BANK provenance DAG for O
+        append certified backward suffix
+        replay with verifier
+        if accepted: return COMPLETE PROOF
+
+    if any verified bridge reaches C_O:
+        splice prefix + bridge + suffix
+        replay with verifier
+        if accepted: return COMPLETE PROOF
+
+return BLOCKED WITHIN BUDGET
+\end{verbatim}
+
+A budget exhaustion result is not evidence of non-theoremhood unless an independent sound obstruction has been proved.
+
+\section{Experimental protocol}
+
+To determine whether ACO itself is competitive at complete-proof discovery, hold the target set, verifier, proof presentation, seeds, and expansion/tick budgets fixed and compare at least four systems:
+\begin{enumerate}
+\item forward deterministic baseline;
+\item deterministic bidirectional regression with exact rendezvous detection;
+\item current doorway-oriented ACO;
+\item rendezvous-aware ACO with the same bidirectional machinery as system 2.
+\end{enumerate}
+
+Recommended measurements are:
+\begin{longtable}{p{0.34\textwidth}p{0.58\textwidth}}
+\toprule
+Metric &amp; Interpretation \\
+\midrule
+settled / total &amp; Primary complete-proof success rate \\
+verified expansions &amp; Search effort independent of wall-clock variability \\
+forward / backward expansions &amp; Where work is spent \\
+number of obligation sets &amp; Regression-state growth \\
+mean and max obligation-set size &amp; Multipremise burden \\
+first exact premise hit &amp; Earliest logical contact with BANK \\
+first near-rendezvous &amp; Earliest pair below a declared bridge threshold \\
+exact rendezvous tick &amp; When a zero bridge appears \\
+verified bridge cost &amp; Residual work between colonies \\
+returned proof cost $L$ &amp; Certificate quality \\
+certified lower bound $\ell$ &amp; Enables optimality-ratio statement \\
+$L/\ell$ &amp; Certified upper bound on stretch when $\ell&gt;0$ \\
+wall time and verifier time &amp; Operational cost \\
+pheromone entropy / concentration &amp; Detects premature ACO lock-in \\
+BANK-hit rate &amp; Whether regression premises actually connect to trusted knowledge \\
+\bottomrule
+\end{longtable}
+
+The key comparison is system 2 versus system 4. It isolates what ACO contributes beyond bidirectionality and exact rendezvous recognition.
+
+\section{Further consequences}
+
+\subsection{Rendezvous as a target-relative cut problem}
+A backward obligation set $O$ defines a target region $C_O$. Bridge search asks for a shortest route from a forward state $B$ to $C_O$. Therefore every backward probe generates its own target-relative UTG problem. Scout-pair ranking can be understood as ranking many temporary target-value problems simultaneously.
+
+\subsection{Rendezvous as proof-horizon factorization}
+If a complete proof through a pair has costs $(g^+,b,g^-)$, then
+\[
+L=g^++b+g^-.
+\]
+This gives a natural three-coordinate explanation of where proof cost lies. Two proofs of equal total length may differ sharply: one can be forward-heavy with an easy suffix, another can have a short prefix and difficult bridge.
+
+\subsection{Shared BANK changes the meeting problem}
+The Collective-BANK Rendezvous Theorem makes the shared-BANK case explicit. Many forward agents may contribute different members of an obligation set to the same $B_t$, so rendezvous can occur with the \emph{collective} verified work of the colony rather than with a single linear forward trajectory. Sound fusion is recovered by reconstructing the finite dependency union from stored provenance and replaying that DAG before the certified suffix. Thus global BANK contact is a genuinely collective certificate event, not merely shorthand for an undiscovered single forward path.
+
+\subsection{Macros can collapse bridges}
+A verified BANK lemma promoted to an expandable macro, as in the Trading Theorem manuscript \cite{Trading}, can reduce the realized bridge cost without changing theoremhood. Thus rendezvous-aware search and BANK macro reuse are complementary: scouts identify a bridge worth closing; macros may make that closure dramatically cheaper.
+
+\section{Limitations and nonclaims}
+
+\begin{enumerate}
+\item A small Hilbert or MAPQUEST coordinate separation is not, by itself, a proof-distance bound.
+\item Backward regression can have a much larger branching factor than forward inference.
+\item Equal-distance states need not have equal branching, bottleneck width, or proof multiplicity.
+\item ACO can concentrate on a bad corridor; fairness or exploration is needed for completeness claims.
+\item The idealized $b^{N/2}$ analysis is not a theorem about F-AMLD5 runtime.
+\item A predicted bridge cost does not provide a proof upper bound. Only a verified bridge does.
+\item Trading between consequence-equivalent presentations can change proof horizons, so cross-presentation fusion needs explicit translation certificates.
+\item Wall-clock performance must be measured empirically. The theory supplies decomposition and conditional bounds, not seconds-to-proof forecasts.
+\end{enumerate}
+
+\section{Conclusion}
+
+The ant-colony rendezvous architecture can be formalized without weakening verifier discipline. A forward colony carries verified proof prefixes and a provenance-complete shared BANK. A backward colony carries open obligation sets plus certified suffix DAGs. Exact single-probe rendezvous is the decidable condition $O\subseteq B$; collective rendezvous is the condition $O\subseteq B_t$ together with replayable provenance; and a verified bridge turns near-rendezvous into proof fusion. The significance lies in this verifier-safe coordination of certified regression, exact contact, collective proof memory, bridge geometry, and heuristic scheduling, rather than in the elementary splice observation by itself.
+
+ACO is optional for correctness but potentially valuable for search allocation. Its appropriate target is not ``locally attractive doorway&#x27;&#x27; but ``low-cost joinable proof corridor.&#x27;&#x27; The strongest pheromone signal is a completed verified fusion; lesser signals include exact premise hits and verified bridge improvement. Quotient bounds and calibrated UTG potentials can supply safe lower bounds, while incumbent complete proofs supply upper bounds and branch-and-bound pruning.
+
+The central operational slogan is therefore:
+\[
+\boxed{\text{Search from both ends; certify the suffix; detect contact exactly; fuse only through the verifier.}}
+\]
+
+\begin{thebibliography}{9}
+
+\bibitem{UTGI}
+B. Tenneson,
+\emph{Universal Theorem Geometry I: Fibered Directed Multi-Geometry for Proof Search and MAPQUEST Navigation},
+Revision 1.1 / corrected working edition, September 2026.
+
+\bibitem{UTGII}
+B. Tenneson,
+\emph{Universal Theorem Geometry II: Weighted Geodesics, Heuristic Calibration, and MAPQUEST Navigation},
+Version 2.0, September 11, 2026.
+
+\bibitem{UTGIII}
+B. Tenneson,
+\emph{Universal Theorem Geometry III: Horizon Balls, Growth, Quotients, and Bottlenecks},
+Working Theorem Edition, September 11, 2026.
+
+\bibitem{GLC}
+B. Tenneson,
+\emph{Universal Theorem Geometry: Global Proof Horizons, Local Rectilinear Residuals, and Certified Convergence},
+September 11, 2026.
+
+\bibitem{Trading}
+B. Tenneson,
+\emph{Trading Theorem 001: Consequence-Preserving Trades, Quotient Hunting, and Verified Settlement Search},
+August 31, 2026.
+
+\bibitem{ACO}
+M. Dorigo and T. St\&quot;utzle,
+\emph{Ant Colony Optimization},
+MIT Press, 2004.
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
