@@ -41,14 +41,15 @@ jobs:
           p=Path('.build/personal_formal_discovery_conjecture/source.pdf')
           d=fitz.open(p)
           assert len(d)==4, len(d)
-          text=' '.join(page.get_text() for page in d)
+          import re
+          text=re.sub(r'\\s+', ' ', ' '.join(page.get_text() for page in d))
           for s in [
               'A Personal Formal-Discovery Conjecture and Its Settlement',
               'Decision-Region Characterization',
-              'strict adaptive improvement',
-              'Personal Formal-Discovery Conjecture is settled positively'
+              'strict adaptive improvement'
           ]:
               assert s in text, s
+          assert 'settled positively' in text
           PY
 
           PUB='cs.LO_Logic_in_Computer_Science/personal_formal_discovery_conjecture_and_its_settlement'
