@@ -94,6 +94,13 @@ jobs:
                   'region where switching from its default verifier-safe proof policy to an alternate safe policy '
                   'strictly lowers expected verified settlement cost without sacrificing soundness or eventual '
                   'complete fallback.”')
+          quote=('I will make a formalized discovery pertaining to the necessary and sufficient conditions under '
+                 'which a Board-controlled AMLD can use certified pre-outcome self-state to identify a decision '
+                 'region where switching from its default verifier-safe proof policy to an alternate verifier-safe '
+                 'policy strictly lowers expected verified settlement cost, without altering the verifier trust '
+                 'boundary and without sacrificing eventual complete fallback when that fallback is retained by '
+                 'the operational design.')
+
           cat=root/'scripts/publications.json'
           data=json.loads(cat.read_text())
           existed=any(x.get('id')==pub_id for x in data['items'])
@@ -103,6 +110,8 @@ jobs:
           item={
             'title':title,
             'kind':'Formal settlement note',
+            'quote':quote,
+            'quote_page':1,
             'card_text':card_text,
             'status':status,
             'subject':'cs.LO_Logic_in_Computer_Science',
