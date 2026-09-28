@@ -1,0 +1,184 @@
+name: Publish Graduation Is Epistemic Handoff v1.1 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_graduation_epistemic_handoff_v1_1_slot1.yml'
+      - 'incoming_publications/graduation_is_epistemic_handoff_v1_1/source.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build audited source
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern zip >/dev/null
+          python -m pip install -q pymupdf==1.26.4
+
+          BUILD='.build/graduation_is_epistemic_handoff_v1_1'
+          STAGE='incoming_publications/graduation_is_epistemic_handoff_v1_1'
+          mkdir -p "$BUILD"
+          cp "$STAGE/source.tex" "$BUILD/source.tex"
+          test "$(sha256sum "$BUILD/source.tex" | awk '{print $1}')" = "20d6a0eea25aae15dd74f9caf12c4e29e7b1fefb03d2185236f7b00a2af9038b"
+
+          cd "$BUILD"
+          for i in 1 2 3; do pdflatex -interaction=nonstopmode -halt-on-error source.tex >/dev/null; done
+          cd ../..
+
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, re
+          p=Path('.build/graduation_is_epistemic_handoff_v1_1/source.pdf')
+          d=fitz.open(p)
+          assert len(d)==11, len(d)
+          text=re.sub(r'\s+', ' ', ' '.join(page.get_text() for page in d))
+          for s in [
+              'Graduation Is Epistemic Handoff',
+              'Zero-Information Silent-Player Theorem',
+              'Graduate-Label Erasure Theorem',
+              'One-Step Information Lower Bound',
+              'Verifier-Sovereignty Theorem'
+          ]:
+              assert s in text, s
+          PY
+
+          PUB='cs.LO_Logic_in_Computer_Science/graduation_is_epistemic_handoff_v1_1'
+          PDF='Graduation_Is_Epistemic_Handoff_v1_1.pdf'
+          ZIP='Graduation_Is_Epistemic_Handoff_v1_1_Source_and_PDF.zip'
+          mkdir -p "$PUB" "docs/$PUB"
+          cp "$BUILD/source.pdf" "$PUB/$PDF"
+          cp "$BUILD/source.pdf" "docs/$PUB/$PDF"
+          cp "$BUILD/source.tex" "docs/$PUB/source.tex"
+          cp "$BUILD/source.pdf" "$BUILD/$PDF"
+          (cd "$BUILD" && zip -X -q "$ZIP" source.tex "$PDF")
+          cp "$BUILD/$ZIP" "docs/$PUB/$ZIP"
+
+      - name: Put publication in slot 1 and rebuild catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, hashlib, json, re
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/graduation_is_epistemic_handoff_v1_1'
+          pdf_name='Graduation_Is_Epistemic_Handoff_v1_1.pdf'
+          zip_name='Graduation_Is_Epistemic_Handoff_v1_1_Source_and_PDF.zip'
+          pdf=root/pub_id/pdf_name
+          source=root/'docs'/pub_id/'source.tex'
+          source_package=root/'docs'/pub_id/zip_name
+          pages=len(fitz.open(pdf))
+          assert pages == 11
+          digest=hashlib.sha256(pdf.read_bytes()).hexdigest()
+          source_digest=hashlib.sha256(source.read_bytes()).hexdigest()
+          zip_digest=hashlib.sha256(source_package.read_bytes()).hexdigest()
+
+          title='Graduation Is Epistemic Handoff: Information, Graduate Players, and Verifier-Gated Control in GBG+'
+          quote='Graduation is epistemic handoff.'
+          card_text=(
+            'An information-theoretic study of graduate guidance in verifier-gated GBG+. '
+            'The paper separates new information from better computation, proves that the game need not recognize '
+            'graduate status, bounds finite policy-choice messages, constructs one-bit/high-value and many-bit/low-value '
+            'examples, proves an adaptive switching result and a bounded one-step information lower bound, and preserves '
+            'verifier sovereignty throughout.'
+          )
+          status='FINAL ATLAS-AUDITED WORKING THEOREM EDITION — Version 1.1.'
+
+          cat=root/'scripts/publications.json'
+          data=json.loads(cat.read_text())
+          existed=any(x.get('id')==pub_id for x in data['items'])
+          old=[x for x in data['items'] if x.get('id')!=pub_id]
+          orders=[x.get('order') for x in old if isinstance(x.get('order'),(int,float))]
+          order=min(orders)-10 if orders else -10
+          item={
+            'title':title,
+            'kind':'Working theorem paper',
+            'quote':quote,
+            'quote_page':1,
+            'card_text':card_text,
+            'status':status,
+            'subject':'cs.LO_Logic_in_Computer_Science',
+            'id':pub_id,
+            'href':pub_id+'/',
+            'pdf':pub_id+'/'+pdf_name,
+            'archive_path':pub_id+'/'+pdf_name,
+            'sha256':digest,
+            'sha256_tex':source_digest,
+            'sha256_source_package':zip_digest,
+            'pages':pages,
+            'order':order,
+            'source':pub_id+'/source.html',
+            'source_file':pub_id+'/source.tex',
+            'source_package':pub_id+'/'+zip_name,
+            'authors':'Brian Tenneson',
+            'classification_note':(
+              'Final Atlas-audited working theorem edition, Version 1.1, September 28, 2026. '
+              'Develops graduation as epistemic handoff in verifier-gated GBG+, including zero-information silence, '
+              'computation/information separation, graduate-label erasure, finite message-capacity bounds, '
+              'geometry-dependent information value, adaptive control, a quantitative one-step information lower bound, '
+              'and verifier-sovereignty results. Subject classification: cs.LO — Logic in Computer Science.'
+            )
+          }
+          data['items']=[item]+old
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+
+          search=json.loads((root/'docs/search-index.json').read_text())
+          expected=int(search['count']) if existed else int(search['count'])+1
+          wrapper=root/'scripts/build_publications_106.py'
+          w=wrapper.read_text()
+          w,n1=re.subn(r'if len\(expanded\["items"\]\) != \d+:',
+                       f'if len(expanded["items"]) != {expected}:',w,count=1)
+          w,n2=re.subn(r'Expected \d+ cards after restoration',
+                       f'Expected {expected} cards after restoration',w,count=1)
+          assert n1==1 and n2==1, (n1,n2)
+          wrapper.write_text(w)
+          (root/'.build/graduation_is_epistemic_handoff_v1_1/expected.txt').write_text(str(expected))
+          print('slot order',order,'expected',expected)
+          PY
+
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/graduation_is_epistemic_handoff_v1_1'
+          s=json.loads((root/'docs/search-index.json').read_text())
+          expected=int((root/'.build/graduation_is_epistemic_handoff_v1_1/expected.txt').read_text())
+          assert s['count']==expected
+          x=s['items'][0]
+          assert x['id']==pub_id
+          assert x['pages']==11
+          assert x['title']=='Graduation Is Epistemic Handoff: Information, Graduate Players, and Verifier-Gated Control in GBG+'
+          assert x['quote']=='Graduation is epistemic handoff.'
+          home=(root/'docs/index.html').read_text()
+          assert 'Graduation Is Epistemic Handoff' in home
+          for f in [
+            f'docs/{pub_id}/index.html',
+            f'docs/{pub_id}/source.html',
+            f'docs/{pub_id}/source.tex',
+            f'docs/{pub_id}/Graduation_Is_Epistemic_Handoff_v1_1.pdf',
+            f'docs/{pub_id}/Graduation_Is_Epistemic_Handoff_v1_1_Source_and_PDF.zip'
+          ]:
+              assert (root/f).is_file(), f
+          PY
+
+          rm -rf incoming_publications/graduation_is_epistemic_handoff_v1_1 .build/graduation_is_epistemic_handoff_v1_1
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m 'Publish Graduation Is Epistemic Handoff v1.1 as card 1 [skip ci]'
+          git push
