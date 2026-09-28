@@ -1,0 +1,601 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Graduation Is Epistemic Handoff: Information, Graduate Players, and Verifier-Gated Control in GBG+ — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/graduation_is_epistemic_handoff_v1_1/">Back to publication</a><h1>Graduation Is Epistemic Handoff: Information, Graduate Players, and Verifier-Gated Control in GBG+</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/graduation_is_epistemic_handoff_v1_1/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{array}
+\emergencystretch=2em
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prb}{\mathbb{P}}
+\newcommand{\I}{\mathsf{I}}
+\newcommand{\Hh}{\mathsf{H}}
+\newcommand{\TV}{\operatorname{TV}}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\bits}{\mathrm{bits}}
+\newcommand{\sil}{\mathrm{sil}}
+\newcommand{\Acc}{\operatorname{Acc}}
+
+\title{\textbf{Graduation Is Epistemic Handoff}\\[4pt]
+\large Information, Graduate Players, and Verifier-Gated Control in GBG+}
+\author{Brian Tenneson}
+\date{September 28, 2026\\Working research note, Version 1.1}
+
+\hypersetup{
+  pdftitle={Graduation Is Epistemic Handoff: Information, Graduate Players, and Verifier-Gated Control in GBG+},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={Information-theoretic analysis of graduate guidance and verifier-gated control in GBG+},
+  pdfkeywords={GBG+, epistemic handoff, information theory, theorem proving, verifier, proof search}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note develops an information-theoretic interpretation of auxiliary guidance in verifier-gated generalized board games with an added Board/controller player (GBG+).  The motivating question is deliberately non-mystical: when an apparently ``oracle-like&#x27;&#x27; Player 0 helps a proof search, is it providing genuinely new information, merely computing better with information already present, or communicating knowledge accumulated by a more experienced player?  We call the latter a \emph{graduate}.  Graduation is epistemic handoff: a graduate possesses admissible settlement-relevant knowledge not available to an undergraduate player and may transmit only a compressed portion of that knowledge during play.
+
+We prove a zero-information theorem for a silent but still game-running Player 0; a computation-is-not-new-information theorem; a graduate-label erasure theorem showing that the game need not recognize graduate status; a $\log_2 k$ information bound for choosing among $k$ policies; finite constructions in which one bit has arbitrarily large settlement value and many bits have arbitrarily small value; an observation-indistinguishability limitation; an adaptive switching theorem; and a quantitative information lower bound for bounded one-step settlement cost.  Throughout, graduate guidance may alter discovery, scheduling, routing, and attention, but not the fixed certificate-acceptance rule.  A family of designated verifiers remains sovereign: settlement is accepted only when every required verifier can verify the certificate.
+\end{abstract}
+
+\section{Motivation: from oracle language to graduate knowledge}
+
+The word \emph{oracle} is useful in logic and computation, but it can obscure a mundane possibility in a search game.  A guide may know the terrain better simply because it has traversed more of it, retained certified routes, learned failed routes, accumulated lemmas, or inherited an earlier map.  Such a guide need not be supernatural and need not know a final proof in advance.
+
+We therefore use the following working interpretation:
+\begin{quote}
+\textbf{Graduation is epistemic handoff.}  A graduate is an ordinary player or information source with admissible prior knowledge that is richer, for the present settlement task, than the knowledge available to the undergraduate player.  The graduate may communicate part of that knowledge through the game.
+\end{quote}
+
+A physical map or radio is only an analogy.  A GBG+ is an abstract mathematical object.  Its Board is an abstract persistent game state, and its communication channels are formal information relations.  The central object of study is therefore not physical transmission but the relation
+\[
+\begin{aligned}
+\text{prior experience}&amp;\longrightarrow\text{graduate knowledge}\longrightarrow\text{message}\\
+&amp;\longrightarrow\text{search behavior}\longrightarrow\text{verified settlement}.
+\end{aligned}
+\]
+
+The same viewpoint clarifies a second distinction.  A player may perform an exceptionally good computation using only information already present in the history.  That can have enormous operational value while contributing zero \emph{new} Shannon information conditional on that history.  Thus information amount, computational exploitation, and settlement value must be kept separate.
+
+\section{Verifier-gated GBG+ model}
+
+\subsection{Game data}
+
+For the present note, a verifier-gated GBG+ consists of the following data:
+\[
+\mathcal G=(S,s_0,P,A,L,\tau,\mathcal C,\mathcal V,c).
+\]
+Here $S$ is the abstract state space, $s_0\in S$ the initial state, $P$ a set of players including Player $0$, $A$ the action space, $L(s)\subseteq A$ the legal actions at state $s$, and $\tau$ the state-transition rule.  The set $\mathcal C$ contains candidate settlement certificates.  The verifier community is
+\[
+\mathcal V=\{V_1,\ldots,V_m\},
+\]
+where each $V_i:\mathcal C\to\{0,1\}$ is a designated certificate verifier.
+
+The acceptance convention in this note is deliberately strict:
+\begin{equation}
+\Acc(q)=1
+\quad\Longleftrightarrow\quad
+V_i(q)=1\;\text{ for every }i=1,\ldots,m.
+\label{eq:all-verifiers}
+\end{equation}
+Thus each designated verifier must be able to verify an accepted certificate.  The nonnegative random variable $c$ denotes settlement cost; it may represent proof horizon, expansions, time, weighted search effort, or another fixed cost functional.
+
+\subsection{Undergraduate and graduate information}
+
+Let $H_t$ be a random variable encoding the complete admissible information available to the ordinary active system immediately before a graduate message at time $t$.  It includes the public game history, current Board state, previous accepted messages, and any other information declared ordinary by the model.  Write $\mathscr H_t=\sigma(H_t)$ for the corresponding information sigma-field.
+
+Let $G_t$ encode the graduate&#x27;s additional admissible side information, and write
+\[
+\mathscr G_t=\sigma(H_t,G_t).
+\]
+Thus ordinary information is contained in graduate information by construction.  The mathematically important question is whether the added side information is settlement-relevant.
+
+\begin{definition}[Graduate knowledge advantage]
+Let $\Theta$ be a pre-existing settlement-relevant random variable, such as a certificate-bearing region, the best member of a fixed policy family, or another target defined independently of the current message.  A graduate has a strict knowledge advantage at time $t$ when
+\[
+\I_2(\Theta;G_t\mid H_t)&gt;0.
+\]
+A graduate message $M_t$ is an admissible random variable generated from $(H_t,G_t)$ and any allowed private randomness.
+\end{definition}
+
+\begin{remark}
+When $\Theta$ is finite or discrete and the relevant conditional entropies are finite, the condition above is equivalent to
+\[
+\Hh_2(\Theta\mid H_t,G_t)&lt;\Hh_2(\Theta\mid H_t).
+\]
+The mutual-information formulation avoids making entropy finiteness part of the general definition.
+\end{remark}
+
+The restriction that $\Theta$ be pre-existing is important.  We do not define the target to be ``the branch Player 0 eventually chooses,&#x27;&#x27; because Player 0 can causally determine that branch.  The information measure should not obtain a positive value merely by relabeling the controller&#x27;s own future action as hidden knowledge.
+
+\begin{definition}[Incremental graduate information]
+For a finite run of length $T$, define
+\begin{equation}
+\mathcal I_G(T)
+=
+\sum_{t=1}^{T}
+\I_2(\Theta;M_t\mid H_t),
+\label{eq:incremental-info}
+\end{equation}
+where $\I_2$ denotes conditional mutual information measured in bits and $H_t$ includes prior messages available before $M_t$ is sent.  Standard identities and inequalities used below, including data processing and Pinsker-type bounds, are reviewed in Cover and Thomas~\cite{coverthomas}.
+\end{definition}
+
+Equation~\eqref{eq:incremental-info} is appropriate when $\Theta$ is a fixed latent target.  When one instead wants a causal sequence-to-sequence flow in a feedback system, directed information is a natural refinement; see Massey~\cite{massey1990}.
+
+\section{Silent Player 0 and zero new information}
+
+A silent Player 0 is not deleted from the game.  It remains present and may maintain the Board state, advance a fixed schedule, transmit legal states, invoke verifiers, and execute a predetermined baseline procedure.  What is silenced is adaptive settlement-directed guidance.
+
+\begin{definition}[Silent Player 0]
+Player 0 is \emph{silent} when its output $Z_t^{\sil}$ is generated without settlement-relevant information beyond $\mathscr H_t$.  The deterministic special case is
+\[
+Z_t^{\sil}=f_t(H_t).
+\]
+More generally, silence allows randomization satisfying
+\[
+Z_t^{\sil}\perp\!\!\!\perp \Theta\mid H_t.
+\]
+\end{definition}
+
+\begin{theorem}[Zero-Information Silent-Player Theorem]
+For every settlement-relevant $\Theta$,
+\[
+\I_2(\Theta;Z_t^{\sil}\mid H_t)=0.
+\]
+Consequently, a finite silent run contributes zero incremental settlement-relevant information beyond the ordinary history.
+\end{theorem}
+
+\begin{proof}
+Conditional independence is exactly the condition for zero conditional mutual information.  In the deterministic special case, $\Hh(Z_t^{\sil}\mid H_t)=0$, hence
+\[
+\I(\Theta;Z_t^{\sil}\mid H_t)
+\le \Hh(Z_t^{\sil}\mid H_t)=0.
+\]
+Summing over $t$ gives zero total incremental information.
+\end{proof}
+
+\begin{theorem}[Computation Is Not New Information]
+If an active Player 0 computes
+\[
+Z_t=f_t(H_t)
+\]
+using only the admissible history, then
+\[
+\I_2(\Theta;Z_t\mid H_t)=0,
+\]
+even if $f_t$ is computationally sophisticated and dramatically reduces settlement cost.
+\end{theorem}
+
+\begin{proof}
+The proof is identical to the deterministic case above.  The operational quality of $f_t$ does not change the conditional entropy identity.
+\end{proof}
+
+\begin{remark}
+This theorem prevents a common interpretive error.  Better search performance does not by itself prove that Player 0 received new oracle information.  The gain may arise from better use of information already present.
+\end{remark}
+
+\section{The game need not recognize a graduate}
+
+The word \emph{graduate} may be entirely external to the game rules.  What matters inside the game is the message or action produced, not a social or ontological label attached to its source.
+
+\begin{theorem}[Graduate-Label Erasure Theorem]
+Consider two GBG+ descriptions that differ only by an internal label $R\in\{\mathrm{undergraduate},\mathrm{graduate}\}$.  Suppose legal-action sets, public transitions, verifier outputs, settlement rules, and costs do not depend on $R$ once the public history and communicated message/action are fixed.  Suppose further that the two descriptions induce the same conditional distribution of public messages/actions given each public history.
+
+Then erasing the label $R$ preserves the distribution of public state traces, accepted certificates, and settlement costs.  In particular, the game need not contain any predicate recognizing that a source is a graduate.
+\end{theorem}
+
+\begin{proof}
+Proceed by induction on time.  The initial public states coincide.  Assume the public histories through time $t$ have the same distribution.  By hypothesis, conditional on any such public history, the two models induce the same distribution of the next public message/action.  Because legality and the transition map are label-independent once that message/action is fixed, the next public state has the same conditional distribution.  Hence the public histories through time $t+1$ agree in distribution.  Induction gives equality of public trace distributions.  Certificate acceptance and cost are functions of those public traces and the label-independent verifier/cost rules, so their distributions also agree.
+\end{proof}
+
+\begin{remark}[Recognition-free graduation]
+Graduation can therefore be epistemic rather than grammatical.  A player may be a graduate in the external analysis because of what it knows, even though the formal game never names, marks, or recognizes that status.
+\end{remark}
+
+\section{Capacity of graduate messages}
+
+\begin{theorem}[Finite Graduate-Choice Bound]
+Suppose at time $t$ the graduate message can take at most $k$ values.  Then
+\[
+\I_2(\Theta;M_t\mid H_t)
+\le
+\Hh_2(M_t\mid H_t)
+\le
+\log_2 k.
+\]
+In particular, a stay/switch or left/right message communicates at most one bit per decision.
+\end{theorem}
+
+\begin{proof}
+Conditional mutual information never exceeds the corresponding conditional entropy, and a random variable supported on at most $k$ values has entropy at most $\log_2 k$ bits.
+\end{proof}
+
+\begin{remark}[Incoming knowledge versus expressed control]
+A graduate may internally possess much more information than appears in its action.  If a message $M_t$ is compressed into an action $A_t=f(M_t,H_t)$, conditional data processing gives
+\[
+\I_2(\Theta;A_t\mid H_t)
+\le
+\I_2(\Theta;M_t\mid H_t).
+\]
+Thus one may separately measure information received and information expressed through control.
+\end{remark}
+
+\section{Information amount is not information value}
+
+Let
+\[
+C_{\sil}=\E[c_{\sil}],
+\qquad
+C_G=\E[c_G],
+\]
+and define the operational value of graduate assistance relative to the silent baseline by
+\[
+V_G=C_{\sil}-C_G.
+\]
+A particular graduate can of course be unhelpful, so $V_G$ need not be positive unless one optimizes over an admissible class that contains the silent policy.
+
+\begin{theorem}[One Bit Can Have Arbitrarily Large Settlement Value]
+For every $B&gt;0$, there exists a finite verifier-gated GBG+ in which one bit of graduate information reduces expected verified settlement cost by more than $B$.
+\end{theorem}
+
+\begin{proof}
+Let $\Theta\in\{L,R\}$ be uniform.  Construct a finite game with two legal proof corridors.  The corridor indexed by $\Theta$ reaches a verifiable certificate in one legal transition.  Entering the wrong corridor forces a deterministic detour of exactly $M$ additional legal transitions before the same complete fallback reaches a certificate, so its total horizon cost is $M+1$.  Let silent Player 0 always try $L$ first.  Then
+\[
+C_{\sil}=\tfrac12(1)+\tfrac12(M+1)=\frac{M+2}{2}.
+\]
+A one-bit graduate message reveals the uniform binary variable $\Theta$, so it carries exactly one bit of settlement-relevant information and selects the correct corridor.  Thus $C_G=1$ and
+\[
+V_G=\frac{M}{2}.
+\]
+Choose an integer $M&gt;2B$.
+\end{proof}
+
+\begin{theorem}[Many Bits Can Have Arbitrarily Small Settlement Value]
+For every integer $n\ge 1$ and every $\varepsilon&gt;0$, there exists a finite verifier-gated GBG+ in which a message containing $n$ bits of settlement-relevant information improves expected settlement cost by less than $\varepsilon$.
+\end{theorem}
+
+\begin{proof}
+Let $\Theta$ be uniform on $\{1,\ldots,2^n\}$.  There are $2^n$ legal routes.  Choosing $a=\Theta$ costs $1$; every other route costs $1+\delta$, after which settlement still succeeds.  A complete $n$-bit message identifies $\Theta$ and achieves cost $1$.  Without the message, any fixed route has expected cost
+\[
+1+\delta(1-2^{-n}).
+\]
+The value of the $n$-bit message is therefore
+\[
+\delta(1-2^{-n})&lt;\delta.
+\]
+Choose $0&lt;\delta&lt;\varepsilon$.
+\end{proof}
+
+\begin{corollary}[Geometry-Dependent Value]
+There is no universal function of information quantity alone that determines settlement value.  The same one-bit message can be worth an arbitrarily large amount in one search geometry and an arbitrarily small amount in another.
+\end{corollary}
+
+\section{Observation limits and adaptive control}
+
+\begin{theorem}[Observation-Indistinguishability Limitation]
+Let $o:S\to\Omega$ be the legally observable state representation.  Suppose two reachable states $s,t$ satisfy
+\[
+o(s)=o(t),
+\]
+but have distinct unique optimal actions $a_s^*\ne a_t^*$ for the same cost criterion.  Then no deterministic controller using only $o$ can be optimal at both states.
+\end{theorem}
+
+\begin{proof}
+A deterministic observation-only controller has the form $a=f(o(x))$.  Since $o(s)=o(t)$, it must choose the same action at $s$ and $t$.  Because the unique optimal actions differ, that common action cannot be optimal at both.
+\end{proof}
+
+\begin{remark}
+A graduate can help precisely by breaking an equivalence class that the undergraduate observation map cannot distinguish.  Better decision logic alone cannot recover information that is absent from the observation.
+\end{remark}
+
+\begin{theorem}[Adaptive Board Improvement]
+Let $\pi$ be a complete verifier-safe baseline policy.  Let $\rho\triangleright\pi$ denote an exploratory verifier-safe policy $\rho$ run for a finite permitted budget, followed on failure by the complete fallback $\pi$; all restart and handoff costs are included.  Let $O$ be information legally observable before the switch decision, and assume the relevant costs are integrable.  Define
+\[
+\Delta(O)
+=
+\E\!\left[C_{\rho\triangleright\pi}-C_\pi\mid O\right],
+\]
+and let $D=\{O:\Delta(O)&lt;0\}$.  Define the adaptive policy
+\[
+\sigma=
+\begin{cases}
+\rho\triangleright\pi,&amp; O\in D,\\
+\pi,&amp; O\notin D.
+\end{cases}
+\]
+Then
+\[
+\E[C_\sigma]\le \E[C_\pi].
+\]
+If $\Prb(O\in D)&gt;0$, then the inequality is strict.
+\end{theorem}
+
+\begin{remark}[Decision-region, not computability, theorem]
+The theorem assumes the conditional advantage $\Delta(O)$ is well-defined and uses the region on which it is negative.  It does not assert that the exact function $\Delta$ is computable, efficiently estimable, or learnable from finite data.
+\end{remark}
+
+\begin{proof}
+Pointwise,
+\[
+C_\sigma-C_\pi
+=
+\mathbf 1_D(O)\bigl(C_{\rho\triangleright\pi}-C_\pi\bigr).
+\]
+Taking conditional expectation with respect to $O$ and then total expectation gives
+\[
+\E[C_\sigma-C_\pi]
+=
+\E[\mathbf 1_D(O)\Delta(O)]\le 0.
+\]
+If $D$ has positive probability, the integrand is strictly negative on a positive-probability set, yielding strict improvement.
+\end{proof}
+
+\section{A quantitative information price of improvement}
+
+The silent baseline is experimentally natural, but it is not the correct baseline for a lower bound on \emph{new information}.  A better controller might improve upon silence by computing more effectively from the same history and therefore use zero new information.
+
+For a fixed finite communication horizon $T$, let $\Pi_T$ be an admissible policy class with finite expected settlement cost, in which graduate messages occur only at decisions $1,\ldots,T$; after decision $T$ no additional graduate information is introduced.  For $\pi\in\Pi_T$, define the policy-specific information budget
+\[
+\mathcal I_G^{\pi}(T)
+=
+\sum_{t=1}^{T}
+\I_2^{\pi}(\Theta;M_t\mid H_t),
+\]
+where the superscript indicates the distribution induced by policy $\pi$.  Let $C_\pi$ denote its total settlement cost, including all later fallback search.
+
+Define the best zero-new-information cost at horizon $T$ by
+\[
+C_{*,T}^{(0)}
+=
+\inf_{\pi\in\Pi_T:\,\mathcal I_G^{\pi}(T)=0}
+\E[C_\pi].
+\]
+The finite-horizon information-price function is
+\begin{equation}
+R_{0,T}(\varepsilon)
+=
+\inf\left\{
+\mathcal I_G^{\pi}(T):
+\pi\in\Pi_T,\quad
+\E[C_\pi]\le C_{*,T}^{(0)}-\varepsilon
+\right\}.
+\label{eq:rate-cost}
+\end{equation}
+Here and below, the infimum of an empty feasible set is understood as $+\infty$.  This resembles a rate-distortion or information-constrained control quantity: it asks how much genuinely new information is required to buy a specified cost reduction beyond everything achievable with no new information in the chosen finite-horizon policy class.  Extending this definition cleanly to random stopping times and unrestricted feedback is left to the interactive open problem below.
+
+\begin{lemma}[Bayes-risk Lipschitz bound]
+Let $P,Q$ be distributions on $\Theta$, let the action set be arbitrary, and suppose
+\[
+0\le c(\theta,a)\le L
+\]
+for all $\theta,a$.  Define Bayes risk
+\[
+R(P)=\inf_a \E_P[c(\Theta,a)].
+\]
+Then
+\[
+|R(P)-R(Q)|\le L\,\TV(P,Q).
+\]
+\end{lemma}
+
+\begin{proof}
+For every fixed action $a$, the bounded-function characterization of total variation gives
+\[
+|\E_P c(\Theta,a)-\E_Q c(\Theta,a)|\le L\,\TV(P,Q).
+\]
+Take an $\eta$-optimal action for one distribution, apply the bound under the other distribution, and let $\eta\downarrow0$.  Reversing $P,Q$ gives the absolute-value form.
+\end{proof}
+
+\begin{theorem}[One-Step Information Lower Bound]
+Let $H$ be the ordinary information available before one policy choice, let $A$ be the graduate-influenced action, and let $0\le c(\Theta,a)\le L$.  Assume there exists a measurable conditional minimizer (for example, this is automatic under the usual measurability conditions when the action set is finite), and let
+\[
+a_0(H)\in\arg\min_a \E[c(\Theta,a)\mid H]
+\]
+be such a best action using no new information.  Suppose the graduate-influenced action achieves nonnegative expected improvement
+\[
+V
+:=
+\E\bigl[c(\Theta,a_0(H))-c(\Theta,A)\bigr]\ge0.
+\]
+Then, with mutual information measured in bits,
+\begin{equation}
+V
+\le
+L\sqrt{\frac{\ln 2}{2}\,\I_2(\Theta;A\mid H)}.
+\label{eq:value-bound}
+\end{equation}
+Equivalently,
+\begin{equation}
+\boxed{
+\I_2(\Theta;A\mid H)
+\ge
+\frac{2}{\ln 2}\left(\frac{V}{L}\right)^2
+}.
+\label{eq:info-lower-bound}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Fix $H=h$.  Let $Q_h=P_{\Theta\mid H=h}$ and, for each realized action $a$, let $P_{h,a}=P_{\Theta\mid H=h,A=a}$.  The baseline conditional cost is $R(Q_h)$.  The actual conditional cost after action $a$ is at least $R(P_{h,a})$.  Therefore the conditional value is bounded by
+\[
+\E_{A\mid h}\left[R(Q_h)-R(P_{h,A})\right]
+\le
+L\,\E_{A\mid h}\TV(P_{h,A},Q_h)
+\]
+by the preceding lemma.  Average over $H$.  Pinsker&#x27;s inequality in nats~\cite{coverthomas} gives
+\[
+\TV(P,Q)\le\sqrt{\tfrac12\KL(P\|Q)}.
+\]
+Jensen&#x27;s inequality then yields
+\[
+V
+\le
+L\sqrt{\frac12\,
+\E_{H,A}\KL(P_{\Theta\mid H,A}\|P_{\Theta\mid H})}.
+\]
+The expectation is $\I(\Theta;A\mid H)$ in nats.  Since one bit equals $\ln2$ nats, equation~\eqref{eq:value-bound} follows, and rearrangement gives~\eqref{eq:info-lower-bound}.
+\end{proof}
+
+\begin{corollary}[Finite-Choice Information Sandwich]
+If $A$ selects among at most $k$ actions or policies, then under the hypotheses of the previous theorem,
+\[
+\boxed{
+\frac{2}{\ln 2}\left(\frac{V}{L}\right)^2
+\le
+\I_2(\Theta;A\mid H)
+\le
+\log_2 k.
+}
+\]
+\end{corollary}
+
+\begin{remark}
+If a graduate sends a private message $M$ and the action is generated as $A=f(H,M)$, then conditional data processing gives
+\[
+\I_2(\Theta;A\mid H)\le \I_2(\Theta;M\mid H).
+\]
+Hence the lower bound on action information is also a lower bound on the amount of settlement-relevant information the message must make available to the controller.
+\end{remark}
+
+\section{Verifier sovereignty}
+
+\begin{theorem}[Verifier-Sovereignty Theorem]
+Suppose graduate messages and Player-0 control may affect search order, scheduling, routing, attention, and which candidate certificates are proposed, but the acceptance rule~\eqref{eq:all-verifiers} and all verifier algorithms remain unchanged.  Then graduate assistance cannot cause a certificate rejected by a required verifier to become an accepted settlement.
+\end{theorem}
+
+\begin{proof}
+Acceptance is determined solely by the fixed predicate $\Acc$.  Search control can change which $q\in\mathcal C$ is presented and when, but it does not change any value $V_i(q)$.  Therefore it cannot alter verifier acceptance under the fixed acceptance convention.
+\end{proof}
+
+\begin{corollary}[Discovery/acceptance separation]
+Graduates may guide discovery; designated verifiers determine acceptance.
+\end{corollary}
+
+\begin{remark}[Completeness]
+Verifier sovereignty fixes acceptance relative to the verifier family; semantic soundness additionally requires the designated verifiers themselves to be sound for the intended proof system.  Preservation of search completeness requires an additional fairness or complete-fallback hypothesis, as in the Adaptive Board Improvement Theorem.
+\end{remark}
+
+\section{Designer, omnicartographer, and meta-level separation}
+
+Earlier conceptual work used increasingly strong ``oracle&#x27;&#x27; or ``omnicartographer&#x27;&#x27; language to describe highly informed control and, at the extreme, something resembling the designer of a GBG+.  The present framework suggests a cleaner separation.
+
+\begin{definition}[Meta-level designer]
+A designer is an external specification mechanism that fixes or selects the game tuple $\mathcal G$.  The designer is not automatically an in-game player.
+\end{definition}
+
+\begin{remark}[Designer separation]
+All the in-game theorems of this note are stated for a fixed $\mathcal G$ and require no player to possess the rule-construction map that produced $\mathcal G$.  Thus an ``omni-omni-oracle&#x27;&#x27; or designer-level entity is not needed for any theorem proved here.  This is a meta-level separation rather than an additional theorem: the proved results quantify over states, histories, messages, policies, costs, and verifiers only after $\mathcal G$ has been fixed.
+\end{remark}
+
+This does not forbid modeling a designer as another mathematical object.  It only prevents a meta-level metaphor from being smuggled into the theorem hypotheses.  Likewise, epistemic handoff can preserve certified state, provenance, or an identity coordinate when those are explicitly encoded, but this note makes no claim that handoff by itself resolves semantic self-reference, diagonal arguments, L\&quot;ob-type phenomena, or other paradox families.  Those questions require separate hypotheses and separate proofs.
+
+\section{Interpretation: graduates rather than supernatural oracles}
+
+The graduate interpretation may be summarized as follows.
+
+\begin{enumerate}[label=\arabic*.]
+\item The undergraduate system has an admissible history $\mathscr H_t$.
+\item A graduate has additional settlement-relevant knowledge $\mathscr G_t$ acquired from prior traversal, learned structure, certified lemmas, retained maps, or another permitted source.
+\item The graduate sends a message $M_t$, often much smaller than its total knowledge state.
+\item Player 0 may use $M_t$ to route or schedule search.
+\item The game need not recognize the sender as a graduate; only the induced legal communication and action matter.
+\item Every claimed settlement is still checked by the designated verifier community.
+\end{enumerate}
+
+Thus the apparently mysterious oracle can often be replaced by an ordinary information hierarchy:
+\[
+\boxed{
+\text{graduate knowledge}
+\;&gt;\;
+\text{undergraduate knowledge}
+}
+\]
+where ``$&gt;$&#x27;&#x27; means richer for the settlement task, not superior in every possible sense.  The central research question then becomes concrete:
+\begin{quote}
+How much of the graduate&#x27;s knowledge advantage must be handed off to reproduce a specified improvement in verified settlement horizon?
+\end{quote}
+
+\section{Open problems}
+
+The finite and one-step results above leave several nontrivial directions.
+
+\begin{enumerate}[label=\textbf{O\arabic*.}]
+\item \textbf{Interactive rate--settlement function.}  Extend $R_{0,T}(\varepsilon)$ to random-horizon and multi-step feedback search using causal or directed information and determine conditions for existence, convexity, or computability.
+
+\item \textbf{Geometry-sensitive bounds.}  Replace the global cost span $L$ in~\eqref{eq:info-lower-bound} with local proof-horizon, turbulence, bottleneck, or quotient geometry quantities.
+
+\item \textbf{Learned graduate models.}  Quantify the difference between knowledge genuinely imported from previous solved instances and knowledge recomputed from the present history.
+
+\item \textbf{Federated graduates.}  Study multiple graduates with overlapping knowledge and determine when their messages are redundant, synergistic, or conditionally independent.
+
+\item \textbf{Certificate-preserving handoff.}  Formalize when one search agent can transfer partial proof state, obligations, or lemmas to another without loss of verifier-checkable provenance.
+
+\item \textbf{Recognition-free implementations.}  Characterize the broadest class of games in which epistemic roles can be quotiented away while preserving trace and settlement behavior.
+\end{enumerate}
+
+\section{Conclusion}
+
+The main lesson is that an apparently oracle-like Player 0 need not be mysterious.  Three mechanisms must be distinguished:
+\[
+\boxed{
+\text{information already present}
+\quad+\quad
+\text{computation using it}
+\quad+\quad
+\text{genuinely new epistemic handoff}.
+}
+\]
+
+A silent Player 0 supplies zero new settlement information while still running the game.  A powerful controller can also supply zero new information if it merely computes from the existing history.  A graduate, by contrast, possesses additional admissible settlement-relevant knowledge and may hand off a compressed part of it.  The game need not recognize graduate status at all.  One bit of such guidance can have arbitrarily large value in one geometry, while many bits can have almost no value in another; under bounded one-step cost, however, a specified improvement beyond the best zero-information policy forces a positive quantitative information requirement.
+
+Throughout, the fixed verifier-acceptance rule remains independent of guidance.  Graduates may know the land better, and Player 0 may use their directions, but every accepted settlement remains a certificate that every designated verifier can check.  In this sense, graduation is epistemic handoff, not an exemption from proof.
+
+\begin{thebibliography}{9}
+
+\bibitem{massey1990}
+J. L. Massey,
+``Causality, Feedback and Directed Information,&#x27;&#x27;
+\emph{Proceedings of the International Symposium on Information Theory and Its Applications},
+pp. 303--305, 1990.
+
+\bibitem{coverthomas}
+T. M. Cover and J. A. Thomas,
+\emph{Elements of Information Theory}, 2nd ed.,
+Wiley, 2006.
+
+\bibitem{tennesonhandoff}
+B. Tenneson,
+``Self-Aware Machine Epistemic Handoff,&#x27;&#x27;
+working research article, 2026.
+
+\bibitem{tennesonomni}
+B. Tenneson,
+``Oracle Omnicartographer Theory 003,&#x27;&#x27;
+working research article, 2026.
+
+\bibitem{tennesongbg}
+B. Tenneson,
+``GBG and GBG+ Formal Foundations 004,&#x27;&#x27;
+working research article, 2026.
+
+\bibitem{tennesondiscovery}
+B. Tenneson,
+``A Personal Formal-Discovery Conjecture and Its Settlement,&#x27;&#x27;
+working research article, 2026.
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
