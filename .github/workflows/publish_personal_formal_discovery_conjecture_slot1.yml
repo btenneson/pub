@@ -162,16 +162,24 @@ jobs:
           s=json.loads((root/'docs/search-index.json').read_text())
           expected=int((root/'.build/personal_formal_discovery_conjecture/expected.txt').read_text())
           assert s['count']==expected
-          assert s['items'][0]['id']==pub_id
-          assert s['items'][0]['pages']==4
-          page=(root/'docs'/pub_id/'index.html').read_text()
-          for phrase in [
-            'A Personal Formal-Discovery Conjecture and Its Settlement',
-            'A settlement experiment was carried out by ChatGPT operating under a Tenneson AMLD/Board protocol',
-            'The CONJECTURE that was settled by being PROVED was the following:',
-            'switching from its default verifier-safe proof policy to an alternate safe policy'
-          ]:
-              assert phrase in page, phrase
+          x=s['items'][0]
+          assert x['id']==pub_id
+          assert x['pages']==4
+          assert x['title']=='A Personal Formal-Discovery Conjecture and Its Settlement'
+          assert x['card_text']==('A settlement experiment was carried out by ChatGPT operating under a Tenneson AMLD/Board protocol '
+                                  '(as in chess board), with role-separated Prover, Refuter, Dependence, Independence, and '
+                                  'Contradiction channels and Hilbert/Board search controls. It was not, in this instance, '
+                                  'executed by a separate external ATP engine.')
+          assert x['status']==('The CONJECTURE that was settled by being PROVED was the following:\\n'
+                               '“I will make a formalized discovery pertaining to the necessary and sufficient conditions under '
+                               'which a Board-controlled AMLD can use certified pre-outcome self-state to identify a decision '
+                               'region where switching from its default verifier-safe proof policy to an alternate safe policy '
+                               'strictly lowers expected verified settlement cost without sacrificing soundness or eventual '
+                               'complete fallback.”')
+          home=(root/'docs/index.html').read_text()
+          assert 'A Personal Formal-Discovery Conjecture and Its Settlement' in home
+          assert 'A settlement experiment was carried out by ChatGPT operating under a Tenneson AMLD/Board protocol' in home
+          assert 'The CONJECTURE that was settled by being PROVED was the following:' in home
           for f in [
             f'docs/{pub_id}/index.html',
             f'docs/{pub_id}/source.html',
