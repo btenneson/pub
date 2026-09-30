@@ -1,0 +1,254 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMLD+0: Lineage and Foundational Architecture — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/amld_plus_0_part_i_section_1_lineage_and_foundational_architecture/">Back to publication</a><h1>AMLD+0: Lineage and Foundational Architecture</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/amld_plus_0_part_i_section_1_lineage_and_foundational_architecture/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setstretch{1.06}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist[itemize]{topsep=0.25em,itemsep=0.2em,parsep=0em,leftmargin=1.6em}
+\setlist[enumerate]{topsep=0.25em,itemsep=0.2em,parsep=0em,leftmargin=1.8em}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{remark}[definition]{Remark}
+
+\title{\textbf{AMLD+0: Lineage and Foundational Architecture}\\[0.5em]
+\large Part I, Section 1: From Cooperative Conjecture Settlement to Player-Zero Scheduling}
+\author{Brian Tenneson\\[0.25em]
+\small Formalization, source reconciliation, and editorial assistance by OpenAI&#x27;s ChatGPT}
+\date{September 29, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This section introduces AMLD+0 by following the architecture forward through its own development. The starting point is two-sided conjecture settlement: search not only for a proof of a target but also for a proof of its refutation. The next step is a shared verifier-governed BANK, allowing independently checked intermediate results to become common resources rather than private discoveries. The architecture then expands to explicitly metalogical settlement channels, culminating in the current five-role AMLD with proof, refutation, dependence, independence, and contradiction channels. Generalized Board Games (GBGs) then supply a distinct formal perspective in which state transitions are legal moves, and GBG+ internalizes the board itself as a distinguished player, Player 0. AMLD+0 combines these lines by internalizing scheduling as Player 0: Player 0 decides whose turn it is, but not what the chosen settlement agent does. A passive-rewiring theorem shows that ordinary AMLD is recovered whenever Player 0 contributes no adaptive control, either by reproducing the old scheduler or by taking a declared silent/delegating action. Thus AMLD+0 is a conservative control extension of AMLD at the foundational level. The exact taxonomy of settlement reports is not developed here; only the architectural consequence is recorded that positive settlement reports are certificate-backed while a run with no settlement certificate may report UNKNOWN.
+\end{abstract}
+
+\section{Lineage and Definition of AMLD+0}
+
+The purpose of this section is not to begin with the finished AMLD+0 architecture and reason backward. The architecture is easier to understand in the order in which its central ideas accumulated. The progression is therefore presented strictly forward:
+\[
+\begin{aligned}
+\text{two-sided settlement} &amp;\longrightarrow \text{shared BANK}
+\longrightarrow \text{metalogical channels} \longrightarrow \text{GBG}\\
+&amp;\longrightarrow \text{GBG+} \longrightarrow \text{Player 0} \longrightarrow \text{AMLD+0}.
+\end{aligned}
+\]
+The notation ``+0&#x27;&#x27; records the final structural move: the ``+&#x27;&#x27; inherits the board-as-player extension of GBG+, while the ``0&#x27;&#x27; emphasizes the distinguished scheduling player $P_0$.
+
+\subsection{From theorem proving to two-sided conjecture settlement}
+
+An automated theorem prover is naturally target-oriented. Given hypotheses $\Gamma$ in a formal system and a target statement $T$, it searches for a certificate establishing
+\[
+\Gamma\vdash T.
+\]
+The first architectural enlargement is to refuse to identify ``failure to prove&#x27;&#x27; with any mathematical conclusion. A second search is added for a certificate establishing the designated refutation of the target. In the simplest classical case this is a proof of $\neg T$ from the same hypotheses:
+\[
+\Gamma\vdash \neg T.
+\]
+This gives the basic two-sided conjecture-settling pattern: a prover searches toward $T$ while a refuter searches toward its designated opposite. The early ALD formulation explicitly described the progression
+\[
+\text{automated theorem prover}
+\longrightarrow
+\text{automated conjecture settler}
+\longrightarrow
+\text{Automated Logical Decider},
+\]
+with the conjecture settler performing symmetric proof/refutation search and the later decider adding metalogical forms of certification \cite{ald001}.
+
+The important conceptual move is already present here: operational failure is not itself evidence. A timeout, search exhaustion under a declared budget, or absence of a found proof does not become a refutation certificate merely because one branch of computation stopped. The architecture is therefore organized around \emph{positive certificates} rather than around the semantic interpretation of search failure.
+
+\subsection{From private search to a shared BANK}
+
+Two-sided search immediately raises a cooperation question. If the prover discovers an intermediate lemma useful to the refuter, or vice versa, should that information remain private to the discovering process? The answer that shaped the next stage of the architecture was no.
+
+A shared lemma pool was introduced so that independently checked intermediate results could become reusable resources for all authorized searches. In the later AMLD terminology this shared object became the \textbf{BANK}. The August 2026 ALD supplement formalized this as a provenance-aware shared lemma pool: agents may propose additions, but only verifier-accepted entries become trusted shared material; entries are typed and retain enough assumption support to prevent a fact proved under temporary hypotheses from silently becoming an unconditional theorem \cite{ald47}.
+
+For the foundational account here, the BANK can be stated more simply.
+
+\begin{definition}[Foundational BANK]
+Fix admitted hypotheses $\Gamma$. The initial BANK $B_0$ contains the admitted hypotheses. During a run, settlement agents may propose additional formal statements or certified records. Only material accepted by the declared verifier may enter the trusted BANK.
+\end{definition}
+
+The richer bookkeeping---object theory versus metatheory, provenance, temporary supports, handoff records, and later lemma-trading interpretations---is important, but it is not required to understand the first structural role of the BANK. The essential point is that accepted mathematical progress becomes shared state.
+
+This also changes the geometry of search without changing theoremhood. A verified shared lemma can shorten a later derivation or redirect another search, but, under a sound verifier and support-safe reuse, the BANK does not manufacture new consequences merely by storing them. The earlier shared-pool neutrality theorem makes precisely this distinction: sharing can alter the cost and order in which certificates are discovered without changing the underlying logical status \cite{ald47}.
+
+\subsection{From logical polarity to metalogical settlement channels}
+
+Once conjecture settling is understood as certificate production rather than as a single prover returning success or failure, additional settlement questions become natural. Proof and refutation are object-level possibilities, but they are not the only certifiable information one may seek about a target relative to a formal system.
+
+The architecture therefore expanded to explicitly metalogical channels. Independence was an early extension: rather than treating failure on both proof sides as evidence of independence, the system searches for a positive metatheoretic certificate that neither side follows in the declared setting. Contradiction was also separated as its own certifiable outcome rather than being treated as an accidental byproduct of ordinary search. The later architecture adds \emph{dependence} as a distinct positive channel: a metatheoretic certificate may establish that the target&#x27;s status depends on additional assumptions even when neither an object-level proof nor an independence certificate is presently the right description.
+
+The current five-role AMLD is therefore organized around the role set
+\[
+\mathsf{Role}=\{P,R,D,I,C\},
+\]
+where $P$ searches for proof, $R$ for refutation, $D$ for dependence, $I$ for independence, and $C$ for contradiction. The roles share a verifier-governed typed BANK \cite{roundrobin}.
+
+This five-channel formulation should not be mistaken for five mutually exclusive truth values. It is an architecture of \emph{certificate searches}. In particular, positive certificate classes may stand in logical relationships to one another. The precise report taxonomy, overlaps, and the status of UNKNOWN belong to the next section of Part I; the present section needs only the fact that the search architecture is finite, typed, and verifier-gated.
+
+\subsection{Generalized Board Games: legal transition as formal inference}
+
+A separate line of development supplied the structure that later became Player 0. Generalized Board Games (GBGs) recast board games as especially visible formal systems. Rule-complete game states are encoded as well-formed formal objects, legal moves are partial inference rules, the initial state acts as a distinguished hypothesis, and finite legal reachability becomes theoremhood. A legal play history can therefore be read as a sequential match-proof \cite{gbg}.
+
+This perspective matters for AMLD because it puts \emph{control of transitions} inside the formal object being studied. A move is not an external programmer&#x27;s intervention. It is a legal transition from the current state according to the rules of the enlarged system. Once search is viewed this way, the scheduling question---which enabled participant receives the next turn?---can itself be represented internally rather than left as invisible orchestration code.
+
+\subsection{GBG+ and the appearance of Player 0}
+
+GBG+ makes one additional structural move: the board itself becomes a distinguished player $P_0$. The minimal GBG+ axioms are intentionally weak. Player 0 is not granted sovereignty over the game. Its actions must themselves be legal actions of the enlarged game, and the ordinary game is recoverable by forgetting board-only coordinates and silent board actions \cite{gbgplus}.
+
+Scheduling appears as an optional but especially important GBG+ characteristic. If $E(S)$ is the set of enabled ordinary players at state $S$, then a scheduler board-player may select an index
+\[
+i\in E(S)
+\]
+to determine which enabled player receives the next turn. Crucially, scheduling does not make an illegal action legal, and it does not specify what the selected player must do during that turn \cite{gbgplus}.
+
+This distinction is foundational for AMLD+0.
+
+\begin{quote}
+\textbf{Player 0 decides whose turn it is. Player 0 does not decide what the selected agent does.}
+\end{quote}
+
+The selected settlement agent retains its own internal search dynamics: its inference selection, lemma choice, tactic, local branching, proof direction, and other legal internal moves remain properties of that agent&#x27;s search procedure. Player 0 allocates the next service opportunity; it is a scheduler, not a commander.
+
+The distinction is small syntactically but potentially large dynamically. Under a finite budget, turn allocation can favor one search front, delay another, or react to certified BANK growth. None of this changes what counts as an accepted mathematical certificate. The verifier remains outside Player 0&#x27;s control.
+
+\subsection{The verifier trust boundary}
+
+The verifier is deliberately simpler than the search machinery around it.
+
+\begin{definition}[Verifier]
+The verifier is the effective procedure that checks whether a proposed certificate is valid according to the formal system a formal statement is written in.
+\end{definition}
+
+Search agents may be heuristic, adaptive, learned, stochastic, exploratory, algebraic, geometric, or otherwise elaborate. Player 0 may be active or passive. The BANK may accumulate substantial shared structure. None of these components is permitted to change the acceptance condition of the verifier during the run unless the formal experiment explicitly changes the formal system itself and records that change as part of the declared object of study.
+
+This is the trust boundary inherited by AMLD+0: control may change; certification does not silently change with it.
+
+\subsection{Current definition of AMLD+0}
+
+We can now state the architecture reached by the preceding development.
+
+\begin{definition}[AMLD+0]
+Fix a formal system $F$, admitted hypotheses $\Gamma$, a target $T$, and, where required, a declared metatheory. An \emph{AMLD+0} consists of:
+\begin{enumerate}
+    \item five settlement roles $P,R,D,I,C$ with their own internal search states and legal search dynamics;
+    \item a shared verifier-governed BANK $B$, initially containing the admitted hypotheses and thereafter accepting only verifier-authorized trusted additions;
+    \item a verifier $V$ that checks proposed certificates according to the relevant formal system;
+    \item a declared baseline scheduling policy $\sigma_0$ for the underlying AMLD; and
+    \item a distinguished Player 0, denoted $P_0$, whose scheduling policy may select an enabled settlement role for the next service turn or may take a declared passive action $\varepsilon$.
+\end{enumerate}
+If $P_0$ selects an enabled role $J$, then $J$ receives the next turn and chooses its own legal internal move. Player 0 does not choose that move and cannot alter verifier acceptance. If $P_0$ selects the passive action $\varepsilon$, control is delegated to the declared baseline scheduler $\sigma_0$ for that service decision.
+\end{definition}
+
+A compact notation is
+\[
+\mathcal A^{+0}
+=
+(F,\Gamma,T;P,R,D,I,C;B,V;\sigma_0,P_0).
+\]
+The notation is descriptive rather than restrictive: implementations may expose additional state such as provenance, budgets, clocks, learned scores, or proof geometry. Those additions do not change the foundational distinction between settlement-agent dynamics, shared verified state, certification, and Player-0 scheduling.
+
+The passive symbol $\varepsilon$ deserves emphasis. It does not mean that computation must freeze forever. In AMLD+0, $\varepsilon$ is a declared \emph{delegating inaction}: Player 0 contributes no adaptive scheduling decision at that point and lets the baseline scheduler act. This convention is what makes ``Player 0 is silent&#x27;&#x27; mathematically compatible with exact recovery of an ordinary AMLD trajectory.
+
+\subsection{Passive rewiring: ordinary AMLD inside AMLD+0}
+
+The board-as-player literature already contains a passive expansion theorem for GBG+: every ordinary GBG can be enlarged with a silent board-player and recovered exactly by forgetting the added board structure \cite{gbgplus}. AMLD+0 inherits the same foundational idea at the level of conjecture-settlement control.
+
+\begin{theorem}[Passive-Rewiring Theorem]
+Let $\mathcal A$ be an ordinary AMLD with settlement roles $P,R,D,I,C$, BANK $B$, verifier $V$, and baseline scheduler $\sigma_0$. There exists an AMLD+0 extension $\mathcal A^{+0}$ whose projection onto the ordinary AMLD coordinates reproduces exactly the run of $\mathcal A$ whenever Player 0 contributes no adaptive control. This may be realized in either of two equivalent passive modes:
+\begin{enumerate}
+    \item \emph{scheduler replay}: at every state $S$, Player 0 selects the same enabled role that $\sigma_0$ would select; or
+    \item \emph{silent delegation}: at every scheduling event Player 0 selects $\varepsilon$, and $\varepsilon$ delegates that service decision to $\sigma_0$.
+\end{enumerate}
+In either passive mode, forgetting Player 0 and the passive scheduling coordinate recovers the ordinary AMLD trajectory.
+\end{theorem}
+
+\begin{proof}
+Construct $\mathcal A^{+0}$ by adjoining Player 0 while leaving the ordinary settlement agents, their local transition rules, the BANK update rules, and the verifier unchanged. Let the initial ordinary state of $\mathcal A^{+0}$ equal the initial state of $\mathcal A$.
+
+Proceed by induction on ordinary service events. Assume the projected ordinary states agree immediately before service event $n$. In scheduler-replay mode, Player 0 selects exactly the role $\sigma_0$ selects. In silent-delegation mode, $\varepsilon$ invokes $\sigma_0$, so the same role is selected. The selected role then uses the same internal transition rule it would use in $\mathcal A$; any proposed BANK addition is judged by the same verifier and the same BANK acceptance rule. Hence the projected ordinary state after service event $n$ is identical in the two systems. The induction therefore holds for every finite prefix of the run.
+
+Thus Player 0 can be adjoined without changing the underlying AMLD computation when Player 0 is silent, delegates, or merely reproduces the prior schedule. Active AMLD+0 begins only when Player 0 makes scheduling choices that differ from the baseline policy.
+\end{proof}
+
+\begin{remark}[What the theorem does not claim]
+The theorem is a representation and conservativity statement, not a speedup theorem. It proves that AMLD+0 can reproduce ordinary AMLD exactly. Whether active Player-0 scheduling lowers expected settlement cost, increases it, or leaves it unchanged is a separate dynamical and empirical question.
+\end{remark}
+
+This point also clarifies the phrase ``Player 0 opts for inaction.&#x27;&#x27; If inaction meant that no ordinary agent was ever serviced, the original AMLD would not be recovered. The passive theorem therefore uses a precise operational meaning: inaction by Player 0 means \emph{no adaptive intervention by Player 0}; the declared baseline service mechanism continues.
+
+\subsection{A first architectural consequence: certificate-backed settlement and UNKNOWN}
+
+No detailed settlement taxonomy is needed to finish the foundational definition, but one consequence of the architecture is immediate.
+
+\begin{proposition}[Finite report architecture]
+For the base AMLD+0 architecture, positive settlement information is represented by verifier-accepted certificates emitted through a finite set of typed settlement channels. Therefore the architecture admits a finite family of positive settlement report kinds. If a declared run ends without any accepted settlement certificate, the operational report may instead be UNKNOWN.
+\end{proposition}
+
+\begin{proof}
+The base architecture has finitely many settlement roles, each associated with a declared certificate language and a verifier gate. A positive settlement report must therefore be licensed by an accepted certificate belonging to one or more of these finitely many tagged channels. If no such settlement certificate is obtained in the declared run, the absence of a certificate does not by itself license the negation of any settlement claim. The architecture may therefore report UNKNOWN as operational nonsettlement.
+\end{proof}
+
+UNKNOWN is consequently not being introduced here as another proof object or another way of mathematically settling $T$. It records the epistemic state of the declared run: no accepted settlement certificate was obtained. The exact settlement taxonomy, the relationships among positive categories, and the sufficiency theorem governing the complete report family are reserved for Part I, Section 2.
+
+\subsection{Foundational scope}
+
+Section 1 fixes the following architecture and no more:
+\begin{itemize}
+    \item AMLD+0 has five typed settlement channels sharing a verifier-governed BANK.
+    \item Player 0 is internalized as a scheduler of turns.
+    \item Player 0 selects an enabled settlement agent, not that agent&#x27;s internal move.
+    \item The verifier trust boundary is unchanged by scheduling.
+    \item Player 0 may be active, may reproduce the old scheduler, or may be silent by delegating to it.
+    \item Ordinary AMLD is recovered exactly in the passive modes.
+    \item Positive settlement claims are certificate-backed; UNKNOWN records the absence of a settlement certificate in the declared run rather than a mathematical negation.
+\end{itemize}
+
+Several stronger ideas associated with the broader project---adaptive search dynamics, formal self-reflection, lemma-fishing, algebraic depth charges, board-lifted search, epistemic handoff, and optimal-control questions---are intentionally not built into the definition of AMLD+0. They may be studied as additional structures or behaviors without being smuggled into the foundation.
+
+\begingroup
+\small
+\setlength{\parskip}{0pt}
+\begin{thebibliography}{9}
+
+\bibitem{ald001}
+Brian Tenneson,
+\emph{Automated Logical Deciders: From Theorem Proving to Certified Conjecture Settlement},
+Draft 001, August 1, 2026.
+
+\bibitem{ald47}
+Brian Tenneson,
+\emph{Automated Logical Deciders: Certificate-Indexed Halting, Multiagent Search, Provenance-Aware Shared Lemma Pools, and Machine-Learned Guidance},
+Version 47, August 2, 2026.
+
+\bibitem{roundrobin}
+Brian Tenneson,
+\emph{Round-Robin AMLDs as Settlement ATPs: A Compilation and Transfer Theorem for Induction, Fairness, Horizons, Verified Search, and Cooperative Proof Geometry},
+September 18, 2026.
+
+\bibitem{gbg}
+Brian Tenneson,
+\emph{Generalized Board Games: From Tic-Tac-Toe to Chess as xyz Formal Systems},
+September 22, 2026.
+
+\bibitem{gbgplus}
+Brian Tenneson,
+\emph{GBG+: Generalized Board Games with the Board as a Player: Definition, Optional Extensions, and a Relative-Consistency Audit},
+September 26, 2026.
+
+\end{thebibliography}
+\endgroup
+
+\end{document}
+</pre></main></body></html>
