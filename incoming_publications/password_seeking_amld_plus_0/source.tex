@@ -1,0 +1,1041 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Password-Seeking with AMLD+0: Singleton Enumeration, SAT, and CNF Pruning},pdfauthor={Brian Tenneson}}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{setspace}
+
+\setstretch{1.04}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.52em}
+\setlist[itemize]{topsep=0.25em,itemsep=0.18em,parsep=0em,leftmargin=2em}
+\setlist[enumerate]{topsep=0.25em,itemsep=0.18em,parsep=0em,leftmargin=2.2em}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{principle}[definition]{Principle}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\Sset}{\mathcal{S}}
+\newcommand{\Tset}{\mathcal{T}}
+\newcommand{\Wset}{\mathcal{W}}
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\Sett}{\mathsf{Sett}}
+\newcommand{\Cost}{\mathsf{Cost}}
+\newcommand{\atlasnote}{\par\smallskip\noindent\textit{[Theorem retained from the Atlas-assisted expansion of the original paper; presentation adapted here to the AMLD+0 viewpoint.] }\par\smallskip}
+
+\title{\textbf{Password-Seeking with AMLD+0:}\\
+\large Singleton Enumeration, SAT, and CNF Pruning}
+\author{Brian Tenneson\\[0.25em]
+\small Rewiring, formalization, and editorial assistance by OpenAI's ChatGPT}
+\date{September 30, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper rewires singleton enumeration around the AMLD+0 architecture.  The
+starting observation remains that a single designated mathematical query can
+hide an enormous search space.  The AMLD+0 viewpoint adds a second distinction:
+a singleton \emph{query} need not induce a singleton \emph{settlement region}.
+A fixed conjecture $T$ may be investigated by several verifier-gated settlement
+roles---proof, refutation, dependence, independence, and contradiction---while
+a distinguished Player 0 decides which enabled role receives the next service
+turn.  Player 0 does not choose the selected role's internal move and cannot
+alter verifier acceptance.  Ordinary AMLD search is recovered when Player 0
+replays or delegates to the declared baseline scheduler, so the present
+rewiring preserves the original search theory as a passive subcase.
+
+Within this architecture, the Ocean, Universal Proof Horizon, password search,
+and structured-versus-opaque singleton distinction acquire a controller-level
+interpretation.  Local navigators choose expansions inside channels; Player 0
+allocates computational attention among channels; the shared verifier-governed
+BANK transmits accepted discoveries; and the verifier remains the fixed trust
+boundary.  The password model then becomes a control case proving that
+scheduling can exploit information but cannot create information absent from
+the observation interface.  The paper retains the original horizon,
+information-gap, CNF-pruning, execution-separation, and fair-isomorphism
+results, and adds AMLD+0 consequences concerning passive recovery, optional
+control, typed settlement horizons, and the separation of local navigation
+from global scheduling.
+\end{abstract}
+
+\section{The AMLD+0 version of the central question}
+
+The original singleton-enumeration question begins with a one-element target
+set
+\[
+\Tset=\{t\},
+\qquad |
+\Tset|=1,
+\]
+and observes that this says almost nothing about the number of legal states,
+legal moves, candidate histories, or search decisions surrounding $t$.
+That observation remains intact.  AMLD+0 adds a second layer.
+
+Suppose the mathematical object of study is one conjecture $T$.  The query is
+singleton in the literal sense that the run is organized around one designated
+formula.  But AMLD+0 does not force all successful computation to terminate in
+one undifferentiated state.  It contains typed settlement roles
+\[
+P,R,D,I,C,
+\]
+sharing a verifier-governed BANK and a fixed verifier.  A successful run may
+therefore terminate through one of several certificate-backed settlement
+channels, depending on the declared formal experiment.
+
+This gives the first principle of the rewired paper.
+
+\begin{principle}[Singleton Query / Typed Settlement Principle]
+A singleton mathematical query does not imply a singleton operational
+settlement region.  In AMLD+0, one fixed target $T$ may have several typed,
+verifier-gated modes of certified settlement, even though the object-level
+query itself remains unique.
+\end{principle}
+
+Thus at least three cardinalities must be kept separate:
+\begin{enumerate}
+    \item the number of designated queries, which here is one;
+    \item the number of typed settlement regions admitted by the architecture;
+    \item the number of distinct certificates or histories capable of reaching
+    any such region.
+\end{enumerate}
+
+The complexity of a run may be large because of the third item, because of the
+second, or because the controller must decide how to allocate work among
+several search processes before any certificate is available.
+
+\section{AMLD+0 as the controller architecture}
+
+We use the foundational AMLD+0 separation between settlement-agent dynamics,
+shared verified memory, certification, and scheduling \cite{tenneson-amldplus0}.
+Fix a formal system $F$, admitted hypotheses $\Gamma$, a target $T$, a shared
+BANK $B$, a verifier $V$, a declared baseline scheduler $\sigma_0$, and five
+settlement roles $P,R,D,I,C$.
+
+\begin{definition}[AMLD+0 singleton-settlement state]
+A global AMLD+0 state is represented schematically by
+\[
+X=
+(B,S_P,S_R,S_D,S_I,S_C,H_0),
+\]
+where $B$ is the trusted BANK, each $S_J$ is the internal search state of role
+$J\in\{P,R,D,I,C\}$, and $H_0$ is the controller-visible history and auxiliary
+state available to Player 0.  The verifier $V$ and baseline scheduler
+$\sigma_0$ are fixed components of the declared experiment rather than
+mutable coordinates of the ordinary run.
+\end{definition}
+
+For a search-oriented channel one may have, for example,
+\[
+S_J=(D_J,F_J,X_J,P_J,\Sigma_J,\ldots),
+\]
+with discovered states, frontier, expanded states, predecessor/certificate
+information, and heuristic or reconnaissance data.  These are \emph{local}
+coordinates.  They belong to the settlement agent, not to Player 0.
+
+\begin{definition}[Player-Zero service event]
+At a scheduling event, Player 0 selects
+\[
+J\in\{P,R,D,I,C,\varepsilon\}.
+\]
+If $J$ is an enabled settlement role, that role receives the next service turn
+and chooses its own legal internal action.  If Player 0 selects the passive
+symbol $\varepsilon$, the next service decision is delegated to the declared
+baseline scheduler $\sigma_0$.  Player 0 does not select the chosen role's
+internal move and cannot change verifier acceptance.
+\end{definition}
+
+The distinction can be summarized as
+\[
+\boxed{
+P_0\text{ chooses the channel;}\qquad
+J\text{ chooses the move;}\qquad
+V\text{ judges the certificate.}
+}
+\]
+
+This is the principal rewiring of the original higher-level search game.  In
+the earlier presentation, the central search decision could be written
+\[
+\operatorname{Expand}(v),\qquad v\in F.
+\]
+In AMLD+0 that is ordinarily a \emph{local agent action}.  Player 0 acts one
+level above it by deciding which settlement process is serviced next.
+
+\section{The Ocean remains a singleton GBG inside AMLD+0}
+
+Consider a finite directed graph
+\[
+G=(V,E)
+\]
+with distinguished source $s$ and target $t$.  An edge $u\to v$ represents one
+legal inference step.  As before, this is a one-player generalized board game
+in the sense of the GBG framework \cite{tenneson-gbg}.
+
+\begin{definition}[Ocean GBG]
+The Ocean generalized board game has game states $V$, initial state $s$, legal
+moves given by $E$, and singleton winning set
+\[
+\Wset=\{t\}.
+\]
+A play is a directed path beginning at $s$, and a winning play reaches $t$.
+\end{definition}
+
+Under unit edge cost the intrinsic winning horizon is
+\[
+L^*=d_G(s,t).
+\]
+Nothing about AMLD+0 changes this local graph fact.  The important change is
+where the Ocean is placed in the architecture.  An Ocean may be the local
+search geometry of one settlement role, while other roles explore different
+certificate spaces or metatheoretic obligations in parallel.
+
+Thus the statement
+\[
+L^*=d_G(s,t)
+\]
+may describe the intrinsic horizon of one channel without describing the total
+AMLD+0 cost needed to discover, select, verify, and exploit that route.
+
+\begin{remark}[Local horizon versus controller cost]
+A shortest route inside $S_P$ is not automatically a shortest global AMLD+0
+run.  Global cost can include service given to other channels, verifier work,
+BANK operations, reconnaissance, controller computation, and any declared
+fallback schedule.  Conversely, another channel may produce a certificate or
+BANK deposit that makes the globally cheapest settlement route different from
+the route initially visible to $P$.
+\end{remark}
+
+\section{Universal Proof Horizon inside a typed settlement architecture}
+
+The Universal Proof-Horizon viewpoint begins with an effective proof system, a
+mechanically checkable proof relation, and a computable proof-cost measure
+\cite{tenneson-uph}.  One may enumerate candidate proofs in increasing cost and
+return the first valid proof of the target.  If a proof exists, this identifies
+a minimum-cost proof relative to the declared presentation and cost measure;
+if no proof exists, naive enumeration need not terminate.
+
+For a fixed theorem $T$, let
+\[
+\Wset_T=\{\pi:\pi\text{ verifies as a proof of }T\}.
+\]
+The basic singleton lesson is still
+\[
+\text{one desired theorem}
+\quad\not\Rightarrow\quad
+\text{small candidate-proof space}.
+\]
+
+AMLD+0 refines this lesson.  The Prover's proof horizon is only one possible
+route to a certified report.  Write
+\[
+\Sett_J\subseteq\mathcal X
+\]
+for the global AMLD+0 states in which the verifier has accepted a settlement
+certificate emitted through channel $J$.  Without fixing a more detailed
+settlement taxonomy, define the positive settlement region by
+\[
+\Sett_{+0}:=
+\bigcup_{J\in\{P,R,D,I,C\}}\Sett_J.
+\]
+
+When a directed accepted-state metric is declared, one may define channel
+horizons
+\[
+H_J(X)=d(X,\Sett_J)
+\]
+and the intrinsic typed-settlement horizon
+\[
+H_{+0}(X)=d(X,\Sett_{+0})
+          =\min_J H_J(X),
+\]
+whenever these distances are finite and measured in the same declared unit.
+This quantity is geometric: it describes the cheapest accepted route in the
+full state graph.  It does not imply that Player 0 knows which $J$ attains the
+minimum.
+
+\section{Passive rewiring: the old paper is a subcase}
+
+The AMLD+0 architecture was designed so that ordinary AMLD is recovered when
+Player 0 makes no adaptive scheduling intervention
+\cite{tenneson-amldplus0}.  Specializing that fact to singleton search yields
+the following.
+
+\begin{theorem}[Singleton Passive-Rewiring Theorem]
+Let $\mathcal A$ be an ordinary AMLD run on a fixed singleton query $T$, with
+settlement roles $P,R,D,I,C$, shared BANK $B$, verifier $V$, and baseline
+scheduler $\sigma_0$.  There is an AMLD+0 extension $\mathcal A^{+0}$ such
+that the projection onto the ordinary AMLD coordinates reproduces the run of
+$\mathcal A$ whenever Player 0 either
+\begin{enumerate}
+    \item selects the same enabled role that $\sigma_0$ would select, or
+    \item selects $\varepsilon$ and delegates the service decision to
+    $\sigma_0$.
+\end{enumerate}
+For stochastic or nondeterministic agents, exact trajectory recovery is
+understood relative to the same fixed random or choice trace.
+\end{theorem}
+
+\begin{proof}
+Adjoin Player 0 without changing any local agent transition rule, BANK update
+rule, verifier rule, or initial ordinary AMLD state.  Induct on service events.
+If the projected ordinary states agree immediately before event $n$, then
+scheduler replay or silent delegation selects the same role as $\sigma_0$.
+That role receives the same local state and, relative to the same random or
+choice trace when necessary, makes the same internal move.  The same verifier
+judges the same proposed deposits or settlement certificates.  Hence the
+projected state agrees after event $n$.  The induction holds for every finite
+prefix.
+\end{proof}
+
+\begin{corollary}[Conservative reinterpretation of the original paper]
+Every result in the original singleton-enumeration analysis that depends only
+on the ordinary search trajectory remains available as the passive AMLD+0
+baseline.  Active Player-Zero control is therefore an additional experimental
+variable rather than a replacement of the earlier theory.
+\end{corollary}
+
+This is important methodologically.  The AMLD+0 rewrite does not obtain new
+results by silently changing the verifier, proof system, or local search
+rules.  It adds a controller coordinate whose effect can be compared directly
+with a declared baseline.
+
+\section{The higher-level game is now a scheduling game}
+
+A local search role may still maintain
+\[
+S_J=(D_J,F_J,X_J,P_J,\Sigma_J,\ldots)
+\]
+and may still choose an action such as
+\[
+\operatorname{Expand}_J(v),\qquad v\in F_J.
+\]
+The controller-level game, however, has actions of the form
+\[
+\operatorname{Serve}(J)
+\quad\text{or}\quad
+\varepsilon.
+\]
+
+This separates two optimization problems that the original paper treated in a
+single navigation layer:
+\begin{align*}
+\text{local navigation: } &
+\text{which legal action should channel }J\text{ take?}\\
+\text{global scheduling: } &
+\text{which enabled channel should receive the next service turn?}
+\end{align*}
+
+The separation matters because a locally excellent navigator can be globally
+starved, while a globally intelligent scheduler cannot repair a channel whose
+local policy ignores all useful structure.
+
+\begin{principle}[Two-Level Navigation Principle]
+AMLD+0 search quality is jointly controlled by local settlement-agent policies
+and the Player-Zero service policy.  Neither layer in general determines the
+other.
+\end{principle}
+
+\section{The shared BANK changes the geometry}
+
+The BANK makes the several search channels more than an unrelated portfolio.
+Verifier-authorized intermediate results can become shared resources.  If
+accepted deposits are support-safe and conservative relative to the declared
+formal system, they can change the \emph{explicit} search landscape without
+silently enlarging theoremhood.
+
+Suppose channel $J$ deposits a verified lemma $\lambda$ into $B$.  Another
+channel $K$ may then obtain a shorter local route because $\lambda$ is now an
+available trusted premise.  In controller language, service allocated to $J$
+can therefore have option value even when $J$ never produces the final
+settlement certificate.
+
+This leads to an AMLD+0 version of the Ocean metaphor: Player 0 is not merely
+choosing among five independent boats.  It is allocating expeditions whose
+verified discoveries can redraw the shared navigational chart.
+
+\begin{remark}[No verifier shortcut]
+A BANK deposit changes what is explicitly available to search only after the
+verifier authorizes it under the declared rules.  Player 0 cannot promote an
+unverified formula to trusted status merely because doing so would shorten an
+estimated horizon.
+\end{remark}
+
+\section{Password space as an AMLD+0 control case}
+
+Password search is useful because it isolates a case where a singleton target
+is embedded in a large candidate space that is almost empty in navigational signal.
+Let $\A$ be an alphabet of size $k$, let passwords have length $m$, and let
+\[
+\Omega=\A^m.
+\]
+Let the hidden accepted password be $W\in\Omega$.
+
+A rule-complete full state may be represented by
+\[
+x=(W,G,U,R),
+\]
+where $G$ is the set of tested candidates, $U=\Omega\setminus G$, and $R$ is
+the response transcript.  The searcher observes only
+\[
+O(W,G,U,R)=(G,U,R).
+\]
+A legal move is $\operatorname{Guess}(q)$ for $q\in U$.
+
+\begin{definition}[Observation-admissible policy]
+A policy is $O$-admissible when its action depends only on its own randomness
+and the history of available observations and actions, not on hidden
+coordinates of the full state.
+\end{definition}
+
+The point of importing this model into AMLD+0 is not that password guessing
+literally requires the five metalogical channels.  Rather, it provides a
+clean theorem about the limits of scheduling: duplicating or rescheduling
+searchers cannot manufacture a directional signal that the interface never
+reveals.
+
+\begin{theorem}[Player-Zero Noncreation of Information]
+Let $W$ be uniformly distributed on a candidate set $\Omega$ of size $N$.
+Suppose every enabled worker receives only equality feedback---``correct'' or
+``incorrect''---for complete guesses, and the federation enforces global
+nonrepetition: once any candidate has been tested, no worker tests it again.
+Player 0 observes only the combined legal transcript and worker/controller
+history and has no side channel, hidden advice, or access to $W$.  Then any
+AMLD+0-style schedule together with any collection of such workers induces,
+conditional on all controller and worker randomness, an ordering of the $N$
+candidates.
+Consequently the rank of $W$ in the total sequence of distinct tested
+candidates is uniform on $\{1,\ldots,N\}$.
+\end{theorem}
+
+\begin{proof}
+Fix all controller and worker randomness.  Until success, every legal response
+is identical: ``incorrect.''  Thus the entire deterministic federation,
+including Player 0's scheduling decisions, chooses a first untested candidate,
+then a second, and so on.  Because global nonrepetition is enforced, these
+choices form an ordering of $\Omega$.  Uniform $W$ has uniform rank in any fixed
+ordering.  Averaging over the previously fixed randomness does not change the
+rank distribution.
+\end{proof}
+
+\begin{corollary}[Scheduling can exploit information but cannot create it]
+In the equality-only opaque password model, adding Player 0, adding more
+workers, or adaptively reallocating service cannot improve the information
+content of the observation stream.  Any improvement must come from legitimate
+prior information, a richer observation map, additional legal queries, or a
+change in the problem itself.
+\end{corollary}
+
+This is the sharp conceptual boundary for active AMLD+0.  Scheduling is a
+control resource, not an oracle.
+
+\section{Structured and opaque singleton search}
+
+The password control case motivates the same distinction as the original
+paper, now stated relative to both local policies and Player 0.
+
+\begin{definition}[Structured singleton search]
+A singleton search problem is \emph{structured} when the observations
+available to the search architecture contain features correlated with
+accessibility, distance, expected settlement cost, or other legitimate
+progress information toward certified settlement.
+\end{definition}
+
+\begin{definition}[Opaque singleton search]
+A singleton search problem is \emph{opaque} when candidates that remain
+untested are indistinguishable with respect to all information legally
+available to the search architecture, except through direct testing.
+\end{definition}
+
+\begin{principle}[AMLD+0 Singleton Navigation Principle]
+A singleton query does not prevent intelligent navigation or intelligent
+scheduling.  What matters is whether the observation history contains
+information correlated with progress and whether the local agents and Player 0
+can exploit that information without crossing the verifier trust boundary.
+\end{principle}
+
+This creates a useful four-way distinction:
+\begin{enumerate}
+    \item the query may be singleton;
+    \item the intrinsic certificate space may be huge;
+    \item the observation geometry may be structured or opaque;
+    \item the controller may allocate work well or poorly relative to the
+    structure that is actually observable.
+\end{enumerate}
+
+\section{DATA MIND under AMLD+0}
+
+The original paper described DATA MIND abstractly as choosing
+\[
+ v\in F
+\]
+so as to maximize expected progress toward the unique target.  Under AMLD+0,
+that description belongs naturally to a \emph{local} settlement agent or to a
+navigation module used by such an agent.
+
+For example, a local value estimate may be written
+\[
+Q_J(v)\approx
+\text{estimated value of expanding }v\text{ inside channel }J.
+\]
+Player 0, by contrast, may maintain a service value
+\[
+Q_0(J\mid H_0)\approx
+\text{estimated value of giving the next service turn to }J.
+\]
+These are different objects.  The first ranks actions within a channel.  The
+second ranks channels given the current shared history.
+
+A clean experimental decomposition is therefore
+\[
+\boxed{
+\text{local candidate ordering}
+\;\longrightarrow\;
+\text{verifier/BANK updates}
+\;\longrightarrow\;
+\text{Player-Zero service allocation}
+}
+\]
+with feedback in the opposite direction through the newly observed shared
+state.
+
+Neither layer changes the formal verifier.  Heuristics change the order in
+which legal work is attempted; the verifier alone determines whether a
+proposed certificate or BANK addition becomes trusted.
+
+\section{Player-Zero control value and the passive baseline}
+
+Because $\varepsilon$ delegates to the baseline scheduler, active control can
+be compared against a precisely defined passive run.  Let
+\[
+C_{\sigma_0}(X)
+\]
+be expected declared settlement cost from state $X$ under the baseline
+scheduler, and let $C_{\pi_0}(X)$ be the corresponding cost under a Player-Zero
+policy $\pi_0$, with the same local agents, verifier, BANK rules, and cost
+accounting.
+
+Define the expected controller gain
+\[
+G_0(X;\pi_0)
+:=C_{\sigma_0}(X)-C_{\pi_0}(X).
+\]
+Positive $G_0$ means the intervention lowers expected declared work; negative
+$G_0$ means it raises expected declared work relative to baseline.
+
+\begin{proposition}[Optional-Control Dominance]
+Assume that Player 0's policy class contains the passive policy that selects
+$\varepsilon$ at every scheduling event, and that using this passive action
+introduces no extra charged cost beyond the baseline mechanism it invokes.
+Then
+\[
+\inf_{\pi_0} C_{\pi_0}(X)\le C_{\sigma_0}(X).
+\]
+\end{proposition}
+
+\begin{proof}
+The always-$\varepsilon$ policy belongs to the admissible Player-Zero policy
+class and reproduces the baseline cost by hypothesis.  The infimum over a set
+containing that policy cannot exceed its value.
+\end{proof}
+
+\begin{remark}
+This proposition is an option-value statement, not a speedup theorem.  An
+arbitrary active Player-Zero policy may be worse than baseline.  The theorem
+says only that a controller optimization problem with costless fallback does
+not have a worse \emph{best achievable} value than the fallback it contains.
+\end{remark}
+
+\section{Information-constrained Bellman gap for opaque passwords}
+
+Let $\Omega$ contain $N\ge 1$ candidate passwords, let $W$ be uniformly
+distributed on $\Omega$, and use the equality-only observation model above.
+Let $\Pi_O$ denote the class of policies that are $O$-admissible, nonrepeating
+on failed queries, and continue until success.  For $\pi\in\Pi_O$, let
+$T_\pi$ be its number of guesses.  For every full
+state the intrinsic full-information Bellman cost is one guess.
+
+\begin{theorem}[Information-Constrained Bellman Gap]
+For the equality-only password game, every admissible possibly randomized
+nonrepeating policy $\pi$ satisfies, for $0\le k\le N$,
+\[
+\Pr(T_\pi\le k)=\frac{k}{N}
+\]
+and
+\[
+\mathbb E[T_\pi]=\frac{N+1}{2}.
+\]
+If
+\[
+V^{\mathrm{id},\mu}_{\mathrm{Bayes}}=1
+\]
+is the full-observation expected settlement value and
+\[
+V^{O,\mu}_{\mathrm{Bayes}}
+:=\inf_{\pi\in\Pi_O}\mathbb E[T_\pi],
+\]
+then
+\[
+\boxed{
+\frac{V^{O,\mu}_{\mathrm{Bayes}}}
+     {V^{\mathrm{id},\mu}_{\mathrm{Bayes}}}
+=\frac{N+1}{2}.}
+\]
+For $N=2^n$ the information-constrained Bellman gap is exponential in $n$.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+Condition on the internal randomness of the policy.  Until success every
+observed answer is ``incorrect,'' so a deterministic nonrepeating realization
+specifies an ordering $q_1,\ldots,q_N$ of the candidates.  Since $W$ is uniform,
+its rank in that ordering is uniform on $\{1,\ldots,N\}$.  Therefore
+\[
+\Pr(T_\pi\le k)=\frac{k}{N},
+\qquad
+\mathbb E[T_\pi]=\frac1N\sum_{j=1}^N j=\frac{N+1}{2}.
+\]
+Averaging over policy randomness leaves these identities unchanged.  A
+full-information controller guesses $W$ immediately, so the stated ratio
+follows.
+\end{proof}
+
+From the AMLD+0 viewpoint, the theorem applies to the federation as a whole
+whenever the combined controller/worker observation is still equality-only.
+The controller can alter service order but not the information-theoretic rank
+symmetry.
+
+\section{Opaque singleton search under scheduling}
+
+\begin{theorem}[Opaque Singleton No-Polynomial-Settlement]
+Let $W$ be a uniformly random $n$-bit password and suppose the only feedback
+from a guess is equality with $W$.  If an $O$-admissible target-blind policy makes at
+most $q(n)$ distinct guesses, then
+\[
+\Pr(\text{settlement within }q(n)\text{ guesses})
+\le
+\min\left\{1,\frac{q(n)}{2^n}\right\}.
+\]
+Equality holds when the policy tests exactly
+$\min\{q(n),2^n\}$ distinct candidates unless success occurs earlier.
+Consequently, for every polynomial $q$,
+\[
+\Pr(\text{settlement within }q(n)\text{ guesses})\to 0.
+\]
+Thus the uniform opaque-password family has no high-probability polynomial
+settlement policy in the observation-constrained equality-query model.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+A policy using at most $q(n)$ guesses tests at most
+$\min\{q(n),2^n\}$ distinct candidates.  Conditional on any fixed realization
+of its randomness, those candidates occupy at most that many positions in the
+induced ordering.  Uniform $W$ lies among them with probability at most
+\[
+\min\left\{1,\frac{q(n)}{2^n}\right\}.
+\]
+If the policy continues through exactly that many distinct candidates unless
+success occurs earlier, the bound is attained.  For polynomial $q$,
+$q(n)/2^n\to 0$.
+\end{proof}
+
+\begin{corollary}[AMLD+0 opaque-control corollary]
+If every AMLD+0 worker and Player 0 are restricted to the same equality-only
+transcript and all charged candidate tests are counted globally, then merely
+splitting the work among channels or workers does not evade the theorem.  A
+polynomial global test budget still covers only polynomially many members of a
+$2^n$-element candidate set.
+\end{corollary}
+
+This gives a strong negative control for controller experiments.  If active
+Player 0 performs substantially better on a singleton benchmark, the gain must
+be traced to legitimate structure, prior information, richer observations,
+shared certified discoveries, or a change in the allowed action set---not to
+scheduling in the abstract.
+
+\section{Constraint revelation in CNF and 3-CNF}
+
+Password space becomes more informative when compared with SAT.  A known CNF
+formula exposes constraints before a complete assignment is tested.  Partial
+assignments may falsify clauses and prune the prefix tree.
+
+Fix a variable ordering $x_1,\ldots,x_n$ and let $\varphi$ be a satisfiable CNF
+formula.  Let $P_k(\varphi)$ be the assignments to $x_1,\ldots,x_k$ that have
+not yet falsified any clause, let
+\[
+W_k:=|P_k(\varphi)|,
+\]
+and define
+\[
+J_k:=\log_2\!\left(\frac{2^k}{W_k}\right)
+    =k-\log_2 W_k.
+\]
+
+\begin{theorem}[CNF Prefix-Pruning Monotonicity]
+If $\varphi$ is satisfiable, then
+\[
+W_0=1,\qquad 1\le W_k\le 2^k,\qquad W_{k+1}\le 2W_k,
+\]
+and
+\[
+W_n=\#\operatorname{SAT}(\varphi).
+\]
+Consequently
+\[
+\boxed{
+0=J_0\le J_1\le\cdots\le J_n
+=n-\log_2\#\operatorname{SAT}(\varphi).}
+\]
+If the satisfying assignment is unique, $J_n=n$.  The statement applies in
+particular to satisfiable and uniquely satisfiable 3-CNF formulas.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+The empty assignment is the unique length-zero prefix, so $W_0=1$.
+Restricting any satisfying assignment to the first $k$ variables gives a
+surviving prefix, so $W_k\ge1$, while trivially $W_k\le2^k$.  Each surviving
+$k$-prefix has at most two extensions, hence $W_{k+1}\le2W_k$.  At depth $n$,
+a complete assignment survives exactly when it satisfies $\varphi$, so
+$W_n=\#\operatorname{SAT}(\varphi)$.  Finally,
+\[
+J_{k+1}-J_k
+=1-\log_2\!\left(\frac{W_{k+1}}{W_k}\right)\ge0.
+\]
+The endpoint formula and uniquely satisfiable case follow.
+\end{proof}
+
+For AMLD+0, $J_k$ is an example of a legitimate observable feature that may
+inform either local action choice, global service allocation, or both.  The
+theorem does not imply that SAT becomes easy; it proves only that SAT may
+reveal progressively asymmetric information that the ideal password oracle
+withholds.
+
+\section{Four equivalent local horizons}
+
+The Ocean construction, GBGs, the Universal Proof-Horizon viewpoint, and
+Bellman settlement geometry all contain a notion of distance to success.  For
+a unit-cost one-player proof game they coincide.
+
+\begin{theorem}[Singleton GBG--Proof-Horizon--Bellman Equivalence]
+Let $G=(V,E)$ be an effectively generated, locally finite, directed one-player
+GBG with initial state $s$ and singleton winning set $\{t\}$.  Suppose each
+legal move has unit cost and the reachable GBG transition system is
+step-for-step identical to the associated sequential proof system.  If $t$ is
+reachable from $s$, let $L^*$ be the minimum winning match length, $h(t)$ the
+minimum number of inference steps in a proof of $t$, $V(s)$ the Bellman
+settlement value, and $d_G(s,t)$ the directed graph distance.  Then
+\[
+\boxed{L^*=h(t)=V(s)=d_G(s,t).}
+\]
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+The step-for-step identity makes legal matches from $s$ to $t$ exactly the
+admissible sequential proof paths.  Thus minimum match length equals minimum
+proof length, and both equal directed graph distance.  Unit action costs make
+the cost of a settling trajectory equal to its edge count, so the Bellman
+value equals the same distance.
+\end{proof}
+
+\begin{remark}[AMLD+0 interpretation]
+The equality is a \emph{local intrinsic invariant}.  It can identify the
+horizon of a particular proof channel or encoded proof game.  It does not
+collapse the controller-level quantities
+\[
+H_{+0}(X),\qquad C_{\pi_0}(X),\qquad C_{\sigma_0}(X)
+\]
+into the same number.  Typed alternatives, BANK effects, service allocation,
+and discovery overhead remain additional coordinates.
+\end{remark}
+
+\section{Shortest certificates do not control AMLD+0 execution cost}
+
+\begin{definition}[Irrelevant expansion]
+In a singleton-target directed search graph with target $t$, an expansion of
+$v$ is \emph{irrelevant} if
+\[
+d_G(v,t)=\infty,
+\]
+so no continuation from $v$ can contribute to a certificate reaching $t$.
+\end{definition}
+
+\begin{theorem}[Horizon--Execution Separation]
+For every $L\ge1$ and $M\ge1$, there exists a finite singleton-target
+one-player GBG with an exact search policy $\pi$ such that
+\[
+L^*=V(s)=L,
+\]
+the returned certificate has exactly $L$ legal moves, but $\pi$ performs at
+least $M$ irrelevant state expansions before completing it.  Thus certificate
+stretch
+\[
+\frac{\text{returned certificate length}}{L^*}=1
+\]
+does not bound search overhead.
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+Construct a unique successful path
+\[
+s=v_0\to v_1\to\cdots\to v_L=t
+\]
+and at least $M$ reachable decoy states that do not lead to $t$.  Give every
+edge unit cost.  The shortest successful path has length $L$.  Let $\pi$
+expand the $M$ decoys first and then the successful path.  Its predecessor map
+still reconstructs an optimal $L$-edge certificate, while at least $M$
+irrelevant expansions were performed.  Since $M$ is arbitrary, certificate
+stretch alone cannot bound overhead.
+\end{proof}
+
+AMLD+0 adds a second separation on top of this theorem.  Even if every local
+channel eventually returns an optimal certificate relative to its own graph,
+Player 0 may allocate arbitrarily large service to unproductive channels before
+servicing the winning route.  Conversely, a good Player-Zero policy can reduce
+wasted cross-channel work without changing the length of the final
+certificate.  Therefore at least the following should be reported separately:
+\begin{itemize}
+    \item final certificate cost or length;
+    \item local expansion counts by channel;
+    \item verifier and BANK costs;
+    \item Player-Zero service counts by channel;
+    \item total charged settlement cost;
+    \item baseline-versus-active controller difference.
+\end{itemize}
+
+\section{Efficient representations and fair settlement degree}
+
+\begin{theorem}[Efficient GBG Isomorphism Preserves Fair Settlement Degree]
+Consider two families of finitely encoded, exact singleton-target GBGs,
+$\mathcal G$ and $\mathcal H$, equipped with settlement systems $M_G$ and
+$M_H$.  Suppose there are mutually inverse translations $f$ and $g$, computable
+with polynomial declared primitive work, between encoded instances and
+corresponding state/action representations such that initial states and
+settlement status are preserved, legal transitions are preserved bijectively,
+action costs are preserved, encoded sizes are polynomially related, and
+terminal certificates/verifier acceptance are transportable with polynomial
+declared primitive work in both directions.  Then the associated settlement
+pairs lie in the same fair settlement degree, and for corresponding states
+$x$ and $f(x)$,
+\[
+\boxed{V_{M_G}(x)=V_{M_H}(f(x)).}
+\]
+\end{theorem}
+\atlasnote
+
+\begin{proof}
+Each settling trajectory in $\mathcal G$ transports through $f$ to a
+trajectory in $\mathcal H$ with the same accumulated action cost, and $g$
+provides the converse.  Taking infima gives equality of Bellman values.  The
+assumed polynomial construction, size, answer, and certificate-transport
+bounds provide fair reductions in both directions, hence equality of fair
+settlement degree \cite{tenneson-fair}.
+\end{proof}
+
+To preserve an AMLD+0 experiment rather than merely a local GBG, an even
+stronger recoding is appropriate: the translation should also preserve typed
+channel identity, controller observations, legal Player-Zero service actions,
+BANK/verifier semantics, and the charged costs of controller decisions.  A map
+that preserves only reachability can hide precisely the scheduling geometry
+that AMLD+0 was introduced to study.
+
+\section{A hierarchy of AMLD+0 singleton-search regimes}
+
+The original paper placed singleton search on a spectrum from opaque guessing
+to exact shortest-path knowledge.  AMLD+0 keeps that local spectrum and adds a
+controller dimension.
+
+At the local level:
+\[
+\boxed{
+\begin{array}{c}
+\text{opaque guessing}\\
+\downarrow\\
+\text{weakly structured navigation}\\
+\downarrow\\
+\text{strongly structured navigation}\\
+\downarrow\\
+\text{exact local horizon knowledge}
+\end{array}
+}
+\]
+
+At the controller level:
+\[
+\boxed{
+\begin{array}{c}
+\text{fixed baseline schedule}\\
+\downarrow\\
+\text{history-sensitive allocation}\\
+\downarrow\\
+\text{BANK-aware allocation}\\
+\downarrow\\
+\text{exact controller-level horizon knowledge}
+\end{array}
+}
+\]
+
+These spectra are independent in principle.  One may have a highly intelligent
+local prover under a poor scheduler, or a sophisticated Player 0 allocating
+turns among locally weak agents.  The most capable architecture combines
+informative local state, effective local policies, useful shared verified
+memory, and a controller that exploits only legitimate observations.
+
+\section{The rewired hierarchy of quantities}
+
+The original singleton-search synthesis separated target cardinality,
+intrinsic horizon, observable information geometry, navigation policy, and
+actual cost.  AMLD+0 requires one additional layer and makes the distinction
+between local and global policy explicit:
+\[
+\boxed{
+\begin{array}{c}
+\text{singleton query / target cardinality}\\[3pt]
+\downarrow\\[-2pt]
+\text{typed settlement regions and intrinsic local horizons}\\[3pt]
+\downarrow\\[-2pt]
+\text{observable information geometry}\\[3pt]
+\downarrow\\[-2pt]
+\text{local settlement-agent policies}\\[3pt]
+\downarrow\\[-2pt]
+\text{shared verifier-governed BANK state}\\[3pt]
+\downarrow\\[-2pt]
+\text{Player-Zero service policy}\\[3pt]
+\downarrow\\[-2pt]
+\text{actual verified settlement cost}
+\end{array}}
+\]
+
+No arrow is reversible in general.  In particular:
+\begin{itemize}
+    \item one query does not imply one settlement mode;
+    \item a short intrinsic horizon does not imply that an admissible policy
+    can identify it cheaply;
+    \item informative local geometry does not imply good scheduling;
+    \item good scheduling does not imply informative local geometry;
+    \item an optimal final certificate does not imply low total search cost;
+    \item no controller policy is permitted to alter verifier acceptance.
+\end{itemize}
+
+This layered non-equivalence is the conceptual space in which AMLD+0 is meant
+to operate.
+
+\section{Experimental consequences}
+
+The rewiring suggests a direct experimental protocol for any singleton
+benchmark.
+
+First run the declared passive baseline $\sigma_0$.  Record the settlement
+report, certificate, channel service counts, per-channel expansions, verifier
+work, BANK activity, and total charged cost.  Then run an active Player-Zero
+policy with the same formal system, initial BANK, local agents, verifier, cost
+model, and contamination firewall.  Compare the runs using quantities such as
+\[
+G_0=C_{\sigma_0}-C_{\pi_0}.
+\]
+
+For a structured Ocean, one can ask whether Player 0 learns to allocate service
+toward channels whose verified discoveries shorten subsequent horizons.  For
+an opaque password control, the Player-Zero Noncreation of Information theorem
+predicts no information-theoretic gain from scheduling alone.  For SAT or
+other constraint-rich domains, features such as prefix pruning can be tested
+as legitimate controller observations.
+
+This produces a sharper empirical question than ``did the intelligent system
+solve the singleton target faster?'':
+
+\begin{quote}
+Which part of the gain came from local navigation, which came from shared
+verified discoveries, which came from Player-Zero allocation, and which was
+already present in the passive baseline?
+\end{quote}
+
+That decomposition is precisely what the AMLD+0 architecture makes measurable.
+
+\section{Conclusion}
+
+Singleton enumeration remains a useful way to expose a basic misconception in
+search: a one-element target set need not be computationally small.  The
+AMLD+0 viewpoint strengthens the lesson by separating the uniqueness of the
+mathematical query from the multiplicity of certified settlement routes and
+from the controller problem of deciding where computation should go next.
+
+The Ocean remains a valid one-player singleton GBG at the local level.  The
+Universal Proof Horizon remains an intrinsic measure of shortest certified
+routes.  Password space remains the opaque control case.  CNF pruning remains
+an example of visible structure.  What changes is the architectural level at
+which navigation is interpreted.
+
+A local settlement agent may decide which vertex, lemma, assignment, or
+certificate candidate to inspect.  Player 0 decides which enabled settlement
+process receives the next turn.  The shared BANK transmits only
+verifier-authorized resources.  The verifier remains the trust boundary.
+Passive Player 0 recovers the old AMLD trajectory; active Player 0 exposes a
+new, separately measurable source of operational performance.
+
+The central conclusion of the rewired paper is therefore:
+\[
+\boxed{
+\begin{array}{c}
+\text{singleton target complexity is not only a geometry of candidates;}\\
+\text{under AMLD+0 it is also a geometry of certified attention allocation.}
+\end{array}}
+\]
+But that additional control power has a precise limit.  Player 0 may exploit
+structure already present in legal observations and verified shared state; it
+cannot schedule information into existence, and it cannot schedule around the
+verifier.
+
+\begin{thebibliography}{9}
+
+\bibitem{tenneson-uph}
+Brian Tenneson,
+\emph{The Universal Proof-Horizon Operator: From MIU and the nth Well-Formed
+Formula to ZFC, Predator, and Automated Logical Deciders},
+Version 1.0, August 3, 2026.
+
+\bibitem{tenneson-gbg}
+Brian Tenneson,
+\emph{Generalized Board Games: From Tic-Tac-Toe to Chess},
+2026.
+Available at:
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/generalized_board_games_tic_tac_toe_chess_001/}.
+
+\bibitem{tenneson-gbgplus}
+Brian Tenneson,
+\emph{GBG+: Generalized Board Games with the Board as a Player: Definition,
+Optional Extensions, and a Relative-Consistency Audit},
+September 2026.
+
+\bibitem{tenneson-fair}
+Brian Tenneson,
+\emph{Preorders and Fair Settlement Geometry: From SIC and AMLD Simulation
+Degrees to a High-Probability Complexity Framework for SAT},
+September 2026.
+Available at:
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/preorders_and_fair_settlement_geometry_001/}.
+
+\bibitem{tenneson-amldplus0}
+Brian Tenneson,
+\emph{AMLD+0: Lineage and Foundational Architecture---From Cooperative
+Conjecture Settlement to Player-Zero Scheduling},
+Part I, Section 1, September 29, 2026.
+
+\end{thebibliography}
+
+\end{document}
