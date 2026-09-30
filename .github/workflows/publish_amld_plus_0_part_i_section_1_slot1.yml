@@ -1,0 +1,187 @@
+name: Publish AMLD+0 Part I Section 1 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_amld_plus_0_part_i_section_1_slot1.yml'
+      - 'incoming_publications/amld_plus_0_part_i_section_1/source.part00'
+      - 'incoming_publications/amld_plus_0_part_i_section_1/source.part01'
+      - 'incoming_publications/amld_plus_0_part_i_section_1/source.part02'
+      - 'incoming_publications/amld_plus_0_part_i_section_1/source.part03'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build audited source
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern zip >/dev/null
+          python -m pip install -q pymupdf==1.26.4
+
+          BUILD='.build/amld_plus_0_part_i_section_1'
+          STAGE='incoming_publications/amld_plus_0_part_i_section_1'
+          mkdir -p "$BUILD"
+          cat "$STAGE/source.part00" "$STAGE/source.part01" "$STAGE/source.part02" "$STAGE/source.part03" > "$BUILD/source.tex"
+          test "$(sha256sum "$BUILD/source.tex" | awk '{print $1}')" = "7d03b19a63729e7c870450849f5f3ac0d2c8fb1a82247813a42cb91b8832f969"
+
+          cd "$BUILD"
+          for i in 1 2 3; do pdflatex -interaction=nonstopmode -halt-on-error source.tex >/dev/null; done
+          cd ../..
+
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, re
+          p=Path('.build/amld_plus_0_part_i_section_1/source.pdf')
+          d=fitz.open(p)
+          assert len(d)==7, len(d)
+          text=re.sub(r'\s+', ' ', ' '.join(page.get_text() for page in d))
+          for s in [
+              'AMLD+0: Lineage and Foundational Architecture',
+              'Player 0 decides whose turn it is',
+              'Passive-Rewiring Theorem',
+              'Finite report architecture',
+              'UNKNOWN'
+          ]:
+              assert s in text, s
+          PY
+
+          PUB='cs.LO_Logic_in_Computer_Science/amld_plus_0_part_i_section_1_lineage_and_foundational_architecture'
+          PDF='AMLD_plus_0_Part_I_Section_1_Lineage_and_Foundational_Architecture.pdf'
+          ZIP='AMLD_plus_0_Part_I_Section_1_Source_and_PDF.zip'
+          mkdir -p "$PUB" "docs/$PUB"
+          cp "$BUILD/source.pdf" "$PUB/$PDF"
+          cp "$BUILD/source.pdf" "docs/$PUB/$PDF"
+          cp "$BUILD/source.tex" "docs/$PUB/source.tex"
+          cp "$BUILD/source.pdf" "$BUILD/$PDF"
+          (cd "$BUILD" && zip -X -q "$ZIP" source.tex "$PDF")
+          cp "$BUILD/$ZIP" "docs/$PUB/$ZIP"
+
+      - name: Put publication in slot 1 and rebuild catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, hashlib, json, re
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/amld_plus_0_part_i_section_1_lineage_and_foundational_architecture'
+          pdf_name='AMLD_plus_0_Part_I_Section_1_Lineage_and_Foundational_Architecture.pdf'
+          zip_name='AMLD_plus_0_Part_I_Section_1_Source_and_PDF.zip'
+          pdf=root/pub_id/pdf_name
+          source=root/'docs'/pub_id/'source.tex'
+          source_package=root/'docs'/pub_id/zip_name
+          pages=len(fitz.open(pdf))
+          assert pages == 7
+          digest=hashlib.sha256(pdf.read_bytes()).hexdigest()
+          source_digest=hashlib.sha256(source.read_bytes()).hexdigest()
+          zip_digest=hashlib.sha256(source_package.read_bytes()).hexdigest()
+
+          title='AMLD+0: Lineage and Foundational Architecture'
+          quote='Player 0 decides whose turn it is. Player 0 does not decide what the selected agent does.'
+          card_text=(
+            'Part I, Section 1 of AMLD+0. The section reconstructs the architecture forward from two-sided '
+            'conjecture settlement and a shared verifier-governed BANK through five metalogical settlement '
+            'channels, GBG, GBG+, and Player 0. It defines AMLD+0, fixes Player 0 as a scheduler rather than '
+            'a commander, and proves passive rewiring recovers ordinary AMLD when Player 0 reproduces or '
+            'delegates to the baseline scheduler.'
+          )
+          status='FINAL ATLAS-AUDITED SECTION RELEASE — Part I, Section 1.'
+
+          cat=root/'scripts/publications.json'
+          data=json.loads(cat.read_text())
+          existed=any(x.get('id')==pub_id for x in data['items'])
+          old=[x for x in data['items'] if x.get('id')!=pub_id]
+          orders=[x.get('order') for x in old if isinstance(x.get('order'),(int,float))]
+          order=min(orders)-10 if orders else -10
+          item={
+            'title':title,
+            'kind':'Monograph section',
+            'quote':quote,
+            'quote_page':4,
+            'card_text':card_text,
+            'status':status,
+            'subject':'cs.LO_Logic_in_Computer_Science',
+            'id':pub_id,
+            'href':pub_id+'/',
+            'pdf':pub_id+'/'+pdf_name,
+            'archive_path':pub_id+'/'+pdf_name,
+            'sha256':digest,
+            'sha256_tex':source_digest,
+            'sha256_source_package':zip_digest,
+            'pages':pages,
+            'order':order,
+            'source':pub_id+'/source.html',
+            'source_file':pub_id+'/source.tex',
+            'source_package':pub_id+'/'+zip_name,
+            'authors':'Brian Tenneson',
+            'classification_note':(
+              'Part I, Section 1 release, September 29, 2026. Establishes the forward lineage and foundational '
+              'architecture of AMLD+0; defines the verifier-governed BANK and Player 0 scheduling boundary; '
+              'proves the Passive-Rewiring Theorem; and records certificate-backed positive settlement with '
+              'UNKNOWN as operational nonsettlement pending the full taxonomy in Section 2. '
+              'Subject classification: cs.LO — Logic in Computer Science.'
+            )
+          }
+          data['items']=[item]+old
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+
+          search=json.loads((root/'docs/search-index.json').read_text())
+          expected=int(search['count']) if existed else int(search['count'])+1
+          wrapper=root/'scripts/build_publications_106.py'
+          wt=wrapper.read_text()
+          wt,n1=re.subn(r'if len\(expanded\["items"\]\) != \d+:',
+                       f'if len(expanded["items"]) != {expected}:',wt,count=1)
+          wt,n2=re.subn(r'Expected \d+ cards after restoration',
+                       f'Expected {expected} cards after restoration',wt,count=1)
+          assert n1==1 and n2==1, (n1,n2)
+          wrapper.write_text(wt)
+          (root/'.build/amld_plus_0_part_i_section_1/expected.txt').write_text(str(expected))
+          print('slot order',order,'expected',expected)
+          PY
+
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/amld_plus_0_part_i_section_1_lineage_and_foundational_architecture'
+          s=json.loads((root/'docs/search-index.json').read_text())
+          expected=int((root/'.build/amld_plus_0_part_i_section_1/expected.txt').read_text())
+          assert s['count']==expected
+          x=s['items'][0]
+          assert x['id']==pub_id
+          assert x['pages']==7
+          assert x['title']=='AMLD+0: Lineage and Foundational Architecture'
+          assert x['quote']=='Player 0 decides whose turn it is. Player 0 does not decide what the selected agent does.'
+          home=(root/'docs/index.html').read_text()
+          assert 'AMLD+0: Lineage and Foundational Architecture' in home
+          for f in [
+            f'docs/{pub_id}/index.html',
+            f'docs/{pub_id}/source.html',
+            f'docs/{pub_id}/source.tex',
+            f'docs/{pub_id}/AMLD_plus_0_Part_I_Section_1_Lineage_and_Foundational_Architecture.pdf',
+            f'docs/{pub_id}/AMLD_plus_0_Part_I_Section_1_Source_and_PDF.zip'
+          ]:
+              assert (root/f).is_file(), f
+          PY
+
+          rm -rf incoming_publications/amld_plus_0_part_i_section_1 .build/amld_plus_0_part_i_section_1
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m 'Publish AMLD+0 Part I Section 1 as card 1 [skip ci]'
+          git push

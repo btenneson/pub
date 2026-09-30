@@ -1,0 +1,75 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setstretch{1.06}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist[itemize]{topsep=0.25em,itemsep=0.2em,parsep=0em,leftmargin=1.6em}
+\setlist[enumerate]{topsep=0.25em,itemsep=0.2em,parsep=0em,leftmargin=1.8em}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{remark}[definition]{Remark}
+
+\title{\textbf{AMLD+0: Lineage and Foundational Architecture}\\[0.5em]
+\large Part I, Section 1: From Cooperative Conjecture Settlement to Player-Zero Scheduling}
+\author{Brian Tenneson\\[0.25em]
+\small Formalization, source reconciliation, and editorial assistance by OpenAI's ChatGPT}
+\date{September 29, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This section introduces AMLD+0 by following the architecture forward through its own development. The starting point is two-sided conjecture settlement: search not only for a proof of a target but also for a proof of its refutation. The next step is a shared verifier-governed BANK, allowing independently checked intermediate results to become common resources rather than private discoveries. The architecture then expands to explicitly metalogical settlement channels, culminating in the current five-role AMLD with proof, refutation, dependence, independence, and contradiction channels. Generalized Board Games (GBGs) then supply a distinct formal perspective in which state transitions are legal moves, and GBG+ internalizes the board itself as a distinguished player, Player 0. AMLD+0 combines these lines by internalizing scheduling as Player 0: Player 0 decides whose turn it is, but not what the chosen settlement agent does. A passive-rewiring theorem shows that ordinary AMLD is recovered whenever Player 0 contributes no adaptive control, either by reproducing the old scheduler or by taking a declared silent/delegating action. Thus AMLD+0 is a conservative control extension of AMLD at the foundational level. The exact taxonomy of settlement reports is not developed here; only the architectural consequence is recorded that positive settlement reports are certificate-backed while a run with no settlement certificate may report UNKNOWN.
+\end{abstract}
+
+\section{Lineage and Definition of AMLD+0}
+
+The purpose of this section is not to begin with the finished AMLD+0 architecture and reason backward. The architecture is easier to understand in the order in which its central ideas accumulated. The progression is therefore presented strictly forward:
+\[
+\begin{aligned}
+\text{two-sided settlement} &\longrightarrow \text{shared BANK}
+\longrightarrow \text{metalogical channels} \longrightarrow \text{GBG}\\
+&\longrightarrow \text{GBG+} \longrightarrow \text{Player 0} \longrightarrow \text{AMLD+0}.
+\end{aligned}
+\]
+The notation ``+0'' records the final structural move: the ``+'' inherits the board-as-player extension of GBG+, while the ``0'' emphasizes the distinguished scheduling player $P_0$.
+
+\subsection{From theorem proving to two-sided conjecture settlement}
+
+An automated theorem prover is naturally target-oriented. Given hypotheses $\Gamma$ in a formal system and a target statement $T$, it searches for a certificate establishing
+\[
+\Gamma\vdash T.
+\]
+The first architectural enlargement is to refuse to identify ``failure to prove'' with any mathematical conclusion. A second search is added for a certificate establishing the designated refutation of the target. In the simplest classical case this is a proof of $\neg T$ from the same hypotheses:
+\[
+\Gamma\vdash \neg T.
+\]
+This gives the basic two-sided conjecture-settling pattern: a prover searches toward $T$ while a refuter searches toward its designated opposite. The early ALD formulation explicitly described the progression
+\[
+\text{automated theorem prover}
+\longrightarrow
+\text{automated conjecture settler}
+\longrightarrow
+\text{Automated Logical Decider},
+\]
+with the conjecture settler performing symmetric proof/refutation search and the later decider adding metalogical forms of certification \cite{ald001}.
+
+The important conceptual move is already present here: operational failure is not itself evidence. A timeout, search exhaustion under a declared budget, or absence of a found proof does not become a refutation certificate merely because one branch of computation stopped. The architecture is therefore organized around \emph{positive certificates} rather than around the semantic interpretation of search failure.
+
+\subsection{From private search to a shared BANK}
+
+Two-sided search immediately raises a cooperation question. If the prover discovers an intermediate lemma useful to the refuter, or vice versa, should that information remain private to the discovering process? The answer that shaped the next stage of the architecture was no.
+
+A shared lemma pool was introduced so that independently checked intermediate results could become reusable resources for all authorized searches. In the later AMLD terminology this shared object became the \textbf{BANK}. The August 2026 ALD supplement formalized this as a provenance-aware shared lemma pool: agents may propose additions, but only verifier-accepted entries become trusted shared material; entries are typed and retain enough assumption support to prevent a fact proved under temporary hypotheses from silently becoming an unconditional theorem \cite{ald47}.
+

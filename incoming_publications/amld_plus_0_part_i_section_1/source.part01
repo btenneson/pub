@@ -1,0 +1,75 @@
+For the foundational account here, the BANK can be stated more simply.
+
+\begin{definition}[Foundational BANK]
+Fix admitted hypotheses $\Gamma$. The initial BANK $B_0$ contains the admitted hypotheses. During a run, settlement agents may propose additional formal statements or certified records. Only material accepted by the declared verifier may enter the trusted BANK.
+\end{definition}
+
+The richer bookkeeping---object theory versus metatheory, provenance, temporary supports, handoff records, and later lemma-trading interpretations---is important, but it is not required to understand the first structural role of the BANK. The essential point is that accepted mathematical progress becomes shared state.
+
+This also changes the geometry of search without changing theoremhood. A verified shared lemma can shorten a later derivation or redirect another search, but, under a sound verifier and support-safe reuse, the BANK does not manufacture new consequences merely by storing them. The earlier shared-pool neutrality theorem makes precisely this distinction: sharing can alter the cost and order in which certificates are discovered without changing the underlying logical status \cite{ald47}.
+
+\subsection{From logical polarity to metalogical settlement channels}
+
+Once conjecture settling is understood as certificate production rather than as a single prover returning success or failure, additional settlement questions become natural. Proof and refutation are object-level possibilities, but they are not the only certifiable information one may seek about a target relative to a formal system.
+
+The architecture therefore expanded to explicitly metalogical channels. Independence was an early extension: rather than treating failure on both proof sides as evidence of independence, the system searches for a positive metatheoretic certificate that neither side follows in the declared setting. Contradiction was also separated as its own certifiable outcome rather than being treated as an accidental byproduct of ordinary search. The later architecture adds \emph{dependence} as a distinct positive channel: a metatheoretic certificate may establish that the target's status depends on additional assumptions even when neither an object-level proof nor an independence certificate is presently the right description.
+
+The current five-role AMLD is therefore organized around the role set
+\[
+\mathsf{Role}=\{P,R,D,I,C\},
+\]
+where $P$ searches for proof, $R$ for refutation, $D$ for dependence, $I$ for independence, and $C$ for contradiction. The roles share a verifier-governed typed BANK \cite{roundrobin}.
+
+This five-channel formulation should not be mistaken for five mutually exclusive truth values. It is an architecture of \emph{certificate searches}. In particular, positive certificate classes may stand in logical relationships to one another. The precise report taxonomy, overlaps, and the status of UNKNOWN belong to the next section of Part I; the present section needs only the fact that the search architecture is finite, typed, and verifier-gated.
+
+\subsection{Generalized Board Games: legal transition as formal inference}
+
+A separate line of development supplied the structure that later became Player 0. Generalized Board Games (GBGs) recast board games as especially visible formal systems. Rule-complete game states are encoded as well-formed formal objects, legal moves are partial inference rules, the initial state acts as a distinguished hypothesis, and finite legal reachability becomes theoremhood. A legal play history can therefore be read as a sequential match-proof \cite{gbg}.
+
+This perspective matters for AMLD because it puts \emph{control of transitions} inside the formal object being studied. A move is not an external programmer's intervention. It is a legal transition from the current state according to the rules of the enlarged system. Once search is viewed this way, the scheduling question---which enabled participant receives the next turn?---can itself be represented internally rather than left as invisible orchestration code.
+
+\subsection{GBG+ and the appearance of Player 0}
+
+GBG+ makes one additional structural move: the board itself becomes a distinguished player $P_0$. The minimal GBG+ axioms are intentionally weak. Player 0 is not granted sovereignty over the game. Its actions must themselves be legal actions of the enlarged game, and the ordinary game is recoverable by forgetting board-only coordinates and silent board actions \cite{gbgplus}.
+
+Scheduling appears as an optional but especially important GBG+ characteristic. If $E(S)$ is the set of enabled ordinary players at state $S$, then a scheduler board-player may select an index
+\[
+i\in E(S)
+\]
+to determine which enabled player receives the next turn. Crucially, scheduling does not make an illegal action legal, and it does not specify what the selected player must do during that turn \cite{gbgplus}.
+
+This distinction is foundational for AMLD+0.
+
+\begin{quote}
+\textbf{Player 0 decides whose turn it is. Player 0 does not decide what the selected agent does.}
+\end{quote}
+
+The selected settlement agent retains its own internal search dynamics: its inference selection, lemma choice, tactic, local branching, proof direction, and other legal internal moves remain properties of that agent's search procedure. Player 0 allocates the next service opportunity; it is a scheduler, not a commander.
+
+The distinction is small syntactically but potentially large dynamically. Under a finite budget, turn allocation can favor one search front, delay another, or react to certified BANK growth. None of this changes what counts as an accepted mathematical certificate. The verifier remains outside Player 0's control.
+
+\subsection{The verifier trust boundary}
+
+The verifier is deliberately simpler than the search machinery around it.
+
+\begin{definition}[Verifier]
+The verifier is the effective procedure that checks whether a proposed certificate is valid according to the formal system a formal statement is written in.
+\end{definition}
+
+Search agents may be heuristic, adaptive, learned, stochastic, exploratory, algebraic, geometric, or otherwise elaborate. Player 0 may be active or passive. The BANK may accumulate substantial shared structure. None of these components is permitted to change the acceptance condition of the verifier during the run unless the formal experiment explicitly changes the formal system itself and records that change as part of the declared object of study.
+
+This is the trust boundary inherited by AMLD+0: control may change; certification does not silently change with it.
+
+\subsection{Current definition of AMLD+0}
+
+We can now state the architecture reached by the preceding development.
+
+\begin{definition}[AMLD+0]
+Fix a formal system $F$, admitted hypotheses $\Gamma$, a target $T$, and, where required, a declared metatheory. An \emph{AMLD+0} consists of:
+\begin{enumerate}
+    \item five settlement roles $P,R,D,I,C$ with their own internal search states and legal search dynamics;
+    \item a shared verifier-governed BANK $B$, initially containing the admitted hypotheses and thereafter accepting only verifier-authorized trusted additions;
+    \item a verifier $V$ that checks proposed certificates according to the relevant formal system;
+    \item a declared baseline scheduling policy $\sigma_0$ for the underlying AMLD; and
+    \item a distinguished Player 0, denoted $P_0$, whose scheduling policy may select an enabled settlement role for the next service turn or may take a declared passive action $\varepsilon$.
+\end{enumerate}
