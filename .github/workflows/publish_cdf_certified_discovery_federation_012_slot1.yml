@@ -23,14 +23,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern zip >/dev/null
-          python -m pip install -q pymupdf==1.26.4
-
           BUILD='.build/cdf_certified_discovery_federation_012'
           STAGE='incoming_publications/cdf_certified_discovery_federation_012'
           mkdir -p "$BUILD"
 
+          for f in "$STAGE"/source.part_*.b64; do
+            printf '%s ' "$(basename "$f")"
+            tr -d '[:space:]' < "$f" | base64 -d | sha256sum
+          done
           cat "$STAGE"/source.part_*.b64 | tr -d '[:space:]' | base64 -d > "$BUILD/source.tex"
           tr -d '[:space:]' < "$STAGE/audit.b64" | base64 -d > "$BUILD/CDF_Certified_Discovery_Federation_012_ATLAS_REAUDIT.md"
           tr -d '[:space:]' < "$STAGE/proxy.b64" | base64 -d > "$BUILD/cdf_ocean_proxy_v12.py"
@@ -39,6 +39,10 @@ jobs:
           test "$(sha256sum "$BUILD/source.tex" | awk '{print $1}')" = "d11342aea8afd06aaffcc72c3b1b51c89d49d90ba430fa946363a02c830cc8d3"
           test "$(sha256sum "$BUILD/CDF_Certified_Discovery_Federation_012_ATLAS_REAUDIT.md" | awk '{print $1}')" = "5297de292e175edf0c19da5812f7f164698498e354eea97a8abe979368fdd254"
           test "$(sha256sum "$BUILD/cdf_ocean_proxy_v12.py" | awk '{print $1}')" = "8a93e8849d8b1d48d5f8fbebeb7b62d9b7c504bb961c80a1a0252cc3fed59436"
+
+          sudo apt-get update -qq
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern zip >/dev/null
+          python -m pip install -q pymupdf==1.26.4
 
           cd "$BUILD"
           for i in 1 2 3; do pdflatex -interaction=nonstopmode -halt-on-error source.tex >/dev/null; done
