@@ -21,16 +21,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y xz-utils >/dev/null
           python -m pip install -q pymupdf==1.26.4
 
           BUILD='.build/low_fan_in_consequence_repository_0_2'
-          STAGE='incoming_publications/low_fan_in_consequence_repository_0_2'
           mkdir -p "$BUILD"
-
-          cat "$STAGE"/paper.part_*.b64 | tr -d '\r\n' | base64 -d > "$BUILD/paper.xz"
-          xz -dc "$BUILD/paper.xz" > "$BUILD/paper.pdf"
+          curl --fail --location --retry 3 'https://sdmntprwestus.oaiusercontent.com/files/00000000-4e54-8230-9472-a53e2dc62e2a/raw?se=2026-10-03T14%3A00%3A56Z&sp=r&sv=2026-02-06&sr=b&scid=5495deb8-3a5e-55fd-a186-72bfbfca9320&skoid=456594af-533f-44ef-9bdc-35ea2f9daee5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-02T19%3A39%3A36Z&ske=2026-10-03T19%3A39%3A36Z&sks=b&skv=2026-02-06&sig=vBrvz6UN4Fu2XsJwPiPvHv/DgD0BdgIv5G3KdVL7c3U%3D' --output "$BUILD/paper.pdf"
 
           test "$(wc -c < "$BUILD/paper.pdf")" -eq 268698
           test "$(sha256sum "$BUILD/paper.pdf" | awk '{print $1}')" = "211e5a174b447f463ee51cdd86da9d60f45d57d324c728ced03c3b9fffcc3f94"
