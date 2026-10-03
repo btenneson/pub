@@ -1,0 +1,171 @@
+name: Publish Low-Fan-In Consequence Repository 0.2 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_low_fan_in_consequence_repository_0_2_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct and verify supplied PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y xz-utils >/dev/null
+          python -m pip install -q pymupdf==1.26.4
+
+          BUILD='.build/low_fan_in_consequence_repository_0_2'
+          STAGE='incoming_publications/low_fan_in_consequence_repository_0_2'
+          mkdir -p "$BUILD"
+
+          cat "$STAGE"/paper.part_*.b64 | tr -d '\r\n' | base64 -d > "$BUILD/paper.xz"
+          xz -dc "$BUILD/paper.xz" > "$BUILD/paper.pdf"
+
+          test "$(wc -c < "$BUILD/paper.pdf")" -eq 268698
+          test "$(sha256sum "$BUILD/paper.pdf" | awk '{print $1}')" = "211e5a174b447f463ee51cdd86da9d60f45d57d324c728ced03c3b9fffcc3f94"
+
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, re
+          p=Path('.build/low_fan_in_consequence_repository_0_2/paper.pdf')
+          d=fitz.open(p)
+          assert len(d)==25, len(d)
+          text=re.sub(r'\s+', ' ', ' '.join(page.get_text() for page in d))
+          for s in [
+              'A Low-Fan-In Consequence Repository',
+              'Strength-Ordered Consolidated Edition 0.2',
+              '182 proved catalogue entries from Volumes I–V',
+              'Repository contract',
+              'Stable theorem IDs are retained.'
+          ]:
+              assert s in text, s
+          print('verified PDF:', len(d), 'pages')
+          PY
+
+          PUB='cs.LO_Logic_in_Computer_Science/low_fan_in_consequence_repository_strength_ordered_0_2'
+          PDF='Low_Fan_In_Consequence_Repository_Strength_Ordered_0_2.pdf'
+          mkdir -p "$PUB" "docs/$PUB"
+          cp "$BUILD/paper.pdf" "$PUB/$PDF"
+          cp "$BUILD/paper.pdf" "docs/$PUB/$PDF"
+
+      - name: Promote publication to card slot 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, hashlib, json, re
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/low_fan_in_consequence_repository_strength_ordered_0_2'
+          pdf_name='Low_Fan_In_Consequence_Repository_Strength_Ordered_0_2.pdf'
+          pdf=root/pub_id/pdf_name
+          pages=len(fitz.open(pdf))
+          assert pages == 25
+          digest=hashlib.sha256(pdf.read_bytes()).hexdigest()
+          assert digest == '211e5a174b447f463ee51cdd86da9d60f45d57d324c728ced03c3b9fffcc3f94'
+
+          title='A Low-Fan-In Consequence Repository'
+          quote='Strength-ordered consolidated repository generated from Volumes I–V.'
+          card_text=(
+            'Strength-Ordered Consolidated Edition 0.2 collects 182 proved catalogue entries from Volumes I–V, '
+            'retains stable theorem IDs, and records compact provenance signatures including source section, theorem '
+            'parents, immediate theorem-parent count, hypotheses, status, and intended use. The repository orders '
+            'entries editorially by generality, exactness, synthesis, reusability, and proof substance so structurally '
+            'powerful transfer, preservation, separation, closure, simulation, and search results can be located first.'
+          )
+          status='STRENGTH-ORDERED CONSOLIDATED EDITION 0.2 — October 3, 2026.'
+
+          cat=root/'scripts/publications.json'
+          data=json.loads(cat.read_text())
+          existed=any(x.get('id')==pub_id for x in data['items'])
+          old=[x for x in data['items'] if x.get('id')!=pub_id]
+          orders=[x.get('order') for x in old if isinstance(x.get('order'),(int,float))]
+          order=min(orders)-10 if orders else -10
+          item={
+            'title':title,
+            'kind':'Strength-ordered theorem catalogue',
+            'quote':quote,
+            'quote_page':1,
+            'card_text':card_text,
+            'status':status,
+            'subject':'cs.LO_Logic_in_Computer_Science',
+            'id':pub_id,
+            'href':pub_id+'/',
+            'pdf':pub_id+'/'+pdf_name,
+            'archive_path':pub_id+'/'+pdf_name,
+            'sha256':digest,
+            'pages':pages,
+            'order':order,
+            'source':'',
+            'authors':'Brian Tenneson',
+            'classification_note':(
+              'Strength-Ordered Consolidated Edition 0.2, October 3, 2026. Consolidates 182 proved catalogue '
+              'entries derived from Depths of Induction and Formalized Self-Awareness, retaining stable theorem IDs '
+              'and compact provenance signatures. The editorial strength ordering emphasizes generality, exactness, '
+              'synthesis, reusability, and proof substance. Suggested primary subject classification: cs.LO — Logic '
+              'in Computer Science; potential cross-lists noted in the paper include math.LO, cs.CC, and cs.AI.'
+            )
+          }
+          data['items']=[item]+old
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+
+          search=json.loads((root/'docs/search-index.json').read_text())
+          expected=int(search['count']) if existed else int(search['count'])+1
+          wrapper=root/'scripts/build_publications_106.py'
+          wt=wrapper.read_text()
+          wt,n1=re.subn(r'if len\(expanded\["items"\]\) != \d+:',
+                       f'if len(expanded["items"]) != {expected}:',wt,count=1)
+          wt,n2=re.subn(r'Expected \d+ cards after restoration',
+                       f'Expected {expected} cards after restoration',wt,count=1)
+          assert n1==1 and n2==1, (n1,n2)
+          wrapper.write_text(wt)
+          (root/'.build/low_fan_in_consequence_repository_0_2/expected.txt').write_text(str(expected))
+          print('slot order',order,'expected',expected)
+          PY
+
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/low_fan_in_consequence_repository_strength_ordered_0_2'
+          s=json.loads((root/'docs/search-index.json').read_text())
+          expected=int((root/'.build/low_fan_in_consequence_repository_0_2/expected.txt').read_text())
+          assert s['count']==expected
+          x=s['items'][0]
+          assert x['id']==pub_id
+          assert x['pages']==25
+          assert x['title']=='A Low-Fan-In Consequence Repository'
+          assert x['quote']=='Strength-ordered consolidated repository generated from Volumes I–V.'
+          home=(root/'docs/index.html').read_text()
+          first=home.split('<article class="card"',1)[1].split('</article>',1)[0]
+          assert 'A Low-Fan-In Consequence Repository' in first
+          for f in [
+            f'docs/{pub_id}/index.html',
+            f'docs/{pub_id}/Low_Fan_In_Consequence_Repository_Strength_Ordered_0_2.pdf',
+            f'{pub_id}/Low_Fan_In_Consequence_Repository_Strength_Ordered_0_2.pdf'
+          ]:
+              assert (root/f).is_file(), f
+          print('PASS: Low-Fan-In Consequence Repository 0.2 is slot #1.')
+          PY
+
+          rm -rf incoming_publications/low_fan_in_consequence_repository_0_2 .build/low_fan_in_consequence_repository_0_2
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m 'Publish Low-Fan-In Consequence Repository 0.2 as card 1 [skip ci]'
+          git push
