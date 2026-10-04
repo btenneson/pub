@@ -41,6 +41,9 @@ jobs:
           sha=hashlib.sha256(pdf.read_bytes()).hexdigest()
           tex=Path('cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.tex')
           sha_tex=hashlib.sha256(tex.read_bytes()).hexdigest()
+          docs_source=Path('docs/cs.AI_Artificial_Intelligence/data_mind_3_0/source.tex')
+          docs_source.parent.mkdir(parents=True, exist_ok=True)
+          docs_source.write_bytes(tex.read_bytes())
           rest=[x for x in data['items'] if x.get('id') != target_id]
           numeric=[x['order'] for x in rest if isinstance(x.get('order'),int)]
           item={
@@ -60,7 +63,7 @@ jobs:
             'pages':pages,
             'order':(min(numeric)-1) if numeric else -1,
             'source':'cs.AI_Artificial_Intelligence/data_mind_3_0/source.html',
-            'source_file':'cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.tex',
+            'source_file':'cs.AI_Artificial_Intelligence/data_mind_3_0/source.tex',
             'authors':'Brian Tenneson',
             'classification_note':'Preliminary expository article, October 2026. Primary subject: cs.AI — Artificial Intelligence.'
           }
