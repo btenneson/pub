@@ -1,0 +1,98 @@
+name: Publish DATA MIND 3.0 to slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_data_mind_3_0_slot1.yml'
+      - 'cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LaTeX and catalog dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y latexmk texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+          python -m pip install pymupdf==1.26.4
+      - name: Compile publication and update catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          DIR='cs.AI_Artificial_Intelligence/data_mind_3_0'
+          TEX="$DIR/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.tex"
+          PDF="$DIR/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.pdf"
+          latexmk -pdf -interaction=nonstopmode -halt-on-error -output-directory="$DIR" "$TEX"
+          python - <<'PY'
+          from pathlib import Path
+          import json, hashlib, fitz
+          path=Path('scripts/publications.json')
+          data=json.loads(path.read_text())
+          target_id='cs.AI_Artificial_Intelligence/data_mind_3_0'
+          pdf=Path('cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.pdf')
+          pages=len(fitz.open(pdf))
+          sha=hashlib.sha256(pdf.read_bytes()).hexdigest()
+          tex=Path('cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.tex')
+          sha_tex=hashlib.sha256(tex.read_bytes()).hexdigest()
+          rest=[x for x in data['items'] if x.get('id') != target_id]
+          numeric=[x['order'] for x in rest if isinstance(x.get('order'),int)]
+          item={
+            'title':'DATA MIND 3.0: A Verifier-Gated Architecture for Mathematical Search, Discovery, Learning, Installation, and Safe Upgrade',
+            'kind':'Architecture and expository article',
+            'quote':'Verified results are retained in an append-only store called BANK, while speculative possibilities are kept separately in FUTUREBANK.',
+            'quote_page':1,
+            'card_text':'DATA MIND 3.0 presents a modular architecture for difficult mathematical search that separates formal mathematical authority from heuristic guidance, learning, speculation, resource allocation, and operational control. It explains the Verifier/BANK/FUTUREBANK trust boundary, installation and module contracts, safe upgrades, bounded Scouts, resource accounting, search-geometry transformation, and worked difficult-case workflows.',
+            'status':'PRELIMINARY EXPOSITORY ARTICLE — October 2026.',
+            'subject':'cs.AI_Artificial_Intelligence',
+            'id':target_id,
+            'href':'cs.AI_Artificial_Intelligence/data_mind_3_0/',
+            'pdf':'cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.pdf',
+            'archive_path':'cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.pdf',
+            'sha256':sha,
+            'sha256_tex':sha_tex,
+            'pages':pages,
+            'order':(min(numeric)-1) if numeric else -1,
+            'source':'cs.AI_Artificial_Intelligence/data_mind_3_0/source.html',
+            'source_file':'cs.AI_Artificial_Intelligence/data_mind_3_0/DATA_MIND_3_0_Architecture_Installation_Upgrade_and_Use_FINAL.tex',
+            'authors':'Brian Tenneson',
+            'classification_note':'Preliminary expository article, October 2026. Primary subject: cs.AI — Artificial Intelligence.'
+          }
+          data['items']=[item]+rest
+          path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          print('DATA MIND 3.0 assigned canonical slot 1 with order',item['order'])
+          PY
+      - name: Rebuild and audit publication library
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          target='cs.AI_Artificial_Intelligence/data_mind_3_0'
+          catalog=json.loads(Path('scripts/publications.json').read_text())
+          search=json.loads(Path('docs/search-index.json').read_text())
+          assert catalog['items'][0]['id']==target
+          assert search['items'][0]['id']==target
+          assert Path('docs/cs.AI_Artificial_Intelligence/data_mind_3_0/index.html').is_file()
+          print('PASS: DATA MIND 3.0 is slot 1 in canonical catalog and generated site.')
+          PY
+      - name: Commit publication
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.AI_Artificial_Intelligence/data_mind_3_0
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Publish DATA MIND 3.0 as card 1 [skip ci]'
+            git push
+          fi
