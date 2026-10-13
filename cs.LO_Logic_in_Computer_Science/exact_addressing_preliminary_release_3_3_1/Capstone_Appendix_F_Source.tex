@@ -1,0 +1,193 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,tabularx,array}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize Exact Addressing 3.3.1 | Appendix F}
+\fancyhead[R]{\footnotesize October 13, 2026}
+\fancyfoot[C]{\thepage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Hypothesis}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Thm}{\operatorname{Thm}}
+\newcommand{\Layer}{\operatorname{Layer}}
+\newcommand{\Emits}{\operatorname{Emits}}
+\newcommand{\Valid}{\operatorname{Valid}}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathcal F}
+\newcommand{\Hsys}{\mathsf H}
+\newcommand{\Bsys}{\mathsf B}
+\newcommand{\CalB}{\mathcal B}
+\title{\vspace{-1.2em}\textbf{Appendix F: Capstone Theorem}\\[0.24em]
+\large Certified Geometric Discovery and Amortized Search Advantage\\[0.45em]
+\normalsize Exact recoding, complete verifier-gated discovery, and a fully charged expected-cost separation}
+\author{Brian Tenneson \\ Research working draft; document preparation assisted by OpenAI ChatGPT}
+\date{October 13, 2026 \quad | \quad Exact Addressing 3.3.1 working integration}
+\begin{document}
+\renewcommand{\thesection}{F.\arabic{section}}
+\maketitle
+\vspace{-1.0em}
+\begin{abstract}
+We formulate and prove a \emph{conditional composition theorem} for exactly addressed automated theorem provers. The theorem combines (i) invariance of theoremhood and shortest-proof layers under rule-preserving recoding; (ii) eventual verifier-certified discovery by an explicitly constructed, protected exhaustive proof enumerator; and (iii) strict fully charged \emph{expected} discovery-cost improvement on an eligible family of finite certificate searches with a target-blind informative neighborhood and bounded implementation overhead. We give the precise rank-saving identity, a net charged-cost lower bound, and an amortized threshold of order $\log N$ related tasks. The result does \emph{not} assert that arbitrary Hilbert navigation is complete or faster, nor does it establish that an independently interesting infinite benchmark family already meets the quantitative hypotheses. Those are outstanding verification obligations.
+\end{abstract}
+
+\section{Purpose and relationship to the preceding conjecture}
+The earlier capstone asked whether five broad assumptions about exact recoding, verifier soundness, fairness, geometric locality, and Hilbert prioritization implied four conclusions: theoremhood invariance (T1), shortest-proof-layer invariance (T2), finite certified discovery (T3), and fully charged search advantage (T4). A counterinterpretation of the displayed assumptions exposed the distinction between \emph{fairness among enabled actions} and \emph{generation of all proof steps}. It also exposed the missing link between positive locality surplus and a strict advantage after guidance costs are charged.
+
+Here we deliberately \emph{revise both hypotheses and conclusions}. We keep T1--T4 as named objectives, but derive T3 from a constructed complete enumerator and restrict T4 to a quantitatively specified class. This is an explicitly labeled working-edition appendix; the preceding manuscript text and section order are unchanged.
+
+\section{Formal systems, search architecture, and charged benchmarks}
+\begin{definition}[Formal system and proof layers]
+Let $F=(x,y,z)$ be an effectively presented formal system, where $y$ is a set of well-formed formulas and $z$ is a computably enumerable family of finitary inference rules. Let $\Gamma\subseteq y$. A proof is a finite sequence in which each line is a hypothesis or follows by an applicable inference rule from earlier lines. Write
+\[
+ \Gamma\vdash_F\varphi,\qquad
+ \|\varphi\|_F(\Gamma):=\min\{|\pi|:\pi\text{ proves }\varphi\text{ from }\Gamma\},
+\]
+with value $\infty$ when there is no proof, and
+$\Layer_F(\Gamma,\varphi,n)$ for $\|\varphi\|_F(\Gamma)=n$.
+No formation of WFFs from connectives is assumed.
+\end{definition}
+
+\begin{definition}[Verifier-gated guided architecture]
+The architecture $\Hsys$ consists of an exact addressing map, a geometry-guided certificate-testing subroutine, and a \emph{protected universal proof enumerator} $U$. An independently specified verifier $V$ checks proofs relative to $F$ and $\Gamma$. A certificate is committed to the BANK only after $V$ accepts it. The universal enumerator receives an unbounded sequence of protected service steps, irrespective of decisions made by the geometric subroutine. The architecture emits a theorem if either accepted search channel finds a certificate.
+\end{definition}
+
+\begin{definition}[Matched finite-candidate task]
+A task has $N\ge 2$ distinct candidates, exactly one of which is an accepted certificate for the designated statement. Its position $J$ is unknown to the search policy. Testing any candidate, including its verifier check and associated rejection/acceptance handling, costs one \emph{charged comparison unit} in the common implementation model. The baseline $\Bsys$ tests candidates in a uniform random order. The guided strategy tests a predeclared neighborhood $G$ first and then the complement, in each block using an order independent of the hidden accepting identity. Both strategies use the same sound verifier and candidate universe.
+\end{definition}
+
+The benchmark is a distribution of $q$ related tasks with common candidate-count $N$. The target-blind geometry, index maintenance, and selection processes are included in the guided cost. A protected universal service quantum may be performed \emph{between}, rather than during, these finite subroutine calls; identical fixed universal service work for the two competitors is fully charged to both. This makes the subroutine cost comparison well defined without presuming that universal enumeration takes the same number of steps under different early-stopping policies.
+
+\section{The six revised hypotheses}
+The hypotheses have intentionally non-overlapping functions.
+\begin{enumerate}[leftmargin=2.7em,label=\textbf{H\arabic*.},itemsep=0.65em]
+ \item \textbf{Exact rule-preserving recoding.} There is an effective bijective syntactic recoding $t$ that carries each $F$-WFF to its $F^t$ counterpart and preserves and reflects hypotheses and every legal inference-rule application. The recoded target is $t(\varphi)$ and the recoded premises are $t[\Gamma]$.
+ \item \textbf{Sound and positively complete verification.} For finite candidate proof certificates $c$, the effective verifier halts and accepts exactly the valid $F$-proofs of their stated targets from $\Gamma$. Invalid certificates are never committed to BANK. This is a certificate-checking property, not a promise that the guided search will find a certificate.
+ \item \textbf{Protected complete enumeration.} The proof presentation and hypotheses are effective enough to enumerate all finite candidate proof codes. The architecture explicitly runs a dovetailed enumerator of these codes and grants it infinitely many protected service steps in any infinite run. Every valid finite proof code is therefore eventually checked and, if accepted, emitted. For a finite list of benchmark tasks the protected enumerator continues after the list ends; for infinitely many finite tasks it receives at least one service quantum between consecutive tasks.
+ \item \textbf{Target-blind, quantified informative locality.} For each benchmark task $i$, before discovering its accepting candidate a computable permitted-information rule defines a neighborhood $G_i$ of size $1\le g_i\le g_0<N$. Conditional on the permitted structural data, the unique accepted candidate lies in $G_i$ with probability $p_i\ge p_0>0$. Its position is uniform within the neighborhood conditional on inclusion and uniform within the complement conditional on exclusion. This is a statement about an \emph{auditable task distribution}, not hidden knowledge of the accepted candidate.
+ \item \textbf{Constructively bounded guidance ledger.} There is a specified data structure and algorithm (not just a claim that a patch is small) whose \emph{total additional charged work} over the $q$ tasks satisfies
+ \begin{equation}\label{eq:overhead}
+ D_q\le a_0N L_N+q\bigl[(a_1\beta_0\Delta_0+a_2g_0)L_N+a_3\bigr],\qquad L_N:=\ceil{\log_2(N+1)},
+ \end{equation}
+ with nonnegative constants $a_0,a_1,a_2,a_3$, and bounded update parameters $\beta_0,\Delta_0$ independent of $N$. The ledger includes initial encoding/index construction, Hilbert-address computations, neighborhood acquisition, all changed records and their dependent index entries, scheduling and stopping checks, and nonshared memory/service overhead. One possible route is an $O(N\log N)$ indexed build and $O(\beta_0\Delta_0\log N+g_0\log N)$ work per task; these bounds \emph{must be verified for the chosen implementation}.
+ \item \textbf{Matched charged comparison.} Both policies operate over identical tasks, candidate certificates, verification semantics, proof system, and comparison units. Their common setup and fixed protected-universal service is separately recorded and cancels only when actually identical. No proof discovery, target lookup, geometric precomputation, or stopping cost is provided for free.
+\end{enumerate}
+
+\section{The new capstone theorem}
+\begin{theorem}[Certified geometric discovery and amortized search advantage]\label{thm:capstone}
+Suppose H1--H6 hold for a formal system $F$, premises $\Gamma$, the architecture $\Hsys$, and an eligible family of $q$ finite-candidate benchmark tasks of common size $N$. Then:
+\begin{enumerate}[leftmargin=2.1em,label=\textbf{T\arabic*.},itemsep=0.5em]
+ \item \textbf{Theoremhood invariance.} For all $\varphi\in y$,
+ \[\Gamma\vdash_F\varphi\quad\Longleftrightarrow\quad t[\Gamma]\vdash_{F^t}t(\varphi).\]
+ \item \textbf{Exact shortest-proof-layer invariance.} For all $\varphi\in y$ and $n\in\N$,
+ \[\Layer_F(\Gamma,\varphi,n)\quad\Longleftrightarrow\quad \Layer_{F^t}(t[\Gamma],t(\varphi),n).\]
+ \item \textbf{Finite certified discoverability.} For every $\varphi\in y$, if $\Gamma\vdash_F\varphi$, then the guided architecture eventually emits a certificate accepted by $V$:
+ \[\Gamma\vdash_F\varphi\ \Longrightarrow\ \exists m<\infty\;\exists c\,[\Emits_{\Hsys}(\varphi,m,c)\land V(c,\varphi)].\]
+ \item \textbf{A strict net charged expected-cost advantage whenever the explicit inequality holds.} Writing $C_{\Bsys}$ and $C_{\Hsys}$ for the \emph{total} matched charged cost of the $q$ tasks, we have
+ \begin{equation}\label{eq:main}
+ \boxed{\E[C_{\Bsys}-C_{\Hsys}]\ \ge\ \frac q2(p_0N-g_0)-a_0NL_N-q[(a_1\beta_0\Delta_0+a_2g_0)L_N+a_3].}
+ \end{equation}
+ Hence, if the right-hand side is positive, then $\E[C_{\Hsys}]<\E[C_{\Bsys}]$.
+\end{enumerate}
+Furthermore, if $p_0>0$, $g_0,\beta_0,\Delta_0,a_0,\ldots,a_3$ are independent of $N$, and
+\begin{equation}\label{eq:K}
+ K>\frac{2a_0}{p_0},
+\end{equation}
+then there exists $N_0$ such that for every $N\ge N_0$ and every integer $q\ge K L_N$, the strict expected-cost advantage holds.
+\end{theorem}
+
+\section{Proof}
+\begin{proof}[Proof of Theorem \ref{thm:capstone}]
+\textbf{T1 and T2: recoding.}
+For every finite proof $\pi=\langle\pi_1,\dots,\pi_k\rangle$ of $\varphi$ from $\Gamma$, H1 carries each hypothesis line and each inference step to a valid proof line in $F^t$. Thus $t(\pi)$ proves $t(\varphi)$ from $t[\Gamma]$ in $k$ lines. The inverse recoding transports proofs back and preserves $k$. These maps give a length-preserving bijection between proof sets, proving T1 and equality of their minimum proof lengths, including the common value $\infty$. Thus T2 holds for every $n$. This recovers the core conclusion of \emph{Depths of a Simulation}, Version 45, Theorem 4.8, without requiring connectives in WFFs.
+
+\medskip\noindent\textbf{T3: protected enumeration.}
+Let $\Gamma\vdash_F\varphi$ and choose any finite proof certificate $c$ of $\varphi$. Since the proof-code enumeration in H3 is exhaustive, $c$ occurs at some finite enumeration index $j$. Since $U$ receives infinitely many service steps in an infinite run, it reaches index $j$ at a finite global stage $m$. By H2 the verifier accepts $c$; the emission protocol then emits $\varphi$ with this certificate. Equivalently, the same conclusion follows by induction over the finitely many proof lines. Hence T3 holds even if the geometric subroutine repeatedly makes unproductive choices.
+
+\medskip\noindent\textbf{T4: expected candidate-rank saving.}
+Fix task $i$, let $g=g_i$ and $p=p_i$. A uniformly randomized baseline tests its accepting candidate at expected rank $(N+1)/2$. Guided search tests the neighborhood first. If the accepting candidate lies in that neighborhood, its expected rank is $(g+1)/2$. Otherwise the guided search performs $g$ rejected tests and then finds the accepted candidate at mean complementary rank $(N-g+1)/2$, so its overall expected rank is
+\begin{align*}
+ \E[R_{\Hsys,i}]&=p\frac{g+1}{2}+(1-p)\left(g+\frac{N-g+1}{2}\right)\\
+ &=\frac{N+g+1-pN}{2}.
+\end{align*}
+Therefore, without any independence assumption among the tasks,
+\[
+ \E[R_{\Bsys,i}-R_{\Hsys,i}]=\frac{p_iN-g_i}{2}\ \ge\ \frac{p_0N-g_0}{2}.
+\]
+Linearity of expectation and the one-unit charged test convention yield total \emph{gross} savings of at least $q(p_0N-g_0)/2$. Identical common costs cancel only by H6. Subtract the additional guidance ledger $D_q$ bounded by H5 to obtain \eqref{eq:main}. If its right-hand side is positive, the expected net-cost inequality is strict.
+
+\medskip\noindent\textbf{Amortized threshold.}
+Define $A:=a_1\beta_0\Delta_0+a_2g_0$ and $L=L_N$. The right side of \eqref{eq:main} is
+\[
+ q\left[\frac{p_0N-g_0}{2}-AL-a_3\right]-a_0NL.
+\]
+For all sufficiently large $N$ the bracket is positive and equals $(p_0/2)N-O(\log N)$. If $q\ge K L$, it follows that the expression is at least
+\[
+ L\left\{K\left[\frac{p_0N-g_0}{2}-AL-a_3\right]-a_0N\right\}.
+\]
+The coefficient of $N$ in braces is $Kp_0/2-a_0>0$ by \eqref{eq:K}, while the remaining terms grow only as $O(\log N)$. It is therefore strictly positive for all sufficiently large $N$. This proves the last assertion.
+\end{proof}
+
+\section{Numerical illustration and scope}
+Choose, only to illustrate the algebra, $N=10{,}000$, $q=100$, $g_0=2$, $p_0=1/2$, $\beta_0=3$, $\Delta_0=2$, and $a_0=a_1=a_2=a_3=1$. Then $L_N=14$. Formula \eqref{eq:main} yields
+\[
+ \E[C_{\Bsys}-C_{\Hsys}]\ \ge\ \underbrace{249{,}900}_{\text{gross rank savings}}
+ -\underbrace{140{,}000}_{\text{initial index}}-
+ \underbrace{11{,}300}_{\text{task overhead}}\ =\ \boxed{98{,}600}.
+\]
+This is an \emph{arithmetic demonstration}, not empirical evidence that an existing system has achieved $p_0=1/2$ with two preferred candidates or these particular machine costs. The probability and work bounds must be justified for the same task family and implementation before the conclusion can be applied.
+
+\begin{remark}[T3 is not identical to weak fairness]
+Scheduling every action that remains enabled does not ensure that all proof-producing actions are ever generated or enabled. H3 instead prescribes a concrete complete proof enumeration and protected service allocation. T3 therefore holds independently of whether geometry is useful.
+\end{remark}
+
+\begin{remark}[Proof length versus search cost]
+T2 is an invariance result about the shortest number of proof \emph{lines}. T4 concerns a distinct operational quantity: the \emph{charged expected number and cost of candidate inspections}. Exact recoding alone implies no search speedup.
+\end{remark}
+
+\begin{remark}[Probability is over a declared benchmark distribution]
+T4 proves expected cost under H4's conditional-uniformity model. It does not imply worst-case speedup, an advantage on every instance, or an advantage on an unspecified distribution. If accepted-candidate locations are adversarial rather than sampled as specified, the displayed expectation may not apply.
+\end{remark}
+
+\begin{remark}[The index-overhead obligation is substantive]
+A bound of $O(\Delta)$ changed clause records does not by itself prove $O(\Delta\log N)$ total updates. The costs of exact identities, Hilbert coordinates, all dependency updates, and the verifier must be analyzed. In particular, earlier examples with a highly informative two-action neighborhood may have unbounded variable occurrence, and therefore need not satisfy fixed $\Delta_0$.
+\end{remark}
+
+\section{Open certification obligations}
+Before describing this as a certified result for a substantive existing solver family, the following tasks remain:
+\begin{enumerate}[leftmargin=1.8em,itemsep=0.3em]
+ \item \textbf{Concrete family.} Identify a genuinely useful infinite family of proof-search or certificate-search tasks with a predeclared, target-blind neighborhood and rigorously proved $p_i\ge p_0$ and conditional rank distributions.
+ \item \textbf{Implement H5.} Supply complete code or pseudocode for the exact-address construction, geometry calculations, balanced-index build, dependent-record updates, and stopping protocol, deriving $a_0,\dots,a_3$ in the same cost units as each verifier inspection.
+ \item \textbf{Verify uniform bounds jointly.} Establish fixed $g_0,\Delta_0,\beta_0$ \emph{on the same family}. A locality result from one example and an update bound from another do not suffice.
+ \item \textbf{Verifier integration.} Demonstrate that the protected enumerator's rule enumeration is complete, that checking is decidable and sound for the chosen formal presentation, and that no geometric decision can starve protected service.
+ \item \textbf{Independent audit.} Mechanically check the rank and algebra lemmas and independently test any claimed numerical ledger. No external ATP/AMLD+0 certificate for the full composition is claimed in this draft.
+\end{enumerate}
+
+\section{Provenance and interpretation}
+The proof-transport component is a reuse of Brian Tenneson's \emph{Depths of a Simulation}, Version 45, especially Theorem 4.8. The finite-proof-search motivation is related to the user's effective proof-horizon and certified-settlement work. The locality and update hypotheses are informed by the user's Exact Addressing and Hilbert Addressing research. The \emph{new contribution proposed here} is their explicit, verifier-safe composition with a fully charged amortized expected-rank inequality. The composition is mathematically conditional; it must not be cited as a settled universal algorithmic speedup or as proof of a nontrivial-family existence theorem.
+
+\begin{thebibliography}{9}
+\bibitem{depths45} B. Tenneson, \emph{Depths of a Simulation}, Version 45, especially Theorem 4.8 (proof transport and proof-length invariance), 2026.
+\bibitem{globalhorizons} B. Tenneson, \emph{Global Proof Horizons and Logical Doorways: Certified Settlement}, working paper 0.1, 2026.
+\bibitem{hilbert3cnf} B. Tenneson, \emph{Hilbert Addressing of 3CNF Well-Formed Formulas}, working source, 2026.
+\bibitem{exactaddress} B. Tenneson, \emph{Exact Addressing}, preliminary working research versions, 2026.
+\end{thebibliography}
+
+\noindent\textbf{Draft status.} Conditional theorem with a written proof; unrestricted capstone conjecture replaced; benchmark realization and external verifier certification are open.\\
+\textbf{Manuscript policy.} Integrated as Appendix F in the Exact Addressing 3.3.1 working edition; Sections 1--16 and Appendices A--E are unchanged.
+\end{document}
