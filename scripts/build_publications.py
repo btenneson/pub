@@ -51,6 +51,8 @@ def main():
   trilogy=[y for y in items if y['title'].startswith(('MAPQUEST I —','MAPQUEST II —','MAPQUEST III —'))]
   if x in trilogy:body+='<p>MAPQUEST trilogy: '+ ' · '.join('<a href="'+url(y['href'])+'">'+esc(y['title'].split(' —')[0])+'</a>' for y in trilogy)+'</p>'
   body+='</header>'
+  if x.get('figure_image'):
+   body+='<figure style="max-width:490px;margin:1.2rem auto;text-align:center"><img loading="lazy" src="'+url(x['figure_image'])+'" alt="'+esc(x.get('figure_alt','Editorial illustration'))+'" style="display:block;width:100%;height:auto;border-radius:6px"><figcaption style="font-size:.88rem;color:var(--muted);margin:.45rem 0">'+esc(x.get('figure_caption',''))+'</figcaption></figure>'
   target=x.get('pdf') or x.get('text')
   if target:body+='<iframe class="reader-frame" src="'+url(target)+'" title="'+esc(x['title'])+' — document reader"></iframe>'
   else:body+='<main><p class="status">'+esc(x.get('status','Document unavailable.'))+'</p></main>'
