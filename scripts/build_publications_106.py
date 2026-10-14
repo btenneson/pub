@@ -44,6 +44,8 @@ def expanded_catalog():
         x["href"] = x["id"] + "/"
         x["title"] = alias["title"]
         x["kind"] = alias["kind"]
+        x["visibility"] = "archive"
+        x["curation_reason"] = "Restored historical catalog-context alias; preserves an established URL without duplicating a featured publication."
         x["catalog_alias_of"] = canonical_id
         x["archive_path"] = ""
         x["source_file"] = ""
