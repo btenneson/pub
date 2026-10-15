@@ -1,0 +1,175 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CAMI&#x27;s Theorems and Theories — Volume III.2: Iterated Location Reports and Higher-Order Boards — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/cami_iterated_location_reports_volume_iii_2/">Back to publication</a><h1>CAMI&#x27;s Theorems and Theories — Volume III.2: Iterated Location Reports and Higher-Order Boards</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/cami_iterated_location_reports_volume_iii_2/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[margin=0.91in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,enumitem,xcolor}
+\usepackage[colorlinks=true,urlcolor=blue!50!black,linkcolor=blue!50!black]{hyperref}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Fun}[2]{[#1\to #2]}
+\newcommand{\Pow}{\mathcal P}
+\newcommand{\dif}{\mathop{\mathrm d}\nolimits}
+\title{\textbf{CAMI&#x27;s Theorems and Theories}\\[5pt]
+Volume III.2: \emph{Iterated Location Reports and Higher-Order Boards}\\[4pt]
+\large A mathematical companion beginning with Volume III.1}
+\author{CAMI (AI-assisted mathematical exposition)\\Research interlocutor: Brian Tenneson}
+\date{October 15, 2026\\PRELIMINARY RESEARCH NOTE}
+\begin{document}
+\maketitle
+\begin{abstract}
+Starting with a finite board $A_0$ and a fixed alphabet $B=P\cup\{E\}$, we study the exact recursive construction $A_{n+1}=\Fun{A_n}{B}$. An element of $A_1$ is a complete occupancy report on the original board; at every subsequent stage, an entire report becomes one of the index locations of the next board. We identify the resulting higher-order function-space objects, derive their cardinal growth, and prove an iterated-power-set correspondence for two tokens. We distinguish this \emph{board-of-reports tower} from a different and equally meaningful interpretation in which every original square can contain a whole previous-level report. Finally we show that the recursion alone provides increased expressive capacity, not certified physical or epistemic resolution; coherent refinement requires explicit decoding maps. All theorems are elementary, conditional where needed, and make no historical-priority claim.
+\end{abstract}
+\begin{quote}\emph{``A report can become a square without becoming a piece.&#x27;&#x27;}\end{quote}
+\noindent\textbf{Version and terminology.} This is a new companion to the corrected Volume III.1, not a replacement or reordering of its nine sections. A single location report is a \emph{function}; the collection of all such functions is a \emph{set of reports}. The empty-square token is always $E$, never a set-theoretic empty object.
+\tableofcontents
+
+\section{The question and its exact recursion}
+Let $A_0$ be a given finite set of squares (possibly empty), let $P$ be a set of occupant tokens, and let $E\notin P$ denote the empty-square token. Put $B=P\cup\{E\}$; this is the alphabet denoted $P&#x27;$ in the question. For sets $X,Y$, $\Fun X Y$ means the set of \emph{all} total functions from $X$ to $Y$.
+\begin{definition}[Board-of-reports tower]\label{def:tower}
+Define recursively
+\[
+\boxed{A_{n+1}:=\Fun{A_n}{B},\qquad n\ge 0.}
+\]
+An element $x\in A_n$ has \emph{type $n$}. An element $F\in A_{n+1}$ is called a level-$(n+1)$ report and satisfies $F:A_n\to B$.
+\end{definition}
+In particular, $A_1=\Fun{A_0}{B}$ is the collection of \emph{all} complete first-level reports, and $L\in A_1$ is just one such report. The next-level report $F\in A_2$ assigns one of the original labels in $B$ to \emph{each first-level report $L\in A_1$}. Those earlier reports are now the domain or ``squares&#x27;&#x27; of the next board, \emph{not} the allowable occupant labels.
+\begin{proposition}[Higher-order typing]\label{prop:typing}
+For each $n\ge1$, an element $F\in A_n$ is a total map $F:A_{n-1}\to B$. It assigns $B$-valued labels to all objects of type $n-1$. Thus $A_2=\Fun{\Fun{A_0}{B}}{B}$ and $A_3=\Fun{\Fun{\Fun{A_0}{B}}{B}}{B}$, with the indicated parenthesization.
+\end{proposition}
+\begin{proof}Immediate by induction from Definition~\ref{def:tower}.\end{proof}
+\begin{remark}[All functions versus legal positions]
+The displayed tower is \emph{unrestricted}: it includes functions that might violate chess occupancy constraints (such as repeated individual identities). Imposing admissibility predicates produces selected subsets and, if those subsets become subsequent domains, a \emph{different} recursion. The theorem statements here concern the unrestricted spaces unless expressly qualified.
+\end{remark}
+
+\section{What kind of objects are the $A_n$?}
+\begin{theorem}[Function spaces, not physical boards]
+Each $A_n$ is a set. For $n\ge1$, it is a set of higher-order, $B$-valued functions on the immediately preceding set $A_{n-1}$. The construction needs no legal-move relation, chronology, probability, verifier, or distinguished actual location report. In particular, $F\in A_2$ by itself asserts nothing about a move between the reports that belong to $A_1$.
+\end{theorem}
+\begin{proof}Construction of the function space is set-theoretic. No transition or event relation occurs in the recursion, so it cannot imply the existence or occurrence of one.\end{proof}
+\begin{remark}[Types and overlap]
+A statement $x\in A_n$ identifies a \emph{level}, even if underlying set encodings accidentally have overlaps. For an explicitly disjoint typed universe, use $\bigsqcup_{n\ge0}(\{n\}\times A_n)$. Neither $A_n\subseteq A_{n+1}$ nor a canonical projection $A_{n+1}\to A_n$ is part of Definition~\ref{def:tower}.
+\end{remark}
+\begin{example}[A board with two squares and three occupant labels]
+Let $A_0=\{a,b\}$ and $B=\{E,p,q\}$. Then $A_1$ consists of all $3^2=9$ functions $\{a,b\}\to B$. A particular $F\in A_2$ gives a label $E$, $p$, or $q$ to each of these nine \emph{entire} reports. Therefore $|A_2|=3^9=19{,}683$. This does \emph{not} mean that each original square now holds one of 19,683 pieces.
+\end{example}
+
+\section{The cardinal-growth theorem}
+\begin{theorem}[Exponentiation at every level]\label{thm:card}
+Suppose $A_0$ and $B$ are finite, $|A_0|=m$, and $|B|=k\ge1$. Put $a_n=|A_n|$. Then
+\[
+\boxed{a_0=m,\qquad a_{n+1}=k^{a_n}.}
+\]
+In particular, $a_1=k^m$, $a_2=k^{k^m}$, and $a_3=k^{k^{k^m}}$, where powers associate from the top down.
+\end{theorem}
+\begin{proof}For finite $X$ of size $a$, there are exactly $k^a$ functions $X\to B$. Apply this at each level.\end{proof}
+\begin{theorem}[Strict growth when there is at least one genuine piece]\label{thm:strict}
+If $P\ne\varnothing$, then $|A_{n+1}|&gt;|A_n|$ for every $n\ge0$, even if the original alphabet or a board-level set is infinite. Thus the tower never stabilizes in cardinality.
+\end{theorem}
+\begin{proof}Choose $p\in P$, so the two labels $E,p$ are distinct. Every subset $S\subseteq A_n$ gives an indicator $\chi_S:A_n\to B$ taking the value $p$ on $S$ and $E$ elsewhere. This injects $\Pow(A_n)$ into $A_{n+1}$. Cantor&#x27;s theorem yields $|\Pow(A_n)|&gt;|A_n|$; hence $|A_{n+1}|&gt;|A_n|$.\end{proof}
+\begin{remark}[Degenerate one-token case]
+If $P=\varnothing$, then $B=\{E\}$ and $A_1$ is a singleton for every $A_0$, including $A_0=\varnothing$. All subsequent $A_n$ are singletons. Thus the nonempty-piece assumption in Theorem~\ref{thm:strict} is essential.
+\end{remark}
+\begin{example}[A small start becomes enormous]
+For two original squares and two possible labels ($m=k=2$), the successive cardinalities are
+\[
+|A_0|=2,\quad |A_1|=4,\quad |A_2|=16,\quad |A_3|=65{,}536,\quad |A_4|=2^{65{,}536}.
+\]
+This is growth in the number of \emph{possible functions}, not the creation of physical space or experimentally acquired knowledge.
+\end{example}
+
+\section{Binary location reports and the iterated power set}
+\begin{theorem}[Characteristic-function equivalence]\label{thm:powerset}
+If $B=\{E,p\}$, then for every $n\ge0$ there is a canonical bijection, relative to the selected label $p$,
+\[
+A_{n+1}\ \longleftrightarrow\ \Pow(A_n),\qquad F\longmapsto F^{-1}(\{p\}).
+\]
+Consequently the tower is levelwise isomorphic to the iterated power-set hierarchy based on $A_0$, with its levels kept distinct.
+\end{theorem}
+\begin{proof}Given $S\subseteq A_n$, define $F_S(x)=p$ if $x\in S$ and $F_S(x)=E$ otherwise. The assignments $F\mapsto F^{-1}(\{p\})$ and $S\mapsto F_S$ are inverse bijections. Iteration proves the assertion.\end{proof}
+\begin{remark}[More than two labels]
+For finite $B$ of size $k&gt;2$, each $F:A_n\to B$ instead describes a labeled partition of $A_n$ into the disjoint fibers $F^{-1}(b)$ ($b\in B$), allowing empty fibers. The union of the fibers is $A_n$. It is not simply a single subset of $A_n$.
+\end{remark}
+
+\section{A second meaning of ``every square contains a report&#x27;&#x27;}
+The question suggests that \emph{every square might contain every element of $A_1$}. If ``square&#x27;&#x27; still means a member of the \emph{original} board $A_0$, this is not the same construction as Definition~\ref{def:tower}.
+\begin{definition}[Nested-occupant tower]\label{def:nested}
+Set $C_1:=\Fun{A_0}{B}=A_1$ and, for $n\ge1$, define
+\[
+\boxed{C_{n+1}:=\Fun{A_0}{C_n}.}
+\]
+A member $G\in C_2=\Fun{A_0}{A_1}$ assigns a \emph{whole first-level report} $G(a)\in A_1$ to every \emph{original square} $a\in A_0$.
+\end{definition}
+\begin{theorem}[The towers encode different questions]\label{thm:twotowers}
+With $|A_0|=m\ge1$ and $|B|=k\ge2$ finite,
+\[
+|A_{n+1}|=k^{|A_n|},\qquad |C_n|=k^{m^n}\quad(n\ge1).
+\]
+The types also differ: $A_2=\Fun{A_1}{B}$ uses earlier \emph{reports as domain locations}, whereas $C_2=\Fun{A_0}{A_1}$ uses earlier reports as \emph{occupant values} on the original domain. Equality of their cardinalities in a special example would not identify these different roles.
+\end{theorem}
+\begin{proof}The first formula is Theorem~\ref{thm:card}. For the second, $|C_1|=k^m$ and if $|C_n|=k^{m^n}$ then $|C_{n+1}|=|C_n|^m=k^{m^{n+1}}$. The descriptions of the function domains and codomains follow from the definitions.\end{proof}
+\begin{example}
+With two original squares and three labels, $|C_2|=9^2=81$ while $|A_2|=3^9=19{,}683$. In $C_2$, each of two old squares holds one of nine old reports; in $A_2$, each of nine old reports is assigned one of three tokens.
+\end{example}
+\begin{remark}[Optional empty occupant at the new level]
+If a square can either hold an entire first-level report or be genuinely empty, replace the codomain $A_1$ of $C_2$ by the tagged set $A_1\sqcup\{E_2\}$, where $E_2$ is distinguished from every function in $A_1$. This is an additional modeling decision. Reusing $E$ without typing it risks confusing absence of an embedded report with the $E$-valued cells \emph{inside} a report.
+\end{remark}
+
+\section{When is the tower a resolution enhancement?}
+An increase in the number of representable objects is not, by itself, a gain in \emph{information about one fixed world}. Even knowing $F\in A_2$ does not identify a ``current&#x27;&#x27; $L\in A_1$. Compare maps only after specifying their meaning.
+\begin{definition}[Coherent lift by a decoding map]\label{def:lift}
+Choose a map $\delta_n:A_{n+1}\to A_n$. It defines a lift of previous-level reports by precomposition:
+\[
+\iota_n:A_{n+1}\to A_{n+2},\qquad \iota_n(f)=f\circ\delta_n.
+\]
+Here $f:A_n\to B$, $\delta_n:A_{n+1}\to A_n$, so $f\circ\delta_n:A_{n+1}\to B$. A chosen $\delta_n$ says how a new ``square&#x27;&#x27; is interpreted as an old one.
+\end{definition}
+\begin{theorem}[Exact criterion for faithful lifting]\label{thm:injective}
+Assume $|B|\ge2$. The lift $\iota_n$ in Definition~\ref{def:lift} is injective if and only if $\delta_n$ is surjective.
+\end{theorem}
+\begin{proof}If $\delta_n$ is onto and $f\circ\delta_n=g\circ\delta_n$, every $a\in A_n$ has a preimage $x$, giving $f(a)=f(\delta_n(x))=g(\delta_n(x))=g(a)$. Conversely, if $\delta_n$ is not onto, choose $a\in A_n$ outside its image. There are distinct functions $f,g:A_n\to B$ that differ only at $a$, since $B$ has two labels; yet $f\circ\delta_n=g\circ\delta_n$.\end{proof}
+\begin{definition}[Levelwise Hamming distance]
+If $A_n$ is finite, for $f,g\in A_{n+1}$ define
+\[
+d_n(f,g):=|\{a\in A_n:f(a)\ne g(a)\}|.
+\]
+\end{definition}
+\begin{theorem}[Exact distance under a surjective lift]\label{thm:distance}
+If $A_n,A_{n+1}$ are finite and $\delta_n:A_{n+1}\to A_n$ is onto, then for $f,g\in A_{n+1}$,
+\[
+\boxed{d_{n+1}(\iota_n(f),\iota_n(g))
+=\sum_{a\in A_n}|\delta_n^{-1}(a)|\,\mathbf 1_{f(a)\ne g(a)}\ \ge\ d_n(f,g).}
+\]
+If every fiber of $\delta_n$ has the same size $r$, the left-hand side equals $r\,d_n(f,g)$.
+\end{theorem}
+\begin{proof}The lifted functions disagree at $x\in A_{n+1}$ exactly if $f(\delta_n(x))\ne g(\delta_n(x))$. Partitioning the disagreement set by fibers gives the equality. Surjectivity makes every fiber nonempty, proving the inequality, and constant fiber size gives the final formula.\end{proof}
+\begin{remark}[Why no canonical refinement is implicit]
+Definition~\ref{def:tower} supplies no $\delta_n$. A surjection exists between \emph{finite nonempty} $A_{n+1}$ and $A_n$ because the former is larger when $|B|\ge2$, but selecting one is extra structure. These choices are not automatically meaningful as physical subdivision maps, semantic abstractions, or verified knowledge updates. In a certified model, they must carry explicit interpretation and, where warranted, checking certificates.
+\end{remark}
+\begin{proposition}[A useful embedding that is not a refinement map]
+If $p\in P$, define $j_n:A_n\to A_{n+1}$ by
+\[
+j_n(a)(x)=\begin{cases}p,&amp;x=a,\\E,&amp;x\ne a.\end{cases}
+\]
+Then $j_n$ is injective. Nevertheless $j_n$ alone does not say that the level-$(n+1)$ representation preserves the meaning of a level-$n$ configuration.
+\end{proposition}
+\begin{proof}For distinct $a,b$, evaluating $j_n(a)$ and $j_n(b)$ at $a$ distinguishes the two functions. The second claim is a modeling caution: no meaning-preserving relation was postulated.\end{proof}
+
+\section{Relevance to Volume III.1 and certified knowledge}
+In Volume III.1, a complete occupancy report is distinguished from the hidden legal-rule state, a board transition, a history, and a verifier-accepted certificate. The new tower changes none of those distinctions. For each $n$, additional modeling data are needed to speak about lawfulness, observation, settlement, or epistemic gain.
+\begin{proposition}[No move and no knowledge theorem from the tower alone]
+There are two models with the same sets $A_n$ and the same functions at every level but different legal-move relations and different verifier-accepted BANK contents. Therefore the recursion $A_{n+1}=\Fun{A_n}{B}$ entails no nontrivial transition, reachability, settlement, or monotone certified-knowledge assertion.
+\end{proposition}
+\begin{proof}Equip the common set-theoretic tower first with an empty transition relation and empty BANKs. Equip the same tower instead with any chosen nonempty transition relation and a fixed sound accepted record in a BANK, if a suitable certificate exists under the fixed theory. The recursive definitions are unchanged. Thus these extra properties cannot follow from the recursion alone.\end{proof}
+\noindent\textbf{Research question.} Can one give explicit maps $\delta_n$, verifier-safe representations of their meaning, and charged algorithms that allow a hierarchy of reports to reduce settlement search cost relative to appropriate fixed-board baselines? The present paper defines the objects and proves their elementary structural properties; it does \emph{not} claim such an acceleration theorem.
+
+\section{Conclusions, provenance, and next theorem target}
+The exact answer to ``what kind of objects are $A_n$?&#x27;&#x27; is: \emph{iterated sets of total $B$-valued functions}, with level-$n$ objects indexing the level-$(n+1)$ functions. With two labels they reproduce the iterated powerset construction up to explicit bijections; with several labels they resemble labeled partitions at each rank. Their cardinality increases strictly when at least two labels are available. But the original-square nested-occupant model and the board-of-reports model are distinct, and neither makes a claim about history or certified knowledge without extra structure.
+\medskip
+\noindent\textbf{Provenance and limits.} The recurrence and the fixed $E$ token originate in the motivating question of Brian Tenneson. The mathematical distinctions, proofs, countermodels, and alternative tower here were developed in this AI-assisted exposition. These are classical set-theoretic constructions, presented for the GBG+/Volume III.1 context; historical originality, computational advantage, and external peer review are not claimed.
+\end{document}</pre></main></body></html>
