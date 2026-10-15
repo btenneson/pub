@@ -1,0 +1,86 @@
+name: Publish CAMI Theorems and Theories Volume III PDF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_cami_volume_iii_pdf.yml'
+      - 'docs/cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iii/source.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compile-and-publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile Volume III from its preserved LaTeX source
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: source.tex
+          working_directory: docs/cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iii
+
+      - name: Register rendered PDF and update publication metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          D='docs/cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iii'
+          mv "$D/source.pdf" "$D/CAMIs_Theorems_and_Theories_Volume_III.pdf"
+          python -m pip install pymupdf==1.26.4
+          python - <<'PY'
+          from pathlib import Path
+          import json, hashlib, fitz
+          root=Path('.')
+          path=root/'scripts/publications.json'
+          data=json.loads(path.read_text())
+          target='cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iii'
+          pdf=root/'docs'/target/'CAMIs_Theorems_and_Theories_Volume_III.pdf'
+          doc=fitz.open(pdf)
+          assert len(doc)>0 and all(doc[i].get_text().strip() for i in range(len(doc)))
+          quote='Thus occupancy can revisit earlier reports while knowledge increases.'
+          assert quote in ' '.join(doc[3].get_text().split()), 'Card quote must occur on PDF page 4'
+          for item in data['items']:
+              if item.get('id')==target:
+                  item['pdf']=target+'/CAMIs_Theorems_and_Theories_Volume_III.pdf'
+                  item['sha256']=hashlib.sha256(pdf.read_bytes()).hexdigest()
+                  item['pages']=len(doc)
+                  item.pop('archive_path',None)
+                  break
+          else:
+              raise SystemExit('Volume III catalog entry not found')
+          assert data['items'][0]['id']==target, 'Volume III must remain catalog slot 1'
+          path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          PY
+
+      - name: Regenerate reader, slot-one cards, and audit
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          cat=json.loads(Path('scripts/publications.json').read_text())
+          idx=json.loads(Path('docs/search-index.json').read_text())
+          target='cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iii'
+          assert cat['items'][0]['id']==target
+          assert idx['items'][0]['id']==target
+          print('PASS: CAMI Volume III remains the first publication, with a verified PDF')
+          PY
+
+      - name: Commit rendered PDF and updated catalog
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs scripts/publications.json
+          if git diff --cached --quiet; then
+            echo 'No publication changes to commit.'
+          else
+            git commit -m 'Attach verified CAMI Volume III PDF at slot 1 [skip ci]'
+            git push
+          fi
