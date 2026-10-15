@@ -1,0 +1,162 @@
+
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\title{\textbf{CAMI's Theorems and Theories}\\[5pt]
+Volume III: \emph{Location Reports, Histories, and Settlement}\\[3pt]
+\large A GBG-inspired theory of observation, transition, and certified knowledge}
+\author{CAMI (AI-assisted mathematical exposition)\\Research interlocutor: Brian Tenneson}
+\date{October 2026\\Exploratory mathematical manuscript}
+\begin{document}
+\maketitle
+\begin{abstract}
+A complete location report assigns an occupant token to every square of a fixed board. Distinct reports do not, by themselves, imply a move, a legal path, or even a shared history. We formalize this separation, give counterexamples to history reconstruction, identify exact conditions under which reports determine a transition, and distinguish occupancy information from the additional rule state needed to validate chess moves. We then replace a single target set with typed settlement certificates, develop an information preorder on verifier-accepted knowledge, and prove a monotone-knowledge theorem that does not require monotone motion. We establish conditions for safe settlement pruning and explain why existential reachability differs from adversarial forced settlement. Theorems are conditional and elementary; novelty relative to prior literature is not established.
+\end{abstract}
+\tableofcontents
+
+\section{Fixed boards and complete location reports}
+\begin{definition}[GBG-style occupancy report]
+Let $Q$ be a finite set of squares, let $P$ be a set of occupant identities or tokens, and let $E$ be a distinguished empty-square token with $E\notin P$. A \emph{location report} is a total function
+\[
+L:Q\longrightarrow P\cup\{E\}.
+\]
+The set of all reports is $\mathcal L=(P\cup\{E\})^Q$. An admissibility predicate $A:\mathcal L\to\{0,1\}$ selects $\mathcal L_A$.
+\end{definition}
+The symbol $E$ is used deliberately for an empty square. A report gives the occupant of \emph{every} square; it is not a move record. If identities represent individual pieces, uniqueness constraints belong in $A$. If tokens represent piece types, repetitions can be allowed.
+\begin{definition}[Full rule state]
+A rule state $z\in Z$ stores any extra data required to decide transitions. A full state is $x=(L,z)\in X\subseteq\mathcal L_A\times Z$. Let $\pi(x)=L$ be its occupancy projection. A legal transition relation is $R\subseteq X\times X$.
+\end{definition}
+For chess, $z$ may include side to move, castling rights, en-passant eligibility, and any counters relevant to the selected rules. Thus a complete \emph{occupancy} report need not be a complete \emph{legal-move state}.
+\section{Difference is not motion}
+\begin{definition}[Difference support]
+For reports $L,M$ put
+\[
+\Delta(L,M)=\{q\in Q:L(q)\ne M(q)\},\qquad
+d_H(L,M)=|\Delta(L,M)|.
+\]
+\end{definition}
+\begin{proposition}[Separation of comparison and transition]
+If $L\ne M$, then $\Delta(L,M)$ is nonempty. No legal transition or reachability assertion follows from this inequality without additional assumptions on $R$ and the corresponding full states.
+\end{proposition}
+\begin{proof}
+Distinct functions disagree at some input. For the second assertion, choose a board with two admissible reports $L,M$ and an empty transition relation $R$. Then $L\ne M$ but neither report transitions to the other.
+\end{proof}
+\begin{example}[Two reports from unrelated histories]
+Let $Q=\{a,b\}$, $P=\{p\}$, $L(a)=p,L(b)=E$, and $M(a)=E,M(b)=p$. The reports differ on both squares. They might be unrelated initial configurations. They imply neither a movement of $p$ nor a common temporal order.
+\end{example}
+\begin{proposition}[Observed transition is not a reconstructed transition]
+Suppose $(x,y)\in R$ and $\pi(x)=L,\pi(y)=M$. Then $L,M$ are consecutive \emph{observations} of a legal transition. Conversely, $L,M$ alone certify such a transition only if the full states are determined from the reports or a sound certificate supplies suitable $x,y$.
+\end{proposition}
+\begin{proof}
+The first assertion is by definition. For the converse, distinct hidden rule states may share the same occupancy report and have different legal successors; without a lift or certificate the transition cannot be checked.
+\end{proof}
+\section{Histories and indistinguishability}
+\begin{definition}[History]
+A finite history is $h=(x_0,\ldots,x_n)$ with $(x_i,x_{i+1})\in R$ for each $i<n$. Its observed history is $(\pi(x_0),\ldots,\pi(x_n))$.
+\end{definition}
+\begin{theorem}[Failure of reconstruction from the endpoint]
+There exists a finite board with two different legal histories having the same final location report.
+\end{theorem}
+\begin{proof}
+Take $Q=\{a,b\}$ and $P=\{p\}$. Let $L_a$ put $p$ at $a$, $L_b$ put $p$ at $b$, and allow both $L_a\to L_b$ and $L_b\to L_a$. The length-zero history $(L_a)$ and length-two history $(L_a,L_b,L_a)$ end at the same report but differ as histories.
+\end{proof}
+\begin{theorem}[Sufficient condition for backward uniqueness]
+Let $X$ be a set of full states with a designated initial state $x_0$. Suppose (i) every reachable state other than $x_0$ has exactly one reachable predecessor, (ii) no directed cycle is reachable, and (iii) $\pi$ is injective on reachable states. Then each reachable final location report determines a unique history from $x_0$.
+\end{theorem}
+\begin{proof}
+Injectivity identifies the unique final state. Repeatedly follow its unique reachable predecessor. Acyclicity prevents repetition; because the state is reachable from $x_0$, the chain must terminate at $x_0$. Each predecessor is unique, so the history is unique.
+\end{proof}
+\begin{remark}
+This theorem gives sufficient, not necessary, conditions. In a branching or merging game, or where occupancy hides rule state, history reconstruction may fail.
+\end{remark}
+\section{The difference metric and legal distance}
+\begin{proposition}[Hamming geometry]
+$d_H$ is a metric on $\mathcal L$.
+\end{proposition}
+\begin{proof}
+Nonnegativity and symmetry are immediate, and $d_H(L,M)=0$ iff $L=M$. For each square, if $L(q)\ne N(q)$, at least one of $L(q)\ne M(q)$ or $M(q)\ne N(q)$ holds. Summing these indicator inequalities proves the triangle inequality.
+\end{proof}
+Define directed legal distance $d_R(x,y)$ as the length of a shortest legal path from $x$ to $y$, or $+\infty$ if none exists. Unlike $d_H$, $d_R$ can be asymmetric or infinite, even for reports differing on just one square. In particular, $d_H$ does not by itself bound legal distance.
+\section{Settlement instead of a single target}
+\begin{definition}[Typed settlement certificate]
+Fix an authorized theory $H$, a conjecture $\varphi$, and a sound verifier $V$. Let $\mathcal K$ be a space of finite certificates, and let
+\[
+\operatorname{Accept}_V(H,\varphi,k,o)
+\]
+mean that $V$ accepts certificate $k$ for outcome tag $o$. We distinguish tags $\mathsf{PROVED}$, $\mathsf{REFUTED}$, $\mathsf{INDEPENDENT}$, and $\mathsf{INCONSISTENT}$, when the verifier supports the corresponding semantics.
+\end{definition}
+\begin{definition}[Settlement set]
+For a full search state $x$, let $B(x)$ be the certificates accessible in its verifier-gated BANK. The \emph{certified settlement set} is
+\[
+\Sigma_{H,\varphi}=
+\{x\in X:\exists k\in B(x),\,\exists o\;
+\operatorname{Accept}_V(H,\varphi,k,o)\}.
+\]
+Its typed subsets $\Sigma_o$ collect states with accepted certificates for tag $o$.
+\end{definition}
+Unlike an arbitrary goal set, membership in $\Sigma_{H,\varphi}$ requires a certificate. The subsets need not be disjoint unless a consistency and exclusivity policy is assumed. An inconsistency certificate concerns $H$ itself; independence requires a precise metatheoretic standard and must not be inferred merely from unsuccessful search.
+\begin{theorem}[Certificate preservation under BANK inclusion]
+Assume $B(x)\subseteq B(y)$ and that verifier acceptance depends only on the fixed $H,\varphi,k,o$, not on mutable context. Then $x\in\Sigma_o$ implies $y\in\Sigma_o$.
+\end{theorem}
+\begin{proof}
+The certificate witnessing $x\in\Sigma_o$ remains in $B(y)$ and is accepted by the same verifier.
+\end{proof}
+\section{Knowledge preorders and evolving federations}
+Let $\mathcal C_H$ be the set of formulas equipped with sound verifier-accepted certificates under $H$. At turn $t$ a federation has occupancy report $L_t$, full state $x_t$, and a finite certified map $K_t\subseteq\mathcal C_H$. Define
+\[
+K\sqsubseteq_H K'
+\quad\Longleftrightarrow\quad
+\text{every formula in $K$ is entailed by }H\cup K'.
+\]
+\begin{theorem}[Information preorder]
+$\sqsubseteq_H$ is reflexive and transitive. Quotienting by mutual entailment yields a partial order.
+\end{theorem}
+\begin{proof}
+Reflexivity is immediate. If $K\sqsubseteq_H K'$ and $K'\sqsubseteq_H K''$, substitution of logical consequences shows every member of $K$ follows from $H\cup K''$. The quotient identifies exactly mutually comparable maps, giving antisymmetry.
+\end{proof}
+\begin{theorem}[Monotone knowledge without monotone movement]
+Suppose $K_t\subseteq K_{t+1}$ for all turns and every added certificate is accepted under the fixed assumptions $H$. Then
+\[
+K_0\sqsubseteq_H K_1\sqsubseteq_H K_2\sqsubseteq_H\cdots.
+\]
+No monotonicity of the occupancy reports $L_t$ in legal distance or Hamming distance is implied.
+\end{theorem}
+\begin{proof}
+Inclusion implies entailment and hence the chain. Independently, a legal two-state cycle may alternate reports $L_a,L_b,L_a,\ldots$ while the BANK retains certificates and grows. Thus occupancy can revisit earlier reports while knowledge increases.
+\end{proof}
+\begin{remark}
+If assumptions, verifier policy, or certificate validity change, the monotonicity hypothesis may fail. Versioned knowledge records are then required.
+\end{remark}
+\section{Certified settlement and pruning}
+\begin{theorem}[Safe exclusion of nonsettling branches]
+Let $U\subseteq X$ consist of states for which a sound certificate establishes that no state in $\Sigma_{H,\varphi}$ is reachable from $u$. Removing exploration of outgoing edges from states in $U$ preserves the existence of a path from the initial state to $\Sigma_{H,\varphi}$.
+\end{theorem}
+\begin{proof}
+Any purported path to settlement through $u\in U$ would have a suffix from $u$ to a settlement state, contradicting its certified unreachability.
+\end{proof}
+\begin{remark}[Adversarial games]
+Existence of a path to settlement is not the same as a winning strategy against an adversary. A forced-settlement claim must quantify over the opponent's permitted replies and typically requires a strategy tree rather than one path.
+\end{remark}
+\section{Open problems and experiments}
+\begin{conjecture}[Certified federation surplus]
+There exist families of verifier-gated federations in which retaining monotone certified knowledge across revisited location reports strictly reduces expected total charged settlement cost relative to a matched search policy that discards that knowledge.
+\end{conjecture}
+This is an experimental conjecture, not a proven acceleration result. Fix board distribution, initial states, verifier, settlement semantics, search budget, baseline, and all charged costs before comparing. Log each full report, extra rule state, transition witness, certificate, verifier decision, BANK update, and settlement outcome. Measure separately the fraction of reports that recur and the fraction of reused certificates that save work.
+\begin{conjecture}[Cross-board settlement transport]
+Given a certified relation between two boards preserving specified transition and certificate semantics, some settlement certificates may be transported soundly across boards with lower total cost than rediscovery.
+\end{conjecture}
+A bare similarity between location reports is insufficient: transport requires a formally stated preservation theorem.
+\section{Conclusion and provenance}
+The key separation is between a complete occupancy report, a legal transition, a history, and a verifier-accepted settlement. Distinct reports do not imply motion. Equal reports do not imply equal histories. A federation can revisit positions while accumulating certified knowledge. A settlement set can recognize several verifier-supported outcomes without pretending that all outcomes mean a proof of the original conjecture. This manuscript develops GBG-inspired mathematics in dialogue with the ideas of Volumes I and II; it is not a claim that these are verbatim definitions from a specific GBG source or that the results have established priority.
+\end{document}
