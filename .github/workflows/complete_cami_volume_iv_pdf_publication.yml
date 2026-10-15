@@ -1,0 +1,103 @@
+name: Complete CAMI Theorems and Theories Volume IV PDF publication
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/complete_cami_volume_iv_pdf_publication.yml'
+      - 'docs/cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iv/source.tex'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render the preserved audited Volume IV LaTeX source
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: source.tex
+          working_directory: docs/cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iv
+      - name: Verify PDF and finish Volume IV's existing reader and catalog entry
+        shell: bash
+        run: |
+          set -euo pipefail
+          D='docs/cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iv'
+          mv "$D/source.pdf" "$D/CAMIs_Theorems_and_Theories_Volume_IV.pdf"
+          python -m pip install pymupdf==1.26.4
+          python - <<'PY'
+          from pathlib import Path
+          import json, hashlib, fitz
+          prefix='cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iv'
+          path=Path('docs')/prefix
+          pdf=path/'CAMIs_Theorems_and_Theories_Volume_IV.pdf'
+          doc=fitz.open(pdf)
+          assert len(doc)==13, f'Expected final audited 13-page edition, got {len(doc)}'
+          assert all(doc[i].get_text().strip() for i in range(len(doc)))
+          page1=' '.join(doc[0].get_text().split())
+          assert 'maximum-number-of-proofs bound' in page1
+          quote='A theorem may survive the change of board even when its routes, neighborhoods, and discovery costs do not.'
+          assert quote in page1, 'Quote must match the manuscript'
+          c=Path('scripts/publications.json')
+          data=json.loads(c.read_text(encoding='utf-8'))
+          assert not any(x.get('id')==prefix for x in data['items']), 'Unexpected existing Volume IV canonical card'
+          card={
+            'title':"CAMI's Theorems and Theories — Volume IV: When Are Two Boards the Same?",
+            'kind':'Research paper',
+            'quote':quote,
+            'quote_page':1,
+            'card_text':'When do two generalized boards represent the same theorems despite having different proof paths? Volume IV compares local and global isomorphism, proof multiplicity, certified certificate transport, iterated location reports, and the charged costs of trading between theorem-equivalent boards. Includes explicit counterexamples, conditional theorems, and open research conjectures.',
+            'status':'AUDITED PRELIMINARY RELEASE — October 15, 2026. Internal AI-assisted mathematical audit; no external peer review or proved practical speedup.',
+            'subject':'cs.LO_Logic_in_Computer_Science',
+            'id':prefix,
+            'href':prefix+'/',
+            'order':-10003,
+            'source':prefix+'/source.html',
+            'source_file':prefix+'/source.tex',
+            'authors':'CAMI (AI-assisted mathematical exposition); research interlocutor Brian Tenneson',
+            'classification_note':'13-page audited preliminary research paper; theorem equivalence, proof paths, certificate transport, and GBG+ location-report representations. No independent originality or peer-review claim.',
+            'pdf':prefix+'/CAMIs_Theorems_and_Theories_Volume_IV.pdf',
+            'sha256':hashlib.sha256(pdf.read_bytes()).hexdigest(),
+            'pages':len(doc)
+          }
+          data['items'].insert(0,card)
+          c.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          index=path/'index.html'
+          s=index.read_text(encoding='utf-8')
+          marker='<p><a href="source.tex">Download LaTeX source</a> · <a href="source.html">View source</a></p>'
+          assert marker in s, 'Existing Volume IV source links changed unexpectedly'
+          s=s.replace(marker,'<p><a href="CAMIs_Theorems_and_Theories_Volume_IV.pdf"><strong>Read the audited PDF (13 pages)</strong></a> · <a href="source.tex">Download LaTeX source</a> · <a href="source.html">View source</a></p>')
+          old='The audited PDF is being prepared for publication. Internal mathematical audit only; not external peer review or an originality audit.'
+          assert old in s, 'Existing Volume IV publication status text changed unexpectedly'
+          s=s.replace(old,'The audited PDF is now available. This is an internal mathematical audit, not external peer review or an originality audit.')
+          index.write_text(s,encoding='utf-8')
+          print('Published Volume IV PDF',len(doc),'pages with SHA-256',card['sha256'])
+          PY
+      - name: Rebuild and audit publication reader and slot one
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          target='cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_iv'
+          cat=json.loads(Path('scripts/publications.json').read_text())['items']
+          search=json.loads(Path('docs/search-index.json').read_text())['items']
+          assert cat[0]['id']==target
+          assert search[0]['id']==target
+          assert (Path('docs')/cat[0]['pdf']).is_file()
+          print('PASS: Volume IV catalog slot #1, PDF and subject audit')
+          PY
+      - name: Commit PDF and generated publication updates
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs scripts/publications.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Complete CAMI Volume IV audited PDF and reader in slot 1 [skip ci]'
+            git push
+          fi
