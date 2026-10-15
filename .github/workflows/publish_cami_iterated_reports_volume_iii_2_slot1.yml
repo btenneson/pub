@@ -1,0 +1,88 @@
+name: Publish CAMI Iterated Location Reports Volume III.2 at slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_cami_iterated_reports_volume_iii_2_slot1.yml'
+      - 'docs/cs.LO_Logic_in_Computer_Science/cami_iterated_location_reports_volume_iii_2/source.tex'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build LaTeX as PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: source.tex
+          working_directory: docs/cs.LO_Logic_in_Computer_Science/cami_iterated_location_reports_volume_iii_2
+      - name: Register PDF, quote, and slot one
+        shell: bash
+        run: |
+          set -euo pipefail
+          D='docs/cs.LO_Logic_in_Computer_Science/cami_iterated_location_reports_volume_iii_2'
+          mv "$D/source.pdf" "$D/CAMI_Iterated_Location_Reports_Volume_III_2.pdf"
+          python -m pip install pymupdf==1.26.4
+          python - <<'PY'
+          import json, hashlib, fitz
+          from pathlib import Path
+          prefix='cs.LO_Logic_in_Computer_Science/cami_iterated_location_reports_volume_iii_2'
+          dest=Path('docs')/prefix/'CAMI_Iterated_Location_Reports_Volume_III_2.pdf'
+          doc=fitz.open(dest)
+          assert len(doc)>0 and all(doc[i].get_text().strip() for i in range(len(doc))), 'Invalid PDF pages'
+          quote='A report can become a square without becoming a piece.'
+          assert quote in ' '.join(doc[0].get_text().split()), 'Required quote not present on page 1'
+          card={
+             "title":"CAMI's Theorems and Theories — Volume III.2: Iterated Location Reports and Higher-Order Boards",
+             "kind":"Research paper",
+             "quote":quote,
+             "quote_page":1,
+             "card_text":"A complete location report becomes a higher-order board square in an iterated tower of functions. This note proves exponential-tower growth, identifies the binary iterated-power-set case, distinguishes boards of reports from reports inside fixed-board squares, and gives exact conditions for meaning-preserving resolution lifts.",
+             "status":"PRELIMINARY RELEASE — October 15, 2026. Elementary conditional theorems; no novelty or externally verified acceleration claims.",
+             "subject":"cs.LO_Logic_in_Computer_Science",
+             "id":prefix,
+             "href":prefix+"/",
+             "order":-10002,
+             "source":prefix+"/source.html",
+             "source_file":prefix+"/source.tex",
+             "authors":"CAMI (AI-assisted mathematical exposition); research interlocutor Brian Tenneson",
+             "classification_note":"Research companion to CAMI Volume III.1; distinguishes iterated function spaces from nested-occupant boards. Preliminary research note; no external peer review.",
+             "pdf":prefix+"/CAMI_Iterated_Location_Reports_Volume_III_2.pdf",
+             "sha256":hashlib.sha256(dest.read_bytes()).hexdigest(),
+             "pages":len(doc),
+          }
+          c=Path('scripts/publications.json')
+          data=json.loads(c.read_text())
+          data['items']=[x for x in data['items'] if x.get('id')!=prefix]
+          data['items'].insert(0,card)
+          assert data['items'][0]['id']==prefix
+          c.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          print('Registered new slot 1; pages=',len(doc))
+          PY
+      - name: Build reader and catalog
+        run: |
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          cat=json.loads(Path('scripts/publications.json').read_text())['items']
+          web=json.loads(Path('docs/search-index.json').read_text())['items']
+          target='cs.LO_Logic_in_Computer_Science/cami_iterated_location_reports_volume_iii_2'
+          assert cat[0]['id']==target and web[0]['id']==target
+          print('PASS: CAMI Volume III.2 is live catalog slot 1')
+          PY
+      - name: Commit PDF and generated site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs scripts/publications.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish CAMI Volume III.2 in catalog slot 1 [skip ci]'
+            git push
+          fi
