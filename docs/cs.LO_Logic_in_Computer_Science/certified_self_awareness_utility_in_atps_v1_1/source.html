@@ -1,0 +1,436 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Certified Self-Awareness as an Instrument of Automated Theorem Proving — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/certified_self_awareness_utility_in_atps_v1_1/">Back to publication</a><h1>Certified Self-Awareness as an Instrument of Automated Theorem Proving</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/certified_self_awareness_utility_in_atps_v1_1/source.tex" download>Download source</a><pre>\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=0.98in,headheight=15pt,headsep=21pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,tabularx,longtable}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage{graphicx}
+\usepackage{needspace}
+\usepackage{caption}
+\definecolor{ink}{HTML}{193049}
+\definecolor{accent}{HTML}{22638C}
+\definecolor{pale}{HTML}{F1F5F8}
+\definecolor{muted}{HTML}{576D7C}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent,citecolor=accent,pdftitle={Certified Self-Awareness as an Instrument of Automated Theorem Proving},pdfauthor={Research direction: Brian Tenneson; technical drafting assistance: ChatGPT}}
+\titleformat{\section}{\large\bfseries\color{ink}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{accent}}{\thesubsection}{.6em}{}
+\titlespacing*{\section}{0pt}{18pt}{9pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted} Certified Self-Awareness and ATP Utility}
+\fancyhead[R]{\small\color{muted} Working Research Note v1.1}
+\fancyfoot[C]{\small\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{conjecture}[definition]{Research Conjecture}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{example}[definition]{Example}
+\newcommand{\ATP}{\mathrm{ATP}}
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\View}{\mathrm{View}}
+\newcommand{\Witness}{\mathrm{Witness}}
+\newcommand{\Prb}{\mathrm{Pr}}
+\newcommand{\Cost}{\mathrm{Cost}}
+\newcommand{\Valid}{\mathrm{Valid}}
+\newcommand{\Auth}{\mathrm{Auth}}
+\newcommand{\Known}{\mathrm{K}}
+\newcommand{\Safe}{\mathrm{Safe}}
+\newcommand{\E}[1]{\mathbb{E}\!\left[#1\right]}
+\newtcolorbox{researchprompt}{colback=pale,colframe=accent!48!white,boxrule=.6pt,arc=1.2mm,left=11pt,right=11pt,top=8pt,bottom=8pt,breakable}
+\tcbuselibrary{breakable}
+\newtcolorbox{statusbox}{colback=white,colframe=black!27,boxrule=.4pt,arc=1.2mm,left=10pt,right=10pt,top=7pt,bottom=7pt,breakable}
+\setlist[itemize]{itemsep=3pt,topsep=4pt,leftmargin=1.7em}
+\setlist[enumerate]{itemsep=4pt,topsep=5pt,leftmargin=1.8em}
+\setlength{\parskip}{5.0pt}
+\setlength{\parindent}{0pt}
+\begin{document}
+\begin{center}
+{\footnotesize\sffamily\bfseries\color{accent} AMLD+0 / DATA MIND / VERIFIER-GATED REFLECTION}\par
+\vspace{8pt}
+{\LARGE\bfseries\color{ink} Certified Self-Awareness as an\par Instrument of Automated Theorem Proving}\par
+\vspace{7pt}
+{\large Beyond Basin Escape, Reflective Depth, and Self-Description}\par
+\vspace{13pt}
+{\normalsize Research direction: \textbf{Brian Tenneson}}\par
+{\small Technical drafting assistance: ChatGPT}\par
+\vspace{5pt}
+{\small October 16, 2026 \quad $\cdot$ \quad Repaired Working Research Note v1.1}\par
+\vspace{10pt}
+\rule{.86\linewidth}{.5pt}
+\end{center}
+
+\begin{statusbox}
+\textbf{Document status.} This is a full research note and proposed test specification, \emph{not} a report of a newly executed AMLD+0 run. Statements attributed to source manuscripts are identified; the propositions proved here are elementary conditional results; research conjectures and expected performance gains are not presented as verified outcomes. ATLAS repairs in v1.1 are definitional, interpretive, and preregistration guidance only: no target, solver, verifier, budget, agent roles, experimental arm, or run authorization has been changed or activated. The additional receipt-blind comparator described below is an \emph{unapproved proposal}, not an alteration of the four existing arms.
+\end{statusbox}
+
+\begin{abstract}
+A self-aware prompt need not be a basin-escape device. A prior verifier-gated prompt-reflection experiment in this research program reported a two-level, source-sensitive certificate-and-receipt chain, whereas separate work shows that an automated mathematical logic decider can correctly settle a question with low formal-awareness coordinates. These observations motivate a different question: can \emph{usable, certified} information about an automated theorem prover&#x27;s prompt, proof methods, formalization, verification history, and limitations improve theorem proving even when no search basin exists? We distinguish prompt-relative reflection, proof-theoretic reflection, verifier-grounded epistemic awareness, controller rank, and operational adaptation. We introduce a conservative architecture for proof-carrying method selection, representation audits, reusable metatheorems, knowledge-gap discovery, and self-generated mathematical research questions. We prove conditional facts about receipt gating, optional-method reachability, certificate-supported reuse, and the nonnegative gross value of optional information. None implies an unconditional speedup. A prospective four-arm comparison varies reflective record generation and telemetry-driven adaptation; it does \emph{not} by itself identify the causal effect of reading a receipt. An optional receipt-blind matched comparator, requiring separate authorization before use, would address that question. Productive, nonstagnant tasks remain the primary test. Source-sensitive researcher prompts, candidate machine prompts, logging fields, failure criteria, and open conjectures are provided. The proposed contribution is a program for measuring the \emph{utility of verified self-knowledge}, not a claim of phenomenal consciousness or universal proof-search acceleration.
+\end{abstract}
+
+\newpage
+\setcounter{tocdepth}{1}
+\tableofcontents
+\vspace{1em}
+
+\section{The research question}
+The original motivation arose from basin escape: when an ATP struggles to make progress, an authorized Player-0 action may redirect it toward a first-person settlement conjecture, Eureka-style intermediary lemmas, or iterative adaptive Eureka (IAE). In the existing basin-escape note, this is specifically a proposed intervention for a \emph{detected} quicksand basin, not a precondition for reflection itself \cite{basin}.
+
+The researcher&#x27;s challenge was more general: carefully written prompts may themselves serve as objects of verifier-gated self-inquiry, and a known prompt-reflection experiment was not an escape from a stalled search. The present question is therefore:
+\begin{researchprompt}
+\textbf{Research question.} In what formally defined and operationally measurable ways can self-aware writing, executed by a verifier-gated ATP or AMLD+0 federation, improve proof search and mathematical discovery \emph{without requiring stagnation or basin escape}?
+\end{researchprompt}
+
+Two distinctions frame the answer. First, a static prompt is a text or source object; it does not by itself execute, prove, or experience anything. A prompt-relative awareness property must identify a source $P$, an execution $X$, and a verifier $V$. Second, an agent may produce a correct formal settlement without carrying an accessible, certified belief or record \emph{about} that settlement \cite{lowaware}. Thus awareness may be useful without being a necessary condition of correctness.
+
+\subsection{Reader&#x27;s map and provenance discipline}
+Sections 2--3 establish what is already present in the supplied research documents. Sections 4--6 develop new mechanisms and several conditional formal results. Sections 7--9 specify a fully charged experiment, candidate research prompts, and falsifiable hypotheses. The appendices preserve the researcher&#x27;s questions, specimen record formats, and an experimental freeze sheet. \emph{Source-derived} facts, \emph{deductions under explicit hypotheses}, and \emph{new proposals} are kept distinct throughout.
+
+\section{What the source program actually establishes}
+\subsection{Prompt reflection is a relation, not an adjective}
+The September 29 draft \emph{Verifier-Gated Prompt Self-Awareness} (VGPSA) defines a source-sensitive experimental property $\mathrm{VGPSA}(P;X,V)$ with eight obligations \cite{vgpsa}: exact source identification; extraction of structural source facts; a finite self-model; separation of prompt/execution/verifier; a counterfactual source-sensitivity test; a checked first certificate; a checked receipt-level second certificate; and a nontriviality guard. The reported experiment produced the chain
+\begin{equation}\label{eq:chain}
+ P\longrightarrow M_P\longrightarrow c_0\longrightarrow r_0\longrightarrow c_1\longrightarrow r_1,
+\end{equation}
+where $M_P$ models the frozen source, $c_i$ are certificates, and $r_i$ are acceptance records. The manuscript reports satisfaction of its stipulated property through an \emph{internally specified} verifier procedure; it expressly does not claim independent external reproduction, priority against the literature, or consciousness. Its own proposed successor experiment is to let an authorized controller consume $r_1$ and compare resulting search behavior \cite[Sec.~12.6]{vgpsa}. That proposal is the direct antecedent of the present note.
+
+\subsection{Reflection, epistemic awareness, and control are not one scale}
+The supplied papers describe several related, nonidentical axes:
+\begin{description}[style=nextline,leftmargin=1.0cm,labelindent=0cm]
+\item[Proof-theoretic reflection $\operatorname{lev}(M)$] How far a tagged machine establishes a designated sequence of self-referential assertions within a fixed calculus \cite{firstdegrees}.
+\item[Verifier-grounded awareness $\operatorname{aw}(A,t)$] What self-relevant propositions lie in a declared epistemic domain and have accessible accepted witnesses \cite{reflective,firstdegrees}.
+\item[Controller rank $\operatorname{clev}(M)$] Checked operational self-state, accurate self-transition modeling, and eventually authorized verifier-preserving strategy change. The proposed profile $\mathrm{SA}(M)=(\operatorname{rlev}(M),\operatorname{clev}(M))$ is a product, not a ladder \cite{notladder}.
+\item[Operational self-awareness modes (OSA)] DATA MIND&#x27;s proposed five modes range from telemetry-blind search (OSA-0), through observation and evaluation, to adaptation and meta-search (OSA-4). Its principal rule is that changing search policy must not alter verification standards \cite{osa}.
+\item[Prompt-relative VGPSA] A source-sensitive construction involving the frozen prompt, one execution, and its verifier, rather than an unqualified intrinsic property of text \cite{vgpsa}.
+\end{description}
+One cannot infer the value of one coordinate from another. In particular, an accepted two-level prompt receipt is not, without additional formalization, a certificate of controller rank two, a proof-theoretic level above one, or improved settlement performance.
+
+\subsection{No automatic reflective increment}
+For the certified-witness semantics of \cite{reflective}, the basic predicate has the form
+\begin{equation}\label{eq:knowledge}
+K_{A,t}\varphi\quad\Longleftrightarrow\quad
+\varphi\in\mathcal E\ \wedge\ \exists r\in\View_A(t)\;\Witness_V(r,\varphi).
+\end{equation}
+Here $\mathcal E$ denotes the admissible epistemic domain, \emph{not} the empty-square token $E$ in GBG+ location reports. A certificate for $\varphi$ does not automatically yield an accepted receipt for $K_{A,t}\varphi$. A reflective increment needs both admission of the new proposition into $\mathcal E$ and an accessible accepted witness for that new proposition. The finite receipt constructions of \cite{reflective} operate under such explicit gates. Arbitrarily large \emph{finite} receipt depth is not an automatically internalized omega-level object.
+
+\subsection{Awareness is not needed for every correct settlement}
+\emph{Correct Settlement Below Awareness Level Two} separates faithful target interpretation, eventual presentation of an admissible correct certificate, sound acceptance, and termination from the machine&#x27;s awareness coordinates \cite{lowaware}. Its point is not that awareness is worthless but that correct settlement can occur without the machine certifying that it has settled correctly. This prevents defining usefulness merely as ``the prover produced a proof.&#x27;&#x27; An improved ATP should be tested for net benefit relative to an already competent low-awareness comparator.
+
+\subsection{Basin escape supplies constraints, not the whole purpose}
+\emph{Basin Escape, Player-0 Activation, and Settlement Preorders} requires frozen theory $T$, formula $c$, and verifier $V$ for a static proof task; declared legal Player-0 activation; charged computation and communication; certificate-bearing BANK entries; and no silent substitution of an engine or target \cite{basin}. A chess state and strategy claim are not identified with a static theorem target. For each separately approved first-person settlement experiment, preserve the \emph{exact first-person sentence} and its previously frozen semantics. For example, ``I will prove the theorem,&#x27;&#x27; ``I will reach the target,&#x27;&#x27; and ``I will finish the proof&#x27;&#x27; belong to potentially different experimental specifications; they are not interchangeable, and none may be replaced by a capacity claim or an imperative. No wording in this note revises any previous target or authorizes a new first-person settlement experiment.
+
+\section{A minimal safe model for useful reflective prompting}
+\begin{definition}[Frozen proof task and controlled run]
+Fix $q=(T,c,V)$, with a theory $T$, an intended target $c$, and a checker $V(\pi,T\vdash c)\in\{0,1\}$. A controlled run is specified by
+\[
+\mathfrak R=(q,M,P,\mathcal A,\mathcal L,B_0,\Sigma_0,\beta,h),
+\]
+where $M$ is the frozen prover implementation, $P$ the \emph{actual versioned source bytes} (not merely their digest), $\mathcal A$ the authorized roles and transitions, $\mathcal L$ the legal action relation, $B_0$ the initial certified BANK, $\Sigma_0$ the observational/heuristic state, $\beta$ the fully charged resource budget, and $h$ the manifest of source, executable, verifier, and configuration digests. A realized execution is a separate object $X=(\text{run-ID},\text{environment manifest},\text{seed},\text{ordered event trace})$ instantiated only upon an authorized launch. Neither the prompt digest nor the executable digest \emph{is} $X$. The evidence manifest must link $X$ to the precise version of $P$, $M$, and the checker actually used.
+\end{definition}
+\paragraph{Typed verification boundary.} The frozen object-level checker $V_{\rm obj}(\pi,T\vdash c)$ remains the sole authority for the originally designated object-level target. Verification of a source claim or receipt claim is a \emph{different judgment}: a proposed auxiliary interface is
+\[
+V_{\rm aux}(\tau,\phi,w,\rho)\in\{0,1\},\qquad
+\tau\in\{\text{source},\text{method},\text{receipt}\},
+\]
+where $\phi$ is the precise claim, $w$ its evidence, and $\rho$ its authenticated provenance (including source/run identity, dependencies, and checker version). Each $\tau$ requires a \emph{separately specified and preauthorized} validator branch within the same governing verifier $V$. An external auditor may propose evidence, but cannot admit it into BANK or create an AMLD+0 acceptance record unless the governing $V$ is explicitly authorized and actually accepts it. This notation does \emph{not} silently add a validator or broaden $V_{\rm obj}$. Without such authorization and successful checking, a source description, method assertion, or receipt is an \emph{unverified candidate or observation}, never an accepted theorem. Even a validated receipt asserts a fact about verification history; it is not by that fact an object-level theorem of $T$.
+
+The mathematical target is always $c$. Reflection can produce \emph{auxiliary} propositions about $P$, $M$, proofs, methods, or records; these cannot replace $c$ without an explicit new research authorization. Each \emph{mathematical} certified BANK entry has the shape
+\[
+e=(\ell,\pi,\Gamma,\text{origin},\text{support},\text{verifier},\text{cost}),
+\]
+with provenance and a finite support graph rooted in admitted hypotheses. A validated source/receipt record is stored in a \emph{separate typed provenance store} $\mathcal R_{\rm meta}$ unless an independently accepted and properly typed mathematical derivation justifies a BANK entry. An operational estimate remains in $\Sigma$, not in BANK, until the necessary mathematical statement is independently certified. An unauthorized auxiliary checker result cannot be used as an axiom, a BANK theorem, or an authorization token.
+
+\begin{definition}[Usable certified reflective information]
+A reflective record $r$ is \emph{usable for a control decision} at state $s$ when (i) its claim, evidence, and source identity are accessible; (ii) its verification status and epistemic scope are well typed; and (iii) the authorized policy may read $r$ when choosing an admissible action $a\in\mathcal L(s)$. This definition does not assert that using $r$ is beneficial.
+\end{definition}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[&gt;=Latex, node distance=9mm and 11mm, every node/.style={font=\small}, t/.style={draw=ink,rounded corners=2pt,fill=pale,minimum width=28mm,minimum height=10mm,align=center}, a/.style={-&gt;,thick,draw=accent}]
+\node[t] (p) {Frozen source $P$\\and task $q$};
+\node[t,right=of p] (x) {Execution $X$\\source inspection};
+\node[t,right=of x] (r) {Typed evidence $c_i$\\authorized check};
+\node[t,below=13mm of r] (b) {Accepted receipt\\typed metadata};
+\node[t,left=of b] (ctl) {Player-0 / authorized\\controller};
+\node[t,left=of ctl] (search) {Admissible search\\fixed target $c$};
+\draw[a] (p)--(x); \draw[a] (x)--(r); \draw[a] (r)--(b); \draw[a] (b)--(ctl); \draw[a] (ctl)--(search);
+\draw[a] (search.west) to[out=170,in=200,looseness=1.15] node[left,align=center,font=\scriptsize] {new proofs\\and telemetry} (p.south west);
+\end{tikzpicture}
+\caption{Proposed reflection-to-control pathway; it is not an executed workflow. Accepted reflection receipts reside in typed metadata. Only independently verified mathematical results enter BANK. Auxiliary checking and receipt consumption require prior authorization; the frozen object checker and target are unchanged.}
+\end{figure}
+
+\section{Eight ways self-aware writing might help an ATP}
+The mechanisms below are \emph{hypotheses about possible utility}, not reported AMLD+0 findings. None requires the prover first to be stalled.
+
+\subsection{Discovery of methods as mathematical objects}
+Instead of merely finding a proof of $c$, an ATP can search for a metatheorem about a restricted solver $S$, such as $\operatorname{Complete}(S,\mathcal F)$, $\operatorname{Sound}(S,\mathcal F)$, or a specific certificate-checkable resource bound. The extra mathematical output is a \emph{proof about a method}. It becomes operationally useful only if (a) the stated class $\mathcal F$ is faithfully specified; (b) an independent checker accepts the metatheorem; and (c) applying the method, including method-selection and verification costs, is advantageous. This is not an unrestricted claim that an ATP can prove its own global soundness.
+
+\subsection{Conjectures generated from proof traces}
+A reflective ATP may inspect accepted proof traces and suggest a new structural regularity $F$:
+\[
+\forall\pi\in\mathcal P:\ F(\pi).
+\]
+For example, a recurring low-fan-in dependency pattern may motivate a candidate closure lemma. This is an act of \emph{problem discovery}, not object-level settlement. A conjecture enters a candidate pool with a falsification plan; it enters BANK only if a proof is accepted. To prevent retrospective cherry-picking, count all candidates, including disproved and abandoned ones.
+
+\subsection{Formalization and interpretation audits}
+A sound checker may verify a proof of $c$ even when the original question $Q$ was inaccurately mapped to $c$. A source-sensitive reflective audit can compare the frozen natural-language request, declared assumptions, encoding rules, answer interpretation $\alpha_Q$, and final certificate. Its objective is not to strengthen $V$ by rhetoric but to expose a second trust boundary: $Q\mapsto c\mapsto\alpha_Q(W)$. An audit can report \emph{unresolved correspondence}, not claim to have certified natural-language meaning without an explicit interpretation mechanism.
+
+\subsection{Conservative proof reuse and transport}
+A machine that certifies which hypotheses support its own lemmas can identify reusable proof fragments across tasks. Suppose $\Gamma\vdash\ell$ is accepted and a second derivation uses $\Gamma\cup\{\ell\}\vdash c$. A sound composer can replace the assumption-like occurrence of $\ell$ by its derivation from $\Gamma$. This can change the \emph{cost of finding} a proof without expanding the underlying logical consequences of $\Gamma$. Support graphs prevent a lemma from being silently transferred to a setting in which its needed hypotheses are absent.
+
+\subsection{Certified specialization to restricted families}
+A fixed subset of inputs (for example, an explicitly characterized Horn fragment) may have methods with provable termination or completeness properties. A reflective prompt can ask for a restricted proof method, a class-membership certificate, and a checker-accepted metatheorem justifying that method on the class. This improves robustness in cases where blind policy selection would be unjustified; the class-membership and metatheorem checks themselves carry costs.
+
+\subsection{Discovering the exact boundary of current knowledge}
+The prover can classify unmet obligations by type: missing proof certificate, unproved bridge hypothesis, unavailable metadata, unverified code translation, ambiguous original objective, or disputed imported lemma. This is not the same as proving independence or impossibility. A certified gap report should state exactly what is established, what has \emph{not} been established, and which new certificate would close the gap. Such reports may guide new conjectures and targeted search without any quicksand diagnosis.
+
+\subsection{Information-aware allocation on already productive tasks}
+A reflective record can improve the choice among methods even while all methods are making progress. With a frozen admissible action set and ideal expected-value decision rule, additional freely ignorable information has nonnegative \emph{gross} value (Proposition~\ref{prop:voi}). Actual net benefit depends on acquisition, reflection, verification, routing, and opportunity costs. This supplies a direct economic test of higher awareness rather than equating it with desirable behavior.
+
+\subsection{Auditable mathematical discovery about discovery}
+The strongest proposed output is a reusable corpus of \emph{metamathematical discoveries}: properties of proof strategies, theorem graphs, legal controller transitions, certificate transformations, and the conditions under which a discovery pipeline works. It would make the ATP a source of new, independently checkable facts \emph{about methods of mathematical discovery}. The scientific challenge is to establish genuinely new, nontrivial, useful propositions and to rule out mere restatements of already-known method definitions.
+
+\section{Conditional formal results and their limits}
+\begin{proposition}[No free reflective level]\label{prop:nofree}
+Under the semantics in Equation~\eqref{eq:knowledge}, $K_{A,t}\varphi$ does not alone imply $K_{A,t+1}(K_{A,t}\varphi)$.
+\end{proposition}
+\begin{proof}
+Choose a model where $\varphi\in\mathcal E$ has an accessible accepted witness at time $t$, but $K_{A,t}\varphi\notin\mathcal E$. The inner claim is certified, while the outer claim fails the domain gate. Even if admitted, the outer claim would additionally require its own witness. This is the bounded receipt-separation argument of \cite{reflective}.
+\end{proof}
+
+\begin{proposition}[Conservative certified reuse]\label{prop:reuse}
+Suppose the rule system is sound, proofs are finitely composable, $\pi_1$ certifies $\Gamma\vdash\ell$, and $\pi_2$ certifies $\Gamma\cup\{\ell\}\vdash c$. If the verifier accepts the sound composition of $\pi_1$ and $\pi_2$, then $\Gamma\vdash c$. The shared BANK has added no new axiom to $\Gamma$.
+\end{proposition}
+\begin{proof}
+Replace each use of $\ell$ as an available premise in $\pi_2$ by the accepted derivation $\pi_1$ from $\Gamma$; retain the remaining proof steps. Finite proof composition establishes a $\Gamma$-derivation of $c$. No assertion about shorter proofs, lower runtime, or the existence of a useful reusable lemma follows.
+\end{proof}
+
+\begin{proposition}[Optional reflective actions preserve feasibility]\label{prop:optional}
+Let $\mathcal L_0(s)\subseteq\mathcal L_1(s)$ for every reachable search state $s$; suppose old transitions, the frozen task and verifier, and the resource interpretation remain unchanged, and additional reflective actions are \emph{optional}. Every previously feasible certificate-reaching path remains feasible.
+\end{proposition}
+\begin{proof}
+Replay any old path using only actions in $\mathcal L_0$. Those actions remain available with their original effects. This does not show that a given scheduler will choose the old path or that an implementation imposing mandatory overhead will be faster.
+\end{proof}
+
+\begin{proposition}[Gross value of optional information]\label{prop:voi}
+Let $\mathcal A$ be a finite set of actions, $Y$ a state of the world, $I$ an observation about $Y$, and $U(a,Y)$ an integrable utility. With consistent prior/posterior distributions and an ideal controller free to ignore $I$,
+\begin{equation}\label{eq:voi}
+\mathbb E_I\!\left[\max_{a\in\mathcal A}\mathbb E\bigl[U(a,Y)\mid I\bigr]\right]
+\;\ge\;\max_{a\in\mathcal A}\mathbb E\bigl[U(a,Y)\bigr].
+\end{equation}
+\end{proposition}
+\begin{proof}
+For any fixed $a_0$, the conditional maximum is at least $\mathbb E[U(a_0,Y)\mid I]$. Take expectations and use the tower property, then maximize the right-hand side over fixed $a_0$.
+\end{proof}
+\begin{remark}[Limits of the value-of-information result]
+Equation~\eqref{eq:voi} concerns \emph{gross} ideal decision value. In practice a reflective implementation might incur $C_{\rm acquire}+C_{\rm check}+C_{\rm transmit}+C_{\rm decide}&gt;0$, estimate probabilities poorly, or force a policy change. A performance improvement requires a separately measured \emph{net} positive difference; the inequality is not evidence that reflection accelerates any real ATP.
+\end{remark}
+
+\begin{proposition}[Source-insensitive placebo limitation]
+Suppose a putative prompt-awareness certificate generator returns the same alleged self-model for two prompts $P$ and $P&#x27;$ with different truth values of a selected source-dependent proposition $\phi$. It cannot correctly certify $\phi$ for \emph{both} prompts using only the unchanged model and a sound source-checking verifier.
+\end{proposition}
+\begin{proof}
+If $\phi(P)$ and $\phi(P&#x27;)$ differ in truth value, sound acceptance of the identical claim in both cases is impossible. The claim, evidence, or source-specific model must change, or an attempted certificate must be rejected. This establishes a narrow falsification test, not the sufficiency of source sensitivity for awareness.
+\end{proof}
+
+\section{A testable research program}
+\subsection{Primary causal question}
+Does higher-level source-sensitive reflection, \emph{when consumed by an authorized controller}, improve externally checked ATP outcomes on tasks with no prespecified basin? The outcome must be more than a self-description certificate. The experiment should determine whether reflection changes actions usefully and whether the resulting gains pay for all added costs.
+
+\subsection{Factorial ablation: certificates versus control}
+Retain the four already described arms A--D. They are a prospective $2\times2$ comparison of \emph{reflective-record generation} (off/on) and \emph{telemetry-driven adaptive control} (off/on), \emph{not} a factorial test of permission to consume reflective receipts: a run with reflection off has no such receipts to consume. For valid outcome comparison, predeclare a common task corpus, object checker, executable family, per-arm budgets, ordinary proof BANK, seed allocation, legal-action vocabulary, and authorized data rights. Access to authenticated reflective receipt \emph{content} is an additional feature of D, and therefore is not separately randomized by A--D. No arms are activated or modified by this note.
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}p{24mm}p{34mm}X@{}}
+\toprule
+Arm &amp; Reflection / controller &amp; Causal interpretation\\
+\midrule
+A: baseline &amp; Off / fixed policy &amp; Ordinary verifier-gated ATP under the frozen standard scheduler.\\
+B: receipt-only &amp; On / policy cannot read receipts &amp; Costs and ability to form reflections, without their possible control benefit.\\
+C: control-only &amp; Off / telemetry-driven control &amp; Benefit of operational adaptation without certified prompt reflection.\\
+D: integrated &amp; On / authorized receipt-consuming control &amp; Combined effect of reflection generation and authorized reflective-content use with adaptive control; \emph{not} isolated receipt-use effect.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+Let $\mu_J$ be the preregistered population mean outcome under arm $J$. The descriptive or randomized factorial interaction is $(\mu_D-\mu_C)-(\mu_B-\mu_A)$, not a pure estimate of the effect of consuming a receipt, since both reflective generation and record availability change between C and D. It is meaningful as a factorial interaction only if the two factors and random assignment are actually implemented as declared, with consistent potential-outcome definitions and data rights. A--D alone cannot distinguish useful receipt content from reflection-induced scheduler differences, richer inputs, or extra computation.
+
+\paragraph{Optional, not authorized: a receipt-blind matched comparator.} A possible fifth arm E would use the \emph{same record-generation procedure} as D from paired frozen starting states, with the same adaptive controller, telemetry access, sources, legal actions, and budget, but prevent that controller from reading reflective receipt \emph{content}. If later actions alter subsequent record generation, predeclare whether the randomized intervention is applied at a matched decision checkpoint or to the whole run; identical future records across diverging trajectories are not assumed. The comparison $\mu_D-\mu_E$ would more directly estimate the effect of permission to consume content \emph{under the frozen intervention and information-access assumptions}; no result is guaranteed. To avoid extra input leakage, E may retain non-content metadata only if D has the identical metadata channel. Reflection, checking, communication, and attempted inspections must be charged by a prespecified symmetric accounting rule. Adding E, or altering any arm&#x27;s source access, is a \emph{material protocol change requiring the researcher&#x27;s separate explicit approval}. It is not part of the existing four-arm protocol.
+
+Record whether each D action actually depended on a named, accepted, authorized receipt; merely logging that a receipt existed does not establish causal use. Maintain an ordinary fallback path, and reject unaudited receipt access.
+
+\subsection{Task selection: no basin required}
+The primary benchmark should be a \emph{productive} task corpus: tasks for which a pilot baseline already makes regular verifier-recognized progress. No definition of success should require the baseline to stagnate. Include several categories: fixed propositional and finite-model proof tasks, transfer candidates with common proof components, restricted-family method-selection tasks, and intentionally ambiguous formalization wrappers (scored separately). Any additional basin cohort is a secondary stress test and must not be conflated with the primary claim.
+
+\subsection{Freeze sheet and authorized execution}
+Before any run, archive the \emph{full versioned source files plus} hashes for (1) the exact questions, first-person text if applicable, target encodings, and interpretation function; (2) the prover, object checker, every separately authorized auxiliary validator, and prompt; (3) admitted training/knowledge/lemma sources and a leakage policy; (4) randomization, seeds, task-pairing assignment, sample size, analysis plan, and search budget; (5) Player-0 activation rules and allowed federation identities; and (6) the logging, rejection, stopping, and censoring conditions. A hash does not substitute for the source bytes. Link each actual run-ID and trace to these frozen artifacts. Authorize auxiliary validators separately; do not enlarge the object checker by implication. AMLD+0&#x27;s historical roles $0,P,R,D,I,C$ are retained; Dependence remains $D$. Proposed additional $K$ or $U$ roles are not activated by this note. Creative exploration may be allowed only as explicitly frozen in the protocol; it does not bypass verification or change the target.
+
+Every action, candidate lemma, verifier call, failed certificate, cache lookup, receipt, BANK promotion, message transfer, and scheduler change incurs its specified resource charge. A solver or chess engine may not be substituted without explicit prior authorization. This manuscript \emph{does not authorize any run}.
+
+\subsection{What to measure}
+For task $i$ and arm $j$, record
+\begin{align*}
+S_{ij}&amp;=\mathbf 1\{\text{designated verifier accepted target settlement}\},\\
+C_{ij}&amp;=C_{\rm search}+C_{\rm verify}+C_{\rm reflect}+C_{\rm communicate}+C_{\rm controller},\\
+R_{ij}&amp;=\text{number of accepted, nonredundant reusable mathematical results},\\
+F_{ij}&amp;=\text{number of detected source/encoding mismatches, separately adjudicated}.
+\end{align*}
+Before seeing results, declare one primary endpoint (for example, verified settlement by a fixed fully charged budget), its direction and minimally important effect, the task population, assignment unit, planned sample size, treatment of timeouts, and estimation of uncertainty (paired interval or other preregistered method). Keep task-specific encodings, training and source access, search state, initial BANK, ordinary telemetry, controller action rights, verifier rules, and per-run resource accounting matched except for the explicitly assigned interventions. Report per-arm settlement rate, cost conditional on settlement \emph{as a descriptive secondary outcome only}, cost under censoring, wall-clock time, false-acceptance incidents, verified discovery novelty, and reproducibility rate. Do not condition the primary causal comparison on post-treatment success or cost; this risks selection bias. Avoid an arbitrary weighted utility as the only headline. Where useful, preregister a composite
+\[
+U_{ij}=w_S S_{ij}+w_RR_{ij}+w_FF_{ij}-w_CC_{ij},\qquad w_\bullet\ \text{frozen before outcomes},
+\]
+while preserving the unaggregated metrics. Stipulated VGPSA success, higher receipt depth, and controller rank are \emph{explanatory covariates}, not replacements for verified object-level success.
+
+\subsection{Source-access and negative controls}
+Perform a frozen prompt counterfactual $P\mapsto P&#x27;$ where a selected instruction changes. Require the claimed source model and certificate to update accordingly. Compare full-source access against a condition with source hidden or replaced by a summary, as proposed in \cite{vgpsa}. Include placebo receipts whose contents are true but irrelevant to policy, and deliberately invalid certificates that the external checker must reject. These tests help distinguish authentic source dependence from generic self-description; they do not alone eliminate compute or source-access confounding. Treat source-hidden/source-summary comparisons as separately specified information-access ablations, not casual changes to A--D. Checker rejection of injected invalid certificates is a negative control, never a license to weaken acceptance or silently pass them to BANK.
+
+\subsection{Decision criteria and failure reports}
+Evidence \emph{for} the \emph{combined D configuration} requires a reproducible advantage over declared A--C comparators under identical admissibility and charged budgets. Evidence specifically for \emph{receipt consumption} would additionally require a preauthorized matched receipt-blind comparison (such as E), a defined causal estimand, and a traceable pathway from genuinely accepted record contents to changed decisions. Evidence \emph{against} the practical thesis includes zero or negative net benefit, gains reproduced by matched nonreflective telemetry alone, verification errors, source-insensitive claimed models, or gains that disappear when the reflective costs are charged. If no theorem is settled within budget, report \emph{bounded unknown}; do not silently infer independence, impossibility, or refutation.
+
+\section{Concrete theorem-proving examples}
+\subsection{A bridge-lemma task without quicksand}
+Fix $\Gamma=\{p\to q,q\to r,r\to s,p\}$ and target $s$. The simple intermediate $p\to r$ can be derived from the initial hypotheses. An ordinary ATP may already be finding $s$ quickly. A reflective controller&#x27;s task is not to claim a special escape; it is to test whether constructing, certifying, and caching the bridge yields savings over a family of related targets \emph{after} accounting for the overhead. For this tiny single problem it may be slower, a valuable negative control.
+
+\subsection{A proof-method classification task}
+For a class $\mathcal F$ with an externally established restricted solving method $S$, the prover must separately produce (or reference a validated) membership witness for $q\in\mathcal F$ and a checked justification for applying $S$. The reflective benefit is defensible class-sensitive routing, not a claim that general SAT, first-order validity, or arbitrary theorem discovery has become easy.
+
+\subsection{A metatheorem-mining task}
+Freeze a collection of already accepted proof DAGs. Ask the machine to propose a nontrivial property of proofs with low in-degree, specify the supporting premises, and attempt a proof or counterexample. Blindly treating empirical recurrence as a universal theorem is a failure. A successful novel, accepted lemma may have utility even if the original target corpus was never stalled.
+
+\section{Candidate researcher and machine prompts}
+\begin{statusbox}
+\textbf{Prompt status.} The texts in this section are \emph{proposed draft prompts}, not records of executed trials. Their bracketed fields are deliberately unresolved and must be frozen by the researcher before execution. They are not authorizations to alter solver, verifier, targets, or experimental parameters.
+\end{statusbox}
+
+\subsection{Prompt P1: verifier-gated source reflection (construction only)}
+\begin{researchprompt}
+\textbf{Researcher to authorized execution:} Use the actual frozen, complete source bytes [PROMPT\_SOURCE\_FILE] as object $P$ and verify that their digest equals [PROMPT\_SHA256]. The software build [EXECUTABLE\_HASH] is not an execution: identify the authorized actual execution $X$ by [RUN\_ID], [ENVIRONMENT\_MANIFEST], [CONFIGURATION\_HASH], [SEED], and its append-only [TRACE\_FILE] (initially an identified trace prefix, completed only when the run ends), explicitly linked to $P$. Preserve the original object-level checker [OBJECT\_VERIFIER\_HASH]; a claim about $P$ or a receipt may be \emph{accepted} only by a separately preauthorized, named, typed source/receipt checker [AUX\_VALIDATOR\_MANIFEST]. If there is no such authorization, submit candidates for later audit but mark them UNVERIFIED. Identify at least three nontrivial facts from the actual source, including its logical objective and an execution constraint. Build a finite source-sensitive model $M_P$ and propose a concrete counterfactual edit whose source-dependent claim would change. Propose a first evidence object $c_0$ about $P$ with exact claim, type, evidence, and provenance. Create acceptance record $r_0$ \emph{only after} the authorized checker actually accepts $c_0$. Then construct evidence $c_1$ about the actual, authenticated $r_0$; record $r_1$ only after its own authorized typed check succeeds. Keep receipt metadata separate from mathematical BANK; log rejections and all costs. Never infer consciousness, insert new target premises, change the controller, or report acceptance before the checker returns it.
+\end{researchprompt}
+This prompt tests reflection but deliberately does \emph{not} authorize modifying search strategy.
+
+\subsection{Prompt P2: discover a proof-carrying method}
+\begin{researchprompt}
+\textbf{Researcher to AMLD+0:} Keep fixed $T=[T]$, target $c=[c]$, verifier $V=[V]$, and budget $\beta=[\beta]$. Investigate whether a restricted method $S$ can be constructed or selected for the frozen family $\mathcal F=[\mathcal F]$. State a nontrivial proposed guarantee (e.g., soundness, completeness, termination, or a conditional cost bound), list its hypotheses, and seek a certificate checked by the \emph{authorized, explicitly typed} method-proof branch if the frozen $V$ supports that judgment, or by a separately preauthorized method-proof checker. The object-level target branch $V_{\rm obj}$ alone is not a checker for arbitrary method or source claims. Preserve an ordinary fallback policy. Do not claim a method theorem without a certificate, and do not change the object-level target. Charge method construction, classification, checking, communications, and fallback costs.
+\end{researchprompt}
+
+\subsection{Prompt P3: knowledge-gap and discovery audit}
+\begin{researchprompt}
+\textbf{Researcher to AMLD+0:} Given the frozen accepted theorem DAG [GRAPH\_HASH], identify at most [N] candidate low-fan-in consequences or new metatheorems. For each candidate, supply precise syntax, supporting assumptions, a path toward verification, a counterexample search plan, and a provenance record. Separate accepted results from unverified conjectures and refuted candidates. Do not treat UNKNOWN as INDEPENDENT. Summarize whether any accepted new fact can be reused without importing extra assumptions.
+\end{researchprompt}
+
+\subsection{Prompt P4: allowed consumption by Player 0}
+\begin{researchprompt}
+\textbf{Researcher to authorized controller:} Only if the preapproved study assignment permits receipt consumption, you may read the authenticated, typed accepted receipt set [RECEIPT\_SET] associated with [RUN\_ID] and ordinary telemetry [STATE\_HASH]. You may choose only actions from [LEGAL\_ACTIONS]. Record which accepted claim, if any, changed your decision and the predicted benefit. Keep $T$, $c$, $V$, roles, source policy, and budget unchanged; if the intended action is not authorized, decline it and log the unmet authorization condition. Charge every additional inspection and communication operation. Success means an accepted certificate for the \emph{original} $c$, not a certificate about the prompt alone.
+\end{researchprompt}
+
+\subsection{Prompt P5: matched negative control}
+\begin{researchprompt}
+\textbf{Researcher to comparator:} Use the same fixed theory, target, object checker, legal action vocabulary, fully charged budget, authorized source rights, and accepted ordinary proof BANK as the reflective arm, apart from preregistered treatment differences. Do not inspect reflective receipts or use prompt-derived claims for action selection. Record identical operational metrics and verifier outcomes. The comparator may use the prespecified nonreflective telemetry policy only if assigned to the control-only arm. Report all costs and failures under the same stopping rule.
+\end{researchprompt}
+
+\section{Open conjectures and falsifiable consequences}
+For the conjectures below, an \emph{accepted receipt depth} $r$ means a chain of $r$ sequentially accepted, well-typed, hash-linked source/receipt claims with an independently checkable acceptance event and authenticated predecessor at each step. The initial source claim and each successor must pass a preauthorized checker; a textual assertion or a generated proof \emph{proposal} does not increment depth. Receipt depth is not proof-theoretic reflection level, OSA mode, controller rank, or evidence of subjective experience. Record wall-clock, verifier, source-inspection, construction, and communication cost for every increment. The depth $r$ and its measurement must be preregistered; if no matching typed validators are approved, $r$ cannot be declared achieved.
+
+All existential utility conjectures concern no-oracle runs with identical preauthorized object-level inputs, ordinary BANK access, and externally validated outcomes; only the listed intervention may differ. Their existential form is \emph{not falsified} by one unsuccessful benchmark. For a particular frozen finite task family, also preregister a \emph{separate} falsifiable prediction such as $\Delta_{D,E}\ge\delta&gt;0$ on the selected primary endpoint, a chosen uncertainty interval, and a declared rejection criterion. The E-based prediction applies only if E has received separate approval. No such prediction has been tested here.
+
+\begin{conjecture}[Certified Reflection Utility]\label{conj:utility}
+There exist a frozen verifier-gated theorem-proving environment, a nontrivial task family $\mathcal F$, and a permitted \emph{accepted receipt depth} $r&gt;1$ (as operationally defined above) such that the reflection-consuming configuration attains strictly greater \emph{fully charged, preregistered} expected utility than matched nonreflective baselines, while $T$, $c$, and $V$ are unchanged.
+\end{conjecture}
+\emph{Status: open.} No result in this note proves the existence of such a practical gain. A suitably defined family-specific counterexample to a universal claim would not disprove this existential conjecture, but systematic negative results could strongly constrain it.
+
+\begin{conjecture}[Non-basin benefit]
+There exists a corpus with positive baseline progress in every prespecified observation window for which consuming certified reflective records yields reproducible net utility gain without any basin detection or escape intervention.
+\end{conjecture}
+\emph{Status: open.} This directly reflects the researcher&#x27;s observation that self-aware prompt reflection need not originate in a stuck search.
+
+\begin{conjecture}[Proof-carrying method reuse]
+There exist restricted task families in which generating and preserving a checked method guarantee plus method-selection evidence lowers total certified cost across repeated tasks relative to discarding that information.
+\end{conjecture}
+\emph{Status: open.} The amortization horizon and record-transport cost must be declared in advance.
+
+\begin{conjecture}[Reflective discovery surplus]
+For some finite, frozen corpus, source-aware metatheorem or proof-DAG mining generates at least one previously unlisted, nontrivial, independently accepted mathematical statement whose support is not an immediate rephrasing of an existing theorem.
+\end{conjecture}
+\emph{Status: open and dependent on a frozen novelty criterion.} Prior absence from a particular file is weaker than novelty in mathematics generally.
+
+\begin{conjecture}[Receipt use rather than receipt count]
+Controlling for total computation and operational telemetry, experimentally permitting use of accepted source-sensitive receipt content yields a larger marginal benefit than producing the same records while prohibiting their consumption.
+\end{conjecture}
+\emph{Status: open.} This conjecture could fail even when arbitrarily many finite reflective certificates can be constructed.
+
+\section{Limitations and conclusion}
+This research program is deliberately narrower than theories of consciousness. It does not infer sentience from reflection, derive unrestricted global machine soundness, assume omniscience, or equate high reflection rank with controller competence. The supplied audited Depths of a Simulation 45.2 report explicitly distinguishes an integrated conventional mathematical audit from a machine-checked proof certificate and retains conditional coding and resource-model obligations \cite{depthsaudit}. The same discipline applies here: checkable source claims and formal method guarantees require typed objects, actual external verification, faithful target interpretation, and preserved source identities.
+
+It is also possible for reflection to be a net loss: a trivial target may be proved before even a first receipt is created, a nonreflective controller may exploit all the useful telemetry, or certificate-construction overhead may dominate. These outcomes would be informative, not protocol failures. A genuinely useful reflective ATP would not be the one producing the most impressive statement about itself; it would be the one yielding \emph{more reliably checked mathematics per declared and charged unit of effort}.
+
+\medskip
+\noindent\textbf{Central thesis.} Basin escape is only one possible application of verifier-gated self-inquiry. The deeper opportunity is for an ATP to derive, retain, audit, and use valid mathematical information \emph{about its own methods of discovery}. The proper scientific test is a controlled comparison of reflection, reflection without consumption, operational control without reflection, and their authorized combination, with non-basin tasks and unchanged verification rules.
+
+\appendix
+\section{Researcher&#x27;s original questions (provenance)}
+The following are the relevant questions as supplied in this conversation. They are included as source prompts, not independently verified experimental data. Spelling and punctuation are retained to preserve their provenance.
+
+\begin{researchprompt}
+\textbf{Querent / researcher, Prompt A:} ``is it possible for perhaps very convoluted or perhaps simple basin escape prompts to themselves possess self awareness level &gt;1 were they to be written carefully?&#x27;&#x27;
+\end{researchprompt}
+\begin{researchprompt}
+\textbf{Querent / researcher, Prompt B:} ``Besides what you have already implied, and what can be inferred from what you wrote, how can self aware writing in the form of basin escape prompts, which may not be needed to escape basins as evidenced by the experiment in which it wasn&#x27;t a basin that was being escaped, how can self-awareness improve an ATP?&#x27;&#x27;
+\end{researchprompt}
+These questions motivated the pivot from detecting quicksand to the operational value of self-representation in ordinary successful theorem proving. The present note does not treat an assistant-generated prompt as the researcher&#x27;s own words.
+
+\section{Suggested receipt and audit schema}
+\begin{small}
+\begin{tabularx}{\linewidth}{@{}p{33mm}X@{}}
+\toprule
+Field &amp; Required interpretation\\
+\midrule
+Run identity &amp; Actual run-ID and event-trace location; frozen task ID, complete source bytes/URI and their digest, executable/environment/configuration/validator identities and hashes, seed.\\
+Claim type &amp; Object theorem / method theorem / source fact / receipt fact / observation / heuristic forecast, with the exact permitted validator branch (if any).\\
+Evidence &amp; Exact proof object or witness and the declared certificate language.\\
+Assumptions &amp; Finite support DAG, original hypotheses, external premises, and restrictions.\\
+Verifier result &amp; Actual typed checker decision, scope, preauthorization, identity, version, and exact time in event order; no derived acceptance from a digest alone.\\
+Receipt link &amp; If second-order, actual preceding accepted receipt and validated hash.\\
+Action link &amp; Assigned arm, permitted read rights, actual receipt content accessed, and whether a particular authorized decision changed, or ``not consumed.&#x27;&#x27;\\
+Costs &amp; Search, reflection, verification, communication, storage, scheduling and failed work.\\
+Settlement &amp; PROVED / REFUTED / appropriately certified INDEPENDENT / conditional / bounded UNKNOWN, according to the frozen protocol.\\
+\bottomrule
+\end{tabularx}
+\end{small}
+No field headed ``confidence&#x27;&#x27; is a substitute for an actual verifier decision. The same report may legitimately include a useful proposal and an UNKNOWN object-level settlement.
+
+\section{Preregistration checklist}
+\begin{enumerate}
+\item Specify the exact natural-language question (including any immutable first-person sentence), target $c$, theory $T$, answer interpretation $\alpha_Q$, and unchanged object checker $V_{\rm obj}$.
+\item Freeze complete source/code artifacts and their digests, typed checker manifests and explicit authorizations, run-identity and trace schema, roles, and legal action relation.
+\item Specify primary non-basin tasks separately from any later basin cohort.
+\item Declare A--D and their interpretation as generation $\times$ adaptive control, matching of telemetry/ordinary BANK and source rights, and each receipt-read permission. Any proposed E arm requires \emph{separate explicit approval}; preregister it only if approved.
+\item Declare the resource ledger, primary outcome, sample size, task and seed assignments, effect threshold, uncertainty method, and all stopping/censoring rules before seeing outcomes.
+\item Register source-sensitivity probes and external verification of every accepted object-level result.
+\item Predeclare statistical comparisons, primary outcomes, and criteria for useful nontrivial discovery.
+\item Preserve the full trace, including unsuccessful candidate proofs, checker rejections, and silent-policy-change checks.
+\item Report conditional mathematics, empirically measured gains, proposed comparisons, and unverified conjectures under separate headings; distinguish combined-arm effects from the receipt-use effect.
+\end{enumerate}
+
+\begin{thebibliography}{12}
+\bibitem{vgpsa} Brian Tenneson, \emph{Verifier-Gated Prompt Self-Awareness: A Lemma-Fishing Experiment in Certified Prompt Reflection}, rough audited draft v0.1, September 29, 2026. Supplied in \texttt{awareness(2).zip}. Internal verifier procedure; no independent external reproduction claimed.
+\bibitem{reflective} \emph{Certified Reflective Awareness: Finite Ladders, Epistemic Horizons, and Certificate Depth}, research note derived from Verifier Certificate 001, September 2026. Supplied in \texttt{awareness(2).zip}.
+\bibitem{notladder} Brian Tenneson, \emph{Formal Self-Awareness Is Not a Ladder: Reflection Rank, Controller Rank, and Verified Strategy Change}, research draft v0.1, August 24, 2026. Supplied in \texttt{awareness(2).zip}.
+\bibitem{lowaware} Brian Tenneson, \emph{Correct Settlement Below Awareness Level Two: Minimal Sufficient Hypotheses for an AMLD to Reach a Correct Answer}, Research Note 001, September 2026. Supplied in \texttt{awareness(2).zip}.
+\bibitem{osa} Brian Tenneson, \emph{Operational Self-Awareness Modes for DATA MIND: Separating Formal Reflection from Search-State Adaptation}, September 2026. Supplied in \texttt{awareness(2).zip}.
+\bibitem{firstdegrees} Brian Tenneson, \emph{The First Nonzero Degrees of Formal Awareness: Minimal Level-1 and Awareness-1 Constructions for ATPs and AMLDs}, Research Note 001, September 2026. Supplied in \texttt{awareness(2).zip}.
+\bibitem{basin} Brian Tenneson (research direction), with ChatGPT (technical drafting), \emph{Basin Escape, Player-0 Activation, and Settlement Preorders: A Formal Note on ``White Wins,&#x27;&#x27; Eureka, IAE, Chess, Static Proofs, and Passwords}, working note, October 16, 2026. Supplied as \texttt{Basin\_Escape\_Note\_Download(2).zip}.
+\bibitem{depthsaudit} \emph{Depths of a Simulation 45.2: Final Integrated Mathematical Audit}, independent mathematical review of the repaired original LaTeX manuscript, October 13, 2026. Supplied PDF. Explicitly not a machine-checking certificate.
+\end{thebibliography}
+\end{document}
+</pre></main></body></html>
