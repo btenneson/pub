@@ -11,7 +11,7 @@ PDF_SRC = ROOT / PDF_NAME
 REL = "cs.LO_Logic_in_Computer_Science/data_mind_frontiers_of_discovery_volume_i_quicksand"
 PDF_DEST = ROOT / "docs" / REL / PDF_NAME
 CATALOG = ROOT / "scripts/publications.json"
-EXPECTED_SHA256 = "b4ead1af4d99e35c51331261d42878c26ae7c912a91d5c0b514b89e43953ceb2"
+EXPECTED_SHA256 = "83775de2b660bdbc38f96925b4a0750450123cd9b4c1df10861495eeabcd51a4"
 
 assert PDF_SRC.is_file(), "Upload the preprint PDF at the repository root first"
 raw = PDF_SRC.read_bytes()
@@ -42,12 +42,12 @@ item = {
     "authors": "Brian Tenneson; AI-assisted DATA MIND / AMLD-inspired analysis",
     "quote": "When an AI Found the Mathematical Bridge but Not the Formal Certificate",
     "quote_page": 1,
-    "card_quote": "A hypothetical student completes 75% of an important proof, then gets stuck in a search basin. My conjecture settler takes over at that exact step, finds a mathematical bridge, and pursues the final verified proof.",
-    "card_quote_attribution": "Brian Tenneson · editorial publication-card quotation",
+    "card_quote": "A mathematical bridge can be discovered before a proof is certified. The distinction is the discovery.",
+    "card_quote_attribution": "Editorial card quotation · October 2026",
     "quote_also_on_card": True,
-    "card_text": "A student receives 36 of 48 displayed Metamath proof rows, leaving the final quarter hidden. This case study describes how a ChatGPT-based, AMLD-inspired continuation identified a conditional mathematical bridge while leaving formal Metamath certification incomplete. The exact experimental record and UNSETTLED conclusion are preserved.",
+    "card_text": "A student receives 36 of 48 displayed Metamath proof rows, leaving the final quarter hidden. This illustrated case study follows an AMLD-inspired search that identified a candidate inequality bridge while formal Metamath verification remained incomplete. Illustrations are conceptual, not proof certificates. The exact experimental record and UNSETTLED conclusion are preserved.",
     "status": "PUBLISHED RESEARCH PREPRINT — Formal Metamath certificate not yet produced; settlement remains UNSETTLED (October 16, 2026).",
-    "classification_note": "15-page illustrated published preprint. Describes an AMLD-inspired prompt-driven continuation, not an executed instance of the separate original AMLD+0 program. Mathematical bridge conditional; independent checker acceptance absent.",
+    "classification_note": "15-page technically illustrated working preprint. Describes an AMLD-inspired prompt-driven continuation, not an executed instance of the separate original AMLD+0 program. Mathematical bridge conditional; independent checker acceptance absent.",
 }
 data["items"] = [item] + existing
 CATALOG.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
