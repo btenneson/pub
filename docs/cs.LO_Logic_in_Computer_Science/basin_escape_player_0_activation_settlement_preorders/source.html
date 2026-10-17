@@ -1,0 +1,318 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Basin Escape, Player-0 Activation, and Settlement Preorders — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/basin_escape_player_0_activation_settlement_preorders/">Back to publication</a><h1>Basin Escape, Player-0 Activation, and Settlement Preorders — LaTeX source</h1><a href="Basin_Escape_Note.tex" download>Download .tex</a><pre>\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage[shortlabels]{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\hypersetup{pdftitle={Basin Escape, Player-0 Activation, and Settlement Preorders},pdfauthor={Research note prepared for Brian Tenneson}}
+\definecolor{ink}{HTML}{18304B}
+\definecolor{sea}{HTML}{087F83}
+\definecolor{pale}{HTML}{EAF5F3}
+\definecolor{muted}{HTML}{506170}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{conjecture}[definition]{Research conjecture}
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\FUT}{\mathsf{FUTUREBANK}}
+\newcommand{\Cert}{\mathsf{Cert}}
+\newcommand{\Reach}{\mathsf{Reach}}
+\newcommand{\Sett}{\mathsf{Settles}}
+\newcommand{\Legal}{\mathsf{Legal}}
+\newcommand{\Cost}{\mathsf{Cost}}
+\newcommand{\Win}{\mathsf{Win}}
+\newcommand{\ind}{\mathbf{1}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\textcolor{muted}{GBG+ / AMLD+0 --- working formal note}}
+\rhead{\small\textcolor{muted}{16 October 2026}}
+\cfoot{\thepage}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,leftmargin=1.6em}
+\setlist[enumerate]{topsep=3pt,itemsep=3pt,leftmargin=1.6em}
+\newcommand{\smallcap}[1]{\textsf{\textbf{#1}}}
+\begin{document}
+\begin{center}
+{\Large\bfseries\color{ink} Basin Escape, Player-0 Activation, and Settlement Preorders}\\[5pt]
+{\large A formal note on ``White wins,&#x27;&#x27; Eureka, IAE, chess, static proofs, and passwords}\\[12pt]
+{\normalsize Research direction: Brian Tenneson \quad\textbullet\quad Technical drafting assistance: ChatGPT}\\[3pt]
+{\small 16 October 2026 \quad | \quad Working note; not an executed experiment or independently verified manuscript}
+\end{center}
+\vspace{6pt}
+\noindent\colorbox{pale}{\parbox{0.95\linewidth}{\textbf{Central interpretation.} When a conjecture settler receives \emph{``White wins,&#x27;&#x27;} the intended first-person conjecture is \emph{``I will prove the theorem&#x27;&#x27;}; in GBG language, \emph{``I will reach the target.&#x27;&#x27;} This is a prediction about a designated settler&#x27;s future verified achievement, \emph{not} a command, a generic capability assertion, or the mere existence of some possible route.}}\vspace{5pt}
+
+\begin{abstract}
+Consider an automated prover stalled in a search basin: it is unsure what to do next, just as a chess player may be unsure how to move. We formalize three proposed escape methods: (i) a Player-0-activated AMLD+0 federation investigating the first-person conjecture ``White wins,&#x27;&#x27; (ii) Eureka-style search for nontrivial intermediary lemmas, and (iii) Iterative Adaptive Eureka (IAE) search that revises these lemma-discovery attempts. Verified products enter a provenance-preserving shared BANK, and simulation-isomorphism classes (SICs) are ordered by an explicitly certificate-preserving simulation preorder. Under stated assumptions, settlement regions are upper sets and, in a well-founded quotient order, admit minimal-antichain generators. We separate three importantly different environments: chess has a \emph{moving adversary}; a fixed formal theory and theorem target do \emph{not}; a password may be fixed or may change in an adaptive challenge system. We additionally distinguish finite ordinary chess from a GBG+/formal search universe with potentially infinitely many proof targets and obstacles. All speedup claims remain hypotheses requiring resource-accounted experiments.
+\end{abstract}
+
+\section{Motivation: not knowing the next move}
+Imagine a person studying a chess position and unable to decide which legal move to make. This uncertainty does not imply that there is no winning move. The difficulty can be in the \emph{search policy}: poor move ordering, a missing tactic, an unexamined defensive branch, or an insufficiently useful intermediate position. We call a region of search states a \emph{quicksand basin} when substantial charged effort yields little or no certified advancement under a declared progress metric.
+
+A basin is a property of the search and the chosen diagnostic, not automatically of the mathematical target. A stalled search does not prove impossibility, falsity, or independence. The Grass-Growth Principle in the accompanying Quicksand manuscript calls for measuring progress as well as nonprogress, and for distinguishing useful new knowledge from mere movement through states [2].
+
+\paragraph{The critical asymmetry.} In \emph{chess}, Black has legal responses that alter the board. In a \emph{fixed formal system}, the axioms and the proposition being sought remain fixed; what changes is the ATP&#x27;s internal proof state, available lemmas, and search strategy. In a \emph{fixed-password} challenge, the target secret likewise does not move; in rotating-password or adaptive-challenge settings, the target or acceptance rule may change. These environments must not be silently identified.
+
+\section{Three target settings, one search vocabulary}
+\begin{definition}[Location report and rule-complete chess state]
+Let $A$ be the set of board squares, $P$ the set of occupant tokens, and $E$ the distinguished \emph{empty-square token}. A location report is
+\[
+ f\in[A\to(P\cup\{E\})].
+\]
+A rule-complete chess state is $s=(f,\tau,\eta)$, where $\tau$ identifies whose turn it is and $\eta$ records additional rule-relevant data (for example castling, en passant, and draw-related state). Legal chess moves form a partial transition relation $s\xrightarrow{\mu}s&#x27;$.
+\end{definition}
+The symbol $E$, not the empty-set symbol, denotes an empty square. Two distinct reported states need not by themselves certify a legal move; legality depends on an authenticated transition and the full rule-complete state.
+
+\begin{definition}[Chess strategy claim]
+For an admissible starting state $s$, write $\mathsf{ForceWin}(s)$ for the statement that White has a legal strategy that reaches a declared White-winning terminal condition against \emph{every} legal Black strategy (subject to a clearly stated termination/horizon convention):
+\[
+\mathsf{ForceWin}(s)\;:\Longleftrightarrow\; \exists\sigma_W\ \forall\sigma_B\quad \mathsf{Goal}\bigl(\mathsf{Play}(s,\sigma_W,\sigma_B)\bigr).
+\]
+A certificate generally requires a strategy tree, not one favorable path.
+\end{definition}
+
+\begin{definition}[Static formal target]
+A static theorem-proving instance is $q=(T,c,V)$ where $T$ is a fixed theory, $c$ a fixed target formula, and $V(\pi,T\vdash c)$ is a sound proof-checking relation. The search may evolve through states $z_0,z_1,\ldots$, but $T$ and $c$ do not change merely because an agent searches. A certificate is an accepted finite derivation $\pi$.
+\end{definition}
+
+\begin{definition}[Password target]
+A fixed-password task has a hidden secret $w$ and a fixed acceptance predicate $\mathsf{Accept}(x,w)$. Guessing changes the search history, not $w$. An adaptive-password task instead permits a legal evolution $(w_t,\mathsf{Accept}_t)$, e.g. rotation, challenge updates, or reactions to attempts. It is only in the latter setting that an adversary-like moving target is present.
+\end{definition}
+
+\begin{proposition}[Path versus strategy]
+A verified chess path to a White win need not prove $\mathsf{ForceWin}(s)$. A verified path to a formal proof certificate \emph{does} establish its stated static theorem, provided all inference dependencies are valid.
+\end{proposition}
+\begin{proof}
+A chess path fixes Black&#x27;s replies; another legal Black reply may defeat the chosen continuation. The forced-win claim quantifies over all Black replies. By contrast, in a sound static proof calculus an accepted finite derivation already witnesses $T\vdash c$; there is no subsequent legal adversarial move that changes the fixed entailment fact.\end{proof}
+
+\paragraph{Therefore.} ``Black moves around&#x27;&#x27; is literal in chess, optional in an adaptive-password game, and \emph{not} literal in ordinary theorem proving. Counterexample search or refutation agents do not change the original axioms or theorem target by acting as an adversary; they examine consequences of the same fixed problem.
+
+\begin{definition}[Families of theorem targets and obstacles]
+Fix a formal environment $T$ and a candidate family of proof targets
+\[
+\mathcal T=\{t_i:i\in I\},\qquad \mathcal O=\{o_j:j\in J\},
+\]
+where either index set may be finite or infinite. The members of $\mathcal O$ represent proof obligations, unresolved cases, refutation challenges, or other explicitly typed impediments, not mobile chess pieces. A single frozen experiment chooses an original target $c\in\mathcal T$; the existence of many other possible theorem targets does not authorize changing $c$ mid-run. A successful formally checked derivation of one $t_i$ can be a useful intermediate lemma even when it is not the frozen target $c$.
+\end{definition}
+
+\begin{remark}[Many possible ``checkmates&#x27;&#x27; are not many moves by Black]
+In ordinary chess the piece inventory is finite, Black takes legal turns, and a checkmating end state responds to an opponent&#x27;s play. In a generalized GBG or theorem universe, there may be $10{,}000$ candidate theorems, or infinitely many; each gives a possible target for some task. These need not be interchangeable winning conditions for the \emph{same} fixed task. A formal obstruction does not take a turn, and a newly proved lemma changes the prover&#x27;s information rather than the truth or location of the fixed formula $c$. A fixed hidden password behaves similarly; only an expressly adaptive password protocol has a changing challenge.
+\end{remark}
+
+\section{The first-person conjecture ``White wins&#x27;&#x27;}
+The phrase ``White wins&#x27;&#x27; has two distinct uses that must not be conflated: a chess \emph{objective} (possibly a forced-win claim), and the proposed \emph{self-settlement conjecture} of a specified machine.
+
+\begin{definition}[Bounded first-person settlement event]
+Freeze an identified machine instance $M$, theory $T$, target $c$, verifier $V$, admissible resources $b$, and any prescribed seeds or execution inputs $\xi$. Define
+\[
+\Win_b(M,T,c,V,\xi)=1
+\]
+iff the actual authenticated execution of $M$ with $\xi$ emits by budget $b$ a complete $\pi$ such that $V(\pi,T\vdash c)=1$. The first-person sentence ``I will prove the theorem&#x27;&#x27; denotes this event for the agreed speaker $M$ and protocol boundary.
+\end{definition}
+This is neither (a) the imperative ``prove $c$,&#x27;&#x27; (b) ``I can prove $c$,&#x27;&#x27; nor (c) ``there exists some legal successful continuation.&#x27;&#x27; Even a theorem establishing that a path \emph{exists} is not the event that $M$ \emph{actually takes} it. The relevant subject must be identified: if an activated graduate federation proves $c$ but the original $M$ does not emit the required proof, the frozen first-person conjecture about $M$ has not thereby succeeded.
+
+\begin{remark}[Time bounds and the meaning of failure]
+A trustworthy complete bounded execution that ends without an accepted proof refutes that \emph{bounded future-event prediction}; it does not refute $c$. With no finite bound, nontermination or repeated failure is not, in general, a certificate that success will never occur. Nor does a plausible informal proof count as a machine-accepted certificate. This distinction is exemplified by the partial Metamath/\texttt{aaliou} continuation in [2].
+\end{remark}
+
+\section{Player 0 and the recursive federation}
+The GBG+ reference [1] distinguishes the board-state data $B$ from the board-player $P_0=B^\star$. The minimal framework allows \emph{only declared legal board actions}; memory, scheduling, certification, and federation are optional packages that must be explicitly adopted. This note proposes an \emph{additional legal activation rule}, not a consequence automatically present in the minimal GBG+ axioms.
+
+\begin{definition}[Federation-activation transition]
+Let a complete enhanced state be
+\[
+S=(q,\mathcal A,\mathcal F,\BANK,\sigma,\Pi,\beta),
+\]
+where $q$ is the frozen object target, $\mathcal A$ lists active agents, $\mathcal F$ records frontiers and subfederations, $\BANK$ is certified shared memory, $\sigma$ the scheduler, $\Pi$ provenance, and $\beta$ charged remaining resources. A board-player activation is a partial rule
+\[
+\mathsf{Activate}_0(S,\text{target},\text{budget},\text{protocol})\rightharpoonup S&#x27;
+\]
+whose domain requires explicit authorization, adequate resources, a specified executable/federation identity, and preserved target/verifier invariants.
+\end{definition}
+
+The parent can activate an AMLD+0 federation to explore a subgoal $\ell$, or to investigate the first-person settlement conjecture ``White wins.&#x27;&#x27; Graduate federations may be nested only where a recursion/activation rule expressly permits it. Activation, verification, routing, BANK access, and handoff are \emph{charged}; unlogged solver substitutions and silent changes of the frozen target are prohibited.
+
+\paragraph{Agent names.} The historical AMLD+0 organization uses $0,P,R,D,I,C$ (Player 0, Proof, Refutation, Dependence, Independence, and an additional settlement/contradiction investigation role). The newer discussion also proposes $K$ for a focused contradiction investigation and $U$ for unresolved/unknown reporting. We \emph{do not} silently replace $C$ or redefine the original executable by introducing $K,U$; a seven-participant $0+\{P,R,D,I,K,U\}$ configuration is a \emph{proposed variant} until a specific protocol is approved.
+
+\section{Three distinct basin-escape methods}
+\begin{definition}[A: self-settlement / ``White wins&#x27;&#x27; prompt]
+On detecting stagnation, Player 0 may legally assign an identified conjecture settler the first-person target
+\[
+\mathsf{SelfWin}(M,q,b): \quad \text{``I will prove the theorem&#x27;&#x27;} 
+\]
+(or ``I will reach the target&#x27;&#x27; in GBG terms). A successful operational test requires the designated $M$ to reach its declared target and emit the accepted certificate, not merely to predict that it will do so.
+\end{definition}
+
+\begin{definition}[B: Eureka-style lemma fishing]
+Given hypotheses $H$ and target $c$, a Eureka prompt seeks a nontrivial family $L=\{\ell_1,\dots,\ell_k\}$ with accepted certificates for
+\[
+H\vdash\ell_i\quad(1\le i\le k),\qquad H\cup L\vdash c.
+\]
+The intended discovery must not merely rename the target or smuggle in the completed proof; it should yield reusable intermediate certificates that bridge a search obstacle.
+\end{definition}
+Although $H\vdash\ell_i$ means $H\cup L$ has no new logical consequences beyond $H$, using the \emph{right} proven intermediary can dramatically affect search order and proof discovery cost. Its usefulness is computational, not the addition of a new axiom.
+
+The Eureka search space may draw from an infinite candidate family $\mathcal T$, while any particular finite certificate or finite BANK handoff uses only finitely many derivation steps and appropriately typed hypotheses. This allows Player 0 to redirect search toward a useful intermediate target $t_i$ \emph{without replacing} the frozen conjecture $c$. The number of possible intermediate targets, and the number of possible obstructions, may both be infinite; no completeness, finite-time discovery, or guaranteed escape follows from that abundance.
+
+\begin{definition}[C: Iterative Adaptive Eureka (IAE)]
+IAE is a budgeted sequence of Eureka-oriented attempts with legal adaptive updates:
+\[
+(h_0,\BANK_0)\to(h_1,\BANK_1)\to\cdots\to(h_m,\BANK_m),
+\]
+where $h_t$ records a prompt/search policy, an update depends on allowed observed feedback, and only independently checked results enter $\BANK_{t+1}$. Stagnation rules, iteration caps, verification charges, and stopping conditions are explicit protocol parameters, not assumed guarantees.
+\end{definition}
+
+\begin{center}
+\begin{tikzpicture}[&gt;=Stealth,node distance=6mm, every node/.style={align=center}]
+\node[draw=ink,rounded corners,fill=pale,minimum width=9.4cm,minimum height=0.75cm] (basin) {\textbf{Detected basin}: certified progress below declared threshold};
+\node[draw=sea,rounded corners,below left=10mm and -4mm of basin,text width=3.0cm,minimum height=1.07cm] (a) {\textbf{A: Self-settlement}\\``White wins&#x27;&#x27;};
+\node[draw=sea,rounded corners,below=10mm of basin,text width=3.0cm,minimum height=1.07cm] (b) {\textbf{B: Eureka}\\bridge lemmas};
+\node[draw=sea,rounded corners,below right=10mm and -4mm of basin,text width=3.0cm,minimum height=1.07cm] (c) {\textbf{C: IAE}\\adaptive attempts};
+\node[draw=ink,rounded corners,fill=pale,below=22mm of b,minimum width=9.4cm,minimum height=0.8cm] (bank) {\textbf{Independent verifier} $\to$ \textbf{BANK} $\to$ authorized parent search};
+\draw[-&gt;,thick] (basin.south west) -- (a.north);
+\draw[-&gt;,thick] (basin.south) -- (b.north);
+\draw[-&gt;,thick] (basin.south east) -- (c.north);
+\draw[-&gt;,thick] (a.south) -- (bank.north west);
+\draw[-&gt;,thick] (b.south) -- (bank.north);
+\draw[-&gt;,thick] (c.south) -- (bank.north east);
+\end{tikzpicture}
+\end{center}
+
+The three methods are different \emph{interventions}, not disjoint logical truth values: A changes the explicit \emph{meta-target}; B searches for an \emph{intermediate theorem}; C changes the \emph{search policy over successive attempts}. IAE can itself invoke Eureka repeatedly, and a self-settlement federation may use either method. None guarantees escape.
+
+\section{BANK: reusable knowledge without illicit hypotheses}
+\begin{definition}[Trusted BANK entry]
+A trusted BANK entry is a tuple $e=(\ell,\pi,\Gamma,\text{origin},\text{cost})$ where the verifier accepts that the derivation $\pi$ establishes $\Gamma\vdash\ell$, where $\Gamma$ records all undischarged assumptions. Unverified suggestions belong in a separate proposal store (such as a Futurebank) and may not be used as certified unconditional facts.
+\end{definition}
+
+\begin{lemma}[No hypothesis laundering]
+If the verifier is sound and BANK faithfully retains each certificate&#x27;s undischarged hypothesis set, sharing a BANK entry cannot turn a conditional theorem $T\cup\Delta\vdash\ell$ into an unconditional theorem $T\vdash\ell$ without a further valid discharge of $\Delta$.
+\end{lemma}
+\begin{proof}
+Certificate acceptance authorizes precisely the stated sequent. By assumption, any later use must preserve its dependencies or provide a verifier-accepted derivation discharging them. A use that omits $\Delta$ without discharge is not a legal BANK inference.\end{proof}
+
+A shared BANK may contain proof certificates, countermodels or model evidence with their exact logical status, reachability certificates, and machine-checkable dependency records. ``All lemmas&#x27;&#x27; means all \emph{verified and legally eligible} lemmas, not all generated claims. Priorities and indices may guide retrieval while retaining the full archive.
+
+\section{Six investigation reports are not six mutually exclusive truth values}
+Proposed investigations include: $P$ (prove $c$), $R$ (prove $\neg c$), $D$ (investigate dependence on recorded assumptions), $I$ (certify independence relative to a specified theory), $K$ (derive $c\to\bot$), and $U$ (report no determination within a stated window). These are useful \emph{work streams}, but not automatically a disjoint six-valued logic.
+
+\begin{proposition}[Overlap under classical logic]
+For a consistent classical base theory with ordinary negation,
+\[
+T\vdash (c\to\bot)\quad\Longleftrightarrow\quad T\vdash\neg c.
+\]
+Thus positive reports from $K$ and $R$ can certify the same logical outcome by different search routes.
+\end{proposition}
+\begin{proof} In classical formalizations $\neg c$ may be defined as $c\to\bot$, or is interderivable with it.\end{proof}
+
+A dependence report requires its own exact property (e.g. $T\cup\Delta\vdash c$, a necessary hypothesis, or a relative consistency claim). Independence of $c$ from $T$ means $T\nvdash c$ and $T\nvdash\neg c$ and generally needs a valid metamathematical certificate, not just a long unsuccessful search. $U$ is a bounded \emph{unknown report}, not a certificate of independence. In an inconsistent theory both directions may be derivable, which also rules out naive mutual exclusivity.
+
+\section{The SIC preorder and settlement regions}
+Let $\mathscr{S}$ be a class of admissible verifier-gated simulation systems. Write $X\preceq Y$ if $Y$ can reproduce the relevant certified behavior of $X$ through a specified legal simulation, including faithful certificate checking and (if a bound is imposed) a declared resource-accounting transformation. Assume $\preceq$ is reflexive and transitive. Quotient by mutual simulation $X\sim Y\iff X\preceq Y\land Y\preceq X$ to obtain the poset $\mathcal P=\mathscr S/{\sim}$.
+
+\begin{definition}[Certificate settlement region]
+For a fixed objective $(T,c,V)$ and a specified class of admissible protocols, set
+\[
+U_c=\{[X]\in\mathcal P: X\text{ emits an accepted certificate of }T\vdash c\text{ or }T\vdash\neg c\}.
+\]
+This is \emph{object-level} settlement. For the first-person prediction about $M$, use a separate region $U_{\Win_b(M,T,c,V,\xi)}$ with an explicitly fixed subject and event-verification semantics; the two regions are not interchangeable.
+\end{definition}
+
+\begin{theorem}[Upward closure, conditional on certificate preservation]
+If $X\preceq Y$ guarantees that every accepted settlement certificate produced by $X$ can be legally reproduced or transferred to $Y$ under the applicable cost regime, then $U_c$ is an upper set:
+\[
+[X]\in U_c,\quad[X]\preceq[Y]\quad\Longrightarrow\quad[Y]\in U_c.
+\]
+\end{theorem}
+\begin{proof}
+Choose an accepted certificate produced by $X$. The stated simulation property makes it reproducible or transferable to $Y$ without invalidating its certificate or the resource rules. Therefore $Y$ settles the same fixed objective.\end{proof}
+
+\begin{definition}[Settlement spectrum]
+When minimal elements exist, define $\mathcal M_c=\operatorname{Min}(U_c)$. This records minimal \emph{simulation types}, not just a scalar count of proof steps.
+\end{definition}
+
+\begin{theorem}[Minimal-antichain generation]
+If $\mathcal P$ is well-founded, every upper set $U\subseteq\mathcal P$ satisfies
+\[
+U=\uparrow\operatorname{Min}(U),
+\]
+and $\operatorname{Min}(U)$ is an antichain. In particular this applies to $U_c$.
+\end{theorem}
+\begin{proof}
+For $x\in U$, the nonempty subset $U\cap\downarrow x$ has a minimal element $m$ by well-foundedness. This $m$ is minimal in $U$, and $m\preceq x$. Therefore $x\in\uparrow\operatorname{Min}(U)$. The opposite inclusion follows from upward closure. Distinct minimal elements are incomparable.\end{proof}
+
+\begin{remark}[Essential repairs to overstrong claims]
+Without well-foundedness an upper set may have \emph{no} minimal elements: $\{q\in\mathbb Q:q&gt;0\}$ is an upper set of the usual rational chain with none. It also shows a totally ordered settlement region need not be of the closed form $[d,\infty)$; it may be open at its lower cut. A threshold theorem of that form is justified for a well-ordered discrete depth scale, not for arbitrary chains. Empty $\mathcal M_c$ does not by itself prove logical independence unless minimal elements are known to exist whenever the region is nonempty.
+\end{remark}
+
+\begin{definition}[Derived conjecture preorder]
+For object-level tasks with a common settledness semantics, define
+\[
+c\le_{\mathrm{SIC}}d\quad\Longleftrightarrow\quad U_d\subseteq U_c.
+\]
+This is a preorder (reflexive, transitive). It orders conjectures by the inclusion of their settlement-capability regions, not necessarily by elapsed time or proof length.
+\end{definition}
+
+\begin{proposition}[Negation symmetry of object-level settlement]
+In classical logic, suppose that accepted proof certificates may be converted between $T\vdash\neg\neg c$ and $T\vdash c$ within the applicable resource regime, and that both settlement directions have the same admissible simulation class. Then $U_c=U_{\neg c}$. Consequently, where defined, $\mathcal M_c=\mathcal M_{\neg c}$.
+\end{proposition}
+\begin{proof}
+Settling $c$ requires a proof of $c$ or $\neg c$; settling $\neg c$ requires a proof of $\neg c$ or $\neg\neg c$. Classical double-negation conversion supplies the corresponding certified derivation, by the assumed resource-admissible conversion.\end{proof}
+
+\paragraph{Important qualification.} The symmetry does \emph{not} say that the personal prediction ``I will prove $c$&#x27;&#x27; is interchangeable with ``I will prove $\neg c$.&#x27;&#x27; Those are different events; only the symmetric \emph{object-level} task ``settle one of the two directions&#x27;&#x27; has this property.
+
+\section{Federation and cost: reachability need not mean speed}
+Let $\mathsf{A}_0$ be a legal action system without graduate activation and $\mathsf{A}_1$ an extension with Player-0 activation, BANK sharing, Eureka, and IAE. Assume every old legal behavior remains available unchanged and is still verified by the same $V$.
+
+\begin{proposition}[Weak monotonicity of feasible paths]
+If $\mathsf{A}_0\subseteq\mathsf{A}_1$ in the above operational sense, every settlement path feasible in $\mathsf{A}_0$ is still feasible in $\mathsf{A}_1$ \emph{when no additional mandatory overhead is imposed}. Thus optional new actions cannot remove previously reachable certificates.
+\end{proposition}
+\begin{proof} A valid old action path remains legal and uses the old transitions unchanged.\end{proof}
+
+This is \emph{not} a theorem that the new configuration is faster. A forced activation tax, expensive certificate transport, BANK-retrieval costs, contention, repeated discoveries, or poor scheduling can make a federation slower. For example, a one-step baseline proof with an obligatory ten-step activation is slower in the new configuration. A meaningful speedup compares fully charged expected settlement costs and, separately, wall-clock times.
+
+\begin{conjecture}[Cooperative basin escape]
+There exist nontrivial families of frozen proof tasks and specified search budgets for which a legally activated heterogeneous federation with verifier-gated BANK sharing, and a Player-0 policy choosing among self-settlement, Eureka, and IAE, has lower expected \emph{fully charged} settlement cost than a matched solo baseline and a matched nonsharing multi-agent baseline.
+\end{conjecture}
+This is a proposed research conjecture, not a proven universal theorem. In particular, producing an elegant intermediate lemma need not help a given solver discover a complete formal certificate.
+
+\section{Protocol sketch for an eventual controlled test}
+The following is a design specification, \emph{not} an initiated experiment.
+\begin{enumerate}
+\item \textbf{Freeze the task.} Record $T,c,V$, executable hashes, seeds, legal rules, deadline/budget, source restrictions, and the exact referent of ``I.&#x27;&#x27; In chess, fix admissible starting states and whether the target means actual win or forced strategy. In password trials, state whether the secret can change.
+\item \textbf{Detect quicksand without inventing refutation.} Use a specified window and measurable indicators: new accepted BANK entries, discharged obligations, verified frontier contraction, accepted witnesses per charged computation, or other frozen metrics.
+\item \textbf{Prespecify the alternatives.} Compare (i) one prover, (ii) matched independent workers with no shared BANK, (iii) shared BANK without adaptive activation, and (iv) Player-0-activated federation with A/B/C escape policies. Allocate equal total charged resource budgets and also record wall-clock outcomes.
+\item \textbf{Log legal activation and provenance.} Every promotion into BANK records source, support obligations, proof certificate, verifier result, and charge. No unauthorized engine substitution, target change, or unlogged hidden oracle is permitted.
+\item \textbf{Keep findings distinct.} Report object-level \texttt{PROVED}/\texttt{REFUTED}/suitably certified \texttt{INDEPENDENT}, conditional or dependence findings, and bounded \texttt{UNKNOWN}. Record the separate truth of each first-person future-event claim.
+\item \textbf{Audit before publication.} Re-run accepted certificates through the frozen independent checker and publish the ledger and comparator definitions. A plausible derivation is not a completed machine proof.
+\end{enumerate}
+
+\section{Summary and precise research question}
+The analogy ``I am unsure how to move in chess&#x27;&#x27; captures \emph{search uncertainty}. It does not license a direct transfer of chess&#x27;s adversarial quantifiers to static theorem proving. Black moves in chess; the formal target stays fixed in ordinary ATP even when the target family and obstruction family are infinite; a password can be fixed or can evolve if the protocol says so. A GBG+ board may be \emph{equipped} with legal Player-0 activation, allowing graduate AMLD+0 federations to investigate either the first-person settlement event or intermediate proof obligations. Eureka, IAE, and ``White wins&#x27;&#x27; provide three distinct but composable escape interventions. BANK unites their certified contributions. The SIC preorder then asks which simulation capabilities, alone or in a federation, suffice for settlement and how minimal capability types compare.
+
+\noindent\colorbox{pale}{\parbox{0.95\linewidth}{\textbf{Primary open question.} Can a Player-0-governed federation transform a stalled \emph{search policy} into a verifier-accepted settlement by discovering and sharing a certificate-bearing bridge, at demonstrably lower fully charged cost than matched alternatives---without changing the frozen conjecture or confusing a first-person prediction with a command?}}
+
+\section*{Source materials and provenance}
+\small
+\begin{enumerate}[label={[\arabic*]},leftmargin=2em]
+\item Brian Tenneson, \emph{Generalized Board Games and GBG+: A Self-Contained Formal Foundation with the Board as a Player}, version 0.04, 26 September 2026, esp. GBG rule-complete states; Player-0 authorization; optional certification, memory, federation and scheduler packages; canonical ATP specialization. \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/gbg_and_gbg_plus_formal_foundations_004/}.
+\item \emph{DATA MIND&#x27;s Frontiers of Discovery, Volume I: The Quicksand Problem}, working illustrated manuscript, 16 October 2026, especially the Grass-Growth Principle and the distinction between an informal mathematical bridge and a formally certified operational result. Supplied in this conversation as \texttt{DATA\_MIND\_Volume\_1\_Quicksand(2).pdf}.
+\item \emph{DATA&#x27;S MIND Through Chess: Location Reports, Strategy Trees, and Verifier-Gated Theorem Settling}, supplied in this conversation as \texttt{DATAs\_Mind\_Chess\_Introduction(10).pdf}, esp. the difference between a favorable path and a forced-winning strategy tree.
+\item \emph{Conjecture Settling Part I}, 11-page working note supplied in this conversation as \texttt{conjecture\_settling (1).pdf}; source of the SIC settlement-region/preorder discussion. The present note states corrected conditional versions where needed.
+\end{enumerate}
+\normalsize
+\vspace{6pt}
+{\small\textit{Provenance / status.} This document formalizes proposals discussed with the researcher. Theorems above are elementary conditional mathematical consequences of the definitions and stated assumptions; there has been no automated AMLD+0 run, chess engine substitution, proof-verifier experiment, or external independent peer audit in preparing this note. Nothing here changes a frozen experimental protocol or authorizes its execution.}
+\end{document}
+</pre></main></body></html>
