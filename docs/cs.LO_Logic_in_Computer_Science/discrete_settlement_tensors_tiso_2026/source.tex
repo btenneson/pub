@@ -1,0 +1,456 @@
+% REPAIRED / REAUDITED EDITION -- 19 SECTION ORDER AND FIGURES PRESERVED
+% Editorial/mathematical repairs only; no AMLD runs or protocol modifications.
+% DATA 3.0 / AMLD + TISO Mathematical Extension
+% Prepared October 16, 2026 from the supplied 6-page PDF and TISO draft.
+% No experimental runs or executable protocol changes were performed.
+% Original figures are reproduced as cropped images of the author's supplied PDF.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,booktabs,array,enumitem,microtype}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\usepackage{float}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{1.2em}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}[definition]{Assumption}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{remark}[definition]{Remark}
+\newcommand{\Aset}{\mathcal A}
+\newcommand{\Cset}{\mathcal C}
+\newcommand{\Jset}{\mathcal J}
+\newcommand{\Rset}{\mathcal R}
+\newcommand{\Uset}{\mathcal U}
+\newcommand{\Ebb}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\ind}{\mathbf 1}
+\newcommand{\RR}{\mathbb R}
+\title{\textbf{Discrete Settlement Tensors and Constrained\\Optimization in DATA 3.0 / AMLD}\\
+\large Settlement Density, One-Hot Terminal States, Resource Allocation,\\and the Tensor-Induced Settlement Objective (TISO)}
+\author{Brian Tenneson}
+\date{Original note: August 13, 2026\\Expanded mathematical manuscript: October 16, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+A multi-agent conjecture settler must decide where finite computation should go before any terminal certificate has been found. This article distinguishes actual settlement from predictive navigation quantities, introduces a discrete settlement tensor for direct, lemma, and cross-agent value, and formulates resource allocation as constrained optimization. Under standard compactness and concavity assumptions, optimal allocations exist and feasible Karush--Kuhn--Tucker (KKT) points are globally optimal (with suitable qualifications for the necessity of KKT conditions). Strict or strong concavity gives uniqueness and stability; a diminishing-returns model yields a water-filling scheduler; and uniform objective error yields a quantitative $2\varepsilon$ near-optimality guarantee. The expanded mathematical development supplies the previously missing bridge from the tensor to the objective function: the \emph{Tensor-Induced Settlement Objective} (TISO), a concave surrogate that admits a settlement-probability interpretation only under a separately testable Poisson-opportunity assumption. It separates proof and refutation evidence from dependence investigation, contradiction investigation, and unresolved reports; proves optimization and robustness results; and identifies cross-agent complementarities that can destroy concavity. An explicit conserved event-credit convention, a static-to-discrete approximation bound, and restrictions on class-specific interpretations clarify the model boundaries. The Poisson law, coefficient calibration, independence of event streams, and actual AMLD gains have not been verified. Nothing here implies universal decidability or guaranteed settlement.
+\end{abstract}
+
+\noindent\textbf{AI Integrity Statement.} Brian Tenneson is the author of this manuscript and is responsible for its mathematical claims, interpretation, and release. OpenAI ChatGPT was used as an AI research and drafting consultant for mathematical formalization, literature search, exposition, figure design, and LaTeX preparation. No theorem or experimental claim is accepted solely because it was suggested by an AI system. Formal claims are intended to stand on explicit definitions, assumptions, and proofs. Experimental claims require frozen protocols, retained search data, and verifier-backed certificates. Proposed AMLD terminology and architecture remain research proposals unless independently validated.
+
+\noindent\textbf{Revision note (ATLAS repair, October 16, 2026).} Sections remain in their original order. Repairs address event-credit conservation, conditional probability calibration, aggregate versus class-specific outcomes, static versus discrete charging, KKT precision, and finite-graph distance semantics. The original three figure files are retained. The accompanying independent re-audit identifies assumptions that remain unverified.\par
+
+\noindent\textbf{Scope and continuity.} Sections 1--11 retain the subject matter, order, results, and three original figures of the supplied note. Sections 12--19 comprise an appended mathematical extension. The present repaired edition keeps the original section sequence and three original figure assets, with local precision corrections inside the existing sections. It adds no sections, changes no implementation, experimental parameter, or role assignment, and reports no AMLD experiment.
+
+\section{Actual settlement is mutually exclusive}\label{sec:actual}
+For a target $w$ over a frozen base theory $T$, let
+\[
+C_P,\qquad C_R,\qquad C_I,\qquad C_C
+\]
+be terminal \emph{reported certificate classes} for proof, refutation, independence, and contradiction. The contradiction class means that both $w$ and $\neg w$ have been certified in the declared base/context. The terminal classes are required to be pairwise disjoint. Define certified settlement indicators
+\[
+S_k(x)=\ind\{x\in C_k\},\qquad k\in\{P,R,I,C\}.
+\]
+Then
+\[
+S_P(x)+S_R(x)+S_I(x)+S_C(x)\leq 1.
+\]
+At a settled state exactly one coordinate is $1$; before settlement all four actual-settlement indicators are $0$. Fractional quantities such as $F_P,F_R,F_I,F_C$ are predictions or navigation measurements, not terminal states. The disjointness here is a \emph{reporting rule}: raw supporting evidence must be retained, and an explicit priority rule is needed if a second kind of evidence appears later (Section~\ref{sec:reports}).
+
+\section{What settlement density means}\label{sec:density}
+The phrase \emph{settlement density} is proposed terminology. It means the weighted amount of certificate-relevant verified information found per unit search volume or computational cost. A region containing many easy but irrelevant lemmas can have lower settlement density than a sparse region containing one lemma that sharply reduces the remaining proof, refutation, or independence horizon. A schematic local density for certifier $k$ is
+\[
+\rho_k(x)=\frac{\displaystyle\sum_{y\in N(x)}w_k(y)\,\ind\{y\text{ is verified and useful to }k\}}{\operatorname{Vol}(N(x))}.
+\]
+The weight $w_k(y)$ is declared nonnegative and measured in specified relevance units, rather than counting mere theoremhood; the formula requires $0<\operatorname{Vol}(N(x))<\infty$ and a finite weighted numerator. This schematic quantity is not a probability density unless separately normalized and calibrated.
+\begin{figure}[htbp]
+\centering\includegraphics[width=.89\linewidth]{figures/original_figure_1.png}
+\caption{Settlement density is not ordinary statement density. It weights verified discoveries by relevance to eventual certification. (Original figure retained.)}
+\end{figure}
+
+\section{The discrete settlement tensor}\label{sec:tensor}
+A scalar density loses multi-agent structure. Let
+\[
+S_{a,b,r,c}(x)
+\]
+be a state-dependent tensor indexed by source component $a$, recipient certifier or agent $b$, search region/frontier class $r$, and terminal certificate class $c\in\{P,R,I,C\}$. A useful decomposition is
+\[
+S=S^{\mathrm{direct}}+\alpha S^{\mathrm{lemma}}+\beta S^{\mathrm{transfer}}.
+\]
+The transfer term permits a discovery made by $P$, for example, to have low immediate proof value but high value for $I$ through a shared verified bank. In the original formulation $S$ is an information structure; it is not by itself a calibrated stochastic model. Section~\ref{sec:attribution} supplies a proposed conversion into optimization coefficients.
+
+\section{Constrained resource allocation}\label{sec:allocation}
+Let $u=(u_1,\ldots,u_n)$ be computational allocations and let $B$ be total budget. Let $F_x(u)$ be a calibrated settlement objective inferred from the current state and tensor. The simplest problem is
+\[
+\max_{u\in\Uset}F_x(u),\qquad
+\Uset=\left\{u:\ u_i\ge m_i,\quad\sum_i u_i=B,\quad Au\le b\right\}.
+\]
+The lower bounds $m_i$ can implement anti-starvation requirements for $P,R,I$, or other essential components.
+\begin{figure}[htbp]
+\centering\includegraphics[width=.9\linewidth]{figures/original_figure_2.png}
+\caption{One tensor entry asks who generated a discovery, who can use it, where it occurred, and which mutually exclusive terminal class it may advance. (Original figure retained.)}
+\end{figure}
+
+\noindent\textbf{Proposition 4.1 (Existence).} If $\Uset$ is nonempty and compact and $F_x$ is continuous, then an optimal allocation exists.
+\begin{proof}
+This is the extreme-value theorem applied to $F_x$ on the compact feasible set $\Uset$.
+\end{proof}
+Ignoring inequalities momentarily, the Lagrangian for $\sum_i u_i=B$ is
+\[
+L(u,\lambda)=F_x(u)-\lambda\left(\sum_i u_i-B\right).
+\]
+At an interior optimum,
+\[
+\frac{\partial F_x}{\partial u_i}=\lambda.
+\]
+Thus marginal values are equal on coordinates interior to their bounds in this equality-only problem. At bound-active channels only the applicable one-sided KKT inequalities hold; additional coupled inequalities alter the marginal equations. The multiplier $\lambda$ is the local shadow value of total computation when standard regularity and sensitivity conditions apply. With inequality constraints, the appropriate first-order framework is KKT \cite{boyd,kuhn}.
+
+\noindent\textbf{Theorem 4.2 (Global KKT optimality under concavity).} Assume $\Uset$ is nonempty and convex and $F_x$ is differentiable and concave. Then any feasible point satisfying the KKT equations with valid multiplier signs and complementary slackness is a global maximizer of $F_x$; a constraint qualification (e.g., relative-interior Slater for the affine/inequality representation) is used to guarantee KKT \emph{necessity} at an optimizer, not sufficiency. If $F_x$ is strictly concave on $\Uset$, the maximizer is unique.
+
+\section{An explicit diminishing-returns scheduler}\label{sec:water-original}
+Consider
+\[
+F(u)=\sum_{i=1}^n w_i(1-e^{-a_i u_i}),\qquad w_i,a_i>0.
+\]
+Each summand is increasing and strictly concave. For an interior active channel,
+\[
+w_ia_ie^{-a_i u_i^*}=\lambda,
+\]
+so
+\[
+u_i^*=\frac{1}{a_i}\log\left(\frac{w_i a_i}{\lambda}\right).
+\]
+With lower bounds one clips this expression at $m_i$, and chooses $\lambda$ so that the budget constraint holds (provided at least one positive-value channel exists and the discretionary budget is positive). This is a concrete water-filling-style scheduler for the separable budget-only case. Additional coupled inequalities may require a general constrained solver.
+
+\section{Quadratic tensor interactions and curvature}\label{sec:quadratic}
+A useful local model is
+\[
+F_x(u)=s(x)^\top u-\frac12 u^\top Q(x)u.
+\]
+If $Q(x)\succeq0$, then $\nabla^2F_x=-Q(x)\preceq0$ and the allocation problem is concave. If $Q(x)\succ0$, the optimum is unique on a convex feasible set. Strong positive cross-agent complementarities can make the Hessian indefinite, in which case KKT no longer guarantees a global optimum. The spectrum of the settlement Hessian is therefore a diagnostic for whether a current allocation problem lies in an easy concave regime or a harder nonconvex regime.
+
+\section{Robustness to measurement error}\label{sec:robust-original}
+The true settlement objective is not observed directly. Suppose $\widehat F$ is an estimated objective satisfying
+\[
+\sup_{u\in\Uset}|\widehat F(u)-F(u)|\le\varepsilon.
+\]
+Let $u^*$ maximize $F$ and let $\widehat u$ maximize $\widehat F$.
+
+\noindent\textbf{Theorem 7.1 ($2\varepsilon$ near-optimality).}
+\[
+F(u^*)-F(\widehat u)\le2\varepsilon.
+\]
+\begin{proof}
+Because $\widehat u$ maximizes $\widehat F$, we have $\widehat F(\widehat u)\ge\widehat F(u^*)$. Uniform error then gives
+\[
+F(\widehat u)\ge\widehat F(\widehat u)-\varepsilon
+\ge\widehat F(u^*)-\varepsilon\ge F(u^*)-2\varepsilon.
+\]
+\end{proof}
+If $F$ is $\mu$-strongly concave on the convex feasible set, then
+\[
+F(u^*)-F(\widehat u)\ge\frac\mu2\|\widehat u-u^*\|_2^2,
+\]
+so
+\[
+\|\widehat u-u^*\|_2\le2\sqrt{\varepsilon/\mu}.
+\]
+Thus a sufficiently well-calibrated imperfect tensor can still yield a quantitatively near-optimal resource allocation. The premise is a uniform error guarantee, not merely good calibration on a training sample.
+
+\section{Dynamic allocation}\label{sec:dynamic}
+Every verified discovery can change the bank, frontiers, and cross-agent value. Therefore $F_t$ and the optimal allocation $u_t^*$ move with time. A simple projected online update is
+\[
+u_{t+1}=\Pi_{\Uset}\!\left(u_t+\eta\nabla F_t(u_t)\right).
+\]
+For \emph{exogenously specified} concave reward functions revealed with suitable timely full-gradient feedback, a nonanticipating projected-gradient scheme on a convex set of finite diameter and with bounded gradients has $O(\sqrt{T})$ static regret with a suitable learning-rate schedule such as $\eta_t\propto t^{-1/2}$ \cite{zinkevich}. Actual verifier feedback, realized overhead, and changes caused by the controller are not covered by that generic bound. If the optimum itself moves slowly, dynamic-regret analyses compare the controller to a moving benchmark. For computation allocated one discrete quantum at a time, adaptive greedy policies become relevant when expected utility satisfies adaptive monotonicity and adaptive submodularity \cite{golovin}.
+
+\section{Connection to the proof-ocean compass}\label{sec:compass}
+The tensor is not itself the final navigator. One useful hierarchy is
+\[
+\text{local density and landmarks}\longrightarrow S(x)
+\longrightarrow\widehat d_{C}(x)\longrightarrow\text{compass}
+\longrightarrow\text{next tunnel}.
+\]
+On a \emph{finite, completely enumerated} proof graph with a declared terminal set and charged edge costs, exact shortest-path distance to a terminal certificate gives a training label within that graph. Partial DAGs or open-ended proof search supply estimates or upper bounds, not generally exact global distances; labels learned from solved instances cannot be used as hidden future information on held-out tasks. Learning-guided automated theorem proving and progress-prediction work provide context for the use of prior proofs and remaining-progress estimates as search guidance \cite{enig,leanprogress}.
+\begin{figure}[htbp]
+\centering\includegraphics[width=.86\linewidth]{figures/original_figure_3.png}
+\caption{Closed-loop control. The optimizer chooses where computation goes; the verifier alone determines whether a mutually exclusive terminal class has actually been reached. (Original figure retained.)}
+\end{figure}
+
+\section{What these results do and do not establish}\label{sec:scope}
+The results above conditionally solve parts of the AMLD resource-allocation meta-problem. They give sufficient conditions for existence, global KKT optimality, uniqueness, explicit allocation formulas, and robustness to objective-estimation error. They do not prove that an arbitrary target is reachable, decidable, or eventually settled. The central empirical task is calibration: determine whether tensor-derived measurements predict actual reductions in verified settlement cost on held-out proof oceans.
+
+\section{Conclusion}\label{sec:conclusion-original}
+A consistent settlement optimizer must keep two layers separate. The terminal layer is discrete, one-hot, and verifier-gated. The navigation layer may be fractional, probabilistic, density-based, tensor-valued, and optimized continuously or discretely. This separation permits aggressive search guidance without weakening the meaning of mathematical settlement.
+
+\clearpage
+\begin{center}
+{\Large\bfseries Part II. Tensor-Induced Settlement Objective (TISO)}\\[4pt]
+{\small Proposed mathematical extension to the original eleven-section formulation}
+\end{center}
+
+\section{Investigative roles, evidence, and reported settlement}\label{sec:reports}
+Fix a conjecture $w$, a frozen theory $T$, a fixed verifier $V$, and a current search state $x$. The \emph{proposed} investigative roles include proof $P$, refutation $R$, dependence $D$, independence $I$, contradiction $K$, and optionally an unresolved-case investigator $U$. These are mathematical role labels, not claims that new executable AMLD processes have been introduced. The original article's contradiction class $C$ corresponds to the proposed notation $K$, while the original implementation may continue to use $C$. A scheduler/coordinator and all verification work are included in resource accounting.
+
+A proof of $w$ and a proof of $\neg w$ should be distinguished as \emph{raw evidence} from the one-hot \emph{reported settlement classification}. Write $E_P(x)\in\{0,1\}$ for acceptance of a proof of $w$ from exactly $T$, and $E_R(x)\in\{0,1\}$ for acceptance of a proof of $\neg w$ from that same $T$. Let $E_I(x)\in\{0,1\}$ indicate an accepted independence certificate under a separately declared, sound certificate scheme. Merely failing to prove either side is not such a certificate. Let $E_K=E_PE_R$; the K investigator must audit the theory/context match and the certificates rather than treat incompatible contexts as contradiction.
+
+\begin{definition}[Audited one-hot report]
+For admissible sound evidence, define
+\begin{align*}
+Z_K&=E_PE_R,&Z_P&=E_P(1-E_R),\\
+Z_R&=(1-E_P)E_R,&Z_I&=(1-E_P)(1-E_R)E_I,\\
+Z_U&=(1-E_P)(1-E_R)(1-E_I).
+\end{align*}
+Then each $Z_c\in\{0,1\}$ and
+\[
+Z_P+Z_R+Z_I+Z_K+Z_U=1.
+\]
+Here $U$ reports \emph{unresolved under accepted evidence to date}, not a fifth kind of terminal mathematical certificate. If reports are historically irreversible, the system must separately specify when they are frozen and what happens to subsequently submitted evidence.
+\end{definition}
+
+\begin{remark}[Consistency and contradiction]
+In sound classical logic, if $T$ is consistent, both $T\vdash w$ and $T\vdash\neg w$ cannot hold. Thus a legitimate $K$ report would indicate inconsistency of the \emph{declared} $T$ or a failure in an assumed soundness/context check. A model that assigns positive probability to $K$ is not compatible with simultaneously assuming both an infallible verifier and a known-consistent $T$.
+\end{remark}
+
+\begin{definition}[Dependence witness]
+A \emph{proof-specific dependence witness} for premise $h$ is a verifier-accepted proof-support DAG in which $h$ occurs among the support leaves used to derive $w$. This establishes dependence of that proof on $h$, not that every possible proof of $w$ requires $h$. Essential axiom dependence would require a stronger scheme, such as a suitably certified nonderivability result without $h$ under declared assumptions.
+\end{definition}
+The D role can produce valuable support discoveries even when no new terminal class is reported. U can likewise be an \emph{investigative role} that searches unresolved frontiers, if authorized, while the U \emph{report} remains uncertified nonsettlement.
+
+\section{Calibrating tensor entries into optimization values}\label{sec:attribution}
+Let $\Aset$ be the approved set of source and recipient roles, $\Rset$ the finite set of search-frontier regions, and $\Cset=\{P,R,I,K\}$ the prospective terminal labels. Define the original tensor in the extended indexing convention by
+\[
+S_{a,b,r,c}(x),\quad a,b\in\Aset,\ r\in\Rset,\ c\in\Cset.
+\]
+Retain the feature decomposition $S=S^{\mathrm{direct}}+\alpha S^{\mathrm{lemma}}+\beta S^{\mathrm{transfer}}$; this decomposition does not itself determine probability intensities.
+
+\begin{assumption}[Frozen nonnegative calibration and conserved event credit]\label{ass:calibration}
+At a fixed state $x$, a declared operator $\mathcal K_x$, fitted only with permitted prior data, maps tensor features and an audit log to fixed coefficients
+\[
+\theta_{a,b,r,c}(x)=\bigl[\mathcal K_x(S,\mathrm{log})\bigr]_{a,b,r,c}\ge0.
+\]
+A multiplicative special case $\theta=\gamma S$ is permitted only when each product is nonnegative. This is a \emph{model declaration}, not a claim that these values are calibrated probabilities or have been fitted for AMLD.
+
+For a finite logged collection $\mathcal E_x$ of distinct verifier-accepted discovery events, assign each event $e$ one stable identifier scoped to the frozen theory, target, verification obligation, and underlying verified discovery. Copies, messages, and cross-agent imports of the same event retain this identifier. As an \emph{auditable sufficient accounting convention}, choose event weights $\omega_e\ge0$ and attribution shares
+\begin{equation}\label{eq:event-credit}
+\alpha_{e,a,b,r,c}\ge0,\qquad
+\sum_{a,b,r,c}\alpha_{e,a,b,r,c}\le1,\qquad
+\theta_{a,b,r,c}=\sum_{e\in\mathcal E_x}\omega_e\alpha_{e,a,b,r,c}.
+\end{equation}
+The final identity describes one explicit way of constructing coefficients, not a requirement for every possible learned calibration. Globally summing over source channels as well as recipients prevents the same logged event from creating a second unit of credit when forwarded; raw many-recipient use and proof-support edges remain in the log. A novel logical synergy between distinct events is not necessarily represented by these linear shares.
+\end{assumption}
+
+\noindent\textbf{Deduplication and stochastic caution.} Conservation of event credit is \emph{necessary for this accounting convention but not sufficient} to imply independent future discoveries, a Poisson arrival law, or calibrated marginal success intensities. One event can legitimately aid several proofs while counting only once as an independent settlement opportunity. Identity collisions or uncertain equivalence must be explicitly recorded rather than silently merged or duplicated. A new event may create genuinely correlated consequences, which require a joint model outside additive TISO. For held-out testing, freeze identity rules, attribution convention, coefficient-fitting procedure, and search budget \emph{before} inspecting test outcomes.
+
+Index computational channels by $\Jset=\{(a,r):a\in\Aset,r\in\Rset\}$, dropping unavailable channels. Define the \emph{tensor-induced weight}
+\begin{equation}\label{eq:tiso-weight}
+\boxed{\quad W_{(a,r)}(x)=\sum_{b\in\Aset}\sum_{c\in\Cset}\theta_{a,b,r,c}(x)\ge0.\quad}
+\end{equation}
+The coefficient $\theta_{D,P,r,P}$ rewards a D finding that assists P; $\theta_{P,K,r,K}$ rewards a P finding that assists K. These coefficients are \emph{nonnegative proxy contributions}, not indicators of accepted terminal settlement or automatically valid marginal probabilities. If the event-credit convention \eqref{eq:event-credit} is used, its shares apply globally to all tensor indices, not separately within each recipient. The tensor's source and recipient axes are not collapsed until \eqref{eq:tiso-weight} is computed; therefore cross-agent contributions remain inspectable.
+
+\section{The TISO objective and its probability assumption}\label{sec:objective}
+Let $u_j\ge m_j\ge0$ be the computation assigned to channel $j$, $k_j>0$ its efficiency parameter, $c_j>0$ its full charged marginal cost, and $B$ the budget. Declare the convex feasible region
+\begin{equation}\label{eq:tiso-feasible}
+\Uset=\left\{u\in\RR^{|\Jset|}:u_j\ge m_j,\ \sum_jc_ju_j\le B,\ Au\le b\right\}.
+\end{equation}
+In this \emph{continuous, static surrogate}, $c_j$ is a predetermined full marginal charge per unit of work; any verifier, communication, recipient-processing, or controller costs omitted from $c_j$ must appear in explicit additional variables or a reserved overhead budget. Costs may not be silently omitted or charged twice. The displayed linear budget is not an exact representation of random, per-call, or state-dependent overhead unless a justified bound or linearization has been declared. Feasibility and coefficients are frozen before the optimization decision.
+
+Define the tensor-induced cumulative discovery intensity
+\begin{equation}\label{eq:tiso-intensity}
+H_x(u)=\sum_{j\in\Jset}W_j(x)\bigl(1-e^{-k_ju_j}\bigr),
+\end{equation}
+and the \emph{Tensor-Induced Settlement Objective}
+\begin{equation}\label{eq:tiso-main}
+\boxed{\quad\max_{u\in\Uset}F_x^{\mathrm{TISO}}(u),\qquad F_x^{\mathrm{TISO}}(u)=1-e^{-H_x(u)}.\quad}
+\end{equation}
+
+\begin{assumption}[Poisson certificate-opportunity surrogate]\label{ass:poisson}
+Conditional on a frozen state $x$, selected allocation $u$, and the specified cost, verifier, and event-identity rules, postulate that the count $N_x(u)$ of \emph{distinct, successfully accepted terminal-certificate opportunities} obeys
+\[
+N_x(u)\sim\operatorname{Poisson}(H_x(u)),\qquad
+\{\text{settlement during the allocation}\}=\{N_x(u)\ge1\}.
+\]
+If the mean is supplied by additive channel contributions, their union must correspond to this deduplicated count; independently superposing channel counts would require separate independence/Poisson assumptions. The displayed Poisson law and the event-to-settlement equivalence are assumptions, not results derived from the ledger or verifier architecture. They yield only
+\begin{equation}\label{eq:tiso-prob}
+\widehat p_{\mathrm{unresolved}}(u\mid x)=e^{-H_x(u)},\qquad
+\widehat p_{\mathrm{settled}}(u\mid x)=1-e^{-H_x(u)}.
+\end{equation}
+These are \emph{predictions}, not verifier judgments. Since $H_x$ is bounded for finite $W_j$, this surrogate saturates below probability one even with arbitrarily large work.
+\end{assumption}
+
+The term $\widehat p_{\mathrm{unresolved}}$ is not the actual Boolean report $Z_U$ from Section~\ref{sec:reports}. The latter records current evidence, while the former predicts what future budgeted search might fail to settle. This separation is essential to the meaning of unknown.
+
+\noindent\textbf{Class-specific limitation.} Although $\theta_{a,b,r,c}$ retains a class label, $W_j=\sum_{b,c}\theta_{a,b,r,c}$ defines only a \emph{single aggregate settle/not-settle} proxy. Neither $\theta$ nor $1-e^{-H}$ alone determines four mutually coherent values $\Prob(Z_P=1),\Prob(Z_R=1),\Prob(Z_I=1),\Prob(Z_K=1)$. Any class-specific prediction requires a separately specified joint or competing-risks construction, a verifier-sound admissibility model for a fixed $T$, and evidence that mutually incompatible terminal outcomes are not assigned as simultaneously realizable. In particular a known-consistent $T$ with sound verification has zero K probability; uncertain theory/context or verifier failures must not be disguised as successful certified contradiction.
+
+\section{Existence, concavity, uniqueness, and an exact scheduler}\label{sec:tiso-proofs}
+\begin{theorem}[TISO global optimization theorem]\label{thm:tiso-concavity}
+Suppose $\Uset$ is nonempty, compact, and convex, and $W_j(x)\ge0$, $k_j>0$ are held fixed during the allocation decision. Then $F_x^{\mathrm{TISO}}$ is continuous and concave and a global maximizer exists. If every pair of distinct points $u,v\in\Uset$ differs in at least one coordinate $j$ with $W_j>0$ (in particular, if all $W_j>0$), the restriction of $F_x^{\mathrm{TISO}}$ to $\Uset$ is strictly concave and its maximizer is unique. Every feasible KKT point with valid multipliers is globally optimal; constraint qualification is relevant to KKT necessity, not sufficiency.
+\end{theorem}
+\begin{proof}
+Fix $x$ and suppress it in the notation. From \eqref{eq:tiso-intensity},
+\[
+\partial_jH=W_jk_je^{-k_ju_j},\qquad
+\partial_{jj}^2H=-W_jk_j^2e^{-k_ju_j},\qquad
+\partial_{j\ell}^2H=0\quad(j\ne\ell).
+\]
+The chain rule gives
+\[
+\nabla^2F=e^{-H}\left(\nabla^2H-\nabla H\nabla H^\top\right).
+\]
+For any direction $v$,
+\[
+v^\top\nabla^2Fv
+=-e^{-H}\left[\sum_j W_jk_j^2e^{-k_ju_j}v_j^2+(v^\top\nabla H)^2\right]\le0.
+\]
+Thus $F$ is concave. For any nonzero segment direction $v-u$ between distinct feasible points, the stated condition guarantees a coordinate of positive weight and nonzero displacement; the quadratic form is then strictly negative along the entire segment, establishing strict concavity on $\Uset$. Continuity and compactness give existence, strict concavity gives uniqueness, and a feasible point satisfying KKT with correct multiplier signs is globally optimal by concavity, independently of a constraint qualification.
+\end{proof}
+
+\begin{proposition}[Marginal tensor value and generalized water filling]\label{prop:tiso-water}
+For every channel $j$,
+\begin{equation}\label{eq:tiso-gradient}
+\frac{\partial F_x^{\mathrm{TISO}}}{\partial u_j}
+=e^{-H_x(u)}W_j(x)k_je^{-k_ju_j}.
+\end{equation}
+Since $1-e^{-z}$ increases strictly with $z$, maximizing $F$ is equivalent to maximizing $H$. If the only coupling constraint is $\sum_jc_ju_j\le B$, at least one $W_j>0$, and $B>\sum_jc_jm_j$, the optimal positive-weight allocations are
+\begin{equation}\label{eq:tiso-water}
+\boxed{\quad u_j^*=\max\!\left\{m_j,\frac1{k_j}\log\frac{W_jk_j}{\lambda c_j}\right\},\quad W_j>0,\quad}
+\end{equation}
+where $\lambda>0$ enforces $\sum_jc_ju_j^*=B$. Channels with $W_j=0$ may be held at $m_j$. Additional constraints $Au\le b$ preserve concavity but not necessarily this closed form.
+\end{proposition}
+\begin{proof}
+Stationarity for the equivalent objective $H$ on each funded positive-weight channel is $W_jk_je^{-k_ju_j}=\lambda c_j$, with complementary slackness at $m_j$. Solving produces \eqref{eq:tiso-water}. Since raising any positive-weight channel strictly increases $H$, all discretionary budget is used. For the other linear constraints, general KKT multipliers enter each marginal equation, precluding the simple single-multiplier expression.
+\end{proof}
+
+\begin{remark}
+The existence and concavity theorems prove properties of the \emph{specified surrogate optimization problem}; they do not establish that a real proof is available or that an estimated tensor predicts its discovery. Without positive weights, or when only minimum allocations are feasible, the nondegenerate water-filling expression is unnecessary.
+\end{remark}
+
+\section{Worked allocation example and dependence value}\label{sec:example}
+Consider two available channels, direct proof $P$ and support-dependence $D$. Let $W_P=0.6$, $W_D=0.9$, $k_P=k_D=1$, $c_P=c_D=1$, $m_P=m_D=0$, and $B=2$. Then
+\[
+H(u_P,u_D)=0.6(1-e^{-u_P})+0.9(1-e^{-u_D}),\qquad u_P+u_D=2.
+\]
+The water-filling equations yield
+\[
+u_D-u_P=\log(0.9/0.6)=\log(1.5),
+\]
+and hence
+\[
+\boxed{u_P^*=0.79727,\qquad u_D^*=1.20273.}
+\]
+At this hypothetical optimum, $H(u^*)\approx0.95933$ and $F(u^*)\approx0.61685$. The result illustrates a key feature: a dependence investigation may receive more computation than direct proof search when its calibrated \emph{cross-agent settlement contribution} is larger. These numbers are invented to demonstrate the formula and are \emph{not} empirical AMLD measurements. An actual D coefficient must be trained on measured effects, with shared-lemma credit controlled as in Assumption~\ref{ass:calibration}.
+
+\section{Contradiction complementarity and transfer accounting}\label{sec:complement}
+The additive Poisson-opportunity model is deliberately separable. It does not automatically capture logical \emph{AND} requirements. If K can verify contradiction only after independent searches have both found $T\vdash w$ and $T\vdash\neg w$, a stylized discovery model gives
+\begin{equation}\label{eq:K-prob}
+p_K(u_P,u_R)=(1-e^{-a u_P})(1-e^{-b u_R}),\qquad a,b>0.
+\end{equation}
+Then
+\[
+\frac{\partial^2p_K}{\partial u_P\partial u_R}=ab e^{-a u_P-b u_R}>0.
+\]
+\begin{proposition}[The contradiction surrogate need not be concave]
+The function in \eqref{eq:K-prob} is not jointly concave on a neighborhood of the origin.
+\end{proposition}
+\begin{proof}
+At $(u_P,u_R)=(0,0)$ its Hessian has zero diagonal entries and off-diagonal entries $ab>0$; its eigenvalues are $ab$ and $-ab$. By continuity, the Hessian is indefinite arbitrarily near the origin in the positive quadrant. Therefore joint concavity fails.
+\end{proof}
+The hypothetical positive-probability K model is meaningful only when consistency of $T$ is not taken as a guaranteed fact (or when modeling failures of the assumptions). It must not be read as a prediction that both sides can genuinely be proved in a certified consistent theory. Independence of the two search events is itself a strong assumption, and direct K-checking costs are not represented in \eqref{eq:K-prob}.
+
+For explicit transfer accounting, introduce source work $x_{a,r}\ge0$, recipient processing $z_b\ge0$, and transfer quantities $t_{a,b,r,c}\ge0$. A simple linear surrogate is
+\begin{align*}
+\max\quad &\sum_{a,b,r,c}S_{a,b,r,c}(x)t_{a,b,r,c},\\
+\text{subject to}\quad
+&\sum_{b,c}t_{a,b,r,c}\le p_{a,r}x_{a,r},\\
+&\sum_{a,r,c}t_{a,b,r,c}\le q_bz_b,\\
+&\sum_{a,r}c_{a,r}x_{a,r}+\sum_bd_bz_b
+ +\sum_{a,b,r,c}e_{a,b,r,c}t_{a,b,r,c}\le B,
+\end{align*}
+where every displayed capacity or cost coefficient is nonnegative, and the charged costs are positive for unbounded work variables. With bounded feasible resources this is a linear program. Reuse of one verified theorem by several recipients may require an event-level reuse model rather than treating all such transfers as independently produced discoveries. This \emph{alternative} flow formulation can be coupled to TISO only after defining a consistent attribution and joint-cost semantics; the two objectives should not simply be added without calibration.
+
+\section{Proof-distance calibration, robustness, and future validation}\label{sec:calibration}
+The proof-ocean compass of Section~\ref{sec:compass} suggests how to obtain useful tensor signals. Let $\widehat D_c(x)$ be an estimated remaining \emph{charged cost} to an accepted certificate of class $c$ on a specified proof-search graph. For a verified transition $x\to x'$ made by channel $j=(a,r)$, define
+\[
+Y_{j,b,c}(x,x')=\widehat D_c(x)-\widehat D_c(x'),
+\]
+with recipient attribution $b$ logged. Signed $Y$ may be used during estimation, but mapping it to the nonnegative hazard coefficients $\theta$ requires an explicit calibrated transformation. A shortcut learned on solved graphs must not be treated as an oracle in a new problem, and a proof using an assumption does not establish its essentiality.
+
+\begin{theorem}[Uniform TISO-proxy regret bound]\label{thm:proxy}
+Let $G_x(u)$ be the true expected settlement utility on the same feasible set, and let $F_x^{\mathrm{TISO}}$ be its model proxy. If
+\[
+\sup_{u\in\Uset}\left|G_x(u)-F_x^{\mathrm{TISO}}(u)\right|\le\varepsilon,
+\]
+and $u_G$ maximizes $G_x$ whereas $u_F$ maximizes $F_x^{\mathrm{TISO}}$, then
+\[
+\boxed{G_x(u_G)-G_x(u_F)\le2\varepsilon.}
+\]
+\end{theorem}
+\begin{proof}
+Applying the uniform bound, optimality of $u_F$, and the bound again,
+\[
+G_x(u_G)\le F_x^{\mathrm{TISO}}(u_G)+\varepsilon
+\le F_x^{\mathrm{TISO}}(u_F)+\varepsilon
+\le G_x(u_F)+2\varepsilon.
+\]
+\end{proof}
+No such uniform error certificate is currently established for AMLD; average test-set calibration, finite samples, and pointwise probability errors do not imply the needed \emph{uniform} bound. The comparator $G_x$ must concern the \emph{same} cost-feasible allocations and acceptance event. The static-concavity analysis assumes coefficients fixed during one allocation decision. Recalibration after evidence, verifier time variation, early stopping, integer quanta, and dependent arrivals are outside its global-optimality theorem. Re-optimizing after each discovery, with all update and verification costs charged, is a proposed receding-horizon policy, not a proven optimal dynamic AMLD execution policy.
+
+\begin{proposition}[Safe quantization bound for a monotone static feasible set]\label{prop:quantization}
+For the frozen TISO problem assume $A$ is entrywise nonnegative, $u^*$ is a continuous optimum, and each permitted discrete allocation has the form $m_j+q_jn_j$ with $q_j>0$ and $n_j\in\mathbb Z_{\ge0}$. Suppose the base minima $m$ are feasible, and all charges and overhead assumed in the continuous constraints remain valid for discrete work. Define
+\[
+u_j^\downarrow=m_j+q_j\left\lfloor\frac{u_j^*-m_j}{q_j}\right\rfloor.
+\]
+Then $u^\downarrow$ is feasible for the discrete problem and
+\begin{equation}\label{eq:quantization}
+0\le F_x^{\mathrm{TISO}}(u^*)-F_x^{\mathrm{TISO}}(u^\downarrow)
+\le\sum_j W_jk_jq_j.
+\end{equation}
+Consequently the optimal discrete surrogate value is at least $F_x^{\mathrm{TISO}}(u^*)-\sum_jW_jk_jq_j$.
+\end{proposition}
+\begin{proof}
+Coordinatewise $m\le u^\downarrow\le u^*$, so nonnegative $A$ and positive $c$ ensure $Au^\downarrow\le Au^*\le b$ and $c^\top u^\downarrow\le c^\top u^*\le B$. Because $H\ge0$ for nonnegative allocations and weights,
+$0\le\partial_j F=e^{-H}W_jk_je^{-k_ju_j}\le W_jk_j$.
+Integrating along the coordinatewise segment from $u^\downarrow$ to $u^*$ gives
+$0\le F(u^*)-F(u^\downarrow)\le\sum_j W_jk_j(u_j^*-u_j^\downarrow)<\sum_jW_jk_jq_j$ for positive weights, and the displayed weak bound always holds.
+\end{proof}
+\noindent\textbf{Boundary of the bound.} Entrywise nonnegativity of $A$ (a downward-closed resource constraint above $m$) is essential to this rounding argument; generic coupled constraints, minimum service requirements beyond $m$, and additional verifier or restart charges must be handled in a separately verified integer-feasibility model. The bound concerns surrogate value under a \emph{single frozen decision}, not true utility or dynamic optimality.
+
+A future validation program would need a \emph{separately authorized, frozen protocol} with at least: (i) target theories, benchmarks, certificate acceptance predicates and any independence proof rules fixed in advance; (ii) first-party event identifiers, support DAGs, accepted and rejected verifier outcomes, and every compute/communication/verification cost retained; (iii) training and held-out problems separated by theorem family or proof structure to limit leakage; (iv) calibration scores for terminal success versus predicted $1-e^{-H}$; and (v) fair equal-budget comparisons against equal share, direct-agent-only scheduling, and no-transfer ablations. The present manuscript reports \emph{no} AMLD run, outcome, fitted coefficient, measured independence of event streams, verified Poisson fit, or experimental success rate for TISO. In particular, none of the unverified assumptions can be converted into a frequentist coverage guarantee merely by solving the concave surrogate.
+
+\section{Integrated conclusion and explicit open decisions}\label{sec:final}
+TISO gives a concrete possible mapping from a state-dependent settlement tensor to an optimizable objective:
+\[
+\begin{gathered}
+S_{a,b,r,c}(x)\xrightarrow{\text{declared calibration}}W_j(x)\\[3pt]
+\xrightarrow{\text{diminishing returns}}H_x(u)
+\xrightarrow{\text{Poisson assumption}}1-e^{-H_x(u)}.
+\end{gathered}
+\]
+For \emph{any} fixed nonnegative coefficients, the mathematical objective is concave; interpreting its value as a success probability requires the separately stated stochastic assumptions and validation. The event-credit conservation rule blocks one common source of duplicate attribution but does not prove probabilistic independence or calibration. The global optimum refers to the continuous, frozen surrogate with declared linear charges; Proposition~\ref{prop:quantization} bounds a limited safe discretization, not full AMLD operation. Dependence $D$ and contradiction investigator $K$ can receive budget through cross-agent value, and an unresolved investigator $U$ can be considered separately from the unresolved report. Explicit logical conjunctions and recipient/source complementarities may make the larger problem nonconvex. In all cases, only a verifier can accept terminal evidence.
+
+The following decisions remain open and require express authorization rather than silent executable or experimental changes:
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+\item Whether $K$ is the proposed new investigative role while $C$ remains the existing contradiction label, or whether a formal role migration is desired.
+\item Whether $U$ is only an unresolved report or also a separately charged active investigator.
+\item Whether $D$ proves support in a particular proof DAG or a stronger notion of essential dependence; and whether dependence should ever be a terminal classification.
+\item What verifier-accepted independence certificate scheme is intended, and whether reported labels can be revised after additional evidence.
+\item Which event identity convention, attribution, distance calibration, aggregate probability model, and (if needed) class-specific joint model should be tested on frozen held-out proof oceans.
+\end{enumerate}
+Thus the theoretical bridge is mathematically specified and its single-step discretization error can be bounded under additional assumptions, while model validation, joint class probabilities, and dynamic implementation remain unsettled. This repaired manuscript adds proof-level clarification but claims no new AMLD experiment, certified success, or executable change.
+
+\begin{thebibliography}{9}
+\bibitem{boyd} S. Boyd and L. Vandenberghe, \emph{Convex Optimization}, Cambridge University Press, 2004. \url{https://web.stanford.edu/~boyd/cvxbook/}.
+\bibitem{kuhn} H. W. Kuhn and A. W. Tucker, ``Nonlinear Programming,'' \emph{Proceedings of the Second Berkeley Symposium on Mathematical Statistics and Probability}, 1951, pp. 481--492.
+\bibitem{zinkevich} M. Zinkevich, ``Online Convex Programming and Generalized Infinitesimal Gradient Ascent,'' \emph{ICML}, 2003, pp. 928--936. \url{https://www.cs.cmu.edu/~maz/publications/ICML03.pdf}.
+\bibitem{golovin} D. Golovin and A. Krause, ``Adaptive Submodularity: Theory and Applications in Active Learning and Stochastic Optimization,'' \emph{JAIR} 42 (2011), pp. 427--486. \url{https://arxiv.org/abs/1003.3967}.
+\bibitem{enig} Z. Goertzel, J. Jakub\r{u}v, and J. Urban, ``ENIGMAWatch: ProofWatch Meets ENIGMA,'' 2019. \url{https://arxiv.org/abs/1905.09565}.
+\bibitem{leanprogress} S. Huang, P. Song, R. J. George, and A. Anandkumar, ``LeanProgress: Guiding Search for Neural Theorem Proving via Proof Progress Prediction,'' 2025. \url{https://arxiv.org/abs/2502.17925}.
+\end{thebibliography}
+\end{document}

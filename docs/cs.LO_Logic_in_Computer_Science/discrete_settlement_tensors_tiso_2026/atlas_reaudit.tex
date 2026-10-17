@@ -1,0 +1,79 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[margin=.77in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,array,enumitem,hyperref,microtype,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist[itemize]{itemsep=1pt,parsep=1pt,topsep=3pt,leftmargin=1.5em}
+\newcommand{\pass}{\textbf{PASS}}
+\newcommand{\partialpass}{\textbf{CONDITIONAL}}
+\title{\vspace{-3ex}\textbf{ATLAS Second Mathematical Audit}\\[2pt]\large DATA 3.0 / AMLD: TISO Repaired Edition}
+\author{Review of repaired PDF, LaTeX, unchanged figures, and mathematical claims}
+\date{October 16, 2026}
+\begin{document}
+\maketitle
+\vspace{-2.5ex}
+\begin{center}
+\fcolorbox{black}{gray!8}{\parbox{.9\linewidth}{\centering
+\textbf{SECOND-AUDIT VERDICT: MATHEMATICAL PASS WITH EXPLICIT MODEL CONDITIONS}\\
+\small No material mathematical defect found in the re-audited conditional optimization results. Calibration, the event process, and real AMLD performance remain unvalidated.}}
+\end{center}
+
+\section*{1. Integrity, scope, and what changed}
+Examined the original submitted regenerated ZIP and the repaired source/PDF. The repair is a \emph{manuscript-only} action; it performed no AMLD run, no theorem-search experiment, no model fitting, and no executable protocol or parameter change. A programmatic section-heading comparison finds the original \textbf{19 sections in the same order}. SHA-256 comparison finds all \textbf{three figure assets byte-identical}. The repaired LaTeX compiles successfully twice without unresolved cross-references, compilation errors, or overfull-box warnings. It now renders as a 15-page PDF (the original was 13 pages), principally because new accounting and proof details were added.
+
+Repairs are confined to existing sections:
+\begin{itemize}
+\item Sections 2, 4, 5, 8, 9: positive finite density denominator, precise KKT necessity/sufficiency and bound-active marginals, explicit online-regret feedback conditions, and finite-graph versus learned proof distance.
+\item Section 13: a globally conserved, event-identified credit convention and explicit warning that this convention \emph{does not imply} stochastic independence or calibration.
+\item Section 14: separate Poisson and event-to-settlement hypotheses, limits on aggregate settle/not-settle prediction, and explicit nonclaims concerning class probabilities.
+\item Sections 15 and 18: rigorous strict-concavity criterion on the feasible set, and a new restricted static quantization guarantee, with accounting and dynamic-control boundaries.
+\item Abstract and conclusion: factual scope limited to the proven static surrogate, with untested claims clearly identified.
+\end{itemize}
+
+\section*{2. Audit matrix}
+\small
+\begin{tabular}{@{}p{.34\linewidth}p{.18\linewidth}p{.42\linewidth}@{}}
+\toprule
+Issue / theorem & Verdict & Re-audit conclusion \\
+\midrule
+One-hot evidence classification (12) & \pass & Direct Boolean check: all eight triples yield exactly one reported state. $U$ remains unresolved evidence, not a terminal certificate. \\
+Event-credit conservation (13) & \pass & Nonnegative globally conserved shares imply total model credit $\sum\theta\le\sum_e\omega_e$ for the stated additive construction. Does not prove Poisson independence. \\
+Poisson probability reading (14) & \partialpass & $\Pr[N=0]=e^{-H}$ follows from $N\sim\mathrm{Poisson}(H)$; the distribution and match to accepted settlement remain unverified assumptions. \\
+Concavity, existence, uniqueness (15) & \pass & Correct negative-semidefinite Hessian. Revised sufficient uniqueness condition ensures every nontrivial feasible segment varies in a positive-weight coordinate. \\
+KKT and water filling (4, 15) & \pass & Correct under stated static problem. Qualification needed for KKT necessity, not sufficiency. Single multiplier is not asserted with coupled constraints. \\
+Numerical two-agent example (16) & \pass & $u_P=0.79726745$, $u_D=1.20273255$, $H=0.95932985$, $F=0.61685043$. \\
+Contradiction complementarity (17) & \pass & At the origin Hessian eigenvalues are $\pm ab$, proving failure of joint concavity near the origin. \\
+$2\varepsilon$ proxy regret (7, 18) & \partialpass & Correct comparison proof, but requires an actual uniform error guarantee on the same feasible set; none is established for AMLD. \\
+Quantization bound (18) & \pass & New proof correct for nonnegative $A$, fixed marginal charges, feasible minima, and compatible quanta. Not valid by this proof for arbitrary coupled constraints or dynamic costs. \\
+Dynamic real-world scheduler & NOT TESTED & No empirical, stochastic-process, integer-policy, or adaptive global optimality guarantee claimed or verified. \\
+\bottomrule
+\end{tabular}
+\normalsize
+
+\section*{3. Independent checks of the principal mathematics}
+Set $H(u)=\sum_jW_j(1-e^{-k_ju_j})$, with $W_j\ge0$, $k_j>0$, and $F(u)=1-e^{-H(u)}$. Its Hessian obeys
+\[
+v^\top\nabla^2F(u)v=-e^{-H(u)}\left[\sum_j W_jk_j^2e^{-k_ju_j}v_j^2+\bigl(v^\top\nabla H(u)\bigr)^2\right]\le0.
+\]
+This analytic identity proves concavity, independently of the probability interpretation. Existence follows by continuity/compactness; strict concavity holds on the feasible set when distinct feasible allocations cannot differ only along zero-weight coordinates. Stationarity of the equivalent objective $H$ gives $W_jk_je^{-k_ju_j}=\lambda c_j$ for positive-weight interior channels; the lower-bound clip and budget multiplier are correct.
+
+\textbf{New quantization result.} On a static feasible region with entrywise nonnegative capacity matrix $A$ and $c_j>0$, rounding $u_j^*$ down to $m_j+q_j\lfloor(u_j^*-m_j)/q_j\rfloor$ preserves feasibility, because the resource inequalities are monotone. Since $0\le\partial_jF\le W_jk_j$, the objective loss is no more than $\sum_j W_jk_jq_j$. This is a genuine mathematical addition to the repaired manuscript, but is not a general rounding theorem for arbitrary $A$ or an adaptive scheduler guarantee.
+
+\textbf{Finite reproducibility checks (not AMLD experiments).} An accompanying deterministic script checked all 8 evidence triples; 5,000 random Hessians and finite-difference gradients (largest numerical Hessian eigenvalue $1.7\times10^{-16}$, consistent with roundoff); 3,000 event-share conservation examples; 4,000 monotone-feasibility rounding instances; 4,000 finite-set $2\varepsilon$ comparisons; and 1,000 contradiction-Hessian examples. All checks passed. The mathematical proofs, not this sampling, establish the universal statements.
+
+\section*{4. What the repairs do not settle}
+\begin{enumerate}[label=\textbf{R\arabic*.},leftmargin=2.6em,itemsep=3pt]
+\item \textbf{Calibration and predictive validity: OPEN.} The map $\mathcal K_x$ has not been fitted and independently evaluated on predeclared held-out AMLD tasks. The optimized value is a valid \emph{surrogate} regardless of empirical fit, not an established success rate.
+\item \textbf{Joint event law and deduplication implementation: OPEN.} Credit shares conserve attribution in the declared ledger. They do not prove independent opportunity arrival streams, handle every correlated reuse phenomenon, or implement canonical event equivalence in an actual system.
+\item \textbf{Class-specific probabilities: NOT CLAIMED.} Only aggregate terminal settlement probability is conditionally modeled. A sound joint model for $P,R,I,K$ needs an additional event structure and consistency constraints. In particular known-consistent sound $T$ precludes genuine $K$ outcomes.
+\item \textbf{Actual discrete/adaptive performance: OPEN.} The static quantization theorem does not include policy-dependent future states, random verifier/communication overhead, early stopping, or coefficient refitting. Separate approved experimentation would be needed.
+\item \textbf{Historical-source identity: NOT VERIFIED.} The original six-page predecessor was not part of the supplied regenerated ZIP; preservation of the predecessor's \emph{historical text} cannot be independently certified. The regenerated ZIP itself and its original 19-section order are the reproducible comparison baseline.
+\end{enumerate}
+
+\section*{5. Final release recommendation}
+\textbf{ATLAS recommendation: PASS for a carefully labeled conditional mathematical modeling paper.} The prior audit's four high-priority clarification gaps have been repaired \emph{at the manuscript level}: probability is expressly conditional, accounting is auditable, class-specific claims are withheld, and static-to-discrete scope is delimited with a theorem. No fatal inconsistency was found on re-audit. The paper should \emph{not} be described as a validated AMLD optimizer, a statistically calibrated settlement forecaster, a proven dynamic controller, or experimental evidence of proof-discovery gains. No executable or experiment changes were authorized or made.
+
+\end{document}
