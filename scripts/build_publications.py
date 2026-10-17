@@ -12,9 +12,11 @@ def url(s):return '/pub/'+quote(s,safe='/._-')
 def shell(title,body,canonical=''):
  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(title)+'</title>'+('<link rel="canonical" href="https://btenneson.github.io'+url(canonical)+'">' if canonical else '')+'<link rel="stylesheet" href="/pub/publications.css"></head><body>'+body+'</body></html>\n'
 def quote_block(x):
- if not x.get('quote'):return ''
- attribution=x.get('quote_attribution') or (f"{x['authors']} · p. {x['quote_page']}" if x.get('quote_page') else x['authors'])
- return '<blockquote><p>“'+esc(x['quote'])+'”</p><cite>'+esc(attribution)+'</cite></blockquote>'
+ if not x.get('quote') and not x.get('card_quote'):return ''
+ editorial=bool(x.get('card_quote'))
+ shown=x.get('card_quote') if editorial else x['quote']
+ attribution=(x.get('card_quote_attribution') or 'Editorial publication card') if editorial else (x.get('quote_attribution') or (f"{x['authors']} · p. {x['quote_page']}" if x.get('quote_page') else x['authors']))
+ return '<blockquote><p>“'+esc(shown)+'”</p><cite>'+esc(attribution)+'</cite></blockquote>'
 def links(x,reader=False):
  result='<a href="'+url(x['href'])+'">Read</a>' if not reader else '<a href="/pub/">All publications</a><a href="'+url(x['subject']+'/')+'">Subject</a>'
  if x.get('pdf'):
