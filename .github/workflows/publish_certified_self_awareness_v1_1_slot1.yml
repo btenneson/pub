@@ -1,0 +1,155 @@
+name: Publish Certified Self-Awareness v1.1 in slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/certified_self_awareness_utility_v1_1/source.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-certified-self-awareness-slot1
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install document build and audit dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-pictures lmodern pandoc zip
+          python -m pip install pymupdf==1.26.4
+
+      - name: Build immutable source-derived PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC='incoming_publications/certified_self_awareness_utility_v1_1'
+          WORK='.build/certified_self_awareness_v1_1'
+          mkdir -p "$WORK"
+          cp "$SRC/source.tex" "$WORK/Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.tex"
+          cp "$SRC/ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.md" "$WORK/ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.md"
+          cd "$WORK"
+          pdflatex -interaction=nonstopmode -halt-on-error Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.tex
+          pdflatex -interaction=nonstopmode -halt-on-error Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.tex
+          pandoc ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.md -o ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.pdf --pdf-engine=pdflatex
+          test -s Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.pdf
+          test -s ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.pdf
+          zip -q Certified_Self_Awareness_v1_1_Repaired_ATLAS2_Package.zip \
+            Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.tex \
+            Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.pdf \
+            ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.md \
+            ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.pdf
+
+      - name: Register slot 1, validate and stage stable publication paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import fitz
+          import hashlib
+          import json
+          import re
+          import shutil
+          from pathlib import Path
+          work = Path('.build/certified_self_awareness_v1_1')
+          rel = 'cs.LO_Logic_in_Computer_Science/certified_self_awareness_utility_in_atps_v1_1'
+          pub = Path(rel)
+          docs = Path('docs') / rel
+          pub.mkdir(parents=True, exist_ok=True)
+          docs.mkdir(parents=True, exist_ok=True)
+          fname = 'Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.pdf'
+          raw_pdf = (work / fname).read_bytes()
+          doc = fitz.open(stream=raw_pdf, filetype='pdf')
+          assert len(doc) == 17, f'Unexpected page count: {len(doc)}'
+          assert all(p.get_text().strip() for p in doc), 'At least one PDF page has no text'
+          first = re.sub(r'\s+', ' ', doc[0].get_text())
+          assert 'Certified Self-Awareness as an' in first
+          quote = 'None implies an unconditional speedup.'
+          assert quote in first, 'The audit quote was lost in the rebuild'
+          for filename in [
+              fname,
+              'Certified_Self_Awareness_Utility_in_ATPs_v1_1_Repaired.tex',
+              'ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.pdf',
+              'ATLAS_Second_Audit_Certified_Self_Awareness_v1_1.md',
+              'Certified_Self_Awareness_v1_1_Repaired_ATLAS2_Package.zip'
+          ]:
+              dest = docs / ('source.tex' if filename.endswith('.tex') else filename)
+              shutil.copyfile(work / filename, dest)
+          shutil.copyfile(work / fname, pub / fname)
+          assert (pub / fname).read_bytes() == (docs / fname).read_bytes()
+          digest = hashlib.sha256(raw_pdf).hexdigest()
+          catalog = Path('scripts/publications.json')
+          data = json.loads(catalog.read_text(encoding='utf-8'))
+          original = [x for x in data['items'] if x.get('id') != rel]
+          minimum_order = min([x.get('order') for x in original if isinstance(x.get('order'), int)] + [0])
+          item = {
+              'title': 'Certified Self-Awareness as an Instrument of Automated Theorem Proving',
+              'kind': 'Working research note',
+              'subject': 'cs.LO_Logic_in_Computer_Science',
+              'id': rel,
+              'href': rel + '/',
+              'pdf': rel + '/' + fname,
+              'archive_path': rel + '/' + fname,
+              'sha256': digest,
+              'pages': 17,
+              'order': minimum_order - 1,
+              'authors': 'Research direction: Brian Tenneson; technical drafting assistance: ChatGPT',
+              'quote': quote,
+              'quote_page': 1,
+              'quote_attribution': 'Research note · abstract',
+              'card_quote': 'A prover’s self-knowledge becomes scientifically useful when it can be certified—and tested against results.',
+              'card_quote_attribution': 'Editorial publication-card quotation',
+              'quote_also_on_card': True,
+              'card_text': 'Can a theorem prover benefit from verified information about its own reasoning—even when it is not trapped in a search basin? This repaired 17-page research note develops five conditional mathematical propositions, distinguishes self-description from operational improvement, and specifies a future controlled test. An ATLAS second audit is included; no new experiment or speedup is claimed.',
+              'status': 'ATLAS SECOND-AUDITED WORKING RESEARCH NOTE — October 16, 2026. Conditional mathematical pass; five open conjectures; no executed experiment, measured ATP acceleration, independent peer review, or new protocol authorization.',
+              'classification_note': 'Repaired v1.1, 17 pages. Source and second ATLAS audit available in the download package. Proposed fifth receipt-blind comparison remains unapproved and is not an experimental protocol change.',
+              'source': rel + '/source.html',
+              'source_file': rel + '/source.tex',
+              'source_package': rel + '/Certified_Self_Awareness_v1_1_Repaired_ATLAS2_Package.zip'
+          }
+          data['items'] = [item] + original
+          catalog.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(f'Registered slot 1: {rel}; sha256={digest}; pages={len(doc)}')
+          PY
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rel = 'cs.LO_Logic_in_Computer_Science/certified_self_awareness_utility_in_atps_v1_1'
+          catalog = json.loads(Path('docs/search-index.json').read_text())
+          assert catalog['items'][0]['id'] == rel
+          card = Path('docs/index.html').read_text().split('<article class="card"', 1)[1].split('</article>', 1)[0]
+          assert 'Certified Self-Awareness as an Instrument' in card
+          assert 'Download PDF' in card and 'Download Source + PDF ZIP' in card
+          reader = (Path('docs') / rel / 'index.html').read_text()
+          assert 'pdf-reader.html?file=' in reader
+          assert 'Download Source + PDF ZIP' in reader
+          print('PASS: new publication is first card, with working reader, PDF and package links')
+          PY
+
+      - name: Commit publication and rebuilt catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs "cs.LO_Logic_in_Computer_Science/certified_self_awareness_utility_in_atps_v1_1"
+          if git diff --cached --quiet; then
+            echo 'Publication already current.'
+          else
+            git commit -m 'Publish certified self-awareness v1.1 as library card 1'
+            git push origin HEAD:main
+          fi
