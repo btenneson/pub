@@ -1,0 +1,132 @@
+name: Publish Half a Proof in slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/half_proof_comparison_0_3/source.tex.gz.b64'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-half-proof-comparison-0-3
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX and PDF checks
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install -q pymupdf==1.26.4
+      - name: Reconstruct reviewed source, compile and stage publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .build/half_proof_comparison_0_3
+          python - <<'PY'
+          from pathlib import Path
+          import base64,gzip
+          root=Path('incoming_publications/half_proof_comparison_0_3')
+          payload=(root/'source.tex.gz.b64').read_text().strip()
+          src=gzip.decompress(base64.b64decode(payload))
+          assert src.startswith(b'\\documentclass')
+          (root/'source.tex').write_bytes(src)
+          (Path('.build/half_proof_comparison_0_3')/'Half_Proof_Comparison_0_3.tex').write_bytes(src)
+          print('Decoded source bytes:',len(src))
+          PY
+          (cd .build/half_proof_comparison_0_3 && pdflatex -interaction=nonstopmode -halt-on-error Half_Proof_Comparison_0_3.tex >/dev/null && pdflatex -interaction=nonstopmode -halt-on-error Half_Proof_Comparison_0_3.tex >/dev/null)
+          python - <<'PY'
+          from pathlib import Path
+          import fitz,hashlib,json,shutil,zipfile
+          rel='cs.LO_Logic_in_Computer_Science/half_a_proof_the_rest_in_its_own_words_0_3'
+          name='Half_Proof_Comparison_0_3'
+          incoming=Path('incoming_publications/half_proof_comparison_0_3')
+          pdf=Path('.build/half_proof_comparison_0_3')/(name+'.pdf')
+          src=incoming/'source.tex'
+          raw=pdf.read_bytes()
+          doc=fitz.open(stream=raw,filetype='pdf')
+          assert len(doc)==7, f'Expected 7 pages, got {len(doc)}'
+          assert all(page.get_text().strip() for page in doc)
+          alltext=' '.join(page.get_text() for page in doc)
+          for key in ['Half a Proof','The Rest in Its Own Words','Reader','Blindness']:
+              assert key.lower() in alltext.lower(), f'Missing text: {key}'
+          dest=Path('docs')/rel
+          archive=Path(rel)
+          dest.mkdir(parents=True,exist_ok=True)
+          archive.mkdir(parents=True,exist_ok=True)
+          shutil.copyfile(pdf,dest/(name+'.pdf'))
+          shutil.copyfile(pdf,archive/(name+'.pdf'))
+          shutil.copyfile(src,dest/'source.tex')
+          shutil.copyfile(src,archive/'source.tex')
+          files=[(pdf,name+'.pdf'),(src,'source.tex')]
+          for file in ['candidate_proof.tex','Exact_Addressing_3_3_2_Capstone_Section_15.tex','verify_metrics.py','README_0_3.md']:
+              p=incoming/file
+              if p.exists():
+                  files.append((p,file))
+          with zipfile.ZipFile(dest/(name+'_Source_Package.zip'),'w',compression=zipfile.ZIP_DEFLATED) as z:
+              for path,arc in files:
+                  z.write(path,arc)
+          cat=Path('scripts/publications.json')
+          data=json.loads(cat.read_text(encoding='utf-8'))
+          rest=[x for x in data['items'] if x.get('id')!=rel]
+          order=min([x['order'] for x in rest if isinstance(x.get('order'),int)]+[0])-1
+          item={
+            'title':'Half a Proof, the Rest in Its Own Words',
+            'kind':'Research note','subject':'cs.LO_Logic_in_Computer_Science',
+            'id':rel,'href':rel+'/','pdf':rel+'/'+name+'.pdf',
+            'archive_path':rel+'/'+name+'.pdf',
+            'source':rel+'/source.html','source_file':rel+'/source.tex',
+            'source_package':rel+'/'+name+'_Source_Package.zip',
+            'sha256':hashlib.sha256(raw).hexdigest(),
+            'sha256_tex':hashlib.sha256(src.read_bytes()).hexdigest(),
+            'pages':7,'order':order,
+            'authors':'Research direction and original theorem: Brian Tenneson; reconstruction and comparative analysis: DATA MIND / ChatGPT',
+            'quote':'The Rest in Its Own Words','quote_page':1,
+            'card_quote':'Half the proof was given; the rest came back in its own words.',
+            'card_quote_attribution':'Editorial publication-card quotation · October 2026',
+            'quote_also_on_card':True,
+            'card_text':'A 50% proof-prefix experiment on the Exact Addressing 3.3.2 capstone. An in-chat candidate reconstruction completed the expected-cost argument and followed the same essential strategy as the original. This seven-page comparison details differences in length, clarity and ingenuity, while identifying the limits of blind and formally verified claims.',
+            'status':'PUBLISHED RESEARCH NOTE — October 18, 2026. Mathematical candidate reconstruction; neither blind discovery nor independent AMLD+0 certification was established.',
+            'classification_note':'Version 0.3, seven pages. Original 395 tokens versus reconstructed 515; 197 visible source tokens. Explicit six-point comparison. No independent verifier receipt or authenticated six-agent runtime.'
+          }
+          data['items']=[item]+rest
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('Staged',rel,'order',order,'PDF SHA',item['sha256'])
+          PY
+      - name: Rebuild and check library in slot 1
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rel='cs.LO_Logic_in_Computer_Science/half_a_proof_the_rest_in_its_own_words_0_3'
+          cards=json.loads(Path('docs/search-index.json').read_text())['items']
+          assert cards[0]['id']==rel,'First card not new publication'
+          html=Path('docs/index.html').read_text()
+          first=html.split('<article class="card"',1)[1].split('</article>',1)[0]
+          assert 'Half a Proof, the Rest in Its Own Words' in first
+          assert 'Half the proof was given;' in first
+          assert 'Download PDF' in first and 'Source + PDF ZIP' in first
+          assert (Path('docs')/rel/'index.html').is_file()
+          print('PASS: new publication is slot 1 with working source/PDF/ZIP paths')
+          PY
+      - name: Commit publication artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.LO_Logic_in_Computer_Science/half_a_proof_the_rest_in_its_own_words_0_3
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Half a Proof in library slot 1'
+            git push origin HEAD:main
+          fi
