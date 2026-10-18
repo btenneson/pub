@@ -1,0 +1,76 @@
+\medskip\noindent\textbf{T1 and T2: Exact proof transport (from the disclosed prefix).}
+Let $\pi=(\pi_1,\ldots,\pi_k)$ be a valid finite $F$-proof of $\varphi$ from $\Gamma$.
+Hypothesis H1 carries each hypothesis line and each legal inference to a valid corresponding
+line in $F^t$. It follows that $t(\pi)$ is an $F^t$-proof of $t(\varphi)$ from $t[\Gamma]$
+with exactly $k$ lines. The inverse recoding gives the reverse implication and has the
+same length-preserving property. Consequently theoremhood is preserved and the attainable
+proof-length sets agree, including when no proof exists. Their minima and all exact layers
+therefore agree. This proves T1 and T2.
+
+\medskip\noindent\textbf{T3: Certified eventual emission (from the disclosed prefix).}
+Fix a provable target $\varphi$ and a finite valid proof code $c$. By H3, the exhaustive
+code enumeration assigns $c$ a finite position $j$. The protected enumerator receives
+sufficient recurring service to reach position $j$ at a finite stage, unless an earlier
+successful halt has already established emission. H2 recognizes $c$ as valid, and the
+specified emission mechanism records it. Thus the required finite certificate and emission
+stage exist. No successful guidance heuristic is required. This proves T3 under H2--H3.
+
+\medskip\noindent\textbf{T4: Conditional candidate-rank calculation (new continuation).}
+Fix a benchmark task $i$ and abbreviate $g=g_i$ and $p=p_i$. Because the baseline
+uses a uniformly random order on $N$ candidates, its single accepting candidate has
+uniform rank, so
+\[
+\mathbb E[R_{\mathsf B,i}]=\frac{N+1}{2}.
+\]
+For guided search, condition on whether the accepting certificate belongs to the target-blind
+neighborhood $G_i$ of size $g$. If it belongs, its conditional expected rank is $(g+1)/2$.
+If it does not, the guided method first examines and rejects all $g$ neighborhood
+candidates, then encounters the accepting candidate at an expected rank $(N-g+1)/2$
+within the complement. Therefore its overall rank is
+\begin{align*}
+\mathbb E[R_{\mathsf H,i}]
+ &=p\frac{g+1}{2}+(1-p)\left(g+\frac{N-g+1}{2}\right)\\
+ &=\frac{N+g+1-pN}{2}.
+\end{align*}
+Subtracting this from the baseline expectation yields
+\[
+\mathbb E[R_{\mathsf B,i}-R_{\mathsf H,i}]
+=\frac{p_iN-g_i}{2}\ge\frac{p_0N-g_0}{2},
+\]
+where the last inequality uses $p_i\ge p_0$ and $g_i\le g_0$.
+By linearity of expectation, the gross rank saving on $q$ tasks is at least
+$q(p_0N-g_0)/2$, whether or not the tasks are independent.
+Under the common charged comparison model H6, identical common costs cancel only
+if they were genuinely incurred equally. H5 charges the additional guided work and bounds it by
+\[
+D_q\le a_0NL_N+q[(a_1\beta_0\Delta_0+a_2g_0)L_N+a_3].
+\]
+Subtracting this upper bound from the expected gross benefit establishes
+\begin{equation}\label{eq:maincandidate}
+\mathbb E[C_{\mathsf B}-C_{\mathsf H}]
+\ge\frac q2(p_0N-g_0)-a_0NL_N
+-q[(a_1\beta_0\Delta_0+a_2g_0)L_N+a_3].
+\end{equation}
+When the right side is positive, the guided method has strictly smaller expected
+fully charged cost. This is precisely T4.
+
+\medskip\noindent\textbf{Amortized threshold (new continuation).}
+Set $A=a_1\beta_0\Delta_0+a_2g_0$ and $L=L_N=\lceil\log_2(N+1)\rceil$.
+The right side of \eqref{eq:maincandidate} becomes
+\[
+q\left[\frac{p_0N-g_0}{2}-AL-a_3\right]-a_0NL.
+\]
+Write $b_N=(p_0N-g_0)/2-AL-a_3$. Since $p_0>0$ and the other parameters are fixed,
+$b_N=(p_0/2)N-O(\log N)$, so $b_N>0$ for all sufficiently large $N$.
+For $q\ge KL$ with $K>2a_0/p_0$, we may therefore bound the expression below by
+\begin{align*}
+KLb_N-a_0NL
+&=L\left[K\left(\frac{p_0N-g_0}{2}-AL-a_3\right)-a_0N\right]\\
+&=L\left[\left(\frac{Kp_0}{2}-a_0\right)N
+-KAL-\frac{Kg_0}{2}-Ka_3\right].
+\end{align*}
+The coefficient $(Kp_0/2-a_0)$ is strictly positive, while $L=O(\log N)$;
+therefore the positive linear term eventually dominates the logarithmic and
+constant terms. Choose $N_0$ large enough that the bracket and $b_N$
+are positive for all $N\ge N_0$. The lower bound is then strictly positive
+for every integer $q\ge KL_N$. This proves the asymptotic assertion. \qedhere
