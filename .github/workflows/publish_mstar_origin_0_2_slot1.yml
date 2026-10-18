@@ -1,0 +1,133 @@
+name: Publish M-star origin account in slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/mstar_origin_0_2/source.tex'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-mstar-origin-0-2
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF build and validation tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install -q pymupdf==1.26.4
+      - name: Compile M-star note and prepare slot-1 catalog entry
+        shell: bash
+        run: |
+          set -euo pipefail
+          INCOMING=incoming_publications/mstar_origin_0_2
+          mkdir -p .build/mstar_origin_0_2
+          cp "$INCOMING/source.tex" .build/mstar_origin_0_2/Mstar_Rhetorical_Fixed_Point_0_2.tex
+          (
+            cd .build/mstar_origin_0_2
+            pdflatex -interaction=nonstopmode -halt-on-error Mstar_Rhetorical_Fixed_Point_0_2.tex >/dev/null
+            pdflatex -interaction=nonstopmode -halt-on-error Mstar_Rhetorical_Fixed_Point_0_2.tex >/dev/null
+          )
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,shutil,fitz,zipfile
+          root=Path('.')
+          rel='cs.LO_Logic_in_Computer_Science/how_mstar_was_identified_and_found_0_2'
+          src=Path('incoming_publications/mstar_origin_0_2/source.tex')
+          pdf=Path('.build/mstar_origin_0_2/Mstar_Rhetorical_Fixed_Point_0_2.pdf')
+          raw=pdf.read_bytes()
+          doc=fitz.open(stream=raw,filetype='pdf')
+          assert len(doc)==9, f'Expected 9 pages, received {len(doc)}'
+          assert all(pg.get_text().strip() for pg in doc), 'Unrendered page found'
+          text=' '.join(pg.get_text() for pg in doc)
+          for phrase in ['How M','Was Identified','Rhetorical fixed point','Notation and reading key']:
+              assert phrase.lower() in text.lower(), f'Missing content: {phrase}'
+          quote='The answer distinguished the seeing from the building.'
+          assert quote in doc[8].get_text(), 'Card quotation absent from cited page 9'
+          dest=Path('docs')/rel
+          archive=Path(rel)
+          for d in (dest,archive):
+              d.mkdir(parents=True,exist_ok=True)
+              shutil.copyfile(pdf,d/'Mstar_Rhetorical_Fixed_Point_0_2.pdf')
+              shutil.copyfile(src,d/'source.tex')
+          pkg=dest/'Mstar_Rhetorical_Fixed_Point_0_2_Source_and_PDF.zip'
+          with zipfile.ZipFile(pkg,'w',compression=zipfile.ZIP_DEFLATED) as z:
+              z.write(pdf,'Mstar_Rhetorical_Fixed_Point_0_2.pdf')
+              z.write(src,'source.tex')
+          cat=Path('scripts/publications.json')
+          data=json.loads(cat.read_text(encoding='utf-8'))
+          original=[x for x in data['items'] if x.get('id')!=rel]
+          order=min([x['order'] for x in original if isinstance(x.get('order'),int)]+[0])-1
+          item={
+            'title':'How M* Was Identified and Found',
+            'kind':'Research note',
+            'subject':'cs.LO_Logic_in_Computer_Science',
+            'id':rel,'href':rel+'/',
+            'pdf':rel+'/Mstar_Rhetorical_Fixed_Point_0_2.pdf',
+            'archive_path':rel+'/Mstar_Rhetorical_Fixed_Point_0_2.pdf',
+            'source':rel+'/source.html',
+            'source_file':rel+'/source.tex',
+            'source_package':rel+'/Mstar_Rhetorical_Fixed_Point_0_2_Source_and_PDF.zip',
+            'sha256':hashlib.sha256(raw).hexdigest(),
+            'sha256_tex':hashlib.sha256(src.read_bytes()).hexdigest(),
+            'pages':9,'order':order,
+            'authors':'Brian Tenneson; analytical drafting assistance by OpenAI’s ChatGPT',
+            'quote':quote,'quote_page':9,
+            'card_quote':'The answer distinguished the seeing from the building.',
+            'card_quote_attribution':'Brian Tenneson, How M* Was Identified and Found · p. 9',
+            'quote_also_on_card':True,
+            'card_text':'How Brian Tenneson found the idea behind the M* automated theorem prover: he recognized that nested layers of theorems organized by minimum certified proof cost could be viewed as an SIC-like history. This nine-page recursive account defines the notation, explains why the original (S_n,n) observation was structurally close but not a fully typed SIC, and traces the subsequent construction toward board-guided, verifier-gated M*. It records the origin of the proposed ATP, not a claim that a general-purpose implementation is complete.',
+            'status':'RESEARCH ORIGIN NOTE — October 18, 2026. A personal mathematical discovery account; general M* ATP implementation and universal efficiency remain unestablished.',
+            'classification_note':'Notation-explicit explanatory note version 0.2; nine pages. Historical reconstruction and rhetorical fixed point, not a verbatim transcript or independent ATP certification.'
+          }
+          data['items']=[item]+original
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          assert [x['id'] for x in data['items'][1:]]==[x['id'] for x in original], 'Existing card sequence changed'
+          print('New slot-1 publication:', rel)
+          PY
+      - name: Build and check slot 1
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          import fitz
+          rel='cs.LO_Logic_in_Computer_Science/how_mstar_was_identified_and_found_0_2'
+          idx=json.loads(Path('docs/search-index.json').read_text())
+          assert idx['items'][0]['id']==rel, 'Catalog slot 1 is not M*'
+          html=Path('docs/index.html').read_text()
+          first=html.split('<article class="card"',1)[1].split('</article>',1)[0]
+          assert 'How M* Was Identified and Found' in first
+          assert 'How Brian Tenneson found the idea' in first
+          assert 'The answer distinguished the seeing from the building.' in first
+          assert 'Download PDF' in first and 'Source' in first
+          folder=Path('docs')/rel
+          p=folder/'Mstar_Rhetorical_Fixed_Point_0_2.pdf'
+          assert p.is_file() and len(fitz.open(p))==9
+          assert (folder/'source.tex').is_file()
+          assert (folder/'index.html').is_file()
+          assert (folder/'Mstar_Rhetorical_Fixed_Point_0_2_Source_and_PDF.zip').is_file()
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==idx['items'][0]['sha256']
+          print('PASS: slot 1, source, PDF, reader, quote, and existing card order')
+          PY
+      - name: Commit public reader, PDF, source and catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.LO_Logic_in_Computer_Science/how_mstar_was_identified_and_found_0_2
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish how M-star was identified and found in slot 1'
+            git push origin HEAD:main
+          fi
