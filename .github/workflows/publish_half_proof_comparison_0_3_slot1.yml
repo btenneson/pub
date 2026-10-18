@@ -39,6 +39,7 @@ jobs:
           assert src.startswith(b'\\documentclass')
           (root/'source.tex').write_bytes(src)
           (Path('.build/half_proof_comparison_0_3')/'Half_Proof_Comparison_0_3.tex').write_bytes(src)
+          (Path('.build/half_proof_comparison_0_3')/'candidate_proof.tex').write_bytes((root/'candidate_proof.tex').read_bytes())
           print('Decoded source bytes:',len(src))
           PY
           (cd .build/half_proof_comparison_0_3 && pdflatex -interaction=nonstopmode -halt-on-error Half_Proof_Comparison_0_3.tex >/dev/null && pdflatex -interaction=nonstopmode -halt-on-error Half_Proof_Comparison_0_3.tex >/dev/null)
