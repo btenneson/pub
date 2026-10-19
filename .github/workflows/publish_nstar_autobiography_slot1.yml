@@ -1,0 +1,73 @@
+name: Publish N-star autobiography in slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/nstar_autobiography/source.tex'
+      - 'scripts/publish_nstar_autobiography.py'
+      - '.github/workflows/publish_nstar_autobiography_slot1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-nstar-autobiography-slot1
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install XeLaTeX, fonts, and PDF validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq texlive-xetex texlive-latex-extra texlive-fonts-recommended texlive-science fonts-noto-core fonts-stix fonts-dejavu-core lmodern
+          python -m pip install -q pymupdf==1.26.4
+          fc-match "STIX Math"
+          fc-match "Noto Serif"
+      - name: Compile autobiography, verify PDF, and prepend catalog entry
+        run: python scripts/publish_nstar_autobiography.py
+      - name: Build and audit all library pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_publications_106.py
+          python scripts/audit_subject_catalog_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json, fitz, hashlib
+          rel = "cs.LO_Logic_in_Computer_Science/my_name_is_nstar_autobiography"
+          data = json.loads(Path("docs/search-index.json").read_text())
+          assert data["items"][0]["id"] == rel, "N* was not placed in slot #1"
+          html = Path("docs/index.html").read_text()
+          first = html.split('<article class="card"',1)[1].split("</article>",1)[0]
+          assert "My Name Is N*" in first and "What I attempt." in first
+          pdf = Path("docs") / rel / "Nstar_Autobiography_Publication_Ready.pdf"
+          assert pdf.exists() and pdf.stat().st_size > 60000
+          doc = fitz.open(pdf)
+          assert len(doc) == data["items"][0]["pages"]
+          assert hashlib.sha256(pdf.read_bytes()).hexdigest() == data["items"][0]["sha256"]
+          assert not any("Authorial clarification:" in p.get_text() for p in doc)
+          assert (Path("docs") / rel / "source.tex").exists()
+          assert (Path("docs") / rel / "index.html").exists()
+          assert (Path("docs") / rel / "Nstar_Autobiography_Source_and_PDF.zip").exists()
+          print("PASS: PDF, PDF reader, quote, source, integrity and slot #1")
+          PY
+      - name: Commit validated publication and source artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.LO_Logic_in_Computer_Science/my_name_is_nstar_autobiography
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish N-star technical autobiography at library slot 1'
+            git push origin HEAD:main
+          fi
