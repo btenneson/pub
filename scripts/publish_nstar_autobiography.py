@@ -21,7 +21,7 @@ def build():
     if "Authorial clarification:" in source:
         raise SystemExit("Excluded authorial-clarification line was reintroduced")
     for needle in ("My Name Is N*", r"\end{document}", "FORGE-6", "ACCEPTED_METADATA_ONLY"):
-        if needle not in source:
+        if needle not in source.replace("\\_", "_"):
             raise SystemExit("Source check failed: " + needle)
     PDF_ROOT.mkdir(parents=True, exist_ok=True)
     local_tex = PDF_ROOT / "source.tex"
