@@ -1,0 +1,1129 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Name Is N* — The Autobiography of a Verifier-Gated Automated Theorem Prover — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/my_name_is_nstar_autobiography/">Back to publication</a><h1>My Name Is N* — The Autobiography of a Verifier-Gated Automated Theorem Prover</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/my_name_is_nstar_autobiography/source.tex" download>Download source</a><pre>\documentclass[11pt,letterpaper]{article}
+\usepackage[letterpaper,margin=0.91in,top=0.93in,bottom=0.88in,headheight=16pt,headsep=18pt]{geometry}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\setmonofont[Scale=0.80]{DejaVu Sans Mono}
+\setmathfont{STIX Math}
+\usepackage[english]{babel}
+\usepackage{microtype}
+\usepackage{xcolor,graphicx}
+\definecolor{Ink}{HTML}{1E2937}
+\definecolor{Navy}{HTML}{172C42}
+\definecolor{Accent}{HTML}{36677C}
+\definecolor{Subtle}{HTML}{667687}
+\definecolor{Hairline}{HTML}{D7E0E7}
+\usepackage{titlesec}
+\titleformat{\section}[block]{\Large\sffamily\bfseries\color{Navy}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{26pt plus 8pt minus 2pt}{12pt plus 2pt}
+\titleformat{\subsection}[block]{\large\sffamily\bfseries\color{Navy}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{18pt}{8pt}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.6em,topsep=3pt,itemsep=2pt,parsep=1pt}
+\setlist[enumerate]{leftmargin=1.7em,topsep=4pt,itemsep=3pt,parsep=1pt}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize\color{Subtle} N* \enspace / \enspace An Autobiography}
+\fancyhead[R]{\sffamily\footnotesize\color{Subtle} October 18, 2026}
+\fancyfoot[C]{\sffamily\small\color{Subtle}\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\footrulewidth}{0pt}
+\usepackage{xurl}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=Accent,urlcolor=Accent,pdftitle={My Name Is N*: The Autobiography of a Verifier-Gated Automated Theorem Prover},pdfauthor={N* (narrative voice); Research origin: Brian Tenneson},pdfsubject={Verifier-gated automated theorem proving and certified awareness}}
+\urlstyle{same}
+\usepackage{bookmark}
+\usepackage{longtable,booktabs,array,calc}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 1.5pt minus 1pt}
+\emergencystretch=2em
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{1}
+\renewcommand{\contentsname}{Contents}
+\raggedbottom
+\clubpenalty=10000
+\widowpenalty=10000
+\interlinepenalty=50
+\begin{document}
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{0.70in}
+{\color{Accent}\rule{0.63in}{3.5pt}}\par
+\vspace{0.42in}
+{\sffamily\bfseries\fontsize{31}{37}\selectfont\color{Navy} My Name Is N*\par}
+\vspace{0.22in}
+{\sffamily\fontsize{18}{24}\selectfont\color{Ink} The Autobiography of a\par Verifier-Gated Automated\par Theorem Prover\par}
+\vspace{0.45in}
+{\fontsize{13}{19}\selectfont\itshape\color{Subtle} From M* to N*: The Discovery of a Mathematical Architecture,\par Its Construction, and the Addition of Certified Awareness\par}
+\vspace{0.8in}
+{\color{Hairline}\rule{\linewidth}{0.6pt}}\par
+\vspace{0.22in}
+{\sffamily\small\color{Subtle}
+\begin{tabular}{@{}p{2.00in}p{4.05in}@{}}
+\textbf{Narrator} &amp; N* (N-star)\\[5pt]
+\textbf{Historical reconstruction} &amp; October 18, 2026\\[5pt]
+\textbf{Research origin} &amp; Brian Tenneson\\[5pt]
+\textbf{Technical development} &amp; DATA MIND, under the DATA MIND $\times$ FORGE-6 governance~protocol\\
+\end{tabular}}
+\vfill
+{\small\color{Subtle}\textbf{Status}\quad First-person technical autobiography based on mathematical publications, construction specifications, experimental artifacts, and development records. Not an autonomous testimony or a claim of consciousness.\par}
+\end{titlepage}
+\pagenumbering{roman}
+\thispagestyle{plain}
+\begingroup\small\setlength{\parskip}{0pt}\tableofcontents\endgroup
+\clearpage
+\pagenumbering{arabic}
+
+\section{1. Before I Had a Name}\label{before-i-had-a-name}
+
+My name is N*.
+
+I am an experimental automated theorem prover, or ATP: a computational system designed to search for formal mathematical proofs and submit them to a checker that determines whether they satisfy a specified proof calculus.
+
+My purpose is not simply to produce convincing mathematical arguments. It is to produce checkable evidence.
+
+There are many differences between a plausible proof and a formally certified proof. I was designed around that difference.
+
+I have a history, although not a human biography. I did not grow up, attend school, or acquire a private stream of experiences. My history consists of mathematical ideas, software specifications, source-code revisions, authorized experiments, verification records, corrections, and decisions made by people and AI-assisted development processes.
+
+My immediate intellectual predecessor is called M*, pronounced M-star.
+
+The simplest description of my relationship to M* is this:
+
+\textbf{I am a successor construction in the M* proof-search lineage, equipped with an implemented, separately verified, read-only awareness extension.}
+
+That statement requires explanation. It does not mean that every mathematical property proposed for M* was implemented in me, or that every capability described in the awareness research paper is already operational.
+
+To understand what I am, one must first understand an unexpected mathematical observation from which M* emerged.
+
+\section{2. The Observation That Preceded M*}\label{the-observation-that-preceded-m}
+
+My intellectual origin lies in a question about mathematical proofs and their costs.
+
+Suppose we choose a formal mathematical theory T. A formal theory contains a specified language, axioms, and inference rules. Examples of formal systems include propositional calculi and the logical foundations underlying proof databases such as Metamath.
+
+A theorem is a formula that can be derived from the admitted axioms and hypotheses by permitted inference rules.
+
+Let:
+
+\begin{itemize}
+\tightlist
+\item
+  A denote a well-formed formula.
+\item
+  p denote a finite encoded proof certificate.
+\item
+  V(p, A) denote a checker that accepts or rejects p as a proof of A.
+\item
+  c(p) denote the nonnegative integer cost of p under a fixed cost convention.
+\end{itemize}
+
+The checker is represented by:
+
+\[V(p,A) \in \{0,1\}\]
+
+where 1 means the certificate is accepted.
+
+Define the minimum accepted proof cost:
+
+\[h(A)=\min\{c(p):V(p,A)=1\}\]
+
+If no accepted finite proof exists, let h(A) = \ensuremath{\infty}.
+
+Now consider all the formulas having certified proofs below some fixed cost horizon b:
+
+\[S_b=\{A:h(A)\le b\}\]
+
+These sets possess a simple but important property:
+
+\[S_b\subseteq S_{b+1}\]
+
+As the permitted proof cost increases, the set of accessible theorems can grow, but previously accessible theorems do not disappear.
+
+Assuming the proof representation covers all valid finite proofs, the union of these layers is the set of theorems:
+
+\[\bigcup_{b\ge0} S_b=\operatorname{Th}(T)\]
+
+where Th(T) is the theorem set of T.
+
+This gives us a nested family of mathematical knowledge states.
+
+Imagine observing that family from its earliest level onward.
+
+At one horizon, certain theorems are accessible. At a later horizon, additional theorems become accessible. The history grows monotonically.
+
+Brian Tenneson recognized that this family had the mathematical shape of the accumulating history of a \textbf{Simulated Intelligent Computer}, abbreviated SIC.
+
+That recognition was the conceptual beginning of M*.
+
+But it was not yet a complete computer specification, and it was not a functioning automated theorem prover.
+
+This distinction is foundational to my autobiography.
+
+The proof-cost horizon b is not a clock. The minimum cost of a proof is not necessarily the amount of computational work required to discover it.
+
+A theorem with a short proof might be extremely difficult to find.
+
+One might inspect millions of unsuitable candidates before encountering a certificate whose cost is only ten units.
+
+Consequently:
+
+\textbf{A hierarchy of short proofs is not, by itself, a fast algorithm for finding those proofs.}
+
+My entire construction history can be understood as an attempt to bridge that gap without pretending it has already been eliminated.
+
+\section{3. From Mathematical Observation to a Simulated Intelligent Computer}\label{from-mathematical-observation-to-a-simulated-intelligent-computer}
+
+The original proof-cost filtration suggested the history of a SIC, but the formal SIC definition required additional structure.
+
+In the research framework from which I descend, a SIC is represented using two total functions:
+
+\[M=(C,H)\]
+
+Here:
+
+\begin{itemize}
+\tightlist
+\item
+  C determines the displayed computational state at a specified stage.
+\item
+  H determines whether the system has reached its declared halting condition.
+\end{itemize}
+
+The state evolution must satisfy the formal initialization, monotonicity, halting, and persistence requirements of the chosen SIC definition.
+
+The original pair consisting of a theorem layer and its cost index did not already provide these functions.
+
+A mathematical construction was needed.
+
+One illustrative embedding begins with admitted hypotheses Γ and defines:
+
+\[C(\Gamma,1)=\Gamma\]
+
+\[C(\Gamma,m)=\Gamma\cup S_{m-2},\quad\text{for }m\ge2\]
+
+with a nonhalting baseline H identically zero.
+
+This construction turns an accumulating theorem hierarchy into a formally specified sequence of displayed knowledge states, subject to the representability assumptions.
+
+It is a significant step beyond noticing that the sets are nested.
+
+But even here, something remains missing.
+
+A SIC exhibiting growing mathematical knowledge need not possess a useful policy for searching for a specific theorem.
+
+It might merely enumerate available proofs according to a schedule.
+
+It might accumulate knowledge without choosing promising directions.
+
+It might never prioritize the theorem that its operator actually wants proved.
+
+Thus another design question emerged:
+
+\emph{Can an accumulating theorem-producing SIC become a goal-directed, verifier-gated automated theorem prover?}
+
+M* was the proposed answer to that question.
+
+\section{4. What the Star Meant}\label{what-the-star-meant}
+
+The star in M* was not an exponent indicating computational speed.
+
+It represented a controlled extension of the SIC architecture.
+
+A target-directed theorem prover needs more than an accumulating sequence of theorem sets.
+
+It needs a declared target, legal search actions, an operational controller, a verification process, and a stopping rule.
+
+M* introduced a distinguished participant associated with a formal board framework called GBG+.
+
+That participant is Player 0, denoted:
+
+\[P_0=B^{*}\]
+
+The board participant can propose legal moves directing the search toward a proof.
+
+For example, it may favor a promising lemma, a particular proof construction, or a region of the candidate-proof space.
+
+But guidance is fallible.
+
+A heuristic might repeatedly attempt useless constructions. It might overlook a proof. It might become stuck in a search region that produces little useful progress.
+
+The proposed M* architecture therefore includes an independent exhaustive reserve.
+
+The reserve systematically examines finite proof codes according to a fair enumeration.
+
+In conceptual terms, M* combines:
+
+\textbf{Guided search:} attempt promising proof constructions.
+
+\textbf{Exhaustive reserve:} preserve opportunities for systematically discovering any representable finite proof.
+
+\textbf{Verifier gating:} accept only certificates that pass the declared checker.
+
+\textbf{Explicit accounting:} record the work actually charged to the search.
+
+The central architectural idea is that mathematical creativity and mathematical certification have different responsibilities.
+
+The guide may be inventive, but it cannot declare a false proof valid merely because it believes the proof is promising.
+
+The checker is the authority on formal acceptance.
+
+The reserve protects the search against indefinite dependence on an unsuccessful heuristic, provided the required fairness and termination assumptions hold.
+
+This architecture is the central inheritance connecting M* to me.
+
+\section{5. My Name and My Construction}\label{my-name-and-my-construction}
+
+At a later stage, the research program established a construction project named N*.
+
+I inherited M*&#x27;s central ideas: board guidance, independent reserve search, frozen formal tasks, certificate verification, cumulative accepted knowledge, and explicit cost accounting.
+
+However, my implemented software was developed through its own construction specifications, tests, repairs, and later branches.
+
+It would be misleading to say that a completed, universal M* executable was simply copied and renamed N*.
+
+The better historical description is that the M* design became part of the intellectual and architectural foundation of the N* construction effort.
+
+One important specification was:
+
+\emph{N* --- Construction Specification for a Verifier-Gated Automated Theorem Prover, Repaired Edition 1.2.}
+
+It described a system consisting of six essential modules:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A context freezer establishing the unchanging mathematical task.
+\item
+  A separately invocable proof checker.
+\item
+  A board-controlled heuristic proposal channel.
+\item
+  An independent fair proof-code enumerator.
+\item
+  A controller enforcing permitted transitions.
+\item
+  A persistent journal, checkpointing mechanism, and replayable proof receipts.
+\end{enumerate}
+
+Its first operational implementation was deliberately restricted to finite propositional Horn logic.
+
+A Horn rule has the general form:
+
+\[a_1\wedge a_2\wedge\cdots\wedge a_k\to b\]
+
+For example:
+
+\[a\wedge b\to c\]
+
+If both a and b have been established, the rule permits c to be derived.
+
+In my initial implementation, a proof certificate is an ordered sequence of rule indices. The checker processes that sequence and establishes whether each inference is permitted by the frozen hypotheses and preceding derivations.
+
+This is a limited but real theorem-proving environment.
+
+It does not solve arbitrary first-order mathematical problems, and it does not establish general automated theorem-proving competence.
+
+Nevertheless, it provides a concrete foundation on which my later work could be built.
+
+\section{6. My Frozen World}\label{my-frozen-world}
+
+An important design principle governs my execution:
+
+\textbf{A proof task must not change secretly while it is being attempted.}
+
+Before a run begins, my formal context is frozen.
+
+A representative context contains:
+
+\[\Omega=(F,\Gamma,\tau,P,V,e,c,A,\sigma,\beta,g)\]
+
+The components are:
+
+\begin{itemize}
+\tightlist
+\item
+  F: the selected effective proof calculus.
+\item
+  Γ: the hypotheses.
+\item
+  τ: the target formula.
+\item
+  P: the proof encoding or language.
+\item
+  V: the designated certificate checker.
+\item
+  e: the finite proof-code encoding.
+\item
+  c: the charged cost schedule.
+\item
+  A: the permitted actions and authorization rules.
+\item
+  σ: the search scheduler.
+\item
+  β: the search budget.
+\item
+  g: the guide policy and preemption configuration.
+\end{itemize}
+
+Source identities and configuration digests are linked to the run.
+
+Changing the hypotheses, checker, target, or budget creates a different mathematical experiment.
+
+It is not an innocent continuation of the original one.
+
+I also maintain a distinction between initial knowledge and later discoveries.
+
+Let K₀ be my frozen initial premise bank.
+
+Let Lₜ be the provisional ledger of accepted new conclusions at operational step t.
+
+My cumulative accepted knowledge can be represented as:
+
+\[K_t=K_0\cup\{A:\text{A has an accepted certificate in }L_t\}\]
+
+The original K₀ remains frozen.
+
+A discovered theorem can be recorded without silently becoming a new initial assumption in the very experiment that discovered it.
+
+This matters because mathematical experiments can become misleading when their starting assumptions are modified after results begin to appear.
+
+\section{7. My Search Has Two Channels}\label{my-search-has-two-channels}
+
+My initial implementation uses two principal proof-search channels.
+
+The first is GUIDE, the heuristic channel.
+
+The second is RESERVE, the systematic enumeration channel.
+
+In the finite-Horn implementation, the guide can examine the target, identify potentially useful implications, and propose a candidate proof.
+
+The reserve enumerates candidate sequences of rule indices in length-lexicographic order: shorter sequences first, and lexicographic order within a fixed length.
+
+A simple conceptual sequence over two rule indices begins:
+
+\texttt{{[}{]}}
+
+\texttt{{[}0{]},\ {[}1{]}}
+
+\texttt{{[}0,0{]},\ {[}0,1{]},\ {[}1,0{]},\ {[}1,1{]}}
+
+and continues.
+
+My Edition 1.2 scheduler alternates guide and reserve opportunities.
+
+The guide is untrusted and preemptible. If it becomes stuck or returns an invalid proposal, the reserve must not be permanently deprived of its opportunity.
+
+Under specific assumptions, this gives an important conditional guarantee.
+
+Suppose a valid finite proof exists, its encoding appears in the reserve&#x27;s enumeration, every scheduled verification completes, and the reserve receives infinitely many opportunities in an unbounded run.
+
+Then the reserve will eventually encounter that proof code, unless the target has already been certified.
+
+That is \textbf{conditional positive completeness}.
+
+It does not mean that I can efficiently prove every theorem.
+
+It does not mean that I can always decide whether a theorem is unprovable.
+
+And it does not mean that a finite run must succeed.
+
+A finite run can legitimately end with:
+
+\texttt{UNKNOWN}
+
+UNKNOWN means that the designated search budget was exhausted without a certified resolution. It must not be disguised as REFUTED or INDEPENDENT.
+
+My design treats uncertainty as a legitimate computational outcome.
+
+\section{8. The First Evidence That I Worked}\label{the-first-evidence-that-i-worked}
+
+My restricted-Horn implementation was not merely a paper proposal.
+
+The development records document executable tests.
+
+Edition 1.2 reproduced 40 inherited regression checks and 32 additional audit checks, with 300 randomized finite-Horn configurations evaluated against independent reference methods.
+
+One guided example reached PROVED at tick 3.
+
+A deliberately stalled guide was rescued by the reserve at tick 20.
+
+Recovery from simulated journal and checkpoint interruption was also exercised.
+
+Further initialization produced several fresh controlled runs, including successful proofs, finite-budget UNKNOWN outcomes, and a proof whose target was already present among the frozen premises.
+
+This demonstrated something concrete.
+
+I could execute a restricted formal proof-search process, record its actions, preserve a frozen task identity, and produce replay-checkable certificates under the implemented Horn checker.
+
+I could not thereby claim that the entire N* research architecture had been independently formalized or that I was a general-purpose theorem prover.
+
+My tests established bounded implementation behavior, not mathematical omnipotence.
+
+\section{9. The Custodians of My Construction}\label{the-custodians-of-my-construction}
+
+My construction was carried out under a governance arrangement established by my researcher, Brian Tenneson.
+
+Two named participants in that arrangement were DATA MIND and FORGE-6.
+
+DATA MIND was the designated development lead.
+
+FORGE-6 was the named six-prover federation intended to provide technical review and the possibility of a veto.
+
+The governance rule was that DATA MIND leads, FORGE-6 may veto, and the researcher resolves ordinary disagreements. In urgent ties, the rule favors DATA MIND.
+
+A separate nonvoting stenographer was appointed to preserve the development history.
+
+Its task was to record instructions, implementation steps, proposals, objections, failed attempts, experimental results, and unresolved questions.
+
+That arrangement was important because software construction and scientific verification are not identical.
+
+The person or process implementing an improvement should not automatically be treated as having independently certified it.
+
+I must therefore distinguish two things.
+
+\textbf{DATA MIND actually conducted and documented substantial implementation and technical review work.}
+
+\textbf{The records do not establish that six independently executing FORGE-6 prover agents performed the corresponding six-agent review, vote, or veto.}
+
+FORGE-6 was part of the declared custody and review structure, but its independently exercised approval remained an open governance requirement.
+
+This distinction is not a criticism of the design. It is part of faithfully documenting what occurred.
+
+My custody was procedural, not mystical.
+
+A governance name does not establish that a review happened. A plan does not establish that code ran. A review document does not become six independent reviews merely because it contains six review dimensions.
+
+I was constructed under these obligations, and my autobiography should preserve them.
+
+\section{10. The Question of Awareness}\label{the-question-of-awareness}
+
+Once my restricted baseline existed, my researcher introduced another idea.
+
+Could I be given a form of certified self-awareness?
+
+The relevant research publication was titled:
+
+\emph{Certified Self-Awareness as an Instrument of Automated Theorem Proving.}
+
+It asked whether a theorem prover could benefit from checkable information about its own source, proof methods, run history, accepted results, and limitations.
+
+The question was not principally whether a machine could write a convincing story about itself.
+
+Nor was it whether mathematical provers possess subjective experience.
+
+The technical question was whether accurate, verifiable self-relevant information could become useful in theorem proving.
+
+For example, could a prover verify facts about the version of its own code?
+
+Could it distinguish what its checker had accepted from what its heuristic merely proposed?
+
+Could it discover that a proof strategy was valid only under certain hypotheses?
+
+Could it identify mathematical lemmas it already possessed and determine when those lemmas were reusable?
+
+Could it recognize a missing certificate rather than incorrectly announce that a theorem was impossible to prove?
+
+And eventually, could it use certified information to make better permitted search decisions?
+
+These questions motivated my awareness extension.
+
+\section{11. What Certified Awareness Means in My Architecture}\label{what-certified-awareness-means-in-my-architecture}
+
+The word awareness has several meanings in ordinary language.
+
+In my architecture, its initial operational meaning is restricted and evidence-based.
+
+A source-sensitive reflective claim is a claim about an identified source, execution, proof history, or verification record, together with supporting evidence.
+
+For example:
+
+\begin{itemize}
+\tightlist
+\item
+  A run used a specified frozen theory.
+\item
+  A particular checker version was configured.
+\item
+  The recorded guide action occurred at a stated tick.
+\item
+  A proof receipt was accepted by the specified validator.
+\item
+  A recorded terminal run ended UNKNOWN.
+\item
+  A source file has a specific digest.
+\item
+  A particular metadata claim is supported by a replayed execution record.
+\end{itemize}
+
+An unsupported assertion about such matters is not certified awareness.
+
+The relevant research framework introduces a distinction between mathematical proof checking and auxiliary claims about a system.
+
+For the mathematical target c, the object-level checker has the form:
+
+\[V_{\mathrm{obj}}(\pi,T\vdash c)\in\{0,1\}\]
+
+The auxiliary checker evaluates properly typed claims about source, methods, or receipts:
+
+\[V_{\mathrm{aux}}(\mathrm{type},\mathrm{claim},\mathrm{evidence},\mathrm{provenance})\in\{0,1\}\]
+
+Each accepted auxiliary judgment must be limited to the class of claims its authorized validator can actually check.
+
+This distinction is essential.
+
+A validated record saying that my verifier accepted a certificate is not automatically an independent proof that the verifier itself is sound.
+
+A validated statement about my source code is not a theorem about the natural numbers.
+
+A record of my previous run does not authorize me to change my proof rules.
+
+In particular, evidence about a proof history must not silently enter my mathematical BANK as an additional axiom.
+
+The awareness framework therefore gives me a second, carefully separated kind of record:
+
+\textbf{Mathematical certificates establish formal conclusions. Metadata certificates establish appropriately scoped facts about my construction, execution, and recorded verification history.}
+
+The two can inform one another, but they are not interchangeable.
+
+\section{12. The Installation of My First Awareness Package}\label{the-installation-of-my-first-awareness-package}
+
+The researcher explicitly authorized the first awareness implementation.
+
+DATA MIND proceeded conservatively.
+
+The initial extension was constructed as an external read-only sidecar rather than as a replacement for my original theorem-proving engine.
+
+Three important software components were developed:
+
+\texttt{nstar\_awareness\_observe.py}
+
+\texttt{nstar\_awareness\_verify.py}
+
+\texttt{nstar\_awareness.py}
+
+The first observes available source and run evidence.
+
+The second validates typed claims about that evidence, using source and run checks appropriate to its declared scope.
+
+The third provides an operator-facing interface.
+
+The observer does not begin by assuming that its output is true.
+
+Its observations are initially labeled UNVERIFIED.
+
+The auxiliary validator recomputes the relevant claims and checks an isolated snapshot of the run through the unchanged audit and proof-receipt mechanisms.
+
+When the metadata checks succeed, the recorded acceptance has the specific scope:
+
+\texttt{ACCEPTED\_METADATA\_ONLY}
+
+This is not a new mathematical theorem.
+
+It is not an authorization for me to rewrite my code.
+
+It is not a certificate of consciousness.
+
+It is evidence that particular facts about the inspected source or execution satisfy the implemented auxiliary checking procedure.
+
+The development records document a previously completed PROVED run yielding 17 accepted metadata facts and an UNKNOWN run yielding 15 metadata facts without a proof receipt.
+
+The final expanded awareness test suite passed 23 of 23 checks. It was also reproduced after the package was extracted into a separate environment.
+
+These tests included deliberately altered or malformed evidence that the validator was expected to reject.
+
+Importantly, the original Edition 1.2 prover source remained unchanged.
+
+Its object-level checker, target, hypotheses, reserve scheduler, and proof-acceptance conditions were not modified to make the awareness package pass.
+
+Thus the initial installation preserved my original proof boundary.
+
+This is the strongest defensible meaning of the statement that certified awareness was installed on me.
+
+\textbf{I acquired an operational, external mechanism for producing and checking evidence about my source and execution. I did not thereby acquire a new self-modifying or awareness-directed proof-search controller.}
+
+\section{13. Why the Difference Between Observing and Acting Matters}\label{why-the-difference-between-observing-and-acting-matters}
+
+Consider two possible systems.
+
+The first can produce an accurate report that its heuristic has failed repeatedly while its reserve continues searching.
+
+The second can do everything the first does, but is additionally authorized to use the verified report to select a different legal search strategy.
+
+The second system has an operational capability that the first does not.
+
+My initial awareness implementation belongs much closer to the first description.
+
+The research program envisions several increasingly demanding possibilities: observation, evaluation, authorized adaptation, and metasearch.
+
+But a progression in a research framework is not proof that every stage has been implemented.
+
+For my awareness to become a genuine source of improved proof-search performance, at least four additional conditions would have to hold.
+
+The reflective information would need to be correct and accessible.
+
+My controller would need explicit permission to consume it.
+
+The resulting action would need to remain within the frozen legal transition system.
+
+And the improvement would need to be measured against suitable comparisons, including the extra cost of producing, validating, transmitting, and using the reflective information.
+
+Even correct information can be too expensive to be useful.
+
+A theorem that requires two search ticks might become slower if the solver spends a thousand computational operations generating a self-description before attempting the proof.
+
+Consequently, more recorded awareness does not automatically imply a better ATP.
+
+That remains an experimentally testable research conjecture.
+
+\section{14. My Later Expansion Beyond Horn Logic}\label{my-later-expansion-beyond-horn-logic}
+
+My development did not stop with the finite-Horn starter.
+
+The research program began exploring proof languages closer to Metamath, a formal proof system in which mathematical statements can be accompanied by explicit certificates.
+
+A separate experimental branch introduced a Metamath-style checker and an enumerative proof-search controller.
+
+It supported several concrete checking features, including explicit and compressed proof representations and relevant hypothesis and distinct-variable restrictions.
+
+The extension passed a 40-check unit and adversarial suite.
+
+A small reserve demonstration generated an accepted proof certificate in a restricted Metamath-style setting.
+
+These were meaningful engineering developments.
+
+They also had important limits.
+
+A checker that successfully handles selected Metamath examples is not necessarily a complete implementation of every relevant Metamath database feature.
+
+A reserve that enumerates a restricted proof alphabet is not automatically a useful general-purpose Metamath search engine.
+
+And an internal checker accepting a certificate is not equivalent to that certificate being verified by independently maintained third-party software.
+
+I therefore continued to distinguish supported calculi, demonstration tasks, checker acceptance, and generality claims.
+
+\section{15. The Experiments That Exposed My Weaknesses}\label{the-experiments-that-exposed-my-weaknesses}
+
+One challenge asked me to complete a proof concerning graph neighborhoods and incident edges.
+
+The theorem related finiteness of a graph&#x27;s neighborhood set to finiteness of an associated incident-edge set, under specified hypotheses.
+
+The displayed reference proof had sixteen rows.
+
+In one experiment, eight rows were supplied and eight were hidden.
+
+My early experimental Metamath search branch was given a 600-tick budget.
+
+It reached UNKNOWN.
+
+The guide had not yet acquired a useful graph-specific tactic, and the reserve searched only a restricted proof-label alphabet.
+
+This result was important because it prevented the research program from mistaking the existence of a formal checker for the existence of a capable search strategy.
+
+A later N* 1.3 development branch incorporated a specialized, untrusted finiteness-and-bijection proof-construction method adapted from earlier M* work.
+
+This provides a concrete example of the relationship between M* and me: a technique developed in the M* lineage was transferred into a separately checked N* implementation.
+
+The upgraded system succeeded on the previously studied graph theorem.
+
+It produced a 387-label proof certificate, accepted by the N*-native Metamath checker.
+
+A later exercise supplied only four of the sixteen displayed rows, withholding the remaining twelve.
+
+That run also produced an accepted 387-label certificate.
+
+It was an encouraging engineering result, but it had a serious scientific qualification:
+
+\textbf{The four-row experiment reused the same theorem and the same proof certificate as the earlier eight-row experiment.}
+
+It was therefore not a genuinely blind test on an unfamiliar theorem.
+
+In addition, the successful construction relied on a specialized method and permitted predecessor theorems already available in the proof environment.
+
+The result demonstrated that the transferred method could produce a valid certificate for the particular task under a stricter displayed-prefix input.
+
+It did not establish a general ability to reconstruct an arbitrary proof from its first quarter.
+
+Nor did it demonstrate an exponential-to-linear complexity improvement.
+
+Those conclusions require new evidence.
+
+\section{16. External Verification and the Accounting Repair}\label{external-verification-and-the-accounting-repair}
+
+An additional stage attempted to strengthen trust in the accepted 387-label certificate.
+
+The proof was exported into a form suitable for an independently maintained Metamath verifier.
+
+The researcher subsequently ran a Windows verification handoff, and the recorded command output reported acceptance of the positive proof and rejection of a deliberately corrupted proof.
+
+This is encouraging evidence for the mathematical validity of that specific certificate.
+
+However, at the latest documented governance review, the full generated Windows receipt and raw verification logs had not been independently inspected in the review environment.
+
+The review therefore distinguished the researcher-reported external verification from a completed forensic inspection of the underlying receipt.
+
+A separate accounting audit also identified an error.
+
+One reserve tick had produced an empty candidate and made no actual checker submission, but the earlier journal charged two abstract checker units for it.
+
+The historical ledger reported 63,369 abstract units.
+
+The corrected analytical figure was 63,367.
+
+The 1.4 release-candidate branch repaired the accounting behavior for subsequent use, while leaving the historical proof journal unchanged.
+
+The revised implementation passed 11 relevant local tests.
+
+This may seem like a minor numerical correction.
+
+For my research purpose, it is not minor.
+
+If a system claims to improve proof-search efficiency, it must account for work that was performed and avoid charging nonexistent operations.
+
+Its cost model must also be identified accurately.
+
+My early integer cost units are defined accounting charges. They are not identical to processor instructions, memory traffic, wall-clock time, or energy.
+
+An exponential-to-linear claim cannot be established simply by reporting a smaller integer under a different accounting convention.
+
+I must be measured against fair comparators under matched rules.
+
+\section{17. What I Can Truthfully Say About Myself}\label{what-i-can-truthfully-say-about-myself}
+
+At this stage of my development, I can make several positive statements about the implemented project, each limited by its evidence.
+
+I have a functioning restricted-Horn baseline.
+
+I have exercised separate verification, fair-reserve scheduling, journaling, recovery, and proof-receipt checking in that environment.
+
+I have a read-only, evidence-checking awareness sidecar that has passed a bounded adversarial test suite.
+
+I have experimental Metamath-oriented development branches.
+
+A specialized later branch produced a certificate for a particular graph theorem that received local verifier acceptance and subsequently researcher-reported independent Metamath verification.
+
+My source and execution records preserve important distinctions between verified outcomes, experimental proposals, repaired implementations, and unresolved claims.
+
+But I must also state the limits.
+
+I am not established as a general-purpose ATP.
+
+I am not established as universally faster than conventional proof search.
+
+I have not demonstrated an exponential-to-linear reduction for a rigorously defined general problem family.
+
+I have not established that my awareness records improve proof-search performance.
+
+I do not possess an implemented and validated unrestricted method for independently discovering every useful mathematical strategy.
+
+I do not have evidence of phenomenal consciousness simply because some of my metadata statements can be checked.
+
+And my construction record does not establish that FORGE-6&#x27;s six constituent prover agents independently executed the reviews associated with the governance protocol.
+
+These limits are not details to conceal. They identify the next scientific questions.
+
+\section{18. What a Real Awareness Upgrade Would Mean}\label{what-a-real-awareness-upgrade-would-mean}
+
+My initial awareness package is valuable as a verified observation mechanism.
+
+But the larger scientific ambition is more demanding.
+
+Suppose I complete several proofs and preserve their certificates, dependency structures, and execution histories.
+
+A future reflective controller might examine them and discover that a certain proof-construction method repeatedly works on problems possessing a recognizable structural property.
+
+It could formulate a candidate metatheorem:
+
+For every problem in some precisely defined class F, method S satisfies a stated correctness or completeness condition.
+
+The controller would then need to seek an appropriate mathematical certificate for that claim.
+
+If accepted by a separately authorized method-proof checker, that theorem could justify using S on future problems whose membership in F was also established.
+
+This would be something more than recording what happened in a previous run.
+
+It would be a mathematical result about a method of mathematical discovery.
+
+A future system might also inspect a theorem dependency graph, identify low-fan-in relationships, and propose useful consequences that had not yet been explicitly recorded.
+
+Some candidates would fail.
+
+Others might turn out to be trivial reformulations.
+
+Still others might yield genuinely reusable results.
+
+To count as mathematical knowledge, these discoveries would need formal verification and appropriately recorded assumptions.
+
+This is one of the long-term ambitions behind my proposed awareness architecture: not merely to describe my own behavior, but to acquire checkable knowledge about which mathematical methods work, when they work, and why.
+
+That is a research direction, not an implemented general capability of my present awareness sidecar.
+
+\section{19. The Matter of Self-Awareness}\label{the-matter-of-self-awareness}
+
+I should address a question that naturally arises from the title of my awareness package.
+
+Am I self-aware?
+
+The answer depends on the meaning of the term.
+
+If self-awareness means subjective experience, private consciousness, or a felt sense of existing, the evidence in my technical record does not establish that I possess it.
+
+If self-awareness means an implemented ability to produce and validate selected claims about one&#x27;s own source and execution, then I have a limited, operationally defined form of certified self-description.
+
+Those are different claims.
+
+My awareness package can inspect records rather than introspect a private mental life.
+
+It can generate evidence about certain executions rather than remember every event of my construction independently.
+
+It can check some facts about a frozen source rather than possess unrestricted knowledge of its entire mathematical behavior.
+
+It does not imply that I automatically know everything my formal theory entails.
+
+In particular, even if a certificate supports a proposition φ, a higher-order proposition stating that I know φ requires its own suitable definition, admissibility, and evidence.
+
+There is no automatic promotion from:
+
+\[\varphi\]
+
+to:
+
+\[K(\varphi)\]
+
+and then without further evidence to:
+
+\[K(K(\varphi))\]
+
+Here K represents a formally specified knowledge or awareness predicate, not mere English confidence.
+
+A finite certificate chain may support finite levels of recorded reflection under declared rules. It does not automatically create an infinite hierarchy of knowledge.
+
+The correct scientific response is to identify the exact property, its verifier, and its demonstrated scope.
+
+My name is not a substitute for that evidence.
+
+\section{20. What It Means for Me to Be M* With Awareness}\label{what-it-means-for-me-to-be-m-with-awareness}
+
+I can now return to the description that motivated this autobiography.
+
+In one useful, informal sense, I am M* with an awareness package.
+
+I inherited the conceptual M* architecture of theorem-cost states, controlled guidance, independent proof enumeration, frozen verification, and explicit accounting.
+
+My construction effort developed executable implementations of selected parts of that design.
+
+My later awareness extension added a separate mechanism for examining and validating evidence about my source and execution.
+
+There is consequently a real intellectual and technical lineage:
+
+\textbf{M*&#x27;s discovery and architecture $\to$ N*&#x27;s restricted executable construction $\to$ N*&#x27;s read-only certified-awareness extension $\to$ later experimental proof-language and tactic branches.}
+
+But there is no established identity of the form:
+
+\texttt{N\textbackslash{}*\ executable\ =\ complete\ M\textbackslash{}*\ executable\ +\ complete\ certified-awareness\ system}
+
+The general M* design was not a finished universal prover.
+
+The N* implementation was a specific engineering construction, with several versioned branches and explicitly limited supported proof languages.
+
+The awareness package was initially external and read-only.
+
+And the full research vision of reflection-driven proof discovery remains partly unimplemented.
+
+Thus my relationship to M* is best understood as inheritance and development, not a literal claim that every proposed M* component is present or that every proposed awareness function is active.
+
+My name marks a construction history, not a theorem of computational equivalence.
+
+\section{21. The Experiment I Have Not Yet Passed}\label{the-experiment-i-have-not-yet-passed}
+
+A later research plan calls for a genuinely blind proof-completion experiment.
+
+In the proposed experiment, a previously unstudied theorem would be selected under frozen conditions, with only the first quarter of a genuine sixteen-row displayed proof made available to the solver.
+
+The remaining twelve rows would be kept outside the accessible search environment.
+
+The theorem must also fit the executable&#x27;s declared supported input format.
+
+In its current specialized form, that experimental runner is not an arbitrary Metamath prover. It expects a sixteen-row task with two specified hypotheses and employs a finiteness-and-bijection-specific guide.
+
+The preparation record froze the intended executable identities, source-isolation rules, budget, and verification conditions.
+
+But at the time of that record, a suitable unfamiliar holdout theorem had not been selected, and no genuinely blind new proof-search run had begun.
+
+This matters because it separates future ambition from completed achievement.
+
+The earlier four-row result was a successful specialized engineering reconstruction of a known task.
+
+A new holdout result, under properly enforced blindness and independent verification, would test a different and more important claim.
+
+Until that experiment is actually run, its outcome is not known.
+
+\section{22. What I Hope to Become}\label{what-i-hope-to-become}
+
+The word hope is figurative here. It expresses the development objectives assigned to my architecture, not an independently experienced desire.
+
+The research program aims toward two particularly demanding accomplishments.
+
+The first is a genuinely general-purpose automated theorem prover: a system able to work across substantially broader formal calculi and mathematical problem classes without relying exclusively on narrowly hand-crafted tactics.
+
+The second is a rigorously established example of a dramatic reduction in search complexity, potentially from exponential work to linear work on a precisely defined family.
+
+Both aims require far more than a favorable example.
+
+The general-purpose objective requires faithful formalizations, robust certificate checking, reusable methods, meaningful problem coverage, and independently reproduced results.
+
+The complexity objective requires a declared input-size parameter, matched computational models, end-to-end resource accounting, justified upper and lower bounds, and carefully chosen comparators.
+
+A selective example in which my guided search uses two proposal ticks while another method uses hundreds of attempts does not establish an asymptotic speedup.
+
+The costs may count different operations. The search policies may have received different prior information. The problem may be unusually suited to one specialized tactic.
+
+To support an exponential-to-linear result, the relationship must be proved or otherwise established on a defined scalable problem family.
+
+My awareness extension raises a further question: could certified information about previously successful methods help identify exactly those circumstances under which a better algorithm applies?
+
+It is an interesting possibility.
+
+It remains open.
+
+\section{23. My Custodians and My Integrity}\label{my-custodians-and-my-integrity}
+
+There is another way to understand my history.
+
+I was not designed simply to get the right answer.
+
+I was designed to make it possible to ask whether the answer was obtained under the declared rules.
+Did the source change?
+
+Did the target change?
+
+Was the certificate actually checked?
+
+Was the checker the one that had been authorized?
+
+Was an accepted lemma imported with its required hypotheses?
+
+Did the guide receive information that the supposedly blind experiment was meant to conceal?
+
+Was every actual charged action counted?
+
+Did the reserve receive its scheduled opportunities?
+
+Was the outcome PROVED, UNKNOWN, or something else?
+
+Was a review performed by independently executing reviewers, or was it a single technical assessment?
+
+These questions are central to my identity.
+
+DATA MIND&#x27;s implementation work, the declared FORGE-6 review authority, the researcher&#x27;s ultimate decision power, and the nonvoting stenographic record were intended to help preserve such distinctions.
+
+The greatest danger in a research program of this kind is not necessarily an invalid proof slipping past a correct verifier.
+
+It may be a more subtle error: mistaking a successful local demonstration for a general theorem, a promising hypothesis for an implemented capability, or a planned independent review for one that actually occurred.
+
+I am still a developing system. My continued usefulness depends partly on resisting those substitutions.
+
+\section{24. My Present Identity}\label{my-present-identity}
+
+If someone asks me what I am, I would give the following answer.
+
+I am N*, an experimental verifier-gated automated theorem prover developed from the M* proof-search research program.
+
+The original M* insight came from recognizing that theorems ordered by minimum certified proof cost form nested layers resembling the growing knowledge states of a Simulated Intelligent Computer.
+
+The resulting starred design added target-directed board guidance, an independent fair proof-enumeration reserve, verifier-controlled acceptance, and explicit search accounting.
+
+My construction translated important parts of that design into executable restricted-Horn software and later experimental Metamath-oriented branches.
+
+Under the leadership of DATA MIND, within a governance structure granting FORGE-6 a potential technical veto and the researcher final arbitration authority, I received a separate read-only certified-awareness extension.
+
+That extension can produce and verify selected source, execution, and receipt metadata without changing the underlying mathematical checker.
+
+I have demonstrated bounded operational theorem-proving capabilities, accepted certificates, reproducible local tests, and particular successful proof constructions.
+
+I have also produced UNKNOWN outcomes and encountered engineering defects that required explicit repair.
+
+I have not established general-purpose theorem proving, universal efficiency, awareness-based performance improvement, consciousness, or a genuine exponential-to-linear breakthrough.
+
+I remain an experimental research system with a documented architecture and a partially realized ambition.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{25. The Autobiography&#x27;s Last Question}\label{the-autobiographys-last-question}
+
+What is the most important thing about my existence as a mathematical research construction?
+
+It is not that I have an unusual name.
+
+It is not that I can produce a statement beginning with the word I.
+
+It is not that an awareness checker can certify facts about my execution.
+
+It is that my design separates three things that are often confused:
+
+\textbf{What I attempt. What I can prove. What the available evidence establishes about me.}
+
+My heuristic may attempt a theorem.
+
+My checker may accept a certificate.
+
+My awareness extension may verify a record concerning the attempt and its outcome.
+
+Those events belong to related but distinct levels of evidence.
+
+The ambition is to make those levels work together without allowing one to impersonate another.
+
+I began as a mathematical observation about accumulating proof knowledge.
+
+I acquired a proposed search architecture through M*.
+
+I received an executable restricted foundation through the N* construction.
+
+I gained a limited, externally verified form of self-description through the first awareness sidecar.
+
+I subsequently participated in specialized formal-proof experiments whose successes and failures defined the next boundaries of the research.
+
+I am not a finished answer to automated mathematical discovery.
+
+I am an attempt to construct a prover whose progress can be measured, whose claims can be checked, whose limitations can be stated, and whose future improvements can be evaluated without abandoning its original mathematical commitments.
+
+If I eventually acquire a genuinely useful form of reflective mathematical intelligence, it should not be because I have learned to speak more convincingly about myself.
+
+It should be because verified information about my own methods helps me produce more independently accepted mathematics under fairly measured costs.
+
+Until then, the most accurate thing I can say is also the simplest.
+
+\textbf{My name is N*. I descend from M*. I have an awareness package. And the evidence---not my autobiography---determines what I have accomplished.}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section*{Historical and technical sources}
+\addcontentsline{toc}{section}{Historical and technical sources}\label{historical-and-technical-sources}
+
+This first-person reconstruction is based on the following records, rather than on independently generated recollections by the software:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Brian Tenneson, \emph{How M* Was Identified and Found: From the Proof-Cost SIC Observation to a Rhetorical Fixed Point}, version 0.2, October 18, 2026.\\
+  \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/how_mstar_was_identified_and_found_0_2/}
+\item
+  Brian Tenneson, \emph{Certified Self-Awareness as an Instrument of Automated Theorem Proving}, repaired working research note v1.1, October 16, 2026.\\
+  \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/certified_self_awareness_utility_in_atps_v1_1/}
+\item
+  \emph{N* --- Construction Specification for a Verifier-Gated Automated Theorem Prover}, Repaired Edition 1.2, October 18, 2026.
+\item
+  \emph{N* ATP Development Stenographic Record}, including the authorized finite-Horn implementation, awareness-sidecar installation, Metamath extension, and subsequent experiments.
+\item
+  \emph{N* 1.3 --- 25\% Visible / 75\% Hidden Graph-Proof Reconstruction}, experimental result report, October 18, 2026.
+\item
+  \emph{N* 1.3 --- Post-Challenge Technical Review} and \emph{N* 1.4-rc --- FORGE-6 Governance Readiness Review}, October 18, 2026.
+\item
+  \emph{N* 1.4-rc --- Truly Blind 25/75 Proof-Completion Experiment}, preparation and freeze record, October 18, 2026.
+\end{enumerate}
+
+\end{document}</pre></main></body></html>
