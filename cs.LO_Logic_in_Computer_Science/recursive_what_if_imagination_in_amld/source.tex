@@ -1,0 +1,103 @@
+\input{common.texfrag}
+\title{\textbf{Recursive ``What If?'' Imagination in AMLD}\\[0.35em]\large Chess-Style Counterfactual Search Guided by MAPQUEST}
+\author{Brian Tenneson}
+\date{19 October 2026}
+\begin{document}\maketitle
+\begin{abstract}
+This note formalizes chess-style recursive counterfactual exploration in an AMLD-style verifier-gated theorem search. A sound monotone certified BANK is kept separate from speculative assumptions. MAPQUEST navigates tagged speculative branches and proposes valuable missing lemmas as proof goals; only independently checked derivations may enter BANK. The framework uses branch-addressed worlds, frozen-judgment checking, finite candidate-action windows, and the declared AMLD+0 role labels. It distinguishes consistency filtering, conditional navigation, and actual verified settlement. It makes no claim that speculative search itself discovers a proof, that the rank score is exact, or that the mechanism speeds up all inputs.
+\end{abstract}
+\section{Framework: MAPQUEST and verifier sovereignty}
+Fix an effectively presented proof calculus $F$, authorized assumptions $\Gamma$, target well-formed formula $T$, independent sound certificate verifier $V$, and legal, fully charged action protocol. A certified state $B$ is a finite or effectively represented set of permitted assumptions and accepted consequences with dependency evidence; writing $B\subseteq\Th_F(\Gamma)$ refers only to formulas whose open hypotheses have been discharged or established from $\Gamma$. The immutable target and verifier are not altered by imagination.
+
+MAPQUEST supplies an address and traversal system for searching legal inference applications. If a rule $r$ has arity $a(r)$, its tagged coordinate space may be represented schematically by
+\[\mathcal G=\coprod_{r\in\mathcal R}\bigl(\{r\}\times(\mathbb Q\cap[0,1])^{a(r)}\bigr).\]
+This is a representation and scheduling device, not a new inference rule or a proof of search completeness. Formula-address locations and rule-application coordinates are distinct.
+
+\section{Recursive ``what if?'' imagination and branch semantics}
+A union of hypothetical formula sets can conflate mutually exclusive branches, erase the identity of alternative assumptions, and treat an inconsistent union as one imagined world. Instead, define a \emph{family of tagged branches}, not a union of their contents.
+\begin{definition}[Branch-preserving operator]\label{def:tree}
+Fix an explicit node cap $N_{\max}\in\mathbb N_{\ge1}$, finite candidate-window cap $K\in\mathbb N_{\ge1}$, and depth $d\in\mathbb N$. The generator must enforce a bounded set $\Sigma_{d,N_{\max},K}$ of at most $N_{\max}$ branch addresses, each of length at most $d$. A charge budget $b$ is accounted separately; its finiteness alone does not guarantee termination when operations can have zero cost. The selected set of branch addresses is finite and prefix-closed. The root has address $\epsilon$ and assumption set $H_\epsilon=\varnothing$. A child $\sigma i$ generated using candidate formula $L_{\sigma i}$ has
+\[H_{\sigma i}=H_\sigma\cup\{L_{\sigma i}\}.\]
+Define
+\[\boxed{\W_{d,N_{\max},K}(B,T)=\{(\sigma,H_\sigma,\widetilde B_\sigma):\sigma\in\Sigma_{d,N_{\max},K},\ \widetilde B_\sigma=B\cup H_\sigma\}.}\]
+All addresses, including the root $(\epsilon,\varnothing,B)$, are retained. Formula membership in $\widetilde B_\sigma$ is \emph{hypothetical}, even if a navigation algorithm can derive $T$ from it. No element of a speculative branch may directly become a certified BANK entry.
+\end{definition}
+A branch may have no admissible children and is then retained as a leaf. Branches with the same formula set remain distinct search histories when provenance or costs differ. Branches whose hypothetical assumptions are inconsistent with each other or with $\Gamma$ are flagged as inconsistent and excluded from any ordinary-classical leverage estimate unless the scoring method explicitly discounts explosion. For example $H=\{p,\neg p\}$ makes $T$ classically derivable for every $T$, but this is not useful evidence of $\Gamma\vdash T$. No speculative proof can enter BANK. Finiteness follows from the explicit address, depth, and candidate caps, independently of the cost model. Each generator step has a documented charged cost, including rejected branches. The explicit cap, not a mere finite numeric credit that could allow infinitely many zero-cost steps, guarantees bounded enumeration.
+
+\subsection{Chess analogy and the search boundary}
+A chess player asks ``What if I sacrifice a piece and recover position later?'' The proof-search analogue provisionally assumes an unusual lemma $L$, tests what it would make accessible, and then seeks an actual $V$-accepted proof of $\Gamma\vdash L$. An imagined winning line is no more a verified proof than a favorable hypothetical chess line is a forced win. If adversarial replies matter, a strategy requires the proper quantifier structure, not a single favorable branch.
+
+\section{BANK safety and the route back to reality}
+\begin{theorem}[Counterfactual conservativity]\label{thm:safe}
+Assume: (i) initially $B_0\subseteq\Th_F(\Gamma)$ with provenance; (ii) every certified deposit of a formula $\varphi$ is accepted by a verifier sound for the frozen judgment $\Gamma\vdash\varphi$, with all other undischarged assumptions rejected; (iii) speculative branches cannot write to BANK or modify $V,\Gamma,T$; and (iv) the BANK update operation contains only accepted deposits. Then every finite certified stage $t$ satisfies
+\[B_t\subseteq\Th_F(\Gamma).\]
+The claim holds regardless of the number, contents, or incompatibility of speculative branches; it does not assert eventual settlement.
+\end{theorem}
+\begin{proof}
+The base case is (i). If $B_t\subseteq\Th_F(\Gamma)$, then by (ii)--(iv) each new accepted deposit is also in $\Th_F(\Gamma)$. Thus $B_{t+1}$ is contained in the same closure. Induction completes the proof. Only finite BANK stage indices are used; arbitrary speculative branching introduces no new inference license.
+\end{proof}
+\begin{remark}[Hypotheses really matter]
+A proof of $\Gamma\cup\{L\}\vdash T$ does not certify $\Gamma\vdash T$ unless the dependency on $L$ is discharged or a separate certified $\Gamma\vdash L$ is provided. ``Verifier accepted'' must therefore specify the frozen judgment and assumption check, not merely validate local syntactic steps.
+\end{remark}
+A permissible information flow is
+\[\mathrm{Imagine}\longrightarrow\mathrm{Navigate}\longrightarrow\mathrm{Propose\ subgoal}\longrightarrow\mathrm{Prove}\longrightarrow\mathrm{Verify}\longrightarrow\BANK.\]
+
+\section{MAPQUEST navigation inside a branch}
+For each $\sigma$, MAPQUEST may estimate backward cones from $T$, missing premises in target-producing inference frames, residual search work $\widehat h(T\mid\widetilde B_\sigma)$, enabled rules, Hilbert-address neighborhoods, candidate intermediate formulas, and alternative legal routes. Because $\widetilde B_\sigma$ may contain unproved hypotheses, every estimate is tagged \emph{conditional on $H_\sigma$}. These maps may prioritize genuine subgoals but cannot be used as certificates of theoremhood.
+
+\section{High-leverage imagined lemmas and option gain}
+Let $\widehat d(T\mid B)$ be a declared heuristic residual estimate, not necessarily an admissible lower bound. For candidate $L$, define the \emph{estimated} leverage
+\[\widehat\Delta_T(L\mid B)=\widehat d(T\mid B)-\widehat d(T\mid B\cup\{L\}).\]
+A positive value proposes $L$ as a promising subtarget; it does not establish a genuine shortest-path decrease, or even that $L$ is provable. A proposed threshold $\theta>0$ may select $\widehat\Delta_T\geq\theta$.
+
+An unbounded option-gain cardinality $|\Enabled(B\cup\{L\})\setminus\Enabled(B)|$ may be infinite. Fix a finite, recorded window $\mathcal C_b$ of labeled candidate \emph{rule applications} (not only their conclusion formulas); each application $q$ has a finite premise set $\operatorname{Prem}(q)$. Define
+\[\begin{aligned}
+\Enabled_b^{\mathrm{cert}}(B)&=\{q\in\mathcal C_b:\operatorname{Prem}(q)\subseteq B\},\\
+\Enabled_b^{\mathrm{hyp}}(B,H)&=\{q\in\mathcal C_b:\operatorname{Prem}(q)\subseteq B\cup H\},\\
+\Gain_b(L\mid B)&=|\Enabled_b^{\mathrm{hyp}}(B,\{L\})\setminus\Enabled_b^{\mathrm{cert}}(B)|.
+\end{aligned}\]
+The superscript $\mathrm{hyp}$ records conditional availability, never permission to write a purported rule consequence to BANK. Repeated rule applications with identical conclusions remain distinguishable. A finite-window heuristic can be of the form
+\[\mathrm{Score}_b(L)=\alpha\widehat\Delta_T(L\mid B)+\beta\mathrm{Novelty}_b(L)+\gamma\Gain_b(L\mid B)-\delta\widehat\Cost_b(L),\]
+with documented scales, sign conventions, and separately charged search/verification costs. This is a proposal-selection rule, not an optimality theorem.
+
+\section{Strategic sacrifice, recursion, and diagnostics}
+A search controller may accept a temporary increase in estimated residual work in exchange for a large set of future legal subgoals. The schematic objective
+\[\mathrm{Sac}_b(a)=\widehat{\mathrm{FutureGain}}_b(a)-\lambda\widehat{\mathrm{ImmediateLoss}}_b(a)\]
+ranks such moves without changing the verifier or licensing unsound inference. Repeated ``what if $L_1$? what if $L_2$?'' questions form a budgeted tree or DAG. The branch is evaluated conditionally, and any candidate returned to the certified environment is a subgoal, never a BANK fact.
+
+When a declared stagnation diagnostic fires, a \emph{Dreamer depth charge} may: checkpoint certified state; raise speculative depth within a budget; sample unusual branches, non-greedy priorities, and low-frequency address regions; measure conditional leverage and option gain; nominate concrete proof tasks; verify independently before any BANK deposit; and resume ordinary search. The diagnostic does not prove that stagnation is escapable or that the new schedule is cheaper.
+
+\section{Role and architecture discipline}
+In the AMLD+0 architecture, the six roles are $0$ (Player-0), $P$ (Prover), $R$ (Refuter), $D$ (Dependence), $I$ (Independence), and $C$ (Contradiction). A Dreamer or Analyst may be implemented as a \emph{nonvoting internal tactic/module}, or in a separately specified architecture; neither designation replaces a settlement role. Speculative work may be delegated legally by the controller, with all costs charged; settled/refuted/dependence/independence/contradiction outcomes remain distinct.
+
+\section{Minimal operational algorithm}
+\begin{verbatim}
+IMAGINE(B, T, depth, budget):
+    queue := [(empty_address, empty_hypotheses, budget)]
+    node_count := 1   # explicit finite cap N_max
+    discoveries := []
+    while queue is not empty and node_count <= N_max:
+        (address, H, reserve) := take_next(queue)
+        analyze MAPQUEST(B union H, T, status="speculative")
+        if depth(address) < depth and reserve permits:
+            for L in selected_candidate_hypotheses(address, H):
+                child := (address append L, H union {L}, remaining_reserve)
+                if node_count < N_max and charge_ok(child):
+                    append child to queue       # tagged; no BANK write
+                    node_count := node_count + 1
+                if analysis makes L promising:
+                    discoveries.append(proof_subgoal(Gamma |- L))
+                    # goal status is UNVERIFIED; any branch proof is conditional
+    return discoveries                        # unverified suggestions only
+
+FOR EACH returned proof_subgoal:
+    run authorized proof search (fully charged)
+    require verifier receipt for the frozen judgment
+    write to BANK only on accepted, assumption-safe receipt
+\end{verbatim}
+The bounded queue is illustrative pseudocode and has not been executed as a certified general-purpose ATP. The test \texttt{charge\_ok} must include the cost of generating and evaluating even discarded candidates, and an actual implementation must guarantee that scoring and candidate generation terminate or are interrupted at a charged cap.
+
+\section{Conclusion and limitations}
+Recursive imagination is \emph{branch-preserving counterfactual search plus navigation plus hypothesis-safe promotion}. Theorem~\ref{thm:safe} formalizes a conditional safety invariant. It does not establish a successful escape policy, search completeness, verified runtime improvement, or a useful global metric. An executable implementation would need independent validation of its branch generator, assumption-dependency export, verifier trust boundary, and charged budget semantics. The pseudocode alone does not establish an executed or certified general-purpose ATP.
+
+\end{document}
