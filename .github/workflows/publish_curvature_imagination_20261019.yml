@@ -1,0 +1,40 @@
+name: Publish audited imagination and curvature (slots 1 and 2)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/curvature_imagination_20261019/source_bundle.tar.gz.b64'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-audited-imagination-curvature-20261019
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX and PDF verification
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq texlive-latex-extra texlive-pictures texlive-fonts-recommended lmodern
+          python -m pip install -q pymupdf==1.26.4
+      - name: Compile verified sources and publish both reviewed cards
+        run: python scripts/publish_curvature_imagination_20261019.py
+      - name: Commit both publications
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.LO_Logic_in_Computer_Science/recursive_what_if_imagination_in_amld cs.LO_Logic_in_Computer_Science/geodesic_curvature_profile_settlement_001
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish audited imagination revision slot 1 and curvature settlement slot 2'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
