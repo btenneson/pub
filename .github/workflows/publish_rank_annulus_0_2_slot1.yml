@@ -1,0 +1,41 @@
+name: Publish DATA MIND Rank Annulus 0.2 in slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/rank_annulus_0_2/source.zlib.b64'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-rank-annulus-0-2
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX and PDF validation
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install -q pymupdf==1.26.4
+      - name: Publish repaired and re-audited DATA MIND paper
+        run: python scripts/publish_rank_annulus_0_2_slot1.py
+      - name: Commit and deploy publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.LO_Logic_in_Computer_Science/from_guaranteed_basin_escape_to_certified_cost_optimality
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish DATA MIND rank-annulus cost optimality v0.2 at slot 1'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
