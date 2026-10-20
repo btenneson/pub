@@ -1,0 +1,90 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=.75in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,booktabs,longtable,tabularx,enumitem,xcolor,hyperref}\newcommand{\Paths}{\mathsf{Path}}
+\definecolor{navy}{HTML}{17395B}\definecolor{pale}{HTML}{F2F6FA}
+\hypersetup{colorlinks=true,urlcolor=navy,linkcolor=navy,pdftitle={ATLAS Reaudit of Repaired DNI v0.2}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{2.6pt}
+\setlist[enumerate]{leftmargin=19pt,itemsep=3pt,topsep=3pt}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries\color{navy} ATLAS Repair and Re-Audit}\par\vspace{4pt}
+{\large Deterministic--Nondeterministic Interfaces, Version 0.2}\par\vspace{4pt}
+{\small Proof, mathematical scope, priority, and typesetting review \textbullet{} 20 October 2026}
+\end{center}
+\vspace{5pt}
+\noindent\fcolorbox{navy}{white}{\parbox{.944\linewidth}{\textbf{Verdict: PASS for the repaired, restricted finite-classical mathematics.}\\[2pt]
+\textbf{Still preliminary:} This is \emph{not} an established general interface theory of all independently specified deterministic and probabilistic theories. The stronger finite-resource result is fully proved in the repaired text, but an exhaustive literature priority audit has not been completed.}}
+
+\section*{1. Materials and audit standard}
+Compared the original eight-page article \textit{DNI v0.1} and prior \textit{ATLAS Audit v0.1} with the repaired eight-page source and rendered PDF, \textit{DNI v0.2 ATLAS Repaired}. Reconstructed the proofs independently, checked the finite-support and state-count arguments, performed exhaustive three- and four-state graph checks and exact rational witness verification, validated cited precedent for the intertwining identities, and inspected all rendered PDF pages. This is an ATLAS-style mathematical audit conducted in this session, not a claim of execution by any separately running research system.
+
+\section*{2. Disposition of all major earlier findings}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{@{}p{.13\textwidth}p{.15\textwidth}X@{}}
+\toprule
+\textbf{ID} & \textbf{Status} & \textbf{Repair and evidence}\\\midrule
+M1: Priority & RESOLVED & (S1)--(S2) explicitly identified with $\Lambda\Phi=I$, $\Lambda P=K\Lambda$; Rogers--Pitman (1981) and Alberts cited before the Markov-history theorem. No originality claim on those identities.\\
+M2: Possibility & RESOLVED & Added (P1)--(P2), finite-support bridge, support-composition proposition, shift-path existence, and a finite-state minimum corollary. The distinction between nondeterminism and stochastic weights is maintained.\\
+M3: Minimality & RESOLVED (restricted) & Defined $m_*(K)$ over finite hidden spaces and proved exact necessary and sufficient graph criterion and minimal cardinality. General categorical/semantic minimality deliberately remains open.\\
+M4: Unlimited encoding & RESOLVED (restricted) & Added finite-resource obstruction, minimum hidden-state recurrence, fixed-implementation LP, and two contrasting examples. The freedom to choose $f,R,E$ is explicit.\\
+\bottomrule
+\end{tabularx}
+
+\section*{3. Independent mathematical verification}
+\small
+\begin{longtable}{@{}p{.30\linewidth}p{.14\linewidth}p{.49\linewidth}@{}}
+\toprule
+\textbf{Repaired result} & \textbf{Result} & \textbf{Independent check}\\\midrule
+\endhead
+Stochastic DNI and Markov histories & PASS & $E$ concentrated on readout fibres and $f_*E=EK$ suffice for conditional hidden distributions to renew at each observed step, giving the full Markov joint law. Established Rogers--Pitman specialization.\\
+Finite support bridge & PASS & For finite nonnegative sums, positive support of $EK(y)$ equals the union of supports of $E(z)$ for all positive $K(y,z)$. Pushforward support under a deterministic map equals its image.\\
+Compositional support & PASS & Positivity of a finite matrix product is equivalent to the existence of a positive summand.\\
+Possibilistic path shift & PASS & Every legal tail $z,z_1,\ldots$ may be prepended by an allowed predecessor $y$; therefore $f[L(y)]=\bigcup_{z\in N(y)}L(z)$.\\
+Positive-word lower bound & PASS & A fixed finite hidden initial state fixes one output word; different initial readouts occupy disjoint preparation fibres. Every positive Markov word must occur. Hence $|X|\ge B_n$.\\
+Graph-path equivalence & PASS & Cyclic branching permits arbitrarily delayed exits and yields unbounded distinct prefixes; without cyclic branching every walk is forced after its first repeated vertex, so only finitely many infinite paths exist.\\
+Exact minimal realization & PASS & Path-space shift gives a witness when finite; the word bound is tight at a length separating all finitely many distinct infinite paths. Thus $m_*=|\Paths_\infty|=\sup_nB_n$.\\
+Possibilistic minimum & PASS & (P2) lifts every admissible finite word inductively to a hidden starting state, giving the same lower bound; finite shift-path realization attains it.\\
+Counting recurrence & PASS & Every cyclic vertex has one forced infinite continuation; every noncyclic vertex splits legal paths by first successor. Noncyclic induced subgraph is acyclic.\\
+Four-state witness & PASS & All 12 intertwining coordinates and nine readout coordinates were independently checked using exact rational arithmetic. Four paths give the matching lower bound.\\
+Fixed $f,R$ LP & PASS & Normalization, readout fibres and the coordinate form of $f_*E=EK$ are linear in $E$; rational coefficients admit a rational feasible point when nonempty.\\
+Finite-time TV stability & PASS & Reconstructed telescoping/one-step contraction bound $\Delta_{n+1}\le\Delta_n+\varepsilon$; it is marginal-only as written.\\
+Elementary joint-model criterion & PASS & In a disjoint extension of a common signature, models can be transported across an isomorphism of common reducts and glued without mixed axioms. No stronger amalgamation theorem claimed.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section*{4. Independent computational checks (not proof substitutes)}
+\begin{enumerate}
+\item \textbf{Exhaustive three-state support graphs:} 343 directed graphs with all three outdegrees nonzero were enumerated ($7^3=343$). Exactly 39 satisfied the no-branching-on-cycles condition and 304 failed. In every satisfying case, length-11 path-word counts had stabilized and matched the graph recurrence. Every failing case had strictly more positive length-11 words than length-2 words. This checks many instances but is not an exhaustive verification of arbitrary state counts.
+\item \textbf{Independent four-state exhaustive check:} All $15^4=50{,}625$ four-vertex directed graphs with nonempty outdegree were separately enumerated. Cycle membership was computed using positive-length transitive closure rather than the depth-first check above. Exactly 904 satisfied the graph criterion and 49,721 failed. Each satisfying graph had stabilized path-word counts by length 12; each failing graph had more length-12 words than length-4 words. This provides a second finite consistency check, not a proof of the general theorem.
+    \item \textbf{Four-hidden-state example:} The rational interface with $E(a)=\tfrac13\delta_{w_1}+\tfrac23\delta_{w_2}$, $E(b)=\delta_{w_3}$, $E(c)=\delta_{w_4}$ was checked entry-by-entry for (S1) and (S2).
+\item \textbf{Typesetting:} The revised TeX compiles to eight letter-size PDF pages with no overfull boxes, LaTeX errors, or undefined references in the final pass. All eight pages were rendered and reviewed; two minor underfull paragraph diagnostics do not conceal mathematics.
+\end{enumerate}
+
+\section*{5. Remaining qualifications and publication advice}
+\textbf{Q1 --- Originality: NOT CERTIFIED.} The newly organized finite-state characterization is proved, but elementary path/cycle classification and automata realizations may have earlier formulations. The audit establishes mathematical correctness, not international literature priority. Present the result as a self-contained finite-classical theorem pending extended literature review.
+
+\textbf{Q2 --- Theory-of-theories scope: LIMITED.} The paper formally states a joint-model criterion for disjoint first-order signatures; it does not construct a universal mixed-signature interface or prove conservative embedding of arbitrary input theories. A syntactic pushout need not yield semantic compatibility.
+
+\textbf{Q3 --- Theoretical costs: QUALIFIED.} $m_*$ optimizes the number of hidden states over freely chosen deterministic $f$, readout $R$, and preparation $E$. It does not minimize bits of storage, probability-description complexity, physical implementability, runtime, or a preassigned source deterministic theory.
+
+\textbf{Q4 --- Semantics: LIMITED.} Probability is classical and discrete time; no nonclassical measurement, contextuality, causal locality or physical reconstruction theorem is established. The role of statistical preparation remains declared, rather than suppressed.
+
+\textbf{Q5 --- Algorithmic precision: ACCEPTABLE.} The exact recurrence is finite and testable. Bit complexity and optimization when the source structures are independently fixed remain future work.
+
+\section*{6. Final certification statement}
+\textbf{Mathematical proofs: PASS} for results within stated hypotheses.\\
+\textbf{Prior ATLAS M1--M4 repairs: PASS} in the expressly restricted sense above.\\
+\textbf{Priority and broader philosophical/physical applicability: NOT CERTIFIED.}\\
+\textbf{Document quality: PASS.}\\
+\textbf{Recommended designation:} \emph{ATLAS-audited working mathematical article, Version 0.2}. The parent Version 0.1 remains unchanged; no publication action was taken.
+
+\section*{References checked}
+\begin{enumerate}[label={\arabic*.},leftmargin=19pt]
+\item L. C. G. Rogers and J. W. Pitman, ``Markov functions,'' \emph{Annals of Probability} \textbf{9}(4), 573--582 (1981). \url{https://doi.org/10.1214/aop/1176994363}.
+\item T. Alberts, ``Pitman--Rogers on Finite State Markov Chains,'' University of Utah, \url{https://www.math.utah.edu/~alberts/notes/sle-markov-functions/discrete-pitman-rogers/}.
+\item T. Fritz, ``A synthetic approach to Markov kernels, conditional independence and theorems on sufficient statistics,'' \emph{Advances in Mathematics} \textbf{370}, 107239 (2020).
+\item J. A. Goguen and R. M. Burstall, ``Institutions: Abstract model theory for specification and programming,'' \emph{Journal of the ACM} \textbf{39}(1), 95--146 (1992).
+\end{enumerate}
+\end{document}

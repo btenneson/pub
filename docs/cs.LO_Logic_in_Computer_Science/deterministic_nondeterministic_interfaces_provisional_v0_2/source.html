@@ -1,0 +1,293 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PROVISIONAL — Deterministic–Nondeterministic Interfaces: Exact Realization, Finite-Resource Obstructions, and Common-Theory Compatibility — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/deterministic_nondeterministic_interfaces_provisional_v0_2/">Back to publication</a><h1>PROVISIONAL — Deterministic–Nondeterministic Interfaces: Exact Realization, Finite-Resource Obstructions, and Common-Theory Compatibility</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/deterministic_nondeterministic_interfaces_provisional_v0_2/source.tex" download>Download source</a><pre>\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.90in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{tikz-cd,booktabs,tabularx,enumitem,xcolor,fancyhdr,hyperref,cleveref}
+\usepackage[most]{tcolorbox}
+\definecolor{navy}{HTML}{17395B}
+\definecolor{teal}{HTML}{236A75}
+\definecolor{pale}{HTML}{F2F6FA}
+\hypersetup{colorlinks=true,linkcolor=navy,urlcolor=teal,citecolor=teal,pdftitle={Deterministic--Nondeterministic Interfaces: Exact Realization, Finite Resource Obstructions, and Common-Theory Compatibility (ATLAS Repaired v0.2)}}
+\setlength{\parskip}{3.5pt}\setlength{\parindent}{0pt}
+\setlist[enumerate]{leftmargin=19pt,topsep=4pt,itemsep=2pt}
+\setlist[itemize]{leftmargin=19pt,topsep=4pt,itemsep=2pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\footnotesize\color{navy}\textsc{DNI: audited working note}}
+\fancyhead[R]{\footnotesize\color{navy}v0.2 \textbullet{} 20 October 2026}
+\fancyfoot[C]{\footnotesize\thepage}\renewcommand{\headrulewidth}{0.3pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\TT}{\mathcal{T}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\Supp}{\operatorname{Supp}}
+\newcommand{\Paths}{\mathsf{Path}}
+\newcommand{\Words}{\mathsf{Word}}
+\newcommand{\Compat}{\operatorname{Compat}}
+\newtcolorbox{mainbox}[1][]{enhanced,breakable,colback=pale,colframe=navy,boxrule=.6pt,arc=2mm,left=9pt,right=9pt,top=7pt,bottom=7pt,#1}
+\begin{document}
+\begin{center}
+{\Large\bfseries\color{navy} Deterministic--Nondeterministic Interfaces}\par\vspace{5pt}
+{\large Exact Realization, Finite-Resource Obstructions, and Common-Theory Compatibility}\par\vspace{8pt}
+{\small ATLAS-repaired mathematical working note \textbullet{} Version 0.2 \textbullet{} 20 October 2026}
+\end{center}
+\vspace{3pt}
+\begin{abstract}
+We investigate a deliberately restricted interface between deterministic, possibilistic, and stochastic discrete-time theories. A readout/preparation intertwining for deterministic and Markov dynamics is explicitly attributed to classical Markov-function theory. We supply a parallel exact interface for set-valued nondeterminism and show that taking finite stochastic supports respects composition and interfaces. Our central finite-state result characterizes the existence and \emph{minimum hidden-state cardinality} of an exact deterministic realization of a given finite-state Markov chain: such a finite realization exists precisely when every vertex lying on a directed cycle of the positive-transition graph has exactly one possible successor. When this condition holds, the minimum is the number of legal infinite observable paths, computable by a finite recurrence; when it fails, no finite hidden-state realization exists. We give a fully explicit four-state optimal interface, a linear-feasibility test for a fixed implementation, and a total-variation error bound. We distinguish these results from the still-unresolved task of building a general semantic interface between independently specified theories. The contribution is an auditable classical synthesis; no general originality claim or physical interpretation is presumed.
+\end{abstract}
+\begin{mainbox}
+\textbf{Scope and status.} We prove precise results in finite classical transition systems, give standard Borel path-space realizations as background, and formulate rather than solve the unrestricted theory-of-theories problem. The shared formal language is somewhat more general than either deterministic or probabilistic transition systems, but is \emph{not} asserted to subsume all possible operational or physical theories.
+\end{mainbox}
+
+\section{Three dynamics and the restricted target}
+For a nonempty finite set $Y$, let $\D(Y)$ denote probability distributions and $\PP_+(Y)$ its nonempty subsets. A deterministic dynamics is $f:Y\to Y$; a possibilistic dynamics is $N:Y\to\PP_+(Y)$; and a probabilistic dynamics is a row-stochastic kernel $K:Y\to\D(Y)$. Every $f$ induces both $N_f(y)=\{f(y)\}$ and the Dirac kernel $K_f(y,z)=\one_{\{z=f(y)\}}$. Conversely, finite $K$ induces the nonempty successor relation
+\begin{equation}\label{eq:support}
+N_K(y)=\{z\in Y:K(y,z)&gt;0\}.
+\end{equation}
+A possibility relation does not determine weights; this distinction will remain explicit.
+
+Given $K$ and a finite hidden-state budget $m$, our concrete question is not merely whether one can encode future stochastic outcomes in an unrestricted hidden state. It is whether there exist a finite set $X$ of size at most $m$, a deterministic $f:X\to X$, readout $R:X\to Y$, and a stochastic preparation $E:Y\to\D(X)$ satisfying exact interface equations. We then ask for the smallest such $m$, with no bound placed on the numerical precision of $E$. We do not constrain a prescribed physical $f$, which would be a strictly harder problem.
+
+\section{Exact stochastic interfaces and acknowledged antecedents}
+For measurable $X,Y$, let $f:X\to X$ and $R:X\to Y$ be measurable functions, $K$ a Markov kernel on $Y$, and $E$ a Markov kernel $Y\rightsquigarrow X$. For measures $\mu$, write $g_*\mu$ for pushforward along $g$; the composite kernel $EK$ means
+\[
+(EK)(y,A)=\int_Y E(z,A)K(y,dz).
+\]
+\begin{definition}[Exact deterministic--stochastic interface]\label{def:stochastic}
+The quadruple $(f,K,R,E)$ is an \emph{exact stochastic DNI interface} if
+\begin{align}
+R_*E(y)&amp;=\delta_y\qquad (y\in Y),\tag{S1}\label{eq:s1}\\
+ f_*E(y)&amp;=(EK)(y)\qquad (y\in Y).\tag{S2}\label{eq:s2}
+\end{align}
+Equations are kernel equalities and cannot be weakened to matching only individual outcomes.
+\end{definition}
+In row-matrix notation, letting $P(x,x&#x27;)=\one_{\{f(x)=x&#x27;\}}$, $\Phi(x,y)=\one_{\{R(x)=y\}}$, and $\Lambda=E$, these are $\Lambda\Phi=I$ and $\Lambda P=K\Lambda$. They are the deterministic-upstairs special case of the classical intertwining/projection conditions associated with Rogers--Pitman \cite{rogers1981,alberts}. Thus the interface identities and Markov-function assertion are \emph{not claimed as new}.
+\begin{center}
+\begin{tikzcd}[row sep=large,column sep=huge]
+\D(Y)\arrow[r,&quot;K_*&quot; ]\arrow[d,&quot;E_*&quot;&#x27;] &amp; \D(Y)\arrow[d,&quot;E_*&quot;]\\
+\D(X)\arrow[r,&quot;f_*&quot;&#x27;]&amp;\D(X)
+\end{tikzcd}
+\end{center}
+\begin{theorem}[Intertwining and full observable history]\label{thm:markov}
+If \eqref{eq:s1}--\eqref{eq:s2} hold and $Y$ is finite, then for every $n\ge 0$,
+\begin{equation}\label{eq:iterate}
+R_*f_*^{\,n}E=K^n.
+\end{equation}
+Moreover, if $X_0\sim E(y)$, $X_t=f^t(X_0)$, and $Y_t=R(X_t)$, then
+\[
+\Pr(Y_0=y_0,\ldots,Y_n=y_n)=\one_{\{y_0=y\}}\prod_{t=0}^{n-1}K(y_t,y_{t+1}).
+\]
+\end{theorem}
+\begin{proof}
+Induction on $n$ using \eqref{eq:s2} gives $f_*^nE=EK^n$; apply $R_*$ and \eqref{eq:s1}. For joint histories, initially the hidden-state distribution conditional on $Y_0=y$ is $E(y)$. If the hidden conditional distribution after a positive-probability observed history ending at $z$ is $E(z)$, then after one deterministic step it is $\sum_w K(z,w)E(w)$. By \eqref{eq:s1}, $E(w)$ is concentrated on $R^{-1}(w)$, so conditioning on the next readout $w$ recovers $E(w)$ with probability $K(z,w)$. Induction gives the complete finite-dimensional law.
+\end{proof}
+\begin{remark}
+Preparing a randomly chosen hidden state and thereafter evolving deterministically does not establish a deterministic physical ontology. The statistical preparation is an explicit assumption, not a philosophical conclusion.
+\end{remark}
+
+\section{A parallel possibilistic interface}
+For $N:Y\to\PP_+(Y)$, let $L:Y\to\PP_+(X)$ be a nonempty \emph{set-valued preparation}. For a subset $A\subseteq X$, define $f[A]=\{f(x):x\in A\}$ and $R[A]=\{R(x):x\in A\}$.
+\begin{definition}[Exact deterministic--possibilistic interface]\label{def:poss}
+The quadruple $(f,N,R,L)$ is an exact possibilistic DNI interface if for all $y\in Y$,
+\begin{align}
+R[L(y)]&amp;=\{y\},\tag{P1}\label{eq:p1}\\
+ f[L(y)]&amp;=\bigcup_{z\in N(y)}L(z).\tag{P2}\label{eq:p2}
+\end{align}
+These are equalities of sets, not probabilities. Different preparation sets for distinct $y$ are disjoint by (P1).
+\end{definition}
+\begin{proposition}[Finite support bridge]\label{prop:support}
+If $X,Y$ are finite and $(f,K,R,E)$ is an exact stochastic interface, then $(f,N_K,R,L_E)$ is an exact possibilistic interface, where $L_E(y)=\{x:E(y,x)&gt;0\}$.
+\end{proposition}
+\begin{proof}
+Equation (S1) implies $L_E(y)\subseteq R^{-1}(y)$ and nonemptiness. Taking pointwise positive supports of (S2) yields
+$\Supp(f_*E(y))=f[L_E(y)]$ and $\Supp((EK)(y))=\bigcup_{z:K(y,z)&gt;0}L_E(z)$, since all summands are nonnegative. These are (P1)--(P2).
+\end{proof}
+\begin{proposition}[Compositional support]\label{prop:comp}
+For finite stochastic kernels $K_1,K_2$, their positive-support relations satisfy $N_{K_1K_2}=N_{K_1}\circ N_{K_2}$ in the corresponding order of relational composition. Dirac kernels map to singleton relations.
+\end{proposition}
+\begin{proof}
+A matrix product entry $(K_1K_2)(y,z)=\sum_w K_1(y,w)K_2(w,z)$ is positive if and only if some summand is positive.
+\end{proof}
+\begin{theorem}[Possibilistic path-space representation]\label{thm:poss-path}
+Every finite, everywhere-nonempty possibility relation $N$ admits an exact possibilistic interface with deterministic left shift on the set $\Paths_\infty(N)$ of all legal infinite paths.
+\end{theorem}
+\begin{proof}
+Take $X=\Paths_\infty(N)$, $f$ the left shift, $R$ the first-coordinate readout, and $L(y)$ the set of legal paths whose first coordinate is $y$. Each $L(y)$ is nonempty because every state has a successor. The readout condition is immediate. Every shifted path starting at $y$ begins at a successor $z\in N(y)$, while any legal path starting at such $z$ can be preceded by $y$. Thus $f[L(y)]=\bigcup_{z\in N(y)}L(z)$.
+\end{proof}
+The shift-space construction is classical. The new purpose here is to place the set-valued and probability-valued interfaces side by side without conflating them.
+
+\section{A finite hidden-state characterization and minimum cost}
+Hereafter $Y$ is finite and $K$ is any stochastic matrix. Let $G_K=(Y,A)$ denote its positive-transition digraph, with $(y,z)\in A$ iff $K(y,z)&gt;0$. An \emph{infinite legal path} is a sequence $w=(y_0,y_1,\ldots)$ following edges of $G_K$. Write $\Paths_\infty(K)$ for the set of such paths, including their initial states, and $\Words_n(K)$ for the length-$n$ legal words. Define
+\[
+B_n(K)=|\Words_n(K)|,\qquad m_*(K)=\inf\{|X|:(f,K,R,E)\text{ exact, }X\text{ finite}\},
+\]
+with $\inf\varnothing=\infty$. A vertex is \emph{cyclic} if it lies on a directed cycle, including a self-loop.
+
+\begin{lemma}[Finite-word lower bound]\label{lem:lower}
+Every exact stochastic DNI interface with finite $X$ satisfies $|X|\ge B_n(K)$ for every $n\ge 1$.
+\end{lemma}
+\begin{proof}
+By \cref{thm:markov}, every legal length-$n$ word has strictly positive probability as an observed prefix when preparation starts from its first state. Each hidden initial state $x$ determines one and only one length-$n$ output word. By (S1), preparatory supports for distinct initial observable states lie in disjoint readout fibres. Consequently, all $B_n(K)$ possible initial words require at least $B_n(K)$ distinct hidden initial states.
+\end{proof}
+\begin{lemma}[Graph-path finiteness criterion]\label{lem:graph}
+For a finite directed graph of nonzero outdegree at every vertex, the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+\item the set of all legal infinite paths is finite;
+\item $\sup_n B_n&lt;\infty$;
+\item every vertex on a directed cycle has outdegree exactly one.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(i)$\Rightarrow$(ii): Each finite legal word extends to an infinite path, so each level has at most as many words as there are infinite paths. For (ii)$\Rightarrow$(iii), suppose a cyclic vertex $v$ has two distinct successors and choose a directed cycle through $v$. For each integer $j\ge0$, following that cycle exactly $j$ times and then taking the other successor yields a legal prefix that can be extended forever. These infinitely many prefixes lead to pairwise distinct infinite paths, and for any prescribed $q$ a sufficiently long common prefix length distinguishes the first $q$ choices, contradicting bounded $B_n$.
+For (iii)$\Rightarrow$(i), every infinite path repeats a vertex in at most $|Y|+1$ visited states. Its first repetition is on a directed cycle; all vertices of that cycle have unique successors, so the entire remaining infinite suffix is forced and periodic. There are only finitely many initial segments of length at most $|Y|+1$, and therefore only finitely many infinite paths.
+\end{proof}
+\begin{theorem}[Exact finite-resource characterization and minimality]\label{thm:minimum}
+For a finite-state stochastic kernel $K$ on $Y$, the following conditions are equivalent:
+\begin{enumerate}[label=(\alph*)]
+\item $K$ admits an exact stochastic DNI interface with finite deterministic hidden-state space $X$;
+\item every vertex on a directed cycle of $G_K$ has exactly one positive-probability successor;
+\item $\sup_{n\ge1}B_n(K)$ is finite.
+\end{enumerate}
+When these conditions hold, the minimum hidden-state size exists and is
+\begin{equation}\label{eq:minimum}
+\boxed{m_*(K)=|\Paths_\infty(K)|=\sup_{n\ge1}B_n(K).}
+\end{equation}
+If the conditions fail, $m_*(K)=\infty$ (meaning no \emph{finite} exact realization).
+\end{theorem}
+\begin{proof}
+If a finite exact interface exists, \cref{lem:lower} bounds all $B_n$ by $|X|$. By \cref{lem:graph}, this gives (b), (c), and finite $\Paths_\infty(K)$.
+Conversely suppose that the graph condition holds. Take the \emph{finite} hidden space $X=\Paths_\infty(K)$, deterministic left shift $f$, first-coordinate readout $R$, and for each $y$ let $E(y)$ be the Markov path law started at $y$, restricted to the finite set $X$. This is a probability measure because all possible paths eventually enter a deterministic cycle and hence belong to $X$. The path-space argument gives (S1)--(S2). Thus $m_*(K)\le|X|$.
+For every pair of distinct infinite paths there is a finite length at which their prefixes differ. As $X$ is finite, some common length $n_0$ separates all paths, and $B_{n_0}=|X|$. By \cref{lem:lower}, every finite interface has size at least $|X|$. Hence equality holds, and monotonicity of the positive prefix counts yields the supremum formula.
+\end{proof}
+\begin{corollary}[Minimum-cost possibilistic realization]\label{cor:poss-min}
+For a finite relation $N:Y\to\PP_+(Y)$, its minimum finite deterministic hidden-state size under (P1)--(P2) is $|\Paths_\infty(N)|$ if every cyclic vertex has one successor, and no finite realization exists otherwise.
+\end{corollary}
+\begin{proof}
+The deterministic readout of a hidden state determines its infinite observation path. Conditions (P1)--(P2) imply by induction that every legal finite word is realized by a hidden state; hence $|X|\ge B_n(N)$ for every $n$. The graph lemma gives necessity. When legal infinite paths are finite, the construction of \cref{thm:poss-path} attains $|X|=|\Paths_\infty(N)|$, while a sufficiently long word length distinguishes every pair of infinite paths and yields the matching lower bound.
+\end{proof}
+\begin{remark}[Scope of the minimum]
+The optimality statement quantifies over freely chosen $f,R,E$ and counts \emph{states}, not bits of precision, preparation complexity, running time, physical plausibility, or cost of an independently prescribed source model. Enlarging the resource model changes the question.
+\end{remark}
+
+\section{A finite decision rule and worked examples}
+When the cycle condition holds, define $c(y)$ recursively as follows: on a cyclic vertex, set $c(y)=1$; on each noncyclic vertex, set
+\begin{equation}\label{eq:recursion}
+c(y)=\sum_{z:K(y,z)&gt;0}c(z).
+\end{equation}
+The induced graph on noncyclic vertices is acyclic, so this recurrence can be evaluated in reverse topological order. Then
+\begin{equation}\label{eq:count}
+m_*(K)=\sum_{y\in Y}c(y).
+\end{equation}
+Here $c(y)$ counts infinite legal paths beginning at $y$. Testing strongly connected components and directed self-loops decides the cycle condition; hence the minimum is computable without enumerating all hidden machines.
+\begin{example}[An optimal four-state interface]\label{ex:four}
+Let $Y=\{a,b,c\}$ with
+\[
+K(a,b)=\tfrac13,\qquad K(a,c)=\tfrac23,\qquad K(b,b)=K(c,c)=1,
+\]
+and all other transition probabilities zero. There are precisely four infinite legal paths:
+\[
+w_1=abbb\cdots,\quad w_2=accc\cdots,\quad w_3=bbb\cdots,\quad w_4=ccc\cdots.
+\]
+Set $X=\{w_1,w_2,w_3,w_4\}$, let $f$ shift each path ($f(w_1)=w_3$, $f(w_2)=w_4$, $f(w_3)=w_3$, $f(w_4)=w_4$), and let $R$ read its initial symbol. Take
+\[
+E(a)=\tfrac13\delta_{w_1}+\tfrac23\delta_{w_2},\quad E(b)=\delta_{w_3},\quad E(c)=\delta_{w_4}.
+\]
+Then $f_*E(a)=\frac13 E(b)+\frac23 E(c)$ and (S1)--(S2) hold. Since $c(a)=2$ and $c(b)=c(c)=1$, \cref{thm:minimum} proves that \emph{four} hidden states are necessary and sufficient.
+\end{example}
+\begin{example}[Almost-sure absorption does not imply finite realization]\label{ex:geo}
+Take $Y=\{a,b\}$ with $K(a,a)=K(a,b)=1/2$ and $K(b,b)=1$. The process starting at $a$ is eventually absorbed at $b$ with probability one. Nevertheless, $a$ lies on a self-loop and has two successors. Every integer $j\ge0$ yields a different legal path $a^{j+1}b^\infty$ of positive probability. By \cref{thm:minimum}, there is no finite exact deterministic interface, despite almost-sure absorption.
+\end{example}
+\begin{example}[Endlessly stochastic two-state flips]\label{ex:flip}
+For $Y=\{0,1\}$ and $K=\left(\begin{smallmatrix}3/4&amp;1/4\\1/4&amp;3/4\end{smallmatrix}\right)$, both vertices lie on cycles and have two successors. No finite exact deterministic interface exists. There is, however, an infinite one: take $X=\{0,1\}\times[0,1]^{\N_0}$, let $R$ read the bit, let $E(s)$ prepare $s$ with an independent uniform sequence, and define $f(s,u_0,u_1,\ldots)=(s\oplus\one_{\{u_0&lt;1/4\}},u_1,u_2,\ldots)$. Independence of the tail verifies (S1)--(S2).
+\end{example}
+
+\section{Feasibility for a fixed hidden implementation}
+\begin{proposition}[Linear feasibility with fixed dynamics]\label{prop:lp}
+Suppose $X,Y$ are finite and $f:X\to X$, $R:X\to Y$, and $K$ are prescribed. An exact stochastic DNI interface exists if and only if real variables $e_{yx}$ satisfy
+\begin{align*}
+e_{yx}&amp;\ge0, &amp;\sum_{x\in X}e_{yx}&amp;=1,\\
+e_{yx}&amp;=0\quad\text{when }R(x)\ne y, &amp;&amp;\\
+\sum_{u:f(u)=x}e_{yu}&amp;=\sum_{z\in Y}K(y,z)e_{zx}&amp;&amp;\quad\text{for all }y\in Y,x\in X.
+\end{align*}
+If all $K(y,z)$ are rational, feasibility admits a rational solution $E$.
+\end{proposition}
+\begin{proof}
+Set $e_{yx}=E(y,\{x\})$. The first three constraints are exactly stochastic normalization and (S1), and the final constraints are the $x$-coordinates of (S2). Conversely these equations define the required kernel. With rational $K$, the constraints define a bounded rational polytope; every nonempty bounded rational polytope has a rational point.
+\end{proof}
+This result distinguishes \emph{freely chosen} finite realizations (governed by \cref{thm:minimum}) from the feasibility of a fixed deterministic implementation. It does not solve the general minimization problem when additional semantic restrictions are imposed.
+
+\section{Approximate stochastic interfaces}
+Let $\|\mu-\nu\|_{\TV}=\sup_A|\mu(A)-\nu(A)|$. Suppose (S1) holds exactly and for some $\varepsilon\ge0$,
+\begin{equation}\label{eq:approx}
+\sup_{y\in Y}\|f_*E(y)-(EK)(y)\|_{\TV}\le\varepsilon.
+\end{equation}
+\begin{theorem}[Uniform marginal error bound]\label{thm:approx}
+Under these assumptions, for each $n\in\N_0$,
+\[
+\sup_y\|R_*f_*^n E(y)-K^n(y)\|_{\TV}\le\min\{1,n\varepsilon\}.
+\]
+\end{theorem}
+\begin{proof}
+Put $\Delta_n=\sup_y\|f_*^nE(y)-EK^n(y)\|_{\TV}$. We have $\Delta_0=0$; by adding and subtracting $f_*^nEK(y)$, and using contraction of total variation under deterministic maps and Markov kernels, $\Delta_{n+1}\le\varepsilon+\Delta_n$. Hence $\Delta_n\le n\varepsilon$. Readout contracts total variation and (S1) gives $R_*EK^n=K^n$. The bound by one is automatic.
+\end{proof}
+This assertion concerns single-time \emph{marginal} laws. It does not claim an equality or estimate of entire path distributions in the approximate case.
+
+\section{What a theory of theories still requires}
+A higher-level interface must specify signatures $\Sigma_D,\Sigma_P$, a shared signature $\Sigma_0$, translations $\Sigma_0\to\Sigma_D$ and $\Sigma_0\to\Sigma_P$, model classes, and their satisfaction relations. In a suitable category of signatures the pushout
+\[
+\Sigma_D\sqcup_{\Sigma_0}\Sigma_P
+\]
+is a \emph{syntactic} object; it is not automatically a consistent joint semantic model nor a lowest-cost resource interface. Institution theory gives an established formal setting for such comparisons \cite{goguen1992}.
+\begin{proposition}[Elementary joint-model criterion for disjoint extensions]\label{prop:joint}
+Suppose $\Sigma_D$ and $\Sigma_P$ are many-sorted first-order signatures whose intersection is precisely $\Sigma_0$, with no cross-signature axioms beyond those in their separate theories. Then their union theory has a model if and only if there exist a $\Sigma_D$-model $M_D$ and a $\Sigma_P$-model $M_P$ whose $\Sigma_0$-reducts are isomorphic.
+\end{proposition}
+\begin{proof}
+A joint model restricts to two models with literally equal shared reducts. Conversely, transport one model along the specified isomorphism of its shared reduct so that the shared domains and common symbols agree; interpret the nonshared symbols independently from the two models on the resulting common carriers. Because the nonshared signatures are disjoint and each theory&#x27;s axioms use only its own signature, the combined structure satisfies both theories.
+\end{proof}
+\begin{remark}
+\Cref{prop:joint} is an elementary amalgamation observation, \emph{not} a guarantee that two independently prescribed dynamical systems admit any specific (S1)--(S2) interface. Those equations are additional mixed constraints, and semantic compatibility under them is strictly more demanding.
+\end{remark}
+An unrestricted physical or operational theory may require contextual observables, richer state/effect formalisms, nonclassical composition, or resource measures other than $|X|$. Markov categories organize deterministic and stochastic morphisms \cite{fritz2020}; generalized probabilistic theories provide another established operational language \cite{barrett2007}. Neither generality is derived from the finite classical results above.
+\begin{mainbox}
+\textbf{Open problem (restricted, precise).} Given two independently fixed dynamical models, a shared observation signature, and a declared class of admissible translations and auxiliary states, determine whether an exact compatibility witness exists and, if it does, minimize an explicitly stated resource cost. Our finite freely-chosen-source special case is solved by \cref{thm:minimum}; this general fixed-source problem is not.
+\end{mainbox}
+
+\section{Interpretation, audit boundaries, and conclusions}
+The article makes a precise distinction between (1) translating deterministic transitions into stochastic or possibilistic transitions, (2) constructing realizations after choosing an unrestricted or resource-constrained hidden state, and (3) reconciling \emph{independently specified} theories under fixed semantic obligations. Results about (1) and (2) do not establish (3). The finite-resource characterization is a concrete theorem about (2), and the fixed-implementation linear test is a tractable subproblem of (3).
+
+\textbf{Priority statement.} The Dirac inclusion, path-space shift realization, Rogers--Pitman intertwining, and the broad categorical frameworks are established antecedents. The finite-resource characterization and recurrence are supplied here with self-contained proofs as a focused contribution within this working note; no claim of novelty relative to the entire literature follows without a broader priority review.
+
+\textbf{Philosophical limitation.} No statement above resolves whether probabilities are ontological or epistemic, whether deterministic physical models exist for specific stochastic theories, or whether determinism entails any claim about free will or ethics. No special physical theory has been introduced.
+
+\begin{center}\small
+\begin{tabularx}{\textwidth}{@{}p{.36\textwidth}X@{}}\toprule
+Claim &amp; Proven status / dependency\\\midrule
+(S1)--(S2), observable Markov property &amp; Established intertwining specialization; proved and attributed here.\\
+Set-valued interface and support bridge &amp; Finite-state formalization; propositions proved here.\\
+Finite hidden-space existence and minimum &amp; Exact necessary/sufficient graph criterion, formula, constructive proof.\\
+Fixed hidden implementation &amp; Explicit linear feasibility formulation.\\
+General semantic theory amalgamation &amp; Elementary disjoint-signature criterion only; broad goal open.\\
+Physics, free will, ethical conclusions &amp; None claimed.\\\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{thebibliography}{9}
+\bibitem{rogers1981} L. C. G. Rogers and J. W. Pitman, ``Markov functions,&#x27;&#x27; \emph{Annals of Probability} \textbf{9}(4) (1981), 573--582. \url{https://doi.org/10.1214/aop/1176994363}.
+\bibitem{alberts} T. Alberts, ``Pitman--Rogers on Finite State Markov Chains,&#x27;&#x27; University of Utah explanatory notes. \url{https://www.math.utah.edu/~alberts/notes/sle-markov-functions/discrete-pitman-rogers/}.
+\bibitem{fritz2020} T. Fritz, ``A synthetic approach to Markov kernels, conditional independence and theorems on sufficient statistics,&#x27;&#x27; \emph{Advances in Mathematics} \textbf{370} (2020), 107239. \url{https://doi.org/10.1016/j.aim.2020.107239}.
+\bibitem{barrett2007} J. Barrett, ``Information processing in generalized probabilistic theories,&#x27;&#x27; \emph{Physical Review A} \textbf{75} (2007), 032304. \url{https://doi.org/10.1103/PhysRevA.75.032304}.
+\bibitem{goguen1992} J. A. Goguen and R. M. Burstall, ``Institutions: Abstract model theory for specification and programming,&#x27;&#x27; \emph{Journal of the ACM} \textbf{39}(1) (1992), 95--146. \url{https://doi.org/10.1145/147508.147524}.
+\bibitem{levin} D. A. Levin, Y. Peres, and E. L. Wilmer, \emph{Markov Chains and Mixing Times}, 2nd ed., American Mathematical Society (2017), Chapter 1 (random mapping representation). \url{https://pages.uoregon.edu/dlevin/MARKOV/mcmt2e.pdf}.
+\end{thebibliography}
+\end{document}</pre></main></body></html>

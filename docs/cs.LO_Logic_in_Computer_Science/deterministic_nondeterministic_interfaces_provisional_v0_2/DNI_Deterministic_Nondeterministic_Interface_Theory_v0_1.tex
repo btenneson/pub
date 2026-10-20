@@ -1,0 +1,320 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=.94in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{mathrsfs}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\definecolor{navy}{HTML}{17395B}
+\definecolor{teal}{HTML}{236A75}
+\definecolor{pale}{HTML}{F2F6FA}
+\definecolor{charcoal}{HTML}{26323B}
+\hypersetup{colorlinks=true, linkcolor=navy, urlcolor=teal, citecolor=teal, pdftitle={Deterministic--Nondeterministic Interfaces: A Minimal Common Framework for Dynamical Theories}, pdfsubject={Mathematical research proposal: theory interfaces}}
+\setlength{\parskip}{3.3pt}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{itemsep=2pt, topsep=3pt, leftmargin=20pt}
+\setlist[enumerate]{itemsep=3pt, topsep=4pt, leftmargin=21pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{navy}\textsc{DNI theory of theories}}
+\fancyhead[R]{\footnotesize\color{navy}Working note \textbullet{} v0.1}
+\fancyfoot[C]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\D}{\mathcal D}
+\newcommand{\Pp}{\mathcal P}
+\newcommand{\TT}{\mathcal T}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Compat}{\operatorname{Compat}}
+\newcommand{\NN}{\mathbb N}
+\newtcolorbox{mainbox}[1][]{enhanced,breakable,colback=pale,colframe=navy,boxrule=.6pt,arc=2mm,left=10pt,right=10pt,top=8pt,bottom=8pt,#1}
+\begin{document}
+\begin{center}
+{\Large\bfseries\color{navy} Deterministic--Nondeterministic Interfaces}\par
+\vspace{5pt}
+{\large A Minimal Common Framework for Dynamical Theories}\par
+\vspace{8pt}
+{\small Working mathematical research proposal \textbullet{} Version 0.1 \textbullet{} 20 October 2026}
+\end{center}
+\vspace{5pt}
+\begin{abstract}
+We propose a narrow, mathematical \emph{interface theory of theories} (DNI) in which deterministic dynamics, possibilistic nondeterminism, and stochastic dynamics can be related without identifying their internal descriptions. The basic interface is specified by a deterministic map, an observable readout, and a probabilistic preparation kernel. Two commuting equations give exact agreement of observable evolution. We prove preservation of iterated dynamics and finite-dimensional trajectory laws, construct a deterministic realization for every finite-state Markov chain, establish an obstruction to \emph{finite}-state deterministic realization of indefinitely many independent nondegenerate binary outcomes, and derive a finite-time stability bound for approximately commuting interfaces. We then separate dynamical realizability from the more general question of consistently amalgamating mathematical theories over a shared observational language. The proposal deliberately makes no physical identification or claim of a resolution of quantum gravity. Established constructions and genuinely open interface problems are distinguished throughout.
+\end{abstract}
+
+\begin{mainbox}
+\textbf{Organizing question.} Given a deterministic theory $\TT_D$ and a probabilistic theory $\TT_P$, when is there a third theory $\TT_I$ into which the relevant structures of both embed, such that predictions agree on a specified interface? The proposed analogue of a least common multiple is a \emph{minimal compatible common extension}, when one exists---not a universal master equation.
+\end{mainbox}
+
+\section{Motivation and scope}
+The mathematical question is prior to any particular physical theory. A deterministic description may specify exactly one successor for each complete state, while a probabilistic description may assign nontrivial weights to multiple successors. These are not contradictory merely by definition: deterministic transitions are particular stochastic transitions. The nontrivial issue is whether \emph{independently specified} theories can be related by maps preserving their designated predictions, laws, and composition rules.
+
+A purely syntactic union is insufficient. An interface must specify what information is observable, how hidden or additional states are prepared, how time evolution is translated, and when the resulting constraints have a joint model. Our proposal operates at two distinct levels: a concrete dynamical level, where statements can already be proved, and a theory-combination level, where general existence and minimality criteria remain research questions.
+
+\section{Three kinds of transition system}
+Let $S$ be a nonempty finite set for the elementary discussion, and let $\D(S)$ be its probability simplex. Three transition types should be distinguished:
+\begin{align}
+\text{deterministic:}\qquad &f:S\longrightarrow S,\\
+\text{possibilistic nondeterministic:}\qquad &N:S\longrightarrow\Pp(S)\setminus\{\varnothing\},\\
+\text{probabilistic:}\qquad &K:S\longrightarrow\D(S).
+\end{align}
+The second gives a nonempty \emph{set} of legal successors; the third additionally assigns normalized nonnegative probabilities. Possibility sets by themselves do not specify a probability distribution. For finite $S$, a stochastic transition $K$ has an underlying possibility relation $N_K(s)=\supp K(s)$, but in general many stochastic kernels induce the same relation.
+
+\begin{proposition}[Deterministic inclusion]\label{prop:dirac}
+Every deterministic transition $f:S\to S$ induces a stochastic kernel $K_f(s,\cdot)=\delta_{f(s)}$. This embedding respects identity transitions and composition.
+\end{proposition}
+\begin{proof}
+The Dirac distribution $\delta_{f(s)}$ is a probability measure. If $g:S\to S$ is another deterministic transition, then integrating $\delta_{g(t)}$ against $\delta_{f(s)}(dt)$ gives $\delta_{g(f(s))}$. The identity map similarly induces the identity stochastic kernel.
+\end{proof}
+
+\begin{remark}
+This inclusion does not establish that a genuinely stochastic \emph{physical} description has an underlying deterministic ontology. It is a structural fact about mathematical transition systems.
+\end{remark}
+
+\section{The exact dynamical interface}
+We use measurable spaces $X,Y$ (all finite spaces in the examples below). Let
+\[
+f:X\to X,\qquad K:Y\rightsquigarrow Y,\qquad R:X\to Y,\qquad E:Y\rightsquigarrow X.
+\]
+Here $f$ is measurable and deterministic; $K$ is a Markov kernel; $R$ is a deterministic readout; $E$ is a probabilistic preparation kernel. For a measurable map $g$, $g_*$ denotes pushforward of measures. For a kernel $L$, juxtaposition $EL$ below means kernel composition in the order specified by the integral:
+\[
+(EK)(y,A):=\int_Y E(z,A)\,K(y,dz), \qquad A\subseteq X\text{ measurable}.
+\]
+The corresponding composite $f_*E$ sends $y$ to the pushforward $f_*E(y)$. We identify $\id_Y$ with the identity kernel $y\mapsto\delta_y$.
+
+\begin{definition}[Exact DNI interface]\label{def:dni}
+An \emph{exact deterministic--stochastic interface} is a quadruple $(f,K,R,E)$ of the above types satisfying
+\begin{align}
+\boxed{R_*E=\id_Y} && \tag{DNI--1}\label{eq:read}\\[3pt]
+\boxed{f_*E=EK}. && \tag{DNI--2}\label{eq:intertwine}
+\end{align}
+The first equality means $R_*E(y)=\delta_y$ for each $y$. The second is an equality of probability kernels $Y\rightsquigarrow X$.
+\end{definition}
+
+\begin{center}
+\begin{tikzcd}[row sep=large,column sep=huge]
+Y \arrow[r,"K"] \arrow[d,"E"'] & Y \arrow[d,"E"] \\
+\D(X) \arrow[r,"f_*"'] & \D(X)
+\end{tikzcd}
+\end{center}
+\begin{center}\small\color{charcoal}Commutation at the level of distributions; $E$ is probabilistic, not a pointwise embedding.\end{center}
+
+Equation (DNI--1) says preparation followed by readout recovers the supplied observable state. Equation (DNI--2) says that stochastic evolution followed by preparation agrees with preparation followed by deterministic evolution. These requirements can fail for prescribed $f,K,R,E$; compatibility is not presumed.
+
+\section{Consequences of the exact interface}
+\begin{theorem}[Exact $n$-step agreement]\label{thm:iterates}
+If $(f,K,R,E)$ is an exact DNI interface, then for every $n\in\NN_0$,
+\begin{equation}\label{eq:nstep}
+\boxed{R_*f_*^{\,n}E=K^n.}
+\end{equation}
+Thus the distribution of the observed state after $n$ deterministic steps, when initialized by $E(y)$, equals the $n$-step distribution of the Markov kernel $K$ started at $y$.
+\end{theorem}
+\begin{proof}
+Equation (DNI--2) implies inductively that $f_*^{\,n}E=EK^n$. Applying $R_*$ and invoking (DNI--1) gives $R_*f_*^{\,n}E=R_*EK^n=K^n$.
+\end{proof}
+
+The theorem refers to fixed-time marginals. Under the same exact preparation and intertwining hypotheses, one can also obtain the \emph{joint} law of successive readouts.
+
+\begin{theorem}[Observable trajectory law, finite case]\label{thm:paths}
+Assume $Y$ is finite and $(f,K,R,E)$ is an exact DNI interface. Fix $y\in Y$, draw $X_0\sim E(y)$, set $X_t=f^t(X_0)$ and $Y_t=R(X_t)$. Then $(Y_t)_{t\ge 0}$ is a time-homogeneous Markov chain with initial state $y$ and transition kernel $K$. In particular, for any $y_0,\ldots,y_n\in Y$,
+\begin{equation}\label{eq:pathlaw}
+\Pr(Y_0=y_0,\ldots,Y_n=y_n)
+=\one_{\{y_0=y\}}\prod_{t=0}^{n-1}K(y_t,\{y_{t+1}\}).
+\end{equation}
+\end{theorem}
+\begin{proof}
+Because $R_*E(y)=\delta_y$, $Y_0=y$ almost surely and the conditional law of $X_0$ given $Y_0=y$ is $E(y)$. Suppose that, conditional on any positive-probability observed history ending at $Y_t=z$, the distribution of $X_t$ is $E(z)$. Equation (DNI--2) makes the conditional law of $X_{t+1}$ the mixture $\sum_w K(z,\{w\})E(w)$. By (DNI--1), each $E(w)$ assigns probability one to the fiber $R^{-1}(\{w\})$; these fibers are disjoint. Hence the conditional probability of $Y_{t+1}=w$ is $K(z,\{w\})$, and conditioned further on that event (when it has positive probability), $X_{t+1}$ has law $E(w)$. Induction proves the Markov property and the displayed finite-dimensional distribution formula.
+\end{proof}
+
+\section{A fully explicit two-state interface}
+\begin{example}[Stochastic flips from deterministic shifting]\label{ex:flip}
+Let $Y=\{0,1\}$ and let the stochastic theory flip its bit with probability $1/4$ at each step:
+\[
+K=\begin{pmatrix}3/4&1/4\\[2pt]1/4&3/4\end{pmatrix}.
+\]
+Set $X=\{0,1\}\times[0,1]^{\NN_0}$, with a point written $(s,u_0,u_1,\ldots)$. Define
+\[
+f(s,u_0,u_1,\ldots)=
+\bigl(s\oplus\one_{\{u_0<1/4\}},u_1,u_2,\ldots\bigr),
+\]
+where $\oplus$ is addition modulo two. Let $R$ select the first coordinate. Define $E(s)$ to be the law of $(s,U_0,U_1,\ldots)$ for independent uniform random variables $U_t\sim\mathrm{Unif}[0,1]$.
+
+Then $R_*E(s)=\delta_s$. Moreover, shifting the independent uniform sequence leaves an independent uniform tail, and the new first bit equals $s$ with probability $3/4$ and $1-s$ with probability $1/4$. Consequently
+\[
+f_*E(s)=\tfrac34E(s)+\tfrac14E(1-s)=(EK)(s).
+\]
+The deterministic evolution reproduces all observable Markov trajectory probabilities by \cref{thm:paths}.
+\end{example}
+
+\begin{remark}[What the example does not establish]
+The model samples an infinite random initial sequence via $E$. Having a deterministic transition function after initialization is not proof that nature actually provides those hidden variables or that all physical probability is epistemic. The construction is an existence result about representations.
+\end{remark}
+
+\section{Existence and obstruction theorems}
+\begin{theorem}[Deterministic path-space realization]\label{thm:realize}
+Every finite-state, time-homogeneous Markov kernel $K:Y\rightsquigarrow Y$ admits an exact DNI interface with a deterministic transition on a possibly infinite state space $X$.
+\end{theorem}
+\begin{proof}
+Take $X=Y^{\NN_0}$ with the product measurable structure and define $f$ to be the left shift,
+\[
+f(y_0,y_1,y_2,\ldots)=(y_1,y_2,\ldots).
+\]
+Let $R$ read the zeroth coordinate. For each $y\in Y$, let $E(y)$ be the Markov path measure on $Y^{\NN_0}$ having initial state $y$ and transition kernel $K$. This is well-defined for finite $Y$ by the standard extension construction. The initial coordinate is $y$ almost surely, so $R_*E(y)=\delta_y$. Shifting a path initialized at $y$ yields a mixture of Markov path laws started at each possible next state $z$, with weights $K(y,\{z\})$. That is,
+\[
+f_*E(y)=\sum_{z\in Y}K(y,\{z\})E(z)=(EK)(y).
+\]
+Both interface equations hold.
+\end{proof}
+
+\begin{theorem}[Finite hidden-state obstruction]\label{thm:finite}
+Suppose $X$ is a finite set with $m$ states, $f:X\to X$ is deterministic, and $R:X\to\{0,1\}$ is a fixed readout. Under \emph{any} distribution on $X_0$, the first $n$ observed bits $(R(X_0),\ldots,R(f^{n-1}(X_0)))$ have at most $m$ different outcomes of positive probability. Consequently such a system cannot reproduce, for arbitrarily large $n$, the joint law of independent Bernoulli random variables with success probability $p\in(0,1)$.
+\end{theorem}
+\begin{proof}
+Each hidden initial state determines exactly one length-$n$ binary word. There are at most $m$ initial states, hence at most $m$ words of positive probability. An independent Bernoulli-$p$ process with $0<p<1$ assigns positive probability to all $2^n$ binary words. Choose $n$ such that $2^n>m$.
+\end{proof}
+\begin{corollary}[Finite-horizon lower bound]
+To realize \emph{all} length-$n$ output words with nonzero probabilities using a finite deterministic hidden-state model and one initial distribution, at least $2^n$ hidden initial states are required.
+\end{corollary}
+
+The coexistence of \cref{thm:realize,thm:finite} is instructive. Allowing arbitrarily large hidden spaces makes deterministic realizations widely available; restricting their size produces rigorous incompatibility statements. Thus ``compatible'' cannot be defined without specifying the admissible resources and observable claims.
+
+\section{A no-go theorem for strict pointwise translation}
+One tempting but overly restrictive interface would insist that a single deterministic successor, read back as an observable state, directly equal an entire stochastic successor distribution:
+\begin{equation}\label{eq:pointwise}
+\delta_{R(f(x))}=K(R(x),\cdot)\quad\text{for every }x\in X.
+\end{equation}
+\begin{theorem}[Pointwise-interface obstruction]\label{thm:pointwise}
+If $R:X\to Y$ is surjective and \eqref{eq:pointwise} holds, then $K(y,\cdot)$ is a Dirac measure for every $y\in Y$. Therefore a genuinely nondeterministic stochastic kernel has no such pointwise interface.
+\end{theorem}
+\begin{proof}
+For each $y$, choose $x$ with $R(x)=y$. Equation \eqref{eq:pointwise} then says $K(y,\cdot)=\delta_{R(f(x))}$.
+\end{proof}
+\emph{Interpretation.} A nondegenerate probabilistic theory generally cannot be reduced to a deterministic \emph{state relabeling}. DNI instead permits a distribution of initial hidden states, which must be specified and checked, not presumed.
+
+\section{Approximate interfaces and accumulated error}
+In applications one may need controlled approximation. Let total variation be
+\[
+\|\mu-\nu\|_{\TV}=\sup_{A}|\mu(A)-\nu(A)|.
+\]
+Assume (DNI--1) holds exactly, but replace (DNI--2) by the one-step bound
+\begin{equation}\label{eq:approx}
+\sup_{y\in Y}\bigl\|f_*E(y)-(EK)(y)\bigr\|_{\TV}\le\varepsilon.
+\end{equation}
+\begin{theorem}[Finite-time stability]\label{thm:stability}
+Under these assumptions, for each $n\in\NN_0$,
+\[
+\boxed{\sup_{y\in Y}\bigl\|R_*f_*^{\,n}E(y)-K^n(y)\bigr\|_{\TV}\le n\varepsilon.}
+\]
+\end{theorem}
+\begin{proof}
+Markov kernels and deterministic pushforwards contract total variation. Set
+\[\Delta_n:=\sup_{y\in Y}\|f_*^nE(y)-EK^n(y)\|_{\TV}.\]
+Then $\Delta_0=0$ and
+\begin{align*}
+\Delta_{n+1}
+&=\sup_y\bigl\|f_*^{n+1}E(y)-EK^{n+1}(y)\bigr\|_{\TV}\\
+&\le \sup_y\bigl\|f_*^{n+1}E(y)-f_*^nEK(y)\bigr\|_{\TV}
+ +\sup_y\bigl\|f_*^nEK(y)-EK^{n+1}(y)\bigr\|_{\TV}\\
+&\le\varepsilon+\Delta_n.
+\end{align*}
+The first term contracts the one-step error under $f_*^n$, while the second averages the $n$-step error over $K(y,\cdot)$. Thus $\Delta_n\le n\varepsilon$. Apply $R_*$ and (DNI--1).
+\end{proof}
+\begin{remark}
+The bound concerns $n$-step \emph{marginal distributions}; no joint-trajectory error bound is asserted here. Since total variation is at most one, the estimate can equivalently be capped by $\min(1,n\varepsilon)$.
+\end{remark}
+
+\section{Toward a common extension of theories}
+The previous sections involve individual dynamical presentations. A \emph{theory of theories} needs an additional logical level. Suppose $\TT_0$ specifies a shared language of observable experiments, while $\TT_D$ and $\TT_P$ extend or interpret it:
+\[
+\TT_D\longleftarrow\TT_0\longrightarrow\TT_P.
+\]
+When the chosen category of theories has the relevant pushout, one may form
+\begin{equation}\label{eq:pushout}
+\boxed{\TT_I=\TT_D\sqcup_{\TT_0}\TT_P.}
+\end{equation}
+This pushout is a \emph{universal syntactic amalgamation}, relative to the specified morphisms and category. It resembles a least common multiple only in that it satisfies an appropriate universal mapping property. It need not preserve all theorems conservatively, and it need not admit a model at all. For example, two extensions that impose incompatible sentences on one shared observation can produce an inconsistent amalgamation.
+
+\begin{definition}[Semantic interface compatibility: proposed]\label{def:compatible}
+For a specified shared observational language $\TT_0$ and specified interpretation maps, write
+\[
+\Compat(\TT_D,\TT_P;\TT_0)
+\]
+when there exists a joint model of the combined constraints whose reducts satisfy both theories and agree on the shared observational content. Additional preservation requirements---for example those encoded by (DNI--1)--(DNI--2)---must be included in the combined constraints if they are to be guaranteed.
+\end{definition}
+
+The distinction is fundamental: a combined signature or axiomatization is not automatically a compatible joint interpretation. Existing work on institutions supplies abstract ways to study signatures, sentences, models, and satisfaction across distinct logics \cite{goguen1992}; the choice of what counts as a theory morphism is part of the DNI research specification.
+
+\section{Candidate axioms for a general DNI theory}
+The following are \emph{design principles}, not a claim that one complete general theory has already been axiomatized.
+\begin{enumerate}[label=\textbf{I\arabic*.}]
+\item \textbf{Faithful preservation.} The interface states exactly which source transitions, laws, or designated predictions must be preserved. No silent alteration of a source theory is permitted.
+\item \textbf{Shared observable content.} Agreement is stated relative to explicitly chosen experimental outcomes and their translations.
+\item \textbf{Compositionality.} Translating a composite transition agrees with composing the translated transitions, wherever those composites are defined.
+\item \textbf{Probabilistic coherence.} Probability distributions are normalized and nonnegative, and kernel composition obeys the standard consistency laws.
+\item \textbf{Declared information loss.} Forgotten degrees of freedom, coarse-graining, and their preparation statistics are part of the interface data.
+\item \textbf{Compatibility testing.} The existence of a shared model is a mathematical question, not an assumption.
+\item \textbf{Resource qualification.} Statements of realization and minimality specify permitted hidden states, encodings, precision, and other relevant costs.
+\end{enumerate}
+
+For classical stochastic systems, Markov categories provide a structural context in which deterministic maps can be distinguished inside a probabilistic theory \cite{fritz2020}. Generalized probabilistic theories offer a broader operational vocabulary involving states, effects, and composition of systems \cite{barrett2007}. Such generalizations may be necessary when classical probability-kernel assumptions are not justified. The finite-state proofs in this note do \emph{not} automatically extend to every operational theory.
+
+\section{A precise research agenda}
+A substantive interface theory should address four questions, each of which can be tested rather than asserted:
+\begin{enumerate}
+\item \textbf{Existence:} For which pairs of theories and selected common observations does an exact DNI interface exist?
+\item \textbf{Minimality:} Within a class of compatible interfaces, does a minimum exist for a declared structural cost (hidden states, new hypotheses, information loss, or a combination thereof)?
+\item \textbf{Preservation:} Which dynamical, logical, operational, or causal properties pass through the interface?
+\item \textbf{Obstruction:} Which disagreements remain impossible to eliminate under a stated class of permissible extensions?
+\end{enumerate}
+\begin{mainbox}
+\textbf{DNI research conjecture (programmatic; not a theorem).} For suitably defined classes of deterministic and probabilistic operational theories equipped with an explicitly shared observation theory, exact compatibility can be characterized by necessary and sufficient structural conditions; approximate compatibility admits quantitative error bounds. Under further explicit compactness or finiteness assumptions, compatible interfaces may admit minimal representatives with respect to a declared cost preorder. Otherwise one should seek certified nonexistence or nonattainment obstructions.
+\end{mainbox}
+The wording is deliberately conditional. An unrestricted statement asserting a compatible interface for \emph{all} pairs of theories would be false; an unrestricted assertion of a least interface would likewise be unjustified.
+
+\clearpage
+\section{Interpretation and limits}
+The principal lesson is that deterministic and probabilistic descriptions can be mathematically compatible while remaining distinct descriptions. The path-space realization theorem establishes broad compatibility when sufficiently rich hidden states and statistical preparations are allowed. The finite-state and pointwise obstructions show that compatibility can fail under tighter constraints.
+
+None of these constructions entails that physical events are predetermined, that the initial probability measures merely reflect human ignorance, or that ethical reasoning is rendered meaningless. Those conclusions involve additional empirical and philosophical premises. The present proposal deliberately postpones all specializations to particular physical theories.
+
+\section*{Status of the claims}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{.28\textwidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Claim} & \textbf{Status}\\
+\midrule
+Deterministic transitions as Dirac kernels & Standard mathematical embedding; proved here in elementary form.\\
+Exact interface identities and iteration & Proposed DNI notation/axioms; conditional agreement proved here.\\
+Finite Markov trajectory realization & Standard shift/path-space construction presented as a DNI existence theorem.\\
+Finite-state and pointwise obstructions & Elementary counting/Dirac arguments proved here under stated hypotheses.\\
+Approximate $n$-step stability & Conditional total-variation bound proved here.\\
+General theory compatibility and minimality & Research program; no universal existence or minimality theorem claimed.\\
+\bottomrule
+\end{tabularx}
+
+\begin{thebibliography}{9}
+\bibitem{fritz2020} Tobias Fritz, ``A synthetic approach to Markov kernels, conditional independence and theorems on sufficient statistics,'' \emph{Advances in Mathematics} \textbf{370} (2020), 107239. \url{https://doi.org/10.1016/j.aim.2020.107239}.
+\bibitem{barrett2007} Jonathan Barrett, ``Information processing in generalized probabilistic theories,'' \emph{Physical Review A} \textbf{75} (2007), 032304. \url{https://doi.org/10.1103/PhysRevA.75.032304}.
+\bibitem{goguen1992} Joseph A. Goguen and Rod M. Burstall, ``Institutions: Abstract model theory for specification and programming,'' \emph{Journal of the ACM} \textbf{39}(1) (1992), 95--146. \url{https://doi.org/10.1145/147508.147524}.
+\end{thebibliography}
+\end{document}
