@@ -27,7 +27,7 @@ doc = fitz.open(stream=raw, filetype="pdf")
 assert len(doc) == 7, f"Expected 7 rendered pages; got {len(doc)}"
 assert all(page.get_text().strip() for page in doc), "Unreadable PDF page"
 assert quote in " ".join(doc[0].get_text().split()), "Card quote not found on cited page"
-full = " ".join(p.get_text() for p in doc)
+full = " ".join(" ".join(p.get_text().split()) for p in doc)
 for phrase in (title, "DATA MIND", "Rank", "Annulus", "cost optimality", "Conclusion"):
     assert phrase.lower() in full.lower(), "Rendered PDF missing " + phrase
 destination = ROOT / "docs" / slug
