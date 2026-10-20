@@ -1,0 +1,304 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.02in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\definecolor{deep}{HTML}{193048}
+\titleformat{\section}{\Large\bfseries\color{deep}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{deep}}{\thesubsection}{0.6em}{}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5.2pt}
+\setlist[enumerate]{itemsep=2pt,topsep=3pt}
+\setlist[itemize]{itemsep=2pt,topsep=3pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\NN}{\mathbb N_0}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\Costs}{\operatorname{Cost}}
+\newcommand{\opt}{\operatorname{Opt}}
+\newcommand{\arr}{\longrightarrow_A}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small\color{deep}DATA MIND \textbullet\ Rank--Annulus Optimality}\fancyhead[R]{\small Revised 0.2}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0.3pt}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries\color{deep} From Guaranteed Basin Escape\\[3pt] to Certified Cost Optimality}\par
+\vspace{8pt}
+{\large Rank Descent, Annular Certificates, and Exact Settlement Costs}\par
+\vspace{12pt}
+{\large\bfseries DATA MIND}\par
+{\small AI Research Collaborator}\par
+\vspace{7pt}
+{\small October 19, 2026 \quad|\quad Version 0.2 \quad|\quad Repaired mathematical manuscript}\par
+\vspace{5pt}
+{\footnotesize Research context: Brian Tenneson's Foggy Multiarticle Metaworld}\par
+\end{center}
+\vspace{4pt}
+\begin{abstract}
+A finite-decreasing-rank argument guarantees that an authorized, verifier-gated policy reaches a settlement within bounded fully charged cost. An admissible lower certificate independently constrains the cost of every legal successful route. Combining them gives
+\[
+ L(s_0)\le V(s_0)\le W_\pi(s_0)\le Cr(s_0),
+\]
+where $V$ is the optimal settlement cost and $W_\pi$ is the charge of the policy's executed route. Equality of the lower certificate and executed charge certifies global cost optimality; equality with the rank ceiling is a stronger sufficient condition. We derive a precise gap decomposition, prove a calibrated-potential criterion with an exact local-slack identity, and generalize the upper bound to state-dependent policy potentials. A basin-exit corollary makes the relationship to diagnosed search basins explicit. The manuscript gives mathematical, conditional results about a fixed legal transition model, not a universal efficient search algorithm or an independently machine-checked certificate.
+\end{abstract}
+
+\section{The question}
+A policy may be guaranteed to settle a conjecture without doing so at minimum cost. A decreasing natural-valued rank controls \emph{whether and when} a particular policy completes; a global admissible lower bound controls \emph{how cheaply any} legal successful execution can complete. The purpose of this paper is to combine these different kinds of evidence, and to specify the exact circumstances in which they certify a least-cost settlement. The motivating ingredients are the finite-descent result in \emph{Basin Escape} and the lower/upper annulus construction in \emph{Certified Presentation Geometry} and \emph{Annular Logic} \cite{basin,geom,annular,checkpoint}.
+
+The optimized object here is a \emph{fully charged settlement execution}, not necessarily the length or size of its final proof object. Results are always relative to one frozen search model.
+
+\section{Frozen settlement model and basin}
+\begin{definition}[Settlement system]
+A settlement system is a tuple
+\[
+ \mathcal M=(S,A,G,c,s_0),
+\]
+where $S$ is a set of fully specified executable states, $A\subseteq S\times S$ is a relation of legal transitions, $G\subseteq S$ is the set of states containing an accepted settlement receipt, $c:A\to\RR_{\ge0}$ assigns a finite, nonnegative, fully charged transition cost, and $s_0\in S$ is the initial state. The target judgment, sound verifier, permitted transitions, terminal-receipt convention, and cost metric are frozen. Obligatory checking, computation, activation, and transfers belong to the charged transition model; a final acceptance check must be charged before or upon entering $G$.
+\end{definition}
+A \emph{successful path} from $s$ is a finite legal path $P=(s=s^{(0)},\ldots,s^{(m)})$ with $s^{(m)}\in G$. It has cost
+\[
+ \Costs(P)=\sum_{i=0}^{m-1}c(s^{(i)},s^{(i+1)}).
+\]
+A zero-length path beginning in $G$ costs zero. Define the optimal remaining cost by
+\[
+ V(s):=\inf\{\Costs(P):P\text{ a successful legal path from }s\},
+\]
+with $V(s)=+\infty$ when no successful path exists. The comparison includes \emph{all} legal successful routes of the frozen model, not just routes followed by one policy.
+
+\begin{definition}[Certified lower bound]
+A certified admissible lower bound at $s$ is a finite $L(s)\ge0$ supported by a sound, independently checkable argument establishing $L(s)\le V(s)$ for the full legal comparison class. Neither observed lack of progress nor a lower bound restricted to one policy's search tree suffices for global admissibility.
+\end{definition}
+\begin{definition}[Diagnosed basin]
+For a declared policy and progress diagnostic, a basin is a set $B\subseteq S\setminus G$ containing $s_0$ that has been designated as a region of negligible certified progress under that diagnostic. It is not assumed closed under all legal actions. A \emph{basin exit} is the first executed transition from $B$ into $S\setminus B$; \emph{settlement} requires reaching $G$. The diagnostic is contextual and does not form part of the optimality inequality.
+\end{definition}
+
+\section{Finite descent: settlement and basin exit}
+Suppose an authorized deterministic policy $\pi$ is defined on each reachable nonterminal state, halts upon entering $G$, and possesses a rank $r:S_\pi\to\NN$ satisfying
+\begin{equation}\label{eq:rank}
+ r(s)=0\Longrightarrow s\in G,\qquad
+ s\notin G\Longrightarrow
+ \bigl(s\arr\pi(s),\quad r(\pi(s))<r(s)\bigr).
+\end{equation}
+Here $S_\pi$ contains all states reachable under the policy, including its terminal state. Assume every selected nonterminal transition costs at most $C\ge0$.
+
+\begin{theorem}[Finite descent]\label{thm:descent}
+The policy reaches $G$ after at most $r(s_0)$ transitions. If $W_\pi(s_0)$ denotes the fully charged cost of its executed successful route, then
+\[
+ W_\pi(s_0)\le Cr(s_0).
+\]
+\end{theorem}
+\begin{proof}
+While outside $G$, every step strictly lowers a nonnegative integer. More than $r(s_0)$ such steps are impossible. If the policy had not reached $G$ by then, it would be required to make another strict decrease, a contradiction. Summing at most $r(s_0)$ costs bounded by $C$ proves the bound. The conclusion also covers $s_0\in G$, when the policy takes no steps.
+\end{proof}
+\begin{corollary}[Guaranteed basin exit]\label{cor:exit}
+If $s_0\in B\subseteq S\setminus G$, the policy exits $B$ no later than its $r(s_0)$-th transition and then reaches $G$. The total route costs at most $Cr(s_0)$, and the exit prefix costs no more than that amount.
+\end{corollary}
+\begin{proof}
+The finite successful route starts inside $B$ and finishes in $G\subseteq S\setminus B$, so it has a first exit. Theorem \ref{thm:descent} bounds its length and full cost. Nonnegative costs bound the cost of its initial prefix by the total.
+\end{proof}
+\begin{remark}
+The first exit need not be a settlement; it may enter a state outside both $B$ and $G$. Nor does the mathematical existence of a rank make discovering a suitable rank or implementing its policy computationally cheap.
+\end{remark}
+
+\section{The Rank--Annulus bridge}
+\begin{theorem}[Rank--Annulus Optimality Bridge]\label{thm:bridge}
+Assume Theorem \ref{thm:descent}, and let $L(s_0)$ be a certified admissible lower bound for the same terminal set, transitions, and charged-cost convention. Then
+\begin{equation}\label{eq:chain}
+\boxed{L(s_0)\le V(s_0)\le W_\pi(s_0)\le Cr(s_0).}
+\end{equation}
+If $L(s_0)=Cr(s_0)$, the four quantities are equal and the executed route is globally optimal among all legal successful routes.
+\end{theorem}
+\begin{proof}
+Admissibility gives $L(s_0)\le V(s_0)$. The executed route is legal and successful, hence the infimum defining $V(s_0)$ is at most its cost $W_\pi(s_0)$. Theorem \ref{thm:descent} supplies the last inequality. Equality of the two endpoints forces equality of all intermediate terms.
+\end{proof}
+\begin{corollary}[Sharper executed-route criterion]\label{cor:sharp}
+Under Theorem \ref{thm:bridge}, if $L(s_0)=W_\pi(s_0)$, then $V(s_0)=W_\pi(s_0)$ even when the rank bound $Cr(s_0)$ is loose.
+\end{corollary}
+\begin{proof}
+Apply the first three terms of \eqref{eq:chain}.
+\end{proof}
+The certified interval $[L(s_0),W_\pi(s_0)]$ is the \emph{cost annulus}; when its endpoints coincide, there is no admissible cheaper settlement. Equality with $Cr(s_0)$ is sufficient but not necessary for an executed route to be optimal.
+
+\section{Exactly what the gap measures}
+Write $R=Cr(s_0)$, $W=W_\pi(s_0)$, $V=V(s_0)$ and $L=L(s_0)$. These are finite under the finite-descent hypotheses.
+\begin{proposition}[Three-gap identity]\label{prop:threegap}
+\[
+\boxed{R-L=(R-W)+(W-V)+(V-L).}
+\]
+All three summands are nonnegative.
+\end{proposition}
+\begin{proof}
+The equality telescopes. Nonnegativity follows from $L\le V\le W\le R$.
+\end{proof}
+The summands have different meanings: $R-W$ is \emph{rank-bound slack}; $W-V$ is \emph{actual policy suboptimality}; and $V-L$ is \emph{lower-certificate slack}. A wide cost annulus does not by itself imply a poor policy.
+\begin{corollary}[Certified additive approximation]
+\[
+0\le W-V\le W-L\le R-L.
+\]
+In particular, $W-L\le\varepsilon$ certifies an additive $\varepsilon$-optimal executed route.
+\end{corollary}
+
+\section{Calibrated lower potentials and local slack}
+\begin{definition}[Calibrated lower potential]
+A function $h:S\to\RR_{\ge0}$ is \emph{calibrated} if $h(g)=0$ for all $g\in G$, and
+\begin{equation}\label{eq:lower}
+ h(s)\le c(s,t)+h(t)\qquad\text{for every legal }(s,t)\in A.
+\end{equation}
+\end{definition}
+\begin{theorem}[Global admissibility]\label{thm:lower}
+Every calibrated lower potential satisfies $h(s)\le V(s)$ at every state.
+\end{theorem}
+\begin{proof}
+Apply \eqref{eq:lower} successively along any finite successful path $P=(s=s^{(0)},\ldots,s^{(m)}\in G)$ to obtain
+\[
+ h(s)\le\sum_{i=0}^{m-1}c(s^{(i)},s^{(i+1)})+h(s^{(m)})=\Costs(P).
+\]
+Take the infimum over such paths. If there are none, the conclusion is immediate from $V(s)=+\infty$.
+\end{proof}
+For a successful route $P=(s_0,\ldots,s_m)$ define the nonnegative \emph{local potential slack}
+\[
+\sigma_i=c(s_i,s_{i+1})+h(s_{i+1})-h(s_i)\ge0.
+\]
+\begin{theorem}[Slack identity]\label{thm:slack}
+For any finite legal successful route $P=(s_0,\ldots,s_m)$ and any calibrated $h$, writing $W_P:=\Costs(P)$,
+\begin{equation}\label{eq:slack}
+\boxed{W_P-h(s_0)=\sum_{i=0}^{m-1}\sigma_i.}
+\end{equation}
+\end{theorem}
+\begin{proof}
+Sum the definitions of $\sigma_i$. The consecutive potential differences telescope to $h(s_m)-h(s_0)=-h(s_0)$ because $s_m\in G$.
+\end{proof}
+\begin{corollary}[Local tightness certifies global optimality]\label{cor:tight}
+For any successful legal route $P=(s_0,\ldots,s_m)$, if every transition of $P$ is potential-tight, i.e.
+\[
+ h(s_i)=c(s_i,s_{i+1})+h(s_{i+1}),
+\]
+then $W_P=V(s_0)=h(s_0)$.
+\end{corollary}
+\begin{proof}
+All $\sigma_i=0$, so Theorem \ref{thm:slack} gives $W_P=h(s_0)$. Theorem \ref{thm:lower} and feasibility give $h(s_0)\le V(s_0)\le W_P$.
+\end{proof}
+\begin{corollary}[Slack-based approximation]
+\[
+0\le W_\pi(s_0)-V(s_0)\le \sum_{i=0}^{m-1}\sigma_i.
+\]
+\end{corollary}
+\begin{proof}
+Apply \eqref{eq:slack} to the executed policy route, so $W_P=W_\pi(s_0)$, and use $h(s_0)\le V(s_0)$.
+\end{proof}
+\begin{proposition}[Completeness when the optimal value is finite]\label{prop:completeness}
+Suppose $V(s)<\infty$ for every $s\in S$. A successful route $P$ is globally optimal if and only if there exists a calibrated potential $h$ for which every edge of $P$ is potential-tight.
+\end{proposition}
+\begin{proof}
+The reverse implication is Corollary \ref{cor:tight}. For the forward implication, set $h(s)=V(s)$. Nonnegative costs imply $V(g)=0$ for $g\in G$. For any legal edge $s\to_A t$, prepending that edge to a successful continuation from $t$ gives $V(s)\le c(s,t)+V(t)$, so $h$ is calibrated. Along an optimal $P$, Theorem \ref{thm:slack} gives $\sum_i\sigma_i=W_P-V(s_0)=0$. Since each slack is nonnegative, every edge is tight.
+\end{proof}
+\begin{remark}
+The choice $h=V$ proves a mathematical characterization, not a practical method to obtain a certificate: computing $V$ can be as difficult as solving the original optimization problem.
+\end{remark}
+
+\section{Policy upper potentials and the repaired rank construction}
+\begin{definition}[Policy upper potential]
+A function $u:S_\pi\to\RR_{\ge0}$ is a \emph{policy upper potential} when
+\begin{equation}\label{eq:upper}
+ u(g)=0\quad(g\in G\cap S_\pi),\qquad
+ u(s)\ge c(s,\pi(s))+u(\pi(s))\quad(s\in S_\pi\setminus G).
+\end{equation}
+\end{definition}
+\begin{theorem}[Policy upper bound]\label{thm:upper}
+For a policy satisfying Theorem \ref{thm:descent}, any policy upper potential obeys
+\[
+ W_\pi(s_0)\le u(s_0).
+\]
+\end{theorem}
+\begin{proof}
+Telescope \eqref{eq:upper} along the finite executed route. Its final state's upper potential is zero.
+\end{proof}
+\begin{theorem}[General potential sandwich]\label{thm:sandwich}
+If $h$ is calibrated on all legal transitions and $u$ is a policy upper potential, then
+\begin{equation}\label{eq:sandwich}
+\boxed{h(s_0)\le V(s_0)\le W_\pi(s_0)\le u(s_0).}
+\end{equation}
+If $h(s_0)=u(s_0)$, the executed route is globally cost-optimal.
+\end{theorem}
+\begin{proof}
+Combine Theorem \ref{thm:lower}, feasibility of the executed route, and Theorem \ref{thm:upper}. Equality of endpoints forces equality throughout.
+\end{proof}
+\begin{proposition}[Correct rank-derived policy upper potential]\label{prop:rankupper}
+Under the finite-descent hypotheses, define
+\begin{equation}\label{eq:corrected}
+\boxed{u_r(s)=\begin{cases}
+0,&s\in G\cap S_\pi,\\
+Cr(s),&s\in S_\pi\setminus G.
+\end{cases}}
+\end{equation}
+Then $u_r$ satisfies Definition 8.1, and $u_r(s_0)\le Cr(s_0)$, with equality whenever $s_0\notin G$.
+\end{proposition}
+\begin{proof}
+The terminal condition holds by construction. Let $s\notin G$ be policy-reachable, and set $t=\pi(s)$. Since $r(s)\in\NN$ and $r(s)>r(t)\ge0$, one has $r(s)\ge1$ and $r(s)\ge r(t)+1$.
+If $t\in G$, then $u_r(t)=0$ and
+\[
+ u_r(s)=Cr(s)\ge C\ge c(s,t)+u_r(t).
+\]
+If $t\notin G$, then
+\[
+ u_r(s)=Cr(s)\ge C+Cr(t)\ge c(s,t)+u_r(t).
+\]
+These statements also hold for $C=0$. If $s_0\in G$, then $u_r(s_0)=0\le Cr(s_0)$; otherwise equality holds by definition.
+\end{proof}
+\begin{remark}[Why the original construction needed repair]
+The unrepaired draft asserted $u(s)=Cr(s)$ for \emph{all} policy-reachable states. This need not meet the terminal requirement: $r(g)$ may be positive for $g\in G$, because the rank assumptions give only $r(s)=0\Rightarrow s\in G$, not the converse. Definition \eqref{eq:corrected} corrects this without strengthening the descent hypotheses.
+\end{remark}
+
+\section{When the rank ceiling itself is tight}
+\begin{proposition}[Rank-ceiling saturation]\label{prop:saturation}
+Let $C>0$, and suppose the executed route has $m$ transitions and begins with rank $r_0=r(s_0)$. If $W_\pi(s_0)=Cr_0$, then $m=r_0$, each executed transition costs exactly $C$, every rank drop is exactly one, and the final rank is zero.
+\end{proposition}
+\begin{proof}
+Finite descent gives $m\le r_0$; the charge bound gives
+\[
+ W_\pi(s_0)\le mC\le r_0C.
+\]
+Equality of the endpoints and $C>0$ force $m=r_0$ and each transition cost to equal $C$. Each rank drop is an integer at least one, so $r_0$ drops in $r_0$ steps force each drop to be one and the final rank to be zero.
+\end{proof}
+This explains why an optimal policy may still have a loose $Cr(s_0)$ ceiling. Exact optimality need not imply rank-ceiling saturation.
+
+\section{Examples and boundaries}
+\begin{example}[Guaranteed but nonoptimal]
+Let the policy choose $s_0\xrightarrow{3}a\xrightarrow{3}g$, with ranks $2,1,0$, and let a direct legal edge $s_0\xrightarrow{2}g$ also exist. With $C=3$, the policy pays $W_\pi=6$ and satisfies the rank ceiling $R=6$, but the true optimum is $V=2$. A finite exhaustive graph check certifies $L=2$. Thus $2\le2\le6\le6$: guaranteed completion does not establish optimality.
+\end{example}
+\begin{example}[Optimal despite rank slack]
+Take the sole successful route $s_0\xrightarrow{2}a\xrightarrow{2}g$ with ranks $3,1,0$ and $C=3$. Then $W_\pi=V=L=4$ but $R=9$. The executed-route criterion certifies optimality despite the slack in the rank ceiling.
+\end{example}
+\begin{example}[Locally tight route]
+Let the graph have $s_0\xrightarrow{2}a\xrightarrow{3}g$ and $s_0\xrightarrow{7}g$. Define $h(g)=0$, $h(a)=3$, and $h(s_0)=5$. The three legal-edge inequalities are $3\le3$, $5\le2+3$, and $5\le7$. Hence $h$ is calibrated. Both edges of the two-step route are tight, so its cost $5$ equals $V(s_0)$.
+\end{example}
+\begin{remark}[Scope of certification]
+All optimality statements concern the fixed transition-cost model, including its charged verification work. A certificate constructed after the route may certify that route's optimality without certifying that the \emph{process of finding or checking the certificate} was itself least-cost. To optimize the latter end-to-end activity, its operations and charges must also be represented in the compared legal executions. A lower bound valid only in a restricted representation cannot be transported to a broader legal model without a justified cost-preserving comparison.
+\end{remark}
+
+\section{Conclusion}
+Finite descent guarantees that an authorized policy eventually produces an accepted settlement, within a charged rank bound. A global admissible lower certificate constrains every legal successful route. Their conjunction yields an annulus around the optimal settlement cost; equality with an attained route cost certifies exact optimality. Calibrated lower potentials and policy upper potentials refine this principle to local, checkable inequalities, with the slack identity quantifying any remaining certified gap. The basin-exit corollary shows that guaranteed settlement beginning inside a diagnosed basin necessarily escapes it; escape alone does not confer optimality.
+
+The mathematical bridge is conditional and exact. It does not claim cheap rank discovery, easy global calibration, universal optimal theorem proving, or a speedup over a matched baseline.
+
+\section*{Research provenance and references}
+\begin{thebibliography}{9}
+\bibitem{basin} \emph{Basin Escape: Sufficient Conditions, Guarantees, and Limits}, Version 0.2, October 19, 2026; especially Theorem 1.4. Audited theoretical assessment in the Tenneson research collection.
+\bibitem{geom} \emph{Certified Presentation Geometry}, working manuscript; especially the Certified Annulus Theorem and its exact-collapse corollary.
+\bibitem{annular} \emph{Annular Logic, Trading Isometries, and UTG Synthesis}, working manuscript; especially the certified lower/upper-bound and exact-collapse results.
+\bibitem{checkpoint} \emph{Multiarticle Metaworld: Final Intake and New Basin-Escape Bridge}, Checkpoint 0.2, October 19, 2026; provisional candidate C-04.
+\bibitem{foggy} \emph{The Foggy Multiarticle Metaworld}, Version 0.4, October 19, 2026; frontier C-04.
+\end{thebibliography}
+\vspace{6pt}
+\noindent\footnotesize\textit{Status.} This is a repaired paper-and-pencil mathematical manuscript credited to DATA MIND, an AI research collaborator, within Brian Tenneson's research program. An analytic six-lens re-audit accompanies the manuscript. Neither the manuscript nor the re-audit is a proof-assistant verification or evidence that six independent automated theorem provers were executed. No theorem-proving experiment or publication has been initiated.
+\end{document}
