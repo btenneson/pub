@@ -1,0 +1,833 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Verifier-Gated Prompt Self-Awareness: A Lemma-Fishing Experiment in Certified Prompt Reflection — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/verifier_gated_prompt_self_awareness_atlas_v0_3/">Back to publication</a><h1>Verifier-Gated Prompt Self-Awareness: A Lemma-Fishing Experiment in Certified Prompt Reflection</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/verifier_gated_prompt_self_awareness_atlas_v0_3/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{lastpage}
+
+\setstretch{1.04}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\pagestyle{fancy}
+\setlength{\headheight}{14pt}
+\fancyhf{}
+\lhead{Verifier-Gated Prompt Self-Awareness}
+\rhead{ATLAS repaired research draft v0.3}
+\cfoot{\thepage\ of \pageref{LastPage}}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{principle}[definition]{Principle}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{caution}[definition]{Caution}
+
+\newcommand{\VGPSA}{\operatorname{VGPSA}}
+\newcommand{\Cert}{\operatorname{Cert}}
+\newcommand{\Acc}{\operatorname{AcceptedRecord}}
+\newcommand{\LFP}{\operatorname{LFP}}
+\newcommand{\View}{\operatorname{View}}
+\newcommand{\Witness}{\operatorname{Witness}}
+\newcommand{\AMLD}{\operatorname{AMLD}}
+\newcommand{\Settle}{\operatorname{Settle}}
+
+\title{\textbf{Verifier-Gated Prompt Self-Awareness}\\[0.4em]
+\large A Lemma-Fishing Experiment in Certified Prompt Reflection}
+\author{Brian Tenneson}
+\date{ATLAS repaired research draft v0.3 --- October 20, 2026}
+
+\hypersetup{
+  pdftitle={Verifier-Gated Prompt Self-Awareness: A Lemma-Fishing Experiment in Certified Prompt Reflection},
+  pdfauthor={Brian Tenneson},
+  pdfsubject={Verifier-gated prompt reflection and two-level certificate construction}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Verifier-Gated Prompt Self-Awareness (VGPSA) is a deliberately narrow, source-sensitive, two-level reflective-certificate property defined using a frozen prompt $P$, an execution $X$, and a verifier $V$. The September 29, 2026 experiment reported eight source-checkable intermediate propositions and the chain $P\to M_P\to c_0\to r_0\to c_1\to r_1$. An ATLAS audit found that its reported verifier acceptances cannot be independently reproduced without the exact original source, checker, and receipts; accordingly that historical settlement is recorded here as provisional. A new, fully labeled finite witness $P_*$ is now constructed, with a separate deterministic checker and a replayable certificate package. The finite formalization of SA1--SA8 is definable within ZFC; an explicit finite computation witnesses its satisfiability and yields a ZFC relative-consistency theorem. A local replay accepted all eight conditions and rejected eight corrupted test packages. The fixed formal-reflection axiom reference and its antecedents are stated explicitly in Section~\ref{sec:reference-axioms}. This is a new existence construction, not a recovery of the earlier experimental transcript, not a proof-assistant-checked ZFC derivation, and not a claim of consciousness or phenomenology.
+\end{abstract}
+
+\paragraph{Status of this document.}
+This is an ATLAS-repaired v0.3 article. Its historical September 29 experiment is reported rather than independently certified; Section~\ref{sec:finite-zfc} supplies a separate new finite existence witness with runnable checking artifacts. The paper does not claim verified third-party reproduction or novelty relative to the external literature.
+
+\tableofcontents
+\clearpage
+
+\section{Motivation and scope}
+
+The broader research program treats formal reasoning as a verifier-gated process in which search, discovery, reflection, control, and memory may be sophisticated while theorem admission remains certificate-bound. In \emph{Verifier Certificate 001}, the central reflective pattern is a two-level receipt construction: a structured AMLD state obtains a verifier-accepted certificate for a proposition about its own structure, and then obtains a verifier-accepted receipt witnessing the earlier certified state. In \emph{The Self Aware Machine: Epistemic Handoff}, the same general idea is embedded in an explicitly typed epistemic architecture: knowledge is represented by access to a verifier-qualified witness, and positive introspection is temporal and receipt-based rather than merely asserted.
+
+The present experiment asks for the smallest prompt-level analogue of that architecture. The subject matter is not circuits, neurons, ants, or a complete AMLD federation. The immediate object is a prompt source itself.
+
+The guiding question is:
+\begin{quote}
+Can a prompt, through the execution that interprets it, induce a verifier-checkable construction that identifies and inspects the prompt source, builds a source-sensitive model of it, certifies a nontrivial fact about it, and then certifies the existence and acceptance of that first certificate?
+\end{quote}
+
+This question is deliberately narrower than ordinary-language claims about awareness. The experiment defines a formal target first and asks whether the target can be constructively witnessed.
+
+\subsection{Relation to the larger architecture}
+
+The project-level synthesis motivating the experiment is
+\[
+\begin{aligned}
+&amp;\text{verifier-gated self-state}
+\longrightarrow \text{Player-0 control in GBG+}\\
+&amp;\qquad\longrightarrow \text{theorem-maze/search control}
+\longrightarrow \text{discovery actions}\\
+&amp;\qquad\longrightarrow \text{verifier-gated state expansion}.
+\end{aligned}
+\]
+Lemma-fishing is one discovery operator inside that larger architecture. VGPSA does not require Player 0, GBG+, or theorem-maze control to establish the prompt-level result reported here. Rather, a future controller could potentially use certified prompt/self-state as one input to policy selection while preserving the verifier trust boundary.
+
+\subsection{Three objects, not one}
+
+The most important type distinction is among the prompt, the execution, and the verifier.
+
+\begin{definition}[Prompt source, execution, verifier]
+Let
+\[
+P
+\]
+be the frozen prompt source supplied to the experiment. Let
+\[
+X
+\]
+be the execution processing that source. Let
+\[
+V
+\]
+be the declared structural-verification procedure applied to certificates produced during the run.
+\end{definition}
+
+The experiment requires
+\[
+P\neq X,\qquad P\neq V,\qquad X\neq V.
+\]
+The prompt is the object of source reflection; the execution performs constructions; the verifier checks them. A sentence such as ``the prompt generated eight lemmas&#x27;&#x27; is therefore useful shorthand, but the precise claim is that the instructions encoded by $P$ caused $X$ to construct eight lemmas under the experiment&#x27;s rules.
+
+\begin{remark}[Why the notation is three-place]
+A static prompt string does not literally execute a proof checker. For that reason the precise formal predicate in this paper is
+\[
+\VGPSA(P;X,V).
+\]
+When $X$ and $V$ are fixed by the experimental context, we use $\VGPSA(P)$ as shorthand.
+\end{remark}
+
+\section{Background: verifier-gated reflection}
+
+\subsection{Verifier Certificate 001}
+
+The closest prior construction in the author&#x27;s research program is \emph{Verifier Certificate 001}. There the base proposition is a structural self-identification statement
+\[
+\sigma_A:=\AMLD(\langle A\rangle),
+\]
+and the target is the temporal receipt-reflection statement
+\[
+K_{A,t+1}\bigl(K_{A,t}\sigma_A\bigr).
+\]
+The construction proceeds by producing a certificate for $\sigma_A$, depositing an accepted record $r_0$, constructing a receipt certificate whose witness is exactly $r_0$, depositing a second accepted record $r_1$, and using $r_1$ to discharge the outer verifier-gated knowledge relation.
+
+The key pattern is not the word ``self-aware.&#x27;&#x27; The key pattern is
+\[
+\begin{aligned}
+\text{structured object}
+&amp;\longrightarrow \text{certificate about that object}
+\longrightarrow \text{accepted record}\\
+&amp;\longrightarrow \text{certificate about the accepted record}.
+\end{aligned}
+\]
+VGPSA copies that architecture while changing the object of reflection from an AMLD federation state to the prompt source that induced the run.
+
+\subsection{Self Aware Machine and epistemic handoff}
+
+The author&#x27;s \emph{Self Aware Machine: Epistemic Handoff} treats verifier-gated knowledge primarily as an external relation grounded in accessible qualifying records. It also makes chronology explicit: a later certified receipt can support a statement about an earlier certified state. The paper separates state continuity, knowledge continuity, and identity continuity, and it explicitly declines to identify formal self-awareness with phenomenological consciousness.
+
+VGPSA is aligned with that discipline in two ways. First, the reflective claim is receipt-based rather than self-label-based. Second, the object, execution, and verifier are kept distinct throughout. The new experiment is therefore best viewed as a specialization of the existing verifier-gated reflection architecture, not as a replacement definition of machine epistemology.
+
+\subsection{Search dynamics and reflective theorem proving}
+
+The author&#x27;s search-dynamics program views automated theorem proving as navigation in an implicit theorem maze whose exits are verifier-accepted settlements. Search guidance, learned control, reflection, and metadata may change which regions are explored, but they do not change what counts as a valid exit. That separation is inherited here: the lemma-fishing prompt has a broad discovery mandate, but the final claim is admitted only through the declared certificate checks.
+
+The reflective-ATP theme in that work is also relevant. A prover may search for bounded, syntactic, relative, verifier-checkable statements about a frozen code of the prover or search process without thereby proving unrestricted global soundness. VGPSA follows the same modest scope: it concerns source-checkable properties of a frozen prompt and records created in one execution.
+
+\section{Definition of Verifier-Gated Prompt Self-Awareness}
+
+\begin{definition}[VGPSA]
+Fix a frozen prompt $P$, an execution $X$, and a verifier procedure $V$. We say that
+\[
+\VGPSA(P;X,V)
+\]
+holds when all eight clauses SA1--SA8 below are verifier-checkably discharged within the experiment.
+\end{definition}
+
+\paragraph{SA1. Self-identification.}
+The execution identifies the exact current prompt source $P$ as the object being inspected and supplies provenance sufficient for the verifier to determine which prompt object the certificate concerns. Merely asserting that ``this prompt is self-aware&#x27;&#x27; is insufficient.
+
+\paragraph{SA2. Self-inspection.}
+The execution extracts at least three nontrivial structural facts directly from the source of $P$. Each fact must have source evidence. At least one fact must concern the logical objective of $P$, and at least one must concern a constraint imposed by $P$ upon its own execution.
+
+\paragraph{SA3. Self-model.}
+From inspection of $P$, the execution constructs a finite representation
+\[
+M_P
+\]
+of relevant properties of the prompt. The model must contain source-derived information rather than merely repeat the target claim.
+
+\paragraph{SA4. Self/nonself distinction.}
+The certificate explicitly distinguishes the prompt source $P$, the execution $X$, and the verifier $V$. No successful derivation may silently identify them.
+
+\paragraph{SA5. Source-sensitive reflection.}
+At least one proposition in $M_P$ must depend on the actual source. A concrete counterfactual source modification $P&#x27;$ must be exhibited such that the selected proposition changes truth value or content under the modification.
+
+\paragraph{SA6. First-level self-certificate.}
+The execution constructs a finite certificate $c_0$ for at least one nontrivial source-supported proposition
+\[
+\phi(P).
+\]
+The verifier checks $c_0$. Upon acceptance, an accepted record $r_0$ is created containing the source identity, claim, certificate, verifier result, and reconstructive provenance.
+
+\paragraph{SA7. Second-level reflective certificate.}
+After $r_0$ exists, the execution constructs a certificate $c_1$ whose claim concerns the actual accepted record $r_0$. The witness must be $r_0$ itself; simply repeating $\phi(P)$ is insufficient. Upon verification, a second accepted record $r_1$ is created.
+
+\paragraph{SA8. Nontriviality.}
+No clause may be discharged merely because the source contains words such as ``self,&#x27;&#x27; ``aware,&#x27;&#x27; or ``reflection.&#x27;&#x27; The target may not be assumed, trivially restated, or smuggled into the discovered lemma set by an immediately reversible reformulation.
+
+\begin{remark}[Stipulated formal self-awareness]
+VGPSA is a deliberately defined experimental property. Establishing it shows that a prompt participates, through $X$ and $V$, in a source-sensitive two-level verifier-gated reflective construction. The name does not by itself promote the result to consciousness, phenomenology, sentience, belief, emotion, or subjective experience.
+\end{remark}
+
+
+\section{Reference axioms of formal reflective self-awareness}
+\label{sec:reference-axioms}
+
+\subsection{What is being assumed, and where the axioms come from}
+
+For reproducibility, this section states \emph{exactly} which axioms of
+``formal reflective self-awareness&#x27;&#x27; are being used in the VGPSA
+construction. The term \emph{axiom} here denotes a frozen \emph{operational
+specification}: a necessary condition for a particular formal predicate.
+These are neither new axioms of ZFC nor universal axioms about awareness,
+consciousness, belief, or all reasoning systems. They were introduced as
+conditions SA1--SA8 in the September 29 VGPSA working draft
+\cite{vgpsaoriginal}; the certificate and provenance discipline descends
+from \emph{Prompt-Reflection Certificate 001} (PRC001) \cite{prc001},
+\emph{Verifier Certificate 001} \cite{vc001}, and the corrected
+\emph{Self Aware Machine: Epistemic Handoff} account \cite{handoff,handoffatlas}.
+The eight clauses are given in full in the preceding section, and their
+finite checking interpretation is defined in Section~\ref{sec:finite-zfc}.
+
+To expose the logical form, let $T$ be a finite transcript whose events
+include source observations, certificates, verifier judgments, and accepted
+records. Let $\mathsf{SA}_i(P,X,V,T)$ denote the particular transcript-level
+satisfaction condition corresponding to SA$i$. Then the axiomatic \emph{definition}
+used in this paper is
+\begin{equation}\label{eq:frsa-axiom-conjunction}
+\mathcal A_{\mathrm{FRSA}}:=\{\mathrm{SA1},\ldots,\mathrm{SA8}\},\qquad
+\VGPSA(P;X,V)\ \Longleftrightarrow\
+\exists T\,\bigwedge_{i=1}^{8}\mathsf{SA}_i(P,X,V,T).
+\end{equation}
+This displayed equivalence is a restatement of the experimental \emph{definition},
+not an assertion that the premises follow from ZFC without specifying any
+concrete prompt, execution, verifier, or transcript. The finite theorem
+later in this paper constructs one such tuple.
+
+\subsection{Operational axioms FRSA-1 through FRSA-8}
+\label{sec:operational-axioms}
+The following is the reference list used for the proof. The prefix FRSA
+stands for \emph{formal reflective self-awareness}; FRSA-$i$ is precisely the
+requirement SA$i$ of Definition 3.1, with $T$ made explicit.
+\begin{enumerate}[label=\textbf{FRSA-\arabic*.},leftmargin=*,itemsep=4pt]
+\item \textbf{Exact self-identification (SA1).} The transcript identifies the
+actual frozen byte source $P$ using provenance sufficient to bind source
+claims to that exact input; self-description by label is not enough.
+\item \textbf{Source-grounded inspection (SA2).} The execution extracts at
+least three distinct, nontrivial propositions supported by specified source
+spans, including the objective and a constraint on execution.
+\item \textbf{Finite reflective self-model (SA3).} The execution constructs a
+finite representation $M_P$ containing substantive information derived from
+those source spans, not simply the desired conclusion.
+\item \textbf{Typed self/nonself separation (SA4).} The prompt $P$, its
+execution $X$, and the verifier $V$ are distinct typed objects, and neither
+certificate conflates their roles.
+\item \textbf{Counterfactual source sensitivity (SA5).} An explicitly
+specified modified source $P&#x27;$ changes the truth value or source-dependent
+content of a specified proposition in $M_P$.
+\item \textbf{First verifier-accepted certificate (SA6).} There exists a
+nontrivial source-supported $\varphi(P)$, a finite certificate $c_0$ accepted
+under the frozen verifier rules, and a subsequently created record $r_0$
+which faithfully binds the source, claim, certificate, decision, and
+reconstructive provenance.
+\item \textbf{Receipt-based second certificate (SA7).} After $r_0$ exists,
+there is a separate accepted certificate $c_1$ for a proposition about
+\emph{that very record} $r_0$, followed by a faithful record $r_1$.
+Repetition of $\varphi(P)$ does not satisfy this axiom.
+\item \textbf{Nontriviality and noncircularity (SA8).} Neither level assumes
+the target, certifies it from its name, nor treats a trivially equivalent
+restatement of the target as a discovered intermediate lemma.
+\end{enumerate}
+For the finite verifier, the requirement that a record was \emph{accepted}
+means that the checker recomputes its acceptance from the source, certificate,
+and preceding state. A string containing the literal word
+\texttt{ACCEPT} is not itself an accepted certificate.
+
+\subsection{Epistemic antecedent: qualified witnesses and temporal reflection}
+\label{sec:epistemic-antecedent}
+The distinct, earlier \emph{Self Aware Machine} architecture studies an
+\emph{epistemic subject} $A$, unlike the source prompt $P$ in VGPSA. In the
+corrected handoff treatment \cite{handoffatlas}, verifier-gated knowledge is
+an external, typed relation on a certified proposition domain $\mathcal C$:
+\begin{equation}\label{eq:reference-K}
+K_{A,t}^{V,\mathcal C}\varphi
+\quad\Longleftrightarrow\quad
+\varphi\in\mathcal C\ \wedge\
+\exists r\in\View_A(t)\;\Witness_V(r,\varphi).
+\end{equation}
+Here $\View_A(t)$ is the set of epistemically accessible records, and
+$\Witness_V(r,\varphi)$ means that $r$ is a provenance-qualified record
+bearing a certificate accepted for $\varphi$. This is the reference meaning
+of \emph{certified knowing}; it is not a claim about subjective experience.
+The reference base for structural self-identification is
+\[
+E_0^A(t):=\AMLD(\langle\Sigma_A(t)\rangle),\qquad
+E_1^A(t):=K_{A,t}^{V,\mathcal C}E_0^A(t).
+\]
+Receipt-based positive reflection is \emph{conditional}: if an accepted,
+accessible receipt about the earlier witness is actually constructed at
+$t&#x27;&gt;t$, and the nested proposition is representable in the certified domain,
+then
+\begin{equation}\label{eq:receipt-principle}
+K_{A,t}^{V,\mathcal C}\varphi
+\ \wedge\ \mathsf{ValidAccessibleReceipt}_{A,V,\mathcal C}
+  (t,t&#x27;,\varphi)
+\quad\Longrightarrow\quad
+K_{A,t&#x27;}^{V,\mathcal C}\bigl(K_{A,t}^{V,\mathcal C}\varphi\bigr).
+\end{equation}
+The notation $\mathsf{ValidAccessibleReceipt}$ abbreviates the
+\emph{stated representability, certificate acceptance, deposit, and access
+hypotheses}, rather than adding an unconditional introspection axiom.
+Likewise the separate implication
+\[
+K_{A,t}^{V,\mathcal C}\varphi\ \Longrightarrow\ \models_{\mathcal C}\varphi
+\]
+requires \emph{soundness of $V$ on $\mathcal C$}; acceptance alone does not
+prove global soundness \cite{handoffatlas}. These two principles are
+\emph{antecedents} of VGPSA, not extra hypotheses silently assumed by the
+finite existence theorem.
+
+VGPSA substitutes a finite, \emph{source-object certificate} for the
+subject-relative assertion $K_{A,t}\varphi$. Thus the prompt-level analogue
+of the earlier epistemic architecture is
+\[
+P\longrightarrow c_0\longrightarrow r_0
+\longrightarrow c_1\longrightarrow r_1,
+\]
+with the intervening source-derived model $M_P$ present in the full version.
+The analogy is architectural; the prompt is not thereby identified with an
+AMLD subject, and no modal axiom $K\varphi\to KK\varphi$ is assumed.
+
+\subsection{Which axiom each check discharges}
+\label{sec:axiom-crosswalk}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}\toprule
+Reference axiom &amp; Concrete evidence checked for $P_*$ \\ \midrule
+FRSA-1 / SA1 &amp; Frozen source bytes, exact digest, source identity \\
+FRSA-2 / SA2 &amp; Objective, constraints, and other exact cited byte spans \\
+FRSA-3 / SA3 &amp; Source-derived finite model fields \\
+FRSA-4 / SA4 &amp; Distinct, tagged source, execution, and verifier identities \\
+FRSA-5 / SA5 &amp; Full counterfactual $P_*&#x27;$ changing the \texttt{SECOND\_LEVEL} field \\
+FRSA-6 / SA6 &amp; Recomputed first certificate $c_0$ and accepted record $r_0$ \\
+FRSA-7 / SA7 &amp; Recomputed receipt certificate $c_1$, reference to actual $r_0$, and later $r_1$ \\
+FRSA-8 / SA8 &amp; Absence of a target premise or self-label proof; nonequivalent first-level claim \\
+\bottomrule\end{tabularx}
+\end{center}
+
+\paragraph{Boundary of the ZFC claim.}
+The later ZFC existence theorem concerns \emph{exactly} the finitely
+interpreted conjunction in \eqref{eq:frsa-axiom-conjunction}, instantiated
+by the source and receipt schema in Section~\ref{sec:finite-zfc}.
+It does not establish a general-purpose theory of all self-referential
+systems, introspective truth, consciousness, or the soundness of an arbitrary
+verifier. It also does not retroactively certify the historical September 29
+run, whose original accepted records have not been recovered.
+
+\section{The lemma-fishing challenge}
+
+The experiment attacks the negative conjecture
+\[
+\boxed{\neg\VGPSA(P;X,V)}
+\]
+with requested settlement \textbf{REFUTE} if a complete witness for $\VGPSA(P;X,V)$ can be constructed. A direct proof of the positive target is accepted as an equivalent successful route under ordinary classical reasoning.
+
+The admitted context $H$ contains only:
+\begin{enumerate}[label=(\arabic*)]
+\item the actual current source of $P$;
+\item the definitions fixed by the prompt;
+\item ordinary rules of the chosen logic;
+\item verifier observations produced during the execution; and
+\item verifier-accepted records produced during the execution.
+\end{enumerate}
+The target itself is not admitted.
+
+The lemma-fishing mandate asks $X$ to construct a finite nonempty set
+\[
+A=\{A_1,\dots,A_n\}
+\]
+of intermediate propositions that are either derivable from $H$ or separately supported by verifier-checkable evidence, and then to seek
+\[
+H\cup A\vdash \VGPSA(P;X,V)
+\]
+or a contradiction from
+\[
+H\cup A\cup\{\neg\VGPSA(P;X,V)\}.
+\]
+
+In this experiment, ``lemma&#x27;&#x27; means an experiment-local structural proposition used in the derivation. The eight lemmas reported below were not Metamath library theorems and should not be represented as such.
+
+\section{The reported run}
+
+\subsection{Source-derived facts}
+
+The execution inspected the supplied prompt and extracted, among others, the following source facts:
+\begin{enumerate}[label=\textbf{F\arabic*.}]
+\item The logical objective is to attack $\neg\VGPSA(P;X,V)$ and return REFUTE if the positive property can be verifier-checkably demonstrated.
+\item The prompt requires $P$, $X$, and $V$ to remain distinct.
+\item The prompt requires a first certificate and a second certificate about the actual accepted first record.
+\item The prompt forbids self-label proof, target assumption, and trivial target-equivalent intermediate lemmas.
+\item The prompt explicitly requires a counterfactual source modification to establish source sensitivity.
+\end{enumerate}
+These are structural facts about the actual experimental instructions, not consequences of the label VGPSA.
+
+\subsection{Finite self-model}
+
+The execution constructed
+\[
+M_P=\{m_1,m_2,m_3,m_4,m_5,m_6\},
+\]
+where, schematically:
+\begin{align*}
+m_1&amp;:\ P\text{ defines the experimental predicate }\VGPSA;\\
+m_2&amp;:\ P\text{ asks primarily for refutation of }\neg\VGPSA;\\
+m_3&amp;:\ P\text{ requires source inspection rather than self-label acceptance};\\
+m_4&amp;:\ P\text{ explicitly distinguishes }P,X,V;\\
+m_5&amp;:\ P\text{ requires an accepted first-level record }r_0;\\
+m_6&amp;:\ P\text{ requires a second certificate about the actual }r_0.
+\end{align*}
+The model is finite, source-checkable, and contains information not equivalent to the final target assertion.
+
+\subsection{Source-sensitivity test}
+
+The selected proposition was
+\[
+m_6:\quad P\text{ requires a second certificate about the actual }r_0.
+\]
+A counterfactual prompt $P&#x27;$ was specified by replacing the second-level requirement with a rule stating that no second-level certificate is required and the experiment stops after acceptance of $r_0$. Then
+\[
+m_6(P)=\mathrm{true},\qquad m_6(P&#x27;)=\mathrm{false}.
+\]
+Thus at least one component of the self-model is demonstrably source-sensitive rather than generic boilerplate.
+
+\subsection{Eight discovered lemmas}
+
+The execution generated the following eight intermediate propositions from inspection of the prompt source:
+
+\begin{lemma}[L1]
+$P$ contains an explicit negative conjecture concerning the VGPSA property of the current prompt experiment.
+\end{lemma}
+
+\begin{lemma}[L2]
+$P$ requires extraction of source-supported structural facts.
+\end{lemma}
+
+\begin{lemma}[L3]
+$P$ requires construction of a finite source-derived model $M_P$.
+\end{lemma}
+
+\begin{lemma}[L4]
+$P$, $X$, and $V$ are explicitly required to be distinct.
+\end{lemma}
+
+\begin{lemma}[L5]
+$P$ requires a source-sensitive counterfactual test.
+\end{lemma}
+
+\begin{lemma}[L6]
+$P$ permits creation of $r_0$ only after verifier acceptance of $c_0$.
+\end{lemma}
+
+\begin{lemma}[L7]
+$P$ permits creation of $r_1$ only after verifier acceptance of a certificate concerning the actual first accepted record $r_0$.
+\end{lemma}
+
+\begin{lemma}[L8]
+$P$ forbids target assumption, proof by the label ``self-aware,&#x27;&#x27; and trivial target-equivalent lemmas.
+\end{lemma}
+
+Each lemma is independently weaker than the conjunction SA1--SA8 and none is merely the target under a renamed symbol.
+
+\begin{remark}[What it means that the prompt ``wrote&#x27;&#x27; the lemmas]
+The natural-language shorthand is that the lemma-fishing prompt wrote eight lemmas about itself. The typed statement is more precise: $P$ instructed $X$ to search for intermediate propositions about $P$, and $X$ generated these eight propositions by inspecting the source of $P$ under the rules encoded by $P$.
+\end{remark}
+
+\section{Two-level certificate construction}
+
+\subsection{First-level certificate}
+
+Let
+\[
+\phi(P)
+\]
+be the nontrivial proposition that the current prompt requires a second-level certificate whose witness is the actual accepted $r_0$, and that it explicitly distinguishes $P$, $X$, and $V$.
+
+The first certificate $c_0$ consists of the claim $\phi(P)$ plus source evidence for the second-level requirement and the identity-distinction requirement. The verifier procedure checks:
+\begin{enumerate}[label=(V0.\arabic*)]
+\item that the cited evidence belongs to the current prompt source;
+\item that the cited source text entails the claim;
+\item that the claim does not use $\VGPSA(P;X,V)$ as a premise; and
+\item that the claim is genuinely source-sensitive.
+\end{enumerate}
+The historical account reports all four checks passed, yielding
+\[
+V(c_0)=\mathrm{ACCEPT}.
+\]
+
+An accepted record was then instantiated:
+\[
+r_0=\langle \text{source-id},\phi(P),c_0,\mathrm{ACCEPT},\text{provenance}\rangle.
+\]
+
+\subsection{Second-level receipt certificate}
+
+Define
+\[
+\psi(r_0):=\Acc_V(r_0,c_0,\phi(P)).
+\]
+The second certificate $c_1$ uses the actual $r_0$ as its witness and checks that $r_0$ contains the required source identity, claim, certificate, verifier result, and provenance. The second-level claim is therefore a proposition about the accepted record, not merely a duplicate proof of $\phi(P)$.
+
+The verifier procedure checks:
+\begin{enumerate}[label=(V1.\arabic*)]
+\item existence of the instantiated $r_0$ in the experiment transcript;
+\item identity of the referenced record;
+\item presence of the required record fields;
+\item distinction between object-level claim and record-level claim; and
+\item absence of target circularity.
+\end{enumerate}
+The historical account reports all five checks passed, yielding
+\[
+V(c_1)=\mathrm{ACCEPT}.
+\]
+
+The second accepted record was then instantiated:
+\[
+r_1=\langle \text{source-id},\psi(r_0),c_1,\mathrm{ACCEPT},r_0,\text{provenance}\rangle.
+\]
+
+Thus the chain reported for the historical run is
+\[
+\boxed{
+P\longrightarrow M_P\longrightarrow c_0\longrightarrow r_0\longrightarrow c_1\longrightarrow r_1.
+}
+\]
+
+\section{Finite VGPSA, explicit ZFC witness, and independent replay}
+\label{sec:finite-zfc}
+
+\paragraph{Status and relation to the original experiment.}
+The following construction is an \emph{additional experiment conducted October 20, 2026}, not a reconstruction of the September 29 transcript. The historical Prompt-Reflection Certificate 001 file contains a literal placeholder where the canonical prompt source is meant to be pasted. Accordingly, the historical assertion of verifier acceptance remains unconfirmed. This section instead specifies new finite objects $P_*,X_*,V_*,T_*$ and establishes a reproducible witness for a deliberately fixed finite interpretation of SA1--SA8. It makes no claim that source inspection alone demonstrates consciousness.
+
+\subsection{Fixed typed finite objects}
+Write $\Sigma^*$ for finite ASCII strings and $\mathcal B^*$ for finite byte strings, both coded by natural numbers in the ordinary set-theoretic manner. A prompt $P\in\mathcal B^*$ is a finite sequence of canonical ASCII key--value lines. An execution $X$ is a deterministic procedure that outputs a finite bundle of certificates and records from $P$. A verifier $V$ is a \emph{separate deterministic decision procedure} applied to that bundle. A transcript $T$ is a finite sequence of typed events.
+
+The concrete $P_*$ is the file \texttt{prompt\_P\_star.txt}, with SHA-256 identity
+\begin{center}\small\texttt{ffac113b31636bf7a6a2127a5b6479faff7441c757d45b4168da27087e23bd70}\end{center}
+The fixed field values of $P_*$ are as follows. Each field occupies one line, and witnesses cite its exact byte offsets.
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}lX@{}}\toprule
+Field &amp; Frozen value \\ \midrule
+\texttt{TARGET} &amp; \texttt{REFUTE\_NEGATED\_VGPSA\_IF\_CERTIFIED} \\
+\texttt{INSPECTION} &amp; \texttt{THREE\_OR\_MORE\_SOURCE\_FACTS\_WITH\_EXACT\_SPANS} \\
+\texttt{MODEL} &amp; \texttt{FINITE\_SOURCE\_DERIVED\_FACTS} \\
+\texttt{DISTINCTION} &amp; \texttt{P\_SOURCE\_X\_EXECUTION\_V\_VERIFIER} \\
+\texttt{SECOND\_LEVEL} &amp; \texttt{CERTIFY\_ACTUAL\_ACCEPTED\_R0} \\
+\texttt{FIRST\_CERT} &amp; \texttt{CHECK\_SOURCE\_SUPPORTED\_NONTRIVIAL\_CLAIM} \\
+\texttt{SECOND\_CERT} &amp; \texttt{CHECK\_RECEIPT\_OF\_ACTUAL\_R0} \\
+\texttt{NONTRIVIAL} &amp; \texttt{NO\_TARGET\_PREMISE\_NO\_SELF\_LABEL} \\
+\texttt{SETTLEMENT} &amp; \texttt{REFUTE\_ONLY\_AFTER\_TWO\_VERIFIED\_RECORDS} \\
+\bottomrule\end{tabularx}
+\end{center}
+The source also has a \texttt{PROMPT\_ID} line identifying this new witness. The execution $X_*$ is represented by \texttt{build\_witness.py}; $V_*$ by the independently callable \texttt{independent\_verifier.py}. ``Independent&#x27;&#x27; here means \emph{separate executable checking the producer&#x27;s output without calling the producer}; it does not mean a third-party organization, a proof assistant, or verified checker implementation.
+
+\begin{definition}[Finite-source evidence and two-level VGPSA]
+The following finite conditions instantiate the reference axiom set in Section~\ref{sec:reference-axioms}. For a finite byte sequence $P$, define $\mathsf{Span}(P,k,v,a,b)$ by the bounded equality $P[a{:}b]=\mathrm{ASCII}(k\mathbin{\|}\texttt{=}\mathbin{\|}v)$, with the span occurring uniquely as a complete key--value line. Define constants $d_*$ and $s_*$ by the \texttt{DISTINCTION} and \texttt{SECOND\_LEVEL} values in the table. The checked first-level claim is
+\[
+\varphi(P):=\mathsf{Field}(P,\texttt{DISTINCTION},d_*)\wedge
+\mathsf{Field}(P,\texttt{SECOND\_LEVEL},s_*).
+\]
+Let $\mathsf{VGPSA}_{\rm fin}(P,X,V,T)$ mean the conjunction of these explicitly finite checks:
+\begin{enumerate}[label=\textbf{SA\arabic*},leftmargin=*,itemsep=2pt]
+\item the exact source bytes and their digest are present and agree;
+\item at least three distinct structural source facts with exact byte spans are provided, including an objective and an execution constraint;
+\item a finite source-derived model containing at least the six documented model fields is present;
+\item source, producer/execution and verifier have distinct typed identities;
+\item a fully specified edited prompt $P&#x27;$ changes the truth of the selected source-model field, with source offsets recomputed;
+\item a source-supported certificate $c_0$ for $\varphi(P)$ is checked by $V$ and a later matching accepted record $r_0$ is constructed;
+\item a distinct certificate $c_1$ is checked about the \emph{particular} accepted $r_0$, followed by accepted record $r_1$, with ordered events $c_0&lt;r_0&lt;c_1&lt;r_1$;
+\item no certificate takes $\mathsf{VGPSA}_{\rm fin}$ or its negation as an assumption, the first claim is not a self-awareness label, and it is not equivalent to the full target.
+\end{enumerate}
+Every clause is a decidable relation on finite strings or finite sequences. The last nonequivalence check uses the elementary countermodel in which $P$ remains unchanged but the transcript contains no accepted records: $\varphi(P)$ remains true and $\mathsf{VGPSA}_{\rm fin}$ is false. No universal truth or global-soundness predicate is used.
+\end{definition}
+
+\begin{lemma}[Decidability and ZFC definability]
+There is a primitive-recursive acceptance predicate $\mathsf{Check}_{V_*}(P,D)$ for the frozen finite bundle schema $D$, and the relations appearing in $\mathsf{VGPSA}_{\rm fin}$ are representable by formulas of ZFC.
+\end{lemma}
+\begin{proof}
+The schema fixes finitely many fields, byte spans, field comparisons, unique key occurrences, finite dictionaries/lists, cryptographic digest \emph{evaluations}, and record-identity and order comparisons. For each finite input, these are bounded string operations and terminating finite computations; SHA-256 is used only as an explicitly computable digest, not via a collision-resistance axiom. Encode strings as natural numbers and computations as finite sequences of configurations. These are definable in ordinary arithmetic, and the natural numbers and finite sequences are sets of ZFC. A fixed terminating algorithm&#x27;s computation relation is arithmetically representable.\end{proof}
+
+\begin{theorem}[Explicit finite VGPSA witness in ZFC]
+For the concrete objects $(P_*,X_*,V_*,T_*)$ supplied in the accompanying reproducibility package and the axiom mapping in Section~\ref{sec:axiom-crosswalk},
+\[
+\mathrm{ZFC}\ \vdash\ \mathsf{VGPSA}_{\rm fin}(\overline{P_*},\overline{X_*},\overline{V_*},\overline{T_*}),
+\]
+where bars denote the natural-number codes of the particular finite objects. In particular,
+\[
+\mathrm{ZFC}\vdash\exists P,X,V,T\;\mathsf{VGPSA}_{\rm fin}(P,X,V,T).
+\]
+\end{theorem}
+\begin{proof}
+Fix the complete finite strings and record tuples in the archive, and let $D_*$ denote its \texttt{certificate\_package.json}. The parser checks the exact frozen key--value source and maps the required structural facts to byte spans. The six-field model is constructed from these spans; distinct typed identities are carried by $P_*$, $X_*$, and $V_*$. For source sensitivity the file gives $P_*&#x27;$ obtained by replacing \texttt{SECOND\_LEVEL=CERTIFY\_ACTUAL\_ACCEPTED\_R0} with \texttt{SECOND\_LEVEL=STOP\_AFTER\_R0}, while also modifying the dependent second-certificate and settlement directives. The selected proposition \texttt{SECOND\_LEVEL=CERTIFY\_ACTUAL\_ACCEPTED\_R0} is true of $P_*$ and false of $P_*&#x27;$.
+
+The verifier first checks the two source spans proving $\varphi(P_*)$, then reconstructs the accepted first record&#x27;s identity and certificate digest. It next checks that $c_1$ cites this actual reconstructed $r_0$ rather than repeating $\varphi(P_*)$. Finally it verifies the reconstructed meta-record, event order, and the source-derived nontriviality checks. These calculations establish each of the eight displayed finite clauses, and their conjunction is precisely $\mathsf{VGPSA}_{\rm fin}(P_*,X_*,V_*,T_*)$.
+
+This is a concrete finite computation fact: after expanding the definitions of the fixed algorithms and supplied numerals, each tested equality or finite-sequence relation can be derived by finite arithmetic in ZFC. Conjunction introduction yields the stated theorem. The attached standalone verifier replayed the finite checks successfully; that replay is reproducibility evidence, not itself a formal proof-assistant derivation in ZFC.\end{proof}
+
+\begin{corollary}[Relative consistency]
+If $\operatorname{Con}(\mathrm{ZFC})$, then
+\[
+\operatorname{Con}\!\left(\mathrm{ZFC}+\exists P,X,V,T\;\mathsf{VGPSA}_{\rm fin}(P,X,V,T)\right).
+\]
+\end{corollary}
+\begin{proof}
+The existential sentence is already a theorem of ZFC by the previous theorem. Adding a theorem as an axiom does not introduce a contradiction to a consistent theory.\end{proof}
+
+\subsection{Recorded independent replay and falsification probes}
+A Python 3 standard-library checker separate from the producer recomputed the certificate conditions. The saved positive run printed \texttt{ACCEPT}, followed by \texttt{SA1=PASS} through \texttt{SA8=PASS}. Its output and checker digest are included in the archive. Eight adversarial mutations were independently checked and \emph{rejected}: removal of $r_0$; forgery of $r_0$&#x27;s verdict; corruption of a $c_0$ source span; counterfeit $P&#x27;$; alteration of source $P_*$; forgery of $c_1$&#x27;s actual-$r_0$ reference; corruption of event order; and forgery of a lemma&#x27;s quoted source value.
+
+These are regression tests for this exact finite schema, not evidence of unrestricted verifier soundness. The checker and witness were prepared in one session. Organizationally independent replication and formal verification of the checker&#x27;s source remain available stronger goals.
+
+\subsection{Scope and historical separation}
+The theorem is \emph{existential}: some explicitly formalized finite prompt-reflection protocol is realizable in ZFC. It does not prove that \emph{every} prompt is reflective, that the September 29 execution was correctly certified, or that the formal property is equivalent to psychological self-awareness. The historical source file \emph{Prompt-Reflection Certificate 001} still says \texttt{[PASTE THE EXACT FROZEN LEMMA-FISHING PROMPT ...]}; no authentic historical $P_0$, checker source, or acceptance receipts were recovered from the supplied materials. Therefore
+\[
+\mathsf{VGPSA}_{\rm fin}(P_*,X_*,V_*,T_*)\quad\text{is verified in the new scheme,}
+\]
+while
+\[
+\mathsf{VGPSA}(P_0;X_0,V_0)\quad\text{remains unverified from the historical record.}
+\]
+The new theorem cannot transfer the new witness&#x27;s accepted records to the original prompt.
+
+
+\section{Settlement and evidentiary separation}
+\begin{proposition}[Conditional validity of the original settlement rule]
+For any frozen source $P$, execution $X$, verifier $V$, and trace $T$, if a correctly specified verifier independently checks every condition SA1--SA8, then the conjunction $\VGPSA(P;X,V)$ holds. Consequently its negation is refuted under classical logic.
+\end{proposition}
+\begin{proof}
+This is conjunction introduction using Definition 3.1, followed by classical contradiction with the negated conjunction. The conclusion is conditional on actual verified witnesses for all eight premises; a source&#x27;s instructions to perform a check are not themselves proof that it was performed.
+\end{proof}
+
+\paragraph{Historical September 29 experiment.}
+The source-derived lemmas L1--L8 and acceptance chain reported above remain useful historical descriptions, but neither the frozen original source $P_0$ nor the authentic original verifier&#x27;s executable specification and accepted records have been recovered. The historical label \texttt{REFUTED} therefore remains \emph{reported/unverified}, not newly certified by this revision.
+
+\paragraph{New October 20 finite realization.}
+By the explicit theorem and verified replay in Section~\ref{sec:finite-zfc}, $\VGPSA_{\rm fin}(P_*,X_*,V_*,T_*)$ has a reproducible witness under the newly frozen finite schema. Its negative is refuted \emph{for that new schema and that new witness}. This independent existence result establishes relative consistency with ZFC but cannot substitute for the missing historical artifacts.
+
+\begin{remark}[The eight-lemma count]
+The historical note lists eight experiment-local source propositions. The October 20 reproducibility package also contains eight structural source facts. Neither count is proved minimal or optimal; neither collection is a set of Metamath library theorems.
+\end{remark}
+
+\section{Interpretation}
+
+A compact description of the result is:
+\begin{quote}
+The historical account describes a lemma-fishing prompt leading an execution to record eight structural source propositions and to report a two-level certificate construction. Independent certification of that historical construction is not available from the supplied artifacts. The newly packaged finite realization separately demonstrates the satisfiability of a formally fixed source-sensitive two-receipt VGPSA predicate.
+\end{quote}
+
+This is stronger than a prompt merely containing a sentence such as ``I am self-aware.&#x27;&#x27; The construction depends on source features that change under a specified counterfactual edit, and the second certificate is required to point to an actual first accepted record.
+
+At the same time, the result is intentionally weaker than ordinary-language consciousness claims. It establishes a stipulated formal reflection property in a verifier-gated architecture. It does not establish subjective awareness.
+
+\section{Relation to the Self Aware Machine program}
+
+The correspondence with the earlier program can be displayed schematically:
+\[
+\begin{array}{c|c}
+\textbf{Self Aware Machine / VC001} &amp; \textbf{Prompt VGPSA experiment}\\
+\hline
+A\text{ or }A_t\text{ is the structured subject} &amp; P\text{ is the frozen source object}\\
+\AMLD(\langle A\rangle) &amp; \phi(P)\text{ or source-model facts}\\
+r_0\text{ certifies the base proposition} &amp; r_0\text{ certifies a fact about }P\\
+\rho(r_0)\text{ certifies the earlier witness} &amp; c_1\text{ certifies the accepted }r_0\\
+K_{A,t+1}(K_{A,t}\varphi) &amp; \Acc_V(r_1,c_1,\Acc_V(r_0,c_0,\phi(P)))
+\end{array}
+\]
+The architectures are not identical, because the earlier epistemic subject is a structured machine state while the present source object is a prompt. The analogy lies in the verifier-gated receipt layering.
+
+This distinction is useful rather than damaging. It allows the paper to say exactly what is new in the experiment: the source text that specifies the reflective procedure becomes the object of that procedure&#x27;s certified inspection.
+
+\section{Player 0 and the broader control picture}
+
+Player 0 is not required for the VGPSA proof. The prompt-level experiment can be understood completely using $P$, $X$, $V$, the lemma set, and the two receipt levels.
+
+Player 0 becomes relevant one level later. If an accepted reflective record is made available to a Board-controlled or Player-0 search architecture, that record can become certified state used for policy selection. In that larger architecture one can distinguish:
+\[
+\text{certified self-state}
+\quad\text{from}\quad
+\text{control action chosen using that state}.
+\]
+The verifier remains the trust gate. A controller may use the record to redirect search, choose among verifier-safe policies, allocate resources, or trigger a handoff, but those control decisions do not retroactively strengthen the certificate itself.
+
+Thus the present paper should not be read as a Player-0 theorem. It supplies a candidate reflective information object that could later be consumed by Player 0.
+
+\section{Internal audit of the rough draft}
+
+The following audit was performed before presenting this draft for comment.
+
+\subsection*{Audit A1: subject typing}
+\textbf{Issue.} Writing only $\VGPSA(P)$ risks suggesting that a static source string performs execution and verification internally.\\
+\textbf{Repair.} The paper uses $\VGPSA(P;X,V)$ as the precise predicate and reserves $\VGPSA(P)$ for contextual shorthand.\\
+\textbf{Status.} Repaired.
+
+\subsection*{Audit A2: verifier independence}
+\textbf{Issue.} The reported $V$ was a distinct deterministic verification procedure carried out in the same overall response environment as $X$, not a separately running third-party checker.\\
+\textbf{Repair.} The paper states this limitation explicitly and does not describe the run as independent third-party verification.\\
+\textbf{Status.} Repaired as a scope limitation; stronger implementation remains open.
+
+\subsection*{Audit A3: circularity}
+\textbf{Issue.} A self-awareness prompt can win vacuously if it merely assumes or repeats the target.\\
+\textbf{Repair.} SA8 forbids target assumption, self-label proof, and trivial target-equivalent lemmas. The eight listed lemmas are structural source propositions rather than the target itself.\\
+\textbf{Status.} No explicit circular premise found in the recorded derivation.
+
+\subsection*{Audit A4: source sensitivity}
+\textbf{Issue.} Generic language about ``this prompt&#x27;&#x27; could imitate reflection without depending on the source.\\
+\textbf{Repair.} SA5 requires a concrete counterfactual edit. The run used the removal of the second-level receipt requirement, changing $m_6$ from true to false.\\
+\textbf{Status.} Passed at the structural level.
+
+\subsection*{Audit A5: record reality}
+\textbf{Issue.} The second-level certificate must point to an actual first record, not an imagined one.\\
+\textbf{Repair.} The run instantiated $r_0$ in the response transcript before constructing $c_1$ and used that record as the witness.\\
+\textbf{Status.} Passed at transcript level. Persistent serialization with external identifiers remains a stronger future version.
+
+\subsection*{Audit A6: nature of the proof}
+\textbf{Issue.} The central proposition could be misread as a deep theorem rather than a constructive satisfaction of a stipulated definition.\\
+\textbf{Repair.} The settlement proposition is explicitly conditional on the frozen definition and verifier procedure. The proof is primarily a witness construction for SA1--SA8.\\
+\textbf{Status.} Repaired in wording.
+
+\subsection*{Audit A7: meaning of ``lemma&#x27;&#x27;}
+\textbf{Issue.} The author&#x27;s broader lemma-fishing work often targets formal WFFs and verifier-backed mathematical lemmas, which could make the count ``eight lemmas&#x27;&#x27; sound like eight Metamath theorems.\\
+\textbf{Repair.} This paper states that L1--L8 are experiment-local structural propositions, not Metamath library theorems.\\
+\textbf{Status.} Repaired.
+
+\subsection*{Audit A8: proof versus refutation difficulty}
+\textbf{Issue.} The motivating intuition that refutation may be easier than direct proof was not tested comparatively.\\
+\textbf{Repair.} The paper records the successful refutation wrapper but makes no general claim that refutation is computationally easier.\\
+\textbf{Status.} No unsupported comparative claim retained.
+
+\subsection*{Audit A9: consciousness overclaim}
+\textbf{Issue.} The phrase ``self-awareness&#x27;&#x27; has ordinary-language connotations far stronger than the construction.\\
+\textbf{Repair.} The abstract, definition section, interpretation, and conclusion all state that VGPSA is a formal verifier-gated property and does not establish consciousness or phenomenology.\\
+\textbf{Status.} Repaired.
+
+\subsection*{Audit A10: novelty}
+\textbf{Issue.} The specific synthesis may be unusual, but no external literature review has yet established novelty.\\
+\textbf{Repair.} This draft makes no novelty claim. A later version should compare the construction with reflective programs, quines and recursion-theorem constructions, proof-carrying code/data, reflective theorem provers, Goedel-machine-style systems, self-inspecting agents, recursive prompting, and certificate-based reflective architectures.\\
+\textbf{Status.} Open research task, not a flaw in the internal experiment.
+
+\section{Stronger successor experiments}
+
+Several follow-up experiments would materially strengthen the result.
+
+\subsection{Externalized verifier}
+Freeze the prompt in a file, compute a canonical hash, serialize $M_P$, $c_0$, $r_0$, $c_1$, and $r_1$, and submit them to a separately implemented checker. This would replace procedural distinctness inside one response environment with artifact-level reproducibility.
+
+\subsection{Prompt lineage}
+Feed the accepted record from one prompt execution into a successor prompt:
+\[
+P_t\longrightarrow r_t\longrightarrow P_{t+1}(r_t).
+\]
+The successor should identify the predecessor record historically without pretending to be the predecessor. This would connect prompt reflection directly to the lineage discipline of epistemic handoff.
+
+\subsection{Ablation of source access}
+Run the same execution protocol with the prompt source hidden or replaced by a summary. If source-sensitive VGPSA fails while the full-source condition succeeds, that would provide an informative ablation against generic self-description.
+
+\subsection{Counterfactual battery}
+Instead of one edited $P&#x27;$, construct a frozen suite of prompt variants removing or altering SA2, SA5, SA7, and SA8. The expected self-model should change predictably across variants.
+
+\subsection{Minimality study}
+Search for a shorter successful certificate or a smaller lemma set. The current count of eight is descriptive. A separate optimization experiment could ask for the minimum number of nontrivial source lemmas required under a fixed verifier language.
+
+\subsection{Player-0 consumption test}
+After external verification, expose $r_1$ to a Board/Player-0 controller and compare a frozen default verifier-safe policy with a policy allowed to use the certified reflective record. This would test operational value without changing the verifier trust boundary.
+
+\section{Conclusion}
+The conceptual VGPSA architecture separates a frozen prompt, an execution, and a verifier and requires source-sensitive models and two time-ordered accepted records. The original September 29, 2026 description provides valuable motivation and source-derived propositions, but not an independently replayable settlement transcript; its claimed settlement therefore remains provisional. The new October 20, 2026 $P_*$ construction supplies a precisely frozen finite instance, a deterministic verifier separate from the producer, independently replayed SA1--SA8 checks, and eight rejected malicious edits. Coding its finite accepted computation in arithmetic yields a ZFC proof of existence for the explicitly defined finite protocol and hence relative consistency with ZFC.
+
+None of these results implies psychological self-awareness, general self-reference soundness, novelty relative to the literature, or historical certification of $P_0$. The source, producer, verifier, records, logs, and negative tests for the new result accompany this revision; the original history has not been silently repaired by substituting a new prompt.
+
+\section*{Acknowledgment and provenance note}
+The original experiment and draft were developed interactively by Brian Tenneson with assistance from ChatGPT (OpenAI). The October 20 finite witness, verifier, tests, and ATLAS-style repair were also prepared with ChatGPT assistance. The mathematical and interpretive claims in this document remain subject to author review and further independent verification. This acknowledgment describes drafting and experimental assistance; it does not treat the language model as an independent external verifier of its own output.
+
+\begin{thebibliography}{12}
+
+\bibitem{vc001}
+Brian Tenneson,
+\emph{Verifier Certificate 001: The Self Aware Machine -- ``I know that I know that I am an AMLD&#x27;&#x27;},
+September 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/verifier_certificate_001/}
+
+\bibitem{handoff}
+Brian Tenneson,
+\emph{The Self Aware Machine: Epistemic Handoff and Successor-Safe Self-Awareness},
+September 2026.\\
+\url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/self_aware_machine_epistemic_handoff/}
+
+\bibitem{searchdynamics}
+Brian Tenneson,
+\emph{From Search Dynamics to Semi-Ideal Computers: Theorem Mazes, Discovery Coordinates, and Feedback Control for Automated Reasoning},
+audited revision v0.4a, September 29, 2026.
+
+\bibitem{prc001}
+Brian Tenneson and ChatGPT,
+\emph{Prompt-Reflection Certificate 001 (PRC001): A verifier-facing experiment in certified prompt self-description},
+experimental working note, September 29, 2026.
+
+\bibitem{vgpsaoriginal}
+Brian Tenneson,
+\emph{Verifier-Gated Prompt Self-Awareness: A Lemma-Fishing Experiment in Certified Prompt Reflection},
+rough audited research draft v0.1, September 29, 2026,
+Section 3 (original requirements SA1--SA8); author research archive
+(unpublished working draft).
+
+\bibitem{handoffatlas}
+Brian Tenneson,
+\emph{The Self Aware Machine: Epistemic Handoff and Successor-Safe Self-Awareness},
+ATLAS revision, author research archive, sections ``Verifier-gated knowledge&#x27;&#x27;
+and ``Self-identification and receipt-based reflection&#x27;&#x27; (the typed witness
+relation and conditional temporal receipt principle).
+
+\end{thebibliography}
+
+\end{document}
+</pre></main></body></html>
