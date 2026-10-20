@@ -1,0 +1,40 @@
+name: Publish VGPSA ATLAS v0.3 in slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/vgpsa_v0_3/**'
+      - 'scripts/publish_vgpsa_v0_3_slot1.py'
+      - '.github/workflows/publish_vgpsa_v0_3_slot1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-vgpsa-v0-3-slot1
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF validation dependency
+        run: python -m pip install -q pymupdf==1.26.4
+      - name: Verify exact approved artifacts and publish in slot 1
+        run: python scripts/publish_vgpsa_v0_3_slot1.py
+      - name: Commit catalog, readers, source, and documents
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.LO_Logic_in_Computer_Science/verifier_gated_prompt_self_awareness_atlas_v0_3
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish VGPSA ATLAS-repaired v0.3 at library slot 1'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
