@@ -1,0 +1,89 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=.76in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,xcolor,hyperref}
+\definecolor{dark}{HTML}{203F5D}
+\definecolor{note}{HTML}{4C6072}
+\hypersetup{colorlinks=true,urlcolor=dark,linkcolor=dark,pdftitle={ATLAS Mathematical Audit of DNI v0.1}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist[itemize]{nosep,topsep=4pt,leftmargin=18pt}
+\setlist[enumerate]{itemsep=5pt,topsep=4pt,leftmargin=18pt}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries\color{dark} ATLAS Mathematical Audit}\par\vspace{4pt}
+{\large\bfseries Deterministic--Nondeterministic Interfaces (DNI), version 0.1}\par\vspace{6pt}
+{\small Independent proof-and-scope review \textbullet{} 20 October 2026}
+\end{center}
+\noindent\fcolorbox{dark}{white}{\parbox{.94\linewidth}{\textbf{Audit verdict: MAJOR REVISIONS REQUIRED for an original research article.}\\
+\textbf{Proof status:} All six numbered theorem statements and the deterministic-inclusion proposition check out under their stated assumptions. No counterexample to a stated theorem was found. The core construction is established mathematical technology, not a demonstrated new unification theorem.}}
+
+\section*{1. Audit scope and method}
+Primary materials: the submitted eight-page DNI v0.1 PDF and its matching LaTeX source. Each mathematical result was checked against the declared hypotheses; the probabilistic realization and total-variation induction were independently reconstructed. Published literature was checked for priority and bibliography accuracy. This is an ATLAS-style audit performed here, not a claim of execution by an external specialized system. The original article was not changed.
+
+\section*{2. Proof-level findings}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{@{}p{.36\linewidth}p{.12\linewidth}p{.46\linewidth}@{}}
+\toprule
+\textbf{Source result} & \textbf{Status} & \textbf{Audit reason}\tabularnewline\midrule
+\endhead
+Proposition 2.1: Dirac embedding (p.~2) & PASS & A deterministic transition defines a Dirac kernel; composition is preserved.\\
+Theorem 4.1: $n$-step equality (p.~3) & PASS & Induction yields $f_*^n E=E K^n$; apply $R_*$ and $R_*E=\mathrm{id}$.\\
+Theorem 4.2: complete observable law (p.~3) & PASS & Conditional-on-history induction is valid for finite $Y$; preparation measures live on disjoint readout fibers.\\
+Example 5.1: two-state flips (pp.~3--4) & PASS & Bernoulli($1/4$) innovations in the initial infinite sequence give the claimed $K$ and independent tail.\\
+Theorem 6.1: path-space realization (p.~4) & PASS & The left shift of the Markov trajectory measure gives the mixture $E K$. Standard construction.\\
+Theorem 6.2 and corollary: finite hidden state (p.~4) & PASS & At most $|X|$ distinct output words can arise from a fixed deterministic initial-state realization; independent nondegenerate bits require $2^n$.\\
+Theorem 7.1: pointwise obstruction (pp.~4--5) & PASS & A deterministic readout cannot yield a non-Dirac distribution at a single hidden state. This is a deliberately strong restriction.\\
+Theorem 8.1: stability (p.~5) & PASS & With $\Delta_n=\sup_y\|f_*^nE(y)-EK^n(y)\|_{\rm TV}$, contraction gives $\Delta_{n+1}\le\varepsilon+\Delta_n$.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section*{3. Major findings requiring repair}
+\textbf{M1. Priority/attribution --- major.}  The purported defining interface equations are not a newly derived bridge. In finite-state matrix notation, set
+\[
+P(x,x')=\mathbf 1_{\{f(x)=x'\}},\qquad
+\Phi(x,y)=\mathbf 1_{\{R(x)=y\}},\qquad \Lambda=E,\quad Q=K.
+\]
+Then (DNI--1) and (DNI--2) become precisely
+\[
+\boxed{\Lambda\Phi=I,\qquad \Lambda P=Q\Lambda.}
+\]
+These are the classic projection/link and intertwining conditions used in the Rogers--Pitman Markov-function theorem. Consequently, the Markov-property conclusion of Theorem 4.2 is a deterministic-upstairs specialization of an existing result. This is \emph{not} a correctness defect; it is a significant priority defect if presented as original mathematics. Add explicit attribution in the introduction and ahead of Theorem 4.2, and describe what---if anything---is newly established in DNI. See Rogers and Pitman (1981), and the finite-state exposition by Alberts.
+
+\textbf{M2. Missing nondeterministic interface --- major.} Section 2 introduces $N:S\to \mathcal P(S)\setminus\{\varnothing\}$, but the remaining theorems treat deterministic $f$ and stochastic $K$ only. A genuine three-way interface should state maps, commuting laws, and preservation/obstruction results for a pure possibility relation $N$, potentially via support or an explicitly chosen distributive/compositional structure. The current article is a deterministic--\emph{stochastic} interface note, not yet a general deterministic--nondeterministic theory.
+
+\textbf{M3. ``Minimal'' is not formalized --- major.} Section 9 invokes a pushout $\mathcal T_D\sqcup_{\mathcal T_0}\mathcal T_P$, but neither a specific category of theories/morphisms nor a cost preorder on compatible interfaces is defined. A universal syntactic pushout is not automatically a \emph{minimum-resource compatible semantic interface}. The article acknowledges these limits, but the title and central ambition remain ahead of the theorems. Choose a category and an interface ordering, prove a least/minimal property for a restricted class, or retitle this a proposal \emph{toward} such a framework.
+
+\textbf{M4. Unrestricted representability is weak evidence of unification --- major.} Theorem 6.1 realizes any finite-state Markov chain by an infinite deterministic path space. This is mathematically correct but follows from encoding the entire future output path in the initial hidden state. Without independently supplied physical/operational restrictions, the construction poses no meaningful constraint on compatibility of two \emph{independently specified} source theories. State admissible hidden-state resources and preservation requirements before claiming substantive reconciliation.
+
+\section*{4. Moderate and minor findings}
+\begin{enumerate}[label=\textbf{F\arabic*.}]
+\item \textbf{The status of the research conjecture is too broad (moderate).} Section 11 calls for ``necessary and sufficient structural conditions'' without fixing a category or structural invariants. As written this is a research agenda rather than a falsifiable conjecture. Supply one sharply quantified target, preferably finite and testable.
+\item \textbf{Diagram types should be uniform (minor).} The diagram in Section 3 has top arrows $K:Y\rightsquigarrow Y$ and bottom arrows $f_*:\mathcal D(X)\to\mathcal D(X)$. Interpret it clearly as a Kleisli square, or use the distribution-level diagram $\mathcal D(Y)\xrightarrow{K_*}\mathcal D(Y)$ with vertical $E_*$ and bottom $f_*$. The latter removes mixed arrow types.
+\item \textbf{Incorrect scope parenthesis (minor).} Section 3 says ``all finite spaces in the examples below,'' but Example 5.1 takes $X=\{0,1\}\times [0,1]^{\mathbb N_0}$, an uncountable space. Replace by ``finite observable spaces in the examples.''
+\item \textbf{No empirical interpretation or physics claim (appropriately limited).} The manuscript correctly does not infer a deterministic ontology from existence of a deterministic realization. Retain this important limitation.
+\item \textbf{Visual/compilation check (pass).} Eight letter-size pages, references present, mathematical notation legible, no apparent clipping in rendered pages, and no compilation overfull/undefined warnings observed in the checked build log.
+\end{enumerate}
+
+\section*{5. Recommended precise next theorem}
+A fruitful restricted target is the following: \emph{Given a finite-state stochastic kernel $K$ and a prescribed maximum number $m$ of deterministic hidden states, characterize exactly when some finite $X$, $|X|\le m$, and maps $f,R,E$ satisfy (DNI--1)--(DNI--2).} This separates the trivial infinite-path-space realization from genuine cost-constrained compatibility. A first necessary condition follows immediately: for each initial observable $y$, the number of distinct positive-probability length-$n$ observable paths under $K$ cannot exceed $m$ for any $n$. Determining whether and when sharper conditions are sufficient is a separate research task. This is proposed as a target, not claimed as solved here.
+
+\section*{6. Final disposition}
+\textbf{Mathematical correctness:} PASS on the stated elementary classical results.\\
+\textbf{Attribution:} REPAIR REQUIRED.\\
+\textbf{Scope relative to proposed DNI:} INCOMPLETE.\\
+\textbf{Original research claim:} NOT ESTABLISHED.\\
+\textbf{Recommended status:} Working note / preliminary research proposal, not yet an independently original research result. Preserve version 0.1 and make any repairs in a separately numbered version only after authorization.
+
+\section*{References verified}
+\begin{enumerate}[label={[\arabic*]},leftmargin=24pt]
+\item L. C. G. Rogers and J. W. Pitman, ``Markov functions,'' \emph{Annals of Probability} \textbf{9}(4), 573--582 (1981). \url{https://doi.org/10.1214/aop/1176994363}.
+\item T. Alberts, ``Pitman--Rogers on Finite State Markov Chains,'' University of Utah exposition. \url{https://www.math.utah.edu/~alberts/notes/sle-markov-functions/discrete-pitman-rogers/}.
+\item T. Fritz, ``A synthetic approach to Markov kernels, conditional independence and theorems on sufficient statistics,'' \emph{Advances in Mathematics} \textbf{370}, 107239 (2020). \url{https://doi.org/10.1016/j.aim.2020.107239}.
+\item J. Barrett, ``Information processing in generalized probabilistic theories,'' \emph{Physical Review A} \textbf{75}, 032304 (2007). \url{https://doi.org/10.1103/PhysRevA.75.032304}.
+\item J. A. Goguen and R. M. Burstall, ``Institutions: Abstract model theory for specification and programming,'' \emph{Journal of the ACM} \textbf{39}(1), 95--146 (1992). \url{https://doi.org/10.1145/147508.147524}.
+\end{enumerate}
+\end{document}
