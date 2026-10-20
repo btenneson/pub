@@ -1,0 +1,584 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Foggy Multiarticle Metaworld: Discoveries, Connections, and Open Frontiers — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/foggy_multiarticle_metaworld_discoveries_connections_open_frontiers_0_2/">Back to publication</a><h1>The Foggy Multiarticle Metaworld: Discoveries, Connections, and Open Frontiers</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/foggy_multiarticle_metaworld_discoveries_connections_open_frontiers_0_2/source.tex" download>Download source</a><pre>\documentclass[11pt,letterpaper,oneside]{article}
+\usepackage[margin=0.91in,headheight=22pt,footskip=29pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo,microtype}
+\usepackage[scaled=0.93]{helvet}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{array,booktabs,tabularx,longtable,multirow}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shapes.geometric}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec,fancyhdr,enumitem,xcolor,hyperref}
+\usepackage{graphicx,needspace,caption}
+\definecolor{ink}{HTML}{192838}
+\definecolor{sea}{HTML}{267D83}
+\definecolor{deepsea}{HTML}{155B63}
+\definecolor{mist}{HTML}{EDF5F4}
+\definecolor{sand}{HTML}{F7F1E5}
+\definecolor{gold}{HTML}{A8782C}
+\definecolor{graytext}{HTML}{576878}
+\definecolor{line}{HTML}{C9D8D9}
+\hypersetup{colorlinks=true,linkcolor=deepsea,urlcolor=deepsea,citecolor=deepsea,pdfauthor={Brian Tenneson},pdftitle={The Foggy Multiarticle Metaworld: Discoveries, Connections, and Open Frontiers}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5.8pt plus 1.3pt minus 1.3pt}
+\setlength{\emergencystretch}{3em}
+\setlist[itemize]{leftmargin=1.35em,itemsep=2pt,topsep=4pt}
+\setlist[enumerate]{leftmargin=1.5em,itemsep=3pt,topsep=4pt}
+\titleformat{\section}{\Large\sffamily\bfseries\color{ink}}{\thesection}{.75em}{}
+\titleformat{\subsection}{\large\sffamily\bfseries\color{deepsea}}{\thesubsection}{.65em}{}
+\titleformat{\subsubsection}{\normalsize\sffamily\bfseries\color{ink}}{\thesubsubsection}{.65em}{}
+\titlespacing*{\section}{0pt}{19pt}{8pt}
+\titlespacing*{\subsection}{0pt}{12pt}{5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\sffamily\color{graytext} THE FOGGY MULTIARTICLE METAWORLD}
+\fancyhead[R]{\footnotesize\sffamily\color{graytext} RESEARCH EXPOSITION · 20 OCT 2026}
+\fancyfoot[L]{\footnotesize\sffamily\color{graytext} Version 0.2 · Prepared for author review}
+\fancyfoot[R]{\footnotesize\sffamily\color{deepsea}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{line}\leaders\hrule height \headrulewidth\hfill}}
+\newtcolorbox{insight}[1][]{enhanced,colback=mist,colframe=sea,boxrule=0.7pt,arc=1.5mm,left=10pt,right=10pt,top=8pt,bottom=8pt,#1}
+\newtcolorbox{caution}[1][]{enhanced,colback=sand,colframe=gold,boxrule=0.7pt,arc=1.5mm,left=10pt,right=10pt,top=7pt,bottom=7pt,#1}
+\newtcolorbox{mathresult}[1][]{enhanced,colback=white,colframe=line,boxrule=0.6pt,arc=1mm,left=10pt,right=10pt,top=7pt,bottom=7pt,#1}
+\newcommand{\source}[1]{{\footnotesize\color{graytext}\textsf{Source: #1}}}
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\CC}{\operatorname{CC}}
+\newcommand{\Th}{\operatorname{Th}}
+\newcommand{\status}[1]{\textsf{\footnotesize #1}}
+\captionsetup{font=small,labelfont={bf,color=deepsea}}
+\renewcommand{\arraystretch}{1.19}
+\begin{document}
+\thispagestyle{empty}
+\vspace*{0.46in}
+{\sffamily\bfseries\color{deepsea}\large RESEARCH EXPOSITION \hfill VERSION 0.2 · 20 OCTOBER 2026}\par
+\vspace{0.16in}
+{\color{line}\rule{\textwidth}{1.2pt}}\par
+\vspace{0.25in}
+{\sffamily\bfseries\fontsize{32}{36}\selectfont\color{ink}The Foggy\\Multiarticle Metaworld}\par
+\vspace{0.14in}
+{\sffamily\fontsize{18}{23}\selectfont\color{sea}Discoveries, Connections, and Open Frontiers}\par
+\vspace{0.13in}
+{\large\color{graytext}What happens when fifty mathematical islands are considered as one research world?}\par
+\vspace{0.24in}
+{\large Brian Tenneson}\par
+{\small\color{graytext}Research exposition prepared with assistance from ChatGPT}\par
+{\small\color{graytext}Continuity beacon: \texttt{91042014201224789}}\par
+\vspace{0.35in}
+\begin{center}
+\begin{tikzpicture}[&gt;=Stealth, every node/.style={font=\sffamily},scale=1]
+ \fill[sea!6,rounded corners=7pt] (0,0) rectangle (12.1,3.9);
+ \node[draw=sea!65,fill=white,rounded corners=7pt,line width=.8pt,minimum width=2.3cm,minimum height=1.01cm,align=center] (a) at (1.5,2.85) {\textbf{13}\\[-1pt]\scriptsize Historical};
+ \node[draw=sea!65,fill=white,rounded corners=7pt,line width=.8pt,minimum width=2.3cm,minimum height=1.01cm,align=center] (b) at (4.5,2.85) {\textbf{16}\\[-1pt]\scriptsize Geometry / Atlas};
+ \node[draw=sea!65,fill=white,rounded corners=7pt,line width=.8pt,minimum width=2.3cm,minimum height=1.01cm,align=center] (c) at (7.5,2.85) {\textbf{4}\\[-1pt]\scriptsize Rank / GBG};
+ \node[draw=sea!65,fill=white,rounded corners=7pt,line width=.8pt,minimum width=2.3cm,minimum height=1.01cm,align=center] (d) at (10.5,2.85) {\textbf{14}\\[-1pt]\scriptsize AKM / CAMI};
+ \node[draw=sea!65,fill=white,rounded corners=7pt,line width=.8pt,minimum width=2.8cm,minimum height=1.02cm,align=center] (e) at (2.8,1.25) {\textbf{3}\\[-1pt]\scriptsize Hilbert / ALD / ML};
+ \node[fill=deepsea,text=white,rounded corners=8pt,minimum width=4.0cm,minimum height=.95cm,align=center] (f) at (8.15,1.25) {\Large\bfseries 50 registered families};
+ \draw[sea!70,dashed,thick] (a)--(b); \draw[sea!70,dashed,thick] (b)--(c); \draw[sea!70,dashed,thick] (c)--(d);
+ \draw[sea!70,dashed,thick] (a)--(e); \draw[sea!70,dashed,thick] (d)--(f); \draw[sea!70,dashed,thick] (e)--(f);
+ \node[font=\scriptsize\sffamily,graytext] at (6.05,.32) {Dashed edges are research questions, not certified theorem transports};
+\end{tikzpicture}
+\end{center}
+\vfill
+\begin{insight}
+\textbf{Scope and status.} This article interprets a source-family register of 50 distinct manuscripts and work families: H01--H13 and N01--N37. It documents selected paper-level arguments, conditional mathematical results, counterexamples, and proposed connections. It does \emph{not} claim fifty independent theories, a completed fifty-way theorem zip, new independent proof-checker receipts, a validated clinical system, or an end-to-end ATP speedup. The original twenty-six-country open problem remains open; a documented bounded attempt now illustrates the remaining obligations.
+\end{insight}
+\vspace{0.23in}
+{\small\color{graytext}Prepared for publication review; not yet published. The prior Checkpoint 0.3 article (version 0.4, 19 October 2026) is retained as the historical 29-family snapshot.}
+\clearpage
+
+\begin{abstract}
+A multiarticle is a provenance-preserving effort to discover consequences at the interfaces of mathematical articles, rather than a license to identify similar notation or aggregate conjectures as though they were proved. The Foggy Multiarticle Metaworld grew from the six-paper and three-paper studies to a 29-family checkpoint on 19 October 2026, and to \textbf{50 registered source families} following additive intakes on 20 October. This exposition asks what the enlarged world teaches us. Its central themes are the distinction between proof and search, shortest routes and least charged costs, imagined lemmas and certified knowledge, location maps and rule-complete states, and latent consequences and checked discovery. We reconstruct several representative mathematical arguments---a rank-descent settlement bound, an admissible-potential optimality certificate, a counterfactual-proof bridge, and a closure-depth limit for learned policies---while keeping their source-specific assumptions visible. Failed experiments and counterexamples are treated as genuine research information. Finally, we explain the original open problem OP-01: whether a nontrivial, verifier-gated, fully costed expedition can make material use of at least 26 source families from the original 29-family register, settle a conjecture, and beat a fair comparator. The present 50-island register expands the available intellectual landscape but does not itself solve or amend that frozen challenge. A new, explicitly limited FORGE-6-directed research attempt demonstrates a small checked lemma bridge and an advantage over simple forward enumeration, but also finds a stronger baseline that is cheaper and no verified 26-family dependency chain. This account records why the open problem is not easy rather than pretending to settle it.
+\end{abstract}
+\tableofcontents
+\vspace{6pt}
+\begin{caution}
+\textbf{Reading convention.} ``Reported theorem&#x27;&#x27; means a theorem stated or argued in a source manuscript. ``Verified&#x27;&#x27; means an independent checker has accepted an exact proof under a frozen judgment. ``Registered&#x27;&#x27; means a source family has been cataloged. Unless otherwise stated, the cross-island constructions in this article are explanations or research proposals, \emph{not} newly machine-certified results.
+\end{caution}
+\clearpage
+
+\section{The question a map raises}
+Imagine visiting an archipelago whose islands each use their own language to describe the same ocean. One studies how to reach a goal. Another measures the price of travel. A third asks whether two maps represent the same territory; a fourth investigates how a traveler could know where it is; a fifth looks for routes that are invisible until an intermediate bridge is built. These may be parts of a single story. But an attractive analogy does not prove that the descriptions are compatible.
+
+The multiarticle idea begins by refusing to erase those differences. Each island retains its definitions, assumptions, inference rules, proofs, versions, and verification status. A \emph{zip} joins their tagged records for comparison, not their axioms by fiat. A country is a composed research object; a continent is a larger one. Neither metaphor guarantees a proof.
+
+The adjective \emph{foggy} is epistemic rather than ornamental. On some islands, a finite mathematical argument has been written and reviewed. On others, a conjecture is stated, a model is proposed, or a result is backed only by an internal audit. In some places, an attractive claim has been disproved. Fog is useful when it tells the reader where knowledge ends. The research program becomes more credible, not less, when it distinguishes an appealing route from a checker-accepted bridge \cite{checkpoint}.
+
+\begin{insight}
+\textbf{Guiding question.} Can the combined, provenance-preserving body of work make a mathematically consequential discovery \emph{that is not merely the restatement of what its sources already say}---and demonstrate that discovery under independent verification and a fully charged search budget?
+\end{insight}
+
+There are really three challenges here. The \emph{logical} challenge asks what follows from premises. The \emph{search} challenge asks whether a specified procedure can find the proof. The \emph{economic} challenge asks whether the entire search and verification costs less than a fair alternative. A positive result on one challenge does not automatically settle either of the other two.
+
+\section{Why the count is now fifty}
+The published-style Checkpoint 0.3 synopsis dated 19 October 2026 recorded 29 source families: 13 historical families H01--H13 and 16 incoming families N01--N16. On 20 October, separately dated archival intakes registered N17; the GBG and GBG+ manuscripts N18--N20; an AKM/CAMI archive N21--N34; Hilbert-filled inference work N35; the three-way lemma-exchange ALD manuscript N36; and the learned proof-search policy manuscript N37. The additive arithmetic is
+\[
+\underbrace{13+16}_{\text{Checkpoint 0.3: 29}}
++\underbrace{1}_{N17}+\underbrace{3}_{N18\text{--}N20}
++\underbrace{14}_{N21\text{--}N34}+\underbrace{3}_{N35\text{--}N37}
+=\boxed{50}.
+\]
+These figures count \emph{distinct registered source families}. They do not count PDFs (some manuscripts have alternate renderings), mathematical theories up to equivalence, independently accepted proof objects, or entirely distinct ideas. Several later works reuse results from earlier ones. The missing CAMI Volume II is not inferred from volumes I, III, and IV; earlier versions and audit reports are not counted as new islands \cite{checkpoint,n17,gbg,akm,n35,n36,n37}.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,&gt;=Stealth, font=\sffamily]
+ \foreach \x/\y/\num/\label in {0/1.0/29/{19 Oct},2.5/1.0/30/{N17},5/1.0/33/{N20},7.5/1.0/47/{N34},10/1.0/50/{N37}}{
+  \node[draw=sea,fill=mist,rounded corners=5pt,minimum width=1.8cm,minimum height=.78cm,align=center] at (\x,\y) {\bfseries\num\\[-2pt]\scriptsize\label};}
+ \draw[-&gt;,very thick,sea] (1,1)--(1.55,1);\draw[-&gt;,very thick,sea] (3.5,1)--(4.05,1);
+ \draw[-&gt;,very thick,sea] (6,1)--(6.55,1);\draw[-&gt;,very thick,sea] (8.5,1)--(9.05,1);
+ \node[font=\scriptsize,align=center,graytext] at (5,-.02) {Each step records admission, not independent certification or cross-paper closure};
+\end{tikzpicture}
+\caption{The documented additive evolution of the source-family register. The intermediate 48- and 49-family counts are recorded by the N35 and N36 intakes; the final N37 intake records 50.}
+\end{figure}
+
+An increasing register is a widening opportunity for research, not a monotonically increasing count of proven novel theorems. This separation matters especially when assessing OP-01, introduced in the older checkpoint and discussed in Section~\ref{sec:op}.
+
+\section{The mathematical discipline of a bridge}
+Write the research record of island $i$ schematically as
+\[
+W_i=(\Gamma_i,F_i,P_i,V_i,\nu_i),
+\]
+where $\Gamma_i$ denotes the premise scope, $F_i$ the source claims, $P_i$ any proof records, $V_i$ outstanding verification obligations, and $\nu_i$ the provenance and version record. A statement $\varphi$ becomes a tagged card $(i,\varphi,s)$, with evidentiary status $s$. A structural join $Z(W_i,W_j)$ retains
+\[
+(i,\varphi)\neq(j,\varphi)
+\]
+unless a genuine, suitably typed identification has been justified. These definitions summarize the earlier multiarticle protocol; they do not by themselves give a formal proof-assistant implementation \cite{checkpoint}.
+
+Before a cross-island consequence can become certified knowledge, at least four matters must be addressed:
+\begin{enumerate}
+\item \textbf{Translation.} Do the source and destination formulas have the same meaning under an explicit map, or merely similar words?
+\item \textbf{Assumptions.} Have all imported premises been preserved or discharged under the destination judgment?
+\item \textbf{Verification.} Has a designated independent verifier checked a proof certificate in the actual destination calculus?
+\item \textbf{Cost.} If an efficiency claim is made, are translation, search, verification, activation and bookkeeping costs charged under a single declared convention?
+\end{enumerate}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[&gt;=Stealth,node distance=9mm,font=\sffamily]
+\node[draw=sea,rounded corners=5pt,fill=mist,minimum width=3.0cm,minimum height=.87cm,align=center] (a) {Island $i$\\\scriptsize $\Gamma_i,\,\varphi,\,\nu_i$};
+\node[draw=sea,rounded corners=5pt,fill=mist,right=4.0cm of a,minimum width=3cm,minimum height=.87cm,align=center] (b) {Island $j$\\\scriptsize $\Gamma_j,\,\psi,\,\nu_j$};
+\node[draw=gold,rounded corners=5pt,fill=sand,below=1.0cm of $(a)!0.5!(b)$,minimum width=4.3cm,minimum height=.79cm,align=center] (c) {Typed translation + assumption check};
+\node[draw=sea,rounded corners=5pt,fill=white,below=.7cm of c,minimum width=4.3cm,minimum height=.8cm,align=center] (d) {Destination proof + verifier receipt};
+\draw[-&gt;,dashed,thick,sea] (a)--(c);\draw[-&gt;,dashed,thick,sea] (b)--(c);\draw[-&gt;,thick,sea] (c)--(d);
+\node[below=.06cm of d,font=\scriptsize,graytext] {Only the final checked claim may enter certified BANK};
+\end{tikzpicture}
+\caption{A research correspondence is not yet a certified bridge. Dashed links indicate candidate transports requiring proof obligations.}
+\end{figure}
+
+The historical method investigates the deductive surplus of each source first, especially low-fan-in shells $+1,\ldots,+6$, before progressively zipping families by documented theorem-card counts. In a past six-paper study, 70 original cards and 36 selected local consequences produced 106 tagged vertices before six proposed cross-cards; those cross-cards were not independent checker receipts. The larger 50-family register has \emph{not} undergone a completed version of this entire workflow \cite{checkpoint}.
+
+\section{Discovery I: proof search is a problem about legal movement}
+An automated theorem prover does not become correct because it finds an attractive destination. It becomes correct when its route is a legal derivation from its premises and its final certificate is accepted by the designated checker. The historical Verified Settlement Search, MAPQUEST and GBG sources approach this distinction from different directions.
+
+A formal system may be represented abstractly by $F=(x,y,z)$, where $y$ supplies well-formed formulas and $z$ governs legal inference. For a hypothesis set $\Gamma$, a proof state $p$ records what is currently available. A legal transition is not just any addition to $p$, but an authorized application of a specified rule to eligible premises. A target $T$ is reached in the mathematical sense only if the resulting proof has the correct judgment, for example $\Gamma\vdash_F T$.
+
+The GBG papers N18--N20 reinterpret such transitions as moves in generalized games, sometimes making a board itself the legal Player-0, provided the added board and control semantics are actually specified. This creates a bridge between game-tree reasoning and proof-search scheduling \cite{gbg}. But the analogy has a sharp boundary: the game position must include enough information to determine which moves are legal. The mere display of pieces on squares need not do so.
+
+In the board-report terminology preserved across the archive, a complete location report has the form
+\[
+ f\in[A\longrightarrow(P\cup\{E\})],
+\]
+where $A$ is the set of addresses, $P$ is the set of occupant tokens and $E$ is the \emph{empty token}. Two reports can differ even if no legal movement occurred between them; additional rules, time, turn and certificate data may be necessary. The CAMI location-report manuscripts N33--N34 and the GBG intake expressly warn against reconstructing a history from a pair of photographs \cite{akm,gbg}.
+
+\begin{mathresult}
+\textbf{Expository lesson.} A \emph{map} may say what is present; a \emph{state} must say what actions are legal; a \emph{history} records how one state followed another; and a \emph{certificate} proves that a claimed mathematical transition is accepted. Treating these four objects as interchangeable breaks proof custody.
+\end{mathresult}
+
+N35 adds a more unusual navigation proposal: traverse finite, indexed inference opportunities by Hilbert-filled orders. Its registered paper-level reachability theorems give conditions under which a completely executed finite epoch covers the intended action space, and describe a lift to generalized-board-game states. They do not demonstrate that Hilbert order outperforms ordinary fair search. Coverage is a property to be proved; speed is a separate measurement \cite{n35}.
+
+\section{Discovery II: shortest need not mean cheapest}
+Shortest mathematical proofs, fewest inference rounds, shortest paths in a graph, smallest accumulated geometric burden, and least wall-clock or charged resource cost are different objective functions. The metaworld contains both positive conditional theorems and a concrete counterexample demonstrating the danger of conflating them.
+
+In the curvature-profile work N16, the reported six-vertex directed graph has a unique two-edge geodesic of negative-curvature burden $1/3$, while a three-edge legal detour has burden $0$. Thus the shortest legal path need not minimize that curvature burden. The source presents transport witnesses and a general conditional recovery theorem using calibrated potentials; the checkpoint describes the result as paper-level mathematical analysis, not an external checker receipt \cite{checkpoint}.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[&gt;=Stealth,scale=1.0,every node/.style={font=\sffamily\small}]
+\node[draw=sea,fill=mist,circle,minimum size=.55cm] (s) at (0,0) {$s$};
+\node[draw=sea,fill=mist,circle,minimum size=.55cm] (u) at (3,1) {$u$};
+\node[draw=sea,fill=mist,circle,minimum size=.55cm] (g) at (6,0) {$g$};
+\node[draw=sea,fill=mist,circle,minimum size=.55cm] (v) at (2,-1.1) {$v$};
+\node[draw=sea,fill=mist,circle,minimum size=.55cm] (w) at (4,-1.1) {$w$};
+\draw[-&gt;,very thick,sea] (s)--(u);\draw[-&gt;,very thick,sea] (u)--(g);
+\draw[-&gt;,very thick,gold] (s)--(v);\draw[-&gt;,very thick,gold] (v)--(w);\draw[-&gt;,very thick,gold] (w)--(g);
+\node[font=\scriptsize,sea] at (3,1.6) {2 steps; burden $1/3$};
+\node[font=\scriptsize,gold] at (3,-1.75) {3 steps; burden $0$};
+\end{tikzpicture}
+\caption{Schematic of the N16 finding, \emph{not} a reproduction of its exact six-vertex transport graph. Two different objectives can rank legal paths in opposite orders.}
+\end{figure}
+
+An operational prover introduces still more costs: candidate generation, checking, waiting, controller updates, lemma lookup, and translation among representations. A search route can be short as a mathematical path and expensive as an implementation. This becomes critical whenever one invokes phrases such as ``optimal proof&#x27;&#x27; or ``faster escape.&#x27;&#x27; The quantity optimized must be declared and held fixed across comparisons.
+
+The Atlas polynomial-quotient audit N08 exposed a related error. Compressing or quotienting search states does not automatically preserve successor enumeration, target recognition, witness bounds, or cheapest proof cost. A correct transfer theorem requires a precisely specified lifting or transport of the relevant objects. Narrowing an overstrong claim by adding missing hypotheses is itself a research gain \cite{checkpoint}.
+
+\section{Discovery III: escaping a basin is not the same as winning}
+A basin is a region of search where ordinary progress stalls. A policy may leave a basin, reach an accepted terminal certificate, or attain a minimal charge; the three events are distinct. N13&#x27;s Basin Escape study and N17&#x27;s repaired Rank--Annulus paper make the distinctions especially clear \cite{checkpoint,n17}.
+
+Let $M=(S,A,G,c,s_0)$ denote a fixed legal transition system, with state space $S$, legal edge set $A$, terminal receipt states $G$, nonnegative charged costs $c$ and initial state $s_0$. Consider an authorized policy $\pi$, a nonnegative integer rank $r:S\to\mathbb N$, and a per-step bound $C\ge 0$.
+
+\begin{mathresult}
+\textbf{Rank-descent settlement bound (exposition of N13/N17).} Suppose $r(s)=0$ implies an accepted terminal state, and every nonterminal move made by $\pi$ strictly reduces $r$. If each such transition has charged cost at most $C$, then the policy reaches a terminal in at most $r(s_0)$ moves and its total transition charge is at most $C\,r(s_0)$.
+\end{mathresult}
+
+The reason is elementary but significant. A strictly decreasing sequence of nonnegative integers has length at most its initial value, and summing at most $r(s_0)$ terms bounded by $C$ yields the charge bound. The result is \emph{conditional}: it does not generate a suitable rank, an executable policy, or a sound verifier merely because they are desired.
+
+To ask for \emph{cost optimality}, introduce $V(s_0)$, the true least legal cost of settlement, a certified lower bound $L(s_0)$, and the actual charged cost $W_{\pi}(s_0)$ of following $\pi$. The N17 paper develops the sandwich
+\[
+ \boxed{L(s_0)\ \le\ V(s_0)\ \le\ W_{\pi}(s_0)\ \le\ C\,r(s_0).}
+\]
+When independently justified bounds satisfy $L(s_0)=W_{\pi}(s_0)$, the route is optimal in that \emph{same} legal graph and cost convention. Rank descent alone only gives a possibly loose upper bound. The comparison has content precisely because it uses two different kinds of certificates: an achievable route above and an exclusion bound below \cite{n17}.
+
+A related potential argument lets $h(g)=0$ at terminals and assumes for each legal edge $(s,t)$ that
+\[
+ h(s)\le c(s,t)+h(t).
+\]
+Along a legal finite route $s_0\to s_1\to\cdots\to g$, telescoping gives
+\[
+ h(s_0)\le \sum_{i}c(s_i,s_{i+1}).
+\]
+Thus $h$ is a lower-bound certificate when its hypotheses hold. If its value exactly matches the witnessed route cost, optimality follows. A value learned from data without the edge inequalities is not automatically such a certificate.
+
+\section{Discovery IV: imagination is allowed to ask, not to certify}
+The source N15, \emph{Recursive ``What If?&#x27;&#x27; Imagination in AMLD}, introduces an unusually disciplined approach to conjectural exploration. Freeze a calculus $F$, authorized hypotheses $\Gamma$, target $T$, and certified knowledge ledger $B$. A finite, tagged hypothetical branch has address $\sigma$ and additional suppositions $H_\sigma$. Inside that imaginary world, a candidate missing lemma $L$ may appear especially promising. But a hypothetical premise has not become a theorem merely because it makes a route look easy \cite{checkpoint}.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[&gt;=Stealth,node distance=.28cm, every node/.style={font=\sffamily\small}]
+\node[draw=gold,fill=sand,rounded corners=3pt,minimum width=2.2cm,minimum height=.8cm] (a) {Imagine $L$};
+\node[draw=gold,fill=sand,rounded corners=3pt,right=of a,minimum width=2.2cm,minimum height=.8cm] (b) {Navigate};
+\node[draw=sea,fill=mist,rounded corners=3pt,right=of b,minimum width=2.2cm,minimum height=.8cm] (c) {Prove $L$};
+\node[draw=sea,fill=mist,rounded corners=3pt,right=of c,minimum width=2.2cm,minimum height=.8cm] (d) {Verify};
+\draw[-&gt;,thick,sea] (a)--(b);\draw[-&gt;,thick,sea] (b)--(c);\draw[-&gt;,thick,sea] (c)--(d);
+\node[draw=deepsea,fill=deepsea,text=white,rounded corners=3pt,below=.53cm of d,minimum width=2.2cm,minimum height=.8cm] (e) {$\BANK$ deposit};
+\draw[-&gt;,thick,sea] (d)--(e);
+\node[below=.61cm of b,font=\scriptsize,align=center,graytext] {Conditional search\\is not a receipt};
+\end{tikzpicture}
+\caption{The counterfactual-to-certificate boundary. A proposed lemma is a question until independently proven and accepted.}
+\end{figure}
+
+The key proof principle is a checked bridge. If a verifier accepts compatible proofs of
+\[
+\Gamma\vdash_F L,\qquad \Gamma,L\vdash_F T,
+\]
+and the calculus admits appropriate checked cut or substitution with all extra assumptions discharged, a composite certificate can establish $\Gamma\vdash_F T$. This is the mathematical idea behind candidate cross-island connection C-05. It does \emph{not} mean that the two manuscript implementations have already been connected or that a useful $L$ will be found \cite{checkpoint}.
+
+Counterfactual conservativity gives a parallel invariant: if initially $B_0\subseteq\Th_F(\Gamma)$, and only independently accepted $\Gamma$-consequences can be deposited, then after each finite certified update $B_t\subseteq\Th_F(\Gamma)$. Speculative worlds may expand creative search without expanding accepted knowledge illegally. The induction proving safety is easy; discovering, translating, proving and exploiting an actually useful bridge is the hard part.
+
+\section{Discovery V: learning can guide search without becoming a proof oracle}
+The newest registered island, N37, \emph{Learned Search Policies for Proof Search}, is particularly relevant to the enlarged metaworld. It replaces an overly strong earlier picture of ``theorem-space geometry&#x27;&#x27; with the operational identification of a learned model as a \emph{proof-search policy}. A model can rank premises, suggest tactics or candidate proof steps, and guide branch scheduling. Its outputs remain proposals; a verifier determines which deductions are correct \cite{n37}.
+
+Let the one-step closure operator be $D_F(A)=A\cup\{\text{direct consequences of }A\}$. Define $D_F^0(\Gamma)=\Gamma$ and $D_F^{m+1}(\Gamma)=D_F(D_F^m(\Gamma))$. The closure depth of target $T$ is
+\[
+ \delta_F(\Gamma,T)=\min\{m\ge 0:T\in D_F^m(\Gamma)\},
+\]
+when such a stage exists. For a policy branch with $p_1=\Gamma$, N37&#x27;s Theorem 3.2 states
+\[
+\boxed{p_m\subseteq D_F^{m-1}(\Gamma).}
+\]
+Proof by induction: every legal new conclusion at stage $m+1$ follows directly from premises already in $p_m$, so it belongs to the next closure stage. A learned ranking cannot move a target below this \emph{fixed-calculus, fixed-premise, one-step} depth floor. It may instead materialize fewer irrelevant consequences or schedule useful actions earlier.
+
+This is often summarized as ``learning reduces breadth, not depth.&#x27;&#x27; The qualification is important. If a separate AKM process later certifies useful new lemmas, the initial BANK snapshot has changed; if accepted derived rules are compiled into the rule presentation, the effective one-step operator has changed. Either change can reduce an \emph{operational} depth measured in the new setting without contradicting the original frozen-depth theorem.
+
+N37 also includes a minimal counterexample to greedy search: with $a\to b$ and $a\to c$ both legal, a policy choosing $b$ at every opportunity can ignore a target $c$ forever. Thus a learned score is not the same thing as coverage. A proof-covering \emph{policy} gives an existential branch guarantee; an implemented scheduler still needs fair execution and valid accounting for how that branch is reached \cite{n37}.
+
+\begin{insight}
+\textbf{Metaworld synthesis, not a new certified theorem.} The combination of H06 (fair search), N21--N25 (verified surplus and revisitation), N35 (systematic inference traversal), N36 (typed lemma exchange), and N37 (learned ranking) suggests a two-level architecture: use prediction to order candidate work, but let a separately specified fair scheduler and independent checker preserve the logical obligations. Whether this reduces \emph{fully charged} cost remains empirical.
+\end{insight}
+
+\section{Discovery VI: knowledge can grow without changing theoremhood}
+The Automatic Knowledge Machine manuscripts N21--N23 and N25 distinguish the mathematical closure of a fixed theory from the set of consequences a finite researcher has actually recognized and certified. If $\Con_F(\Gamma)$ is fixed and a certified BANK $B_t$ grows over time, one may have
+\[
+ B_0\subsetneq B_1\subsetneq\cdots\subseteq\Con_F(\Gamma)
+\]
+without altering $F$ or $\Gamma$. New \emph{epistemic} knowledge appears when previously latent consequences acquire checked proof objects. The corpus calls a controlled revisitation and surplus-mining process ``dreaming&#x27;&#x27;; it is a form of computational consolidation, not evidence of subjective consciousness or a permission to insert unverified hypotheses \cite{akm}.
+
+The low-fan-in method investigates consequences with small dependency sets, typically shells $+1$ through $+6$, under a fixed source snapshot. It can produce useful intermediate lemmas, but every reported novelty has two tests: is the statement already present or a duplicate under translation, and is its proof independently accepted? Counting textually new formulas is not identical to discovering new theorems.
+
+This separation becomes consequential for N37. A learned policy may benefit from newly certified lemmas, but the cost of finding and verifying them is part of the search economy. It is illegitimate to benchmark a policy with a rich, precomputed lemma BANK against an unguided baseline denied the same resources, then attribute the entire difference to the learned score. The controlled comparison must freeze the available information or charge its acquisition.
+
+The later ALD family N36 makes the idea multi-agent. Its proposal carries typed lemma packets among object, model, extended-object and metatheoretic contexts, with assumptions, dependencies, provenance and costs. An independently checked packet can be useful in a destination only when the translation and destination verifier agree. The source distinguishes its historical four mathematical statuses from the later AMLD+0 six-outcome protocol and does not claim a deployed general decider \cite{n36}.
+
+\section{When maps, boards and certificates change coordinates}
+Many islands are concerned with a deceptively simple task: replacing one representation with another. A new coordinate system may make search easier. But a theorem about one presentation transfers only when its required structure is preserved.
+
+The Universal Theorem Geometry family N01--N06 examines proof-state distance, weighted legal paths, finite horizon regions, addressing, and Hilbert-style navigation. N07--N08 investigates backward obligation regions, rendezvous and quotient maps. N09 and H13 study cost annuli and trading isometries. N33--N34 revisit equivalence of boards, histories, location reports and theorem preservation. These works motivate, but do not settle, a uniform theorem that every proposed trade preserves optimal search cost \cite{checkpoint,akm}.
+
+It is useful to separate three candidate assertions about a map $f:S\to S&#x27;$:
+\begin{enumerate}
+ \item \emph{Theorem preservation:} valid judgments in the source correspond to valid judgments in the destination, subject to an explicit interpretation.
+ \item \emph{Reachability preservation:} legal target-reaching paths can be simulated or lifted in both relevant directions.
+ \item \emph{Cost preservation:} charges of compared paths or policies match under the declared accounting convention.
+\end{enumerate}
+The first does not imply the second, and the second does not imply the third. A many-to-one map may merge states needing different next actions. A cost-preserving map must also account for changing control overhead, translation, and verifier duties if it purports to preserve \emph{implemented} cost.
+
+The metaworld&#x27;s proposed C-02 transport theorem and C-03 compressed-action sufficiency problem arise from exactly these gaps. A fully checked bridge would have to specify state, action, transition, target, and cost maps---not merely a persuasive visual analogy. In the present register, those crosswalks remain research candidates, not accepted composite theorems \cite{checkpoint}.
+
+\section{The importance of a failed expedition}
+The metaworld contains results that are interesting precisely because they did not deliver the hoped-for success. The documented Search Dynamics Experiment 005 evaluated one retrospective batch of 100 trajectories at a 160-DAG shell. The recorded aggregate learned-progress statistic was slightly positive, approximately $0.0526$, but none of the trajectories met the reported success condition: $0/100$. The record describes a retrospective DAG-control evaluation, not a live ATP contest. Its lesson is that a promising local navigation metric need not produce successful closed-loop settlement \cite{checkpoint}.
+
+There are three general failure patterns worth preserving:
+\begin{itemize}
+\item A local improvement score fails to predict arrival at a certified target.
+\item A geometric intuition is falsified by a legal detour or by lost hypotheses under compression.
+\item A candidate bridge is logically sound when given its premises, but discovering and proving the premises costs more than solving the target directly.
+\end{itemize}
+All three failures are scientifically useful. Each identifies which intermediate implication does not follow from the last. A research program that reports only successful-looking routes would obscure the precise problem that future work must solve.
+
+The analogy to constrained conjecture search in chess and differential diagnosis should be treated in the same way. A sacrifice or detour is a legal candidate action within a constrained search space, not an unlimited permission to change the rules. In medical diagnosis, an imagined observation can suggest evidence to acquire, but real observations are empirical updates, not logical consequences of the old evidence ledger. Emergency treatment planning is a separate, safety-constrained decision problem. The Checkpoint 0.3 article explicitly makes the clinical comparison as a research proposal, not as demonstrated clinical efficacy \cite{checkpoint}.
+
+\section{Six cross-island frontiers already visible in the earlier map}
+The original Checkpoint 0.3 named six provisional boundary propositions, C-01 through C-06. New sources add possible tools for investigating them, but archival expansion has not turned them into certified cross-paper results.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{@{}&gt;{\bfseries\color{deepsea}}p{.75in} X p{2.22in}@{}}
+\toprule
+Candidate &amp; Mathematical question &amp; Distinct evidence still needed \\
+\midrule
+C-01 &amp; Can a certified upper cost and competing admissible lower bound eliminate a dominated search action? &amp; Shared legal graph, exact objective and verified bounds.\\
+C-02 &amp; Under what typed state/action/cost isomorphism are Bellman or Abel quantities transported? &amp; Exact transition and cost correspondence.\\
+C-03 &amp; When does state compression retain the information required to choose an optimal action? &amp; Sufficiency, lifting, and anti-aliasing tests.\\
+C-04 &amp; Can rank descent and a matching annular lower bound certify both settlement and optimal charged cost? &amp; Executable policy and same-system certificates; N17 offers a conditional paper development.\\
+C-05 &amp; Can tagged ``What If?&#x27;&#x27; lemma proposals be passed into a checked Basin Escape bridge without corrupting BANK? &amp; Typed adapter, proof receipts, discharged assumptions and costs.\\
+C-06 &amp; When can geometric curvature burden function as real search cost, and when is it only a metaphor? &amp; Calibrated potential or explicit equivalence; N16 defeats the unrestricted claim.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The newly admitted N35--N37 suggest further frontier questions: can systematic Hilbert coverage be combined with learned ranking and fair revisitation; can typed three-way lemma exchange produce nontrivial certified reuse; and can accepted surplus make policies cheaper without covertly granting one side more information? Those are \emph{new candidate crosswalks}, not additions to the older numbered C-series unless a new checkpoint formally registers them \cite{n35,n36,n37}.
+
+\section{The open problem at the heart of the world}\label{sec:op}
+The most ambitious test of the research program is \textbf{OP-01, the twenty-six-country certified expedition}. As first specified in the 29-family Checkpoint 0.3, it asks for \emph{one} nontrivial, reproducible, formally controlled search task satisfying all of the following \cite{checkpoint}:
+\begin{enumerate}
+\item A bounded, tagged \emph{What If?} exploration identifies a useful missing lemma $L$ without depositing it as fact.
+\item The originally authorized premises support independently checked certificates of $\Gamma\vdash_F L$ and $\Gamma,L\vdash_F T$ (or an equivalent sound checked bridge), together with an accepted target receipt.
+\item The complete expedition, including conjecture generation, search, verification, translation, activation and bookkeeping, has strictly smaller total charged cost than an honestly matched comparator.
+\item A typed, provenance-preserving certificate graph shows that at least \emph{26 distinct source families} from the historical 29-family register make \emph{material} contributions to the same accepted argument or execution. Merely listing them is insufficient.
+\end{enumerate}
+
+One possible frozen judgment is written
+\[
+ J=(F,\Gamma,T,V,C,\nu),
+\]
+where $F$ is the calculus, $\Gamma$ the premises, $T$ the target, $V$ the verifier, $C$ the full accounting rule, and $\nu$ the frozen version record. For the expedition trace $\rho$ and fair comparator $\rho_0$, the requested cost result is
+\[
+\boxed{\CC_C(\rho)&lt;\CC_C(\rho_0)}.
+\]
+A successful derivation without the 26-family dependency certificate would not settle OP-01. Nor would a 26-family map without a successful proof. Nor would a lower observed wall time if the method silently received free lemma lookup, reference-proof leakage, or uncharged verification.
+
+\begin{insight}
+\textbf{Why OP-01 matters.} It is an \emph{integration test for mathematical research}. It would demonstrate that the islands contribute identifiable, interoperable pieces of one certified achievement; that imagination supplies a useful proof obligation rather than imaginary knowledge; that formal checking survives translation; and that the assembled method offers a real, costed advantage. Its demand for material dependencies makes it more than a bibliographic scavenger hunt.
+\end{insight}
+
+\subsection{The 50-island update does not silently change OP-01}
+The metaworld now has 50 registered source families. OP-01, however, was stated against the \emph{earlier 29-family snapshot}, with a specifically described 26-family candidate itinerary. The original research problem is preserved as a versioned historical obligation: at least 26 material dependencies must be drawn from the original 29 eligible families, and the listed 26-family route was an illustrative itinerary rather than an exclusive mandated list. New islands N17--N37 may offer useful construction methods, lemmas or comparative baselines, but they do not retroactively enlarge that eligible family set. A revised ``26 of the current 50&#x27;&#x27; or ``all 50&#x27;&#x27; challenge could be explicitly formulated later; it would be a \emph{new version} of the question, not a solution to OP-01.
+
+This subtlety is scientifically important. Otherwise the admission of new articles could change the denominator, the allowed dependencies, or the expense of finding a solution mid-experiment. A frozen problem must stay frozen if success is to mean what it originally meant.
+
+\subsection{A positive answer, a negative result, and UNKNOWN}
+A successful OP-01 answer would be a checker-accepted proof and an auditable execution with the required dependency and cost evidence. An informative failure might reveal that a lemma is provable but too expensive, a translation loses a premise, or an apparent shortcut is suboptimal after overhead is charged. Under finite authorized search budgets, a procedure may also finish \emph{UNKNOWN}. That output is an honest operational status, not a proof of independence and not a refutation of the mathematical existence question.
+
+
+\section{A FORGE-6-directed attempt: why OP-01 is not easy}\label{sec:attempt}
+On 20 October 2026 an authorized, bounded research attempt examined OP-01 using six complementary mathematical lenses---source and hypothesis control, counterfactual lemma construction, certificate checking, fair search and charged comparison, cost geometry, and material provenance. Eight major tactics or checks are recorded below. This was \emph{an assistant-executed analytic and synthetic test program}, not a demonstrated concurrent run of six independent FORGE-6 ATP implementations, and not a certified AMLD+0 settlement. The frozen historical definition of OP-01 in Section~\ref{sec:op} was not weakened to accommodate the result. The companion executable and event ledger reproduce the synthetic calculations.
+
+\subsection{A small bridge that succeeds locally}
+Consider the explicit, finitary Horn presentation $F_4$ with initial judgment $\Gamma=\{P(1)\}$ and four unary inference rules
+\begin{equation}\label{eq:horn-rule}
+ r_d:\ P(n)\longrightarrow P(4n+d),\qquad d\in\{0,1,2,3\},\quad n\ge1.
+\end{equation}
+Let the target be $T=P(2047)$. An illustrative What If-style bridge calculation selected the intermediary $L=P(127)$ and supplied the two proof pieces
+\begin{align*}
+ \Gamma\vdash_{F_4} L &amp;: \quad P(1)\to P(7)\to P(31)\to P(127),\\
+ \Gamma,L\vdash_{F_4}T &amp;: \quad P(127)\to P(511)\to P(2047).
+\end{align*}
+Composition yields a legal five-inference derivation of $T$ from $\Gamma$. A second, separately implemented local checker, based on enumerating all four legal rule antecedents rather than following the search procedure&#x27;s chosen inverse, accepted the lemma, the conditional continuation and the composite; it rejected a missing-link derivation and use of an unlicensed $L$. These are \emph{local software checks in the same research environment}, not receipts from an external proof assistant.
+
+No executable source-tagged C-05 adapter was constructed in this test. The experiment is deliberately revealing but not a strong discovery benchmark: the counterfactual module first inverted the target through all five predecessor steps and \emph{then} selected the midpoint as its candidate lemma. Thus the missing lemma was not found in an unknown search basin by a general imagination procedure; its usefulness follows from a route already determined. The test demonstrates lawful separation of hypothesis and proof, but cannot by itself establish a nontrivial OP-01 discovery.
+
+\subsection{The cost comparison reverses against a stronger tactic}
+A simple unit-event accounting ledger was imposed on three algorithms using the same rules, premises and target. One charge was assigned to each explicitly recorded primitive event; the full event breakdown appears in Appendix~\ref{app:ledger}. The results were:
+\begin{center}
+\begin{tabularx}{.94\textwidth}{@{}Xr&gt;{\raggedright\arraybackslash}p{2.2in}@{}}
+\toprule
+Search procedure &amp; Charged units &amp; Result\\\midrule
+Fair forward breadth-first search &amp; \textbf{5,809} &amp; Accepted five-step proof\\
+Target-aware What If / checked lemma bridge &amp; \textbf{33} &amp; Accepted five-step proof\\
+Direct target-aware backward proof search &amp; \textbf{22} &amp; Accepted five-step proof\\\bottomrule
+\end{tabularx}
+\end{center}
+Across the $4^5=1{,}024$ syntactically distinct depth-five targets $P(1024),\ldots,P(2047)$, the guided bridge was cheaper than the simple forward enumerator under this ledger (forward range $1{,}462$--$5{,}809$, mean $3{,}635.5$). Yet for the displayed target, the direct backward solver costs \emph{less} than the imagined-lemma construction: $22&lt;33&lt;5809$. Both methods exploit the conspicuous invertibility of rule~\eqref{eq:horn-rule}; the bridge&#x27;s extra bookkeeping becomes overhead, not an advantage.
+
+\begin{caution}
+\textbf{Limit of the cost claim.} These numbers are counts of \emph{chosen abstract operations}, not measured wall-clock, memory, hardware, or all-resource costs; the trial was not preregistered as a challenging held-out theorem benchmark. Unit charges are stated explicitly, but they are not a demonstrated faithful end-to-end cost model for actual ATP implementations. A weak baseline can be beaten without showing a genuine advantage over the best applicable fair comparator.
+\end{caution}
+
+There is also a mathematical lower bound that does \emph{not} settle the search-cost issue. Every step in~\eqref{eq:horn-rule} appends a base-four digit, so the base-four digit length grows by exactly one. The initial formula index $1$ has one digit and $2047$ has six; the exhibited proof of length five is shortest in the number of inference steps. Equivalently, $h(n)=\max\{0,6-\operatorname{digits}_4(n)\}$ is a legal lower potential along those rule edges. A minimum-length proof and a minimum-\emph{charge search policy} are different claims.
+
+\subsection{Eight tactics and what they achieved}
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{.17\textwidth}p{.19\textwidth}X@{}}
+\toprule
+Tactic &amp; Outcome &amp; Degree of success and decisive limitation\\\midrule
+1. Freeze OP-01 and source eligibility &amp; \status{SCOPE FIXED} &amp; Preserved all four conjunctive requirements and original eligible H01--H13 / N01--N16 snapshot.\\
+2. What If / Basin Escape bridge &amp; \status{TOY CASE} &amp; Produced a useful legal midpoint lemma; its selection followed reconstruction of the whole path, not an authentic hard basin escape.\\
+3. Certificate and cut checks &amp; \status{LOCAL PASS} &amp; Two locally implemented checkers accepted the finite derivation and rejected invalid cases; no independent external proof-assistant receipt.\\
+4. Fair scheduling and matched baseline &amp; \status{MIXED} &amp; Guided $33&lt;5809$ in the displayed comparison; better backward alternative $22&lt;33$.\\
+5. Rank and potential geometry &amp; \status{DEPTH ONLY} &amp; Proved the five-step inference minimum; did not certify globally minimum fully charged search cost.\\
+6. Quotient/representation repair &amp; \status{COUNTEREXAMPLE} &amp; Found a two-state aliasing obstruction; not a new 26-island transport theorem.\\
+7. AKM surplus and lemma exchange &amp; \status{PROPOSAL} &amp; Identified plausible N21--N25/N36 interfaces but executed no independently certified multi-context packet reuse.\\
+8. Original 26-family itinerary &amp; \status{ROSTER ONLY} &amp; Confirmed 26 distinct eligible IDs, yet obtained no 26-source, typed, material dependency certificate.\\\bottomrule
+\end{tabularx}
+\end{center}
+
+The representation test used two complete decision states $s_a,s_b$ with action costs $(c(s_a,\alpha),c(s_a,\beta))=(1,10)$ and $(c(s_b,\alpha),c(s_b,\beta))=(10,1)$. The optimal action differs. A compressed observation that merges the two states forces a state-blind deterministic policy to incur regret nine in at least one state. It refutes an \emph{unconditional} optimal-action-preserving quotient, but does not refute the stronger, hypothesis-rich transport proposals C-02/C-03.
+
+The 26-family historical itinerary passes a roster audit: 6 Settlement families, 7 Escape families, 12 Comparison families and 1 Measurement family, with no repeated IDs. The excluded families under this candidate route are H09, N12 and N14. This is not a materiality audit: none of those 26 names became a checker-accepted, source-specific dependency edge in this synthetic proof. No completed 26-family translation and cost-DAG was produced.
+
+\begin{insight}
+\textbf{The meaningful negative finding.} Success on one part of OP-01 does not propagate to the others. A correct proof is not a proof of cost advantage; a large gain over a simple baseline is not a gain over a stronger algorithm; a list of 26 relevant sources is not 26 certified contributions. These independent barriers explain why OP-01 is difficult and why an honest attempted solution should be reported as \textbf{UNKNOWN / not settled}, not as PROVED, REFUTED or a completed six-agent victory.
+\end{insight}
+
+\Needspace{8\baselineskip}
+\subsection{What would change the result?}
+A genuine positive answer must replace the toy construction with a nontrivial, prospectively specified frozen task; discover $L$ \emph{without already knowing the route}; issue external verifier receipts for both proof fragments and their composition; compare fairly equipped strategies with every eligible cost charged; and provide a machine-checkable provenance graph in which at least 26 original families are \emph{actually necessary} to the claimed argument or operational achievement. The newer N17--N37 islands can supply auxiliary mathematical tools, but no new source may be counted toward the historical 26 by quietly redefining OP-01.
+
+\section{A realistic research expedition}
+The most useful next contribution would not be to zip all fifty islands at once and announce a closure. It would be to turn one attractive inter-island route into a complete, falsifiable, receipt-bearing experiment.
+
+\subsection{Prepare the map}
+Freeze a de-duplicated manifest of source versions, hashes where actually available, premise contexts and verification statuses. Extract definitions, theorem cards, hypotheses and counterexamples without identifying equal-looking formulas across different calculi. The archival register already gives a starting point, but its recent intakes explicitly do not supply a completed fifty-island dependency graph.
+
+\subsection{Find a small bridge before a large one}
+Choose a concrete proof system and one target. A narrow test could ask whether a tagged imagined lemma can safely pass the C-05 adapter to a checker-accepted cut proof, with no hypothetical premises left open. Other initial tests could check N17&#x27;s cost-potential inequality on a finite graph or compare a learned and fair scheduler on the same finite action set. These would be \emph{interface validation}, not OP-01 settlement.
+
+\subsection{Separate mathematical correctness from exploration performance}
+For every proposed run, predeclare the mathematical target, exact verifier, source snapshot, budgets, cost units, enabled roles, baseline, stopping rule and complete receipt format. Record unsuccessful candidate searches and checker rejections as well as successes. A proof discovered under a modified lemma library answers a different question from one sought under the frozen original library.
+
+\subsection{Build dependency evidence incrementally}
+A useful record is a typed directed acyclic graph whose nodes represent source claims, imports, proof objects, verifier receipts, actions and cost events. Each edge must explain \emph{why} its source is required for the destination node. An append-only graph prevents a nonessential citation from being mistaken for a material contribution. Once small bridges have independently passed their tests, a larger country-level assembly can be evaluated.
+
+\begin{caution}
+\textbf{Authorization and evidence boundary.} The original Version 0.1 was an exposition without a proving run. In this revision, a specifically authorized FORGE-6-directed analytic attempt and synthetic finite-code exercise are documented in Section~\ref{sec:attempt}. This does not constitute a six-executable federation run, AMLD+0 target-settlement receipt, BANK modification, independent external verification, fifty-island zip, or public publication. Substantive further proving experiments require newly frozen settings.
+\end{caution}
+
+\section{What the enlarged metaworld teaches us}
+The metaworld&#x27;s most promising contribution is not yet a universal search theorem. It is a research vocabulary in which several propositions that are often blended together can be separated and tested:
+\begin{itemize}
+\item \emph{A theorem is entailed} is different from \emph{a search has found it}.
+\item \emph{A path exists} is different from \emph{an executable scheduler will traverse it}.
+\item \emph{A path is shortest} is different from \emph{a charged implementation is cheapest}.
+\item \emph{A conjecture is useful} is different from \emph{its assumptions are verified}.
+\item \emph{Two representations resemble each other} is different from \emph{they preserve judgments, transitions and costs}.
+\item \emph{A theorem was latent} is different from \emph{its certificate has entered a frozen, provenance-controlled BANK}.
+\end{itemize}
+These distinctions have practical design consequences. They favor independent checkers, explicit state types, complete cost traces, fair exploration, and candidly recorded failures. They also explain why a collection of imperfectly connected sources can be a valuable research object. A careful map can reveal a missing proof obligation more sharply than a sweeping claim of unification.
+
+The present world contains fifty registered source families. It has not reached a fifty-family deductive closure, and its old six candidate cross-island results remain provisional. The newly recorded bounded attempt makes the gap between successful local mathematical construction and an actual 26-island certificate especially concrete. But the growth from search geometry to boards, revisitation, cost bounds, learned policies, and typed lemma exchange gives OP-01 a richer set of potential tools. That is an opportunity, not yet a certified success.
+
+\begin{insight}
+\textbf{Closing thesis.} The purpose of a mathematical metaworld is not to make every island agree. It is to find which passages are legal, which are costly, which are blocked, and which can be transformed into verified bridges. OP-01 matters because it asks for the moment when that cartography becomes one independently checked discovery.
+\end{insight}
+
+\appendix
+\section{The fifty-island source atlas}
+\noindent\small The IDs and short labels below reproduce the documented family-registration scheme; the roles are editorial orientation labels, not independent proof-assistant certifications. H01--H13 and N01--N16 are the historical Checkpoint 0.3 families; N17--N37 are additive 20 October intakes. ``Source family&#x27;&#x27; is the count unit, even when manuscripts share antecedents. \normalsize
+\vspace{6pt}
+\small
+\begin{longtable}{@{}&gt;{\color{deepsea}\bfseries}p{.51in}p{4.4in}p{1.35in}@{}}
+\toprule ID &amp; Source family (short title) &amp; Main concern\\\midrule\endfirsthead
+\toprule ID &amp; Source family (short title) &amp; Main concern\\\midrule\endhead
+H01 &amp; Verified Settlement Search v2.5 &amp; Receipts and proof cost\\
+H02 &amp; DATA 3.0 / AMLD -- TISO &amp; Allocation\\
+H03 &amp; Basin Escape, Player-0 Activation, and Settlement Preorders &amp; Escape and activation\\
+H04 &amp; MAPQUEST I: Formal Proof &amp; Navigation\\
+H05 &amp; MAPQUEST III: Target Certification &amp; Certificate replay\\
+H06 &amp; MAPQUEST II: Hilbert-Fair Target Navigation &amp; Fairness\\
+H07 &amp; Shortest Settlement: Optimal Control &amp; Optimal paths\\
+H08 &amp; Minimum Remaining Cost to a Certificate &amp; Cost estimates\\
+H09 &amp; Multi-Dose Concentration Derivation &amp; Sufficient state\\
+H10 &amp; Oracle and Omnicartographer Theory &amp; Guidance/maps\\
+H11 &amp; Graduation Is Epistemic Handoff &amp; Handoff\\
+H12 &amp; The Self Aware Machine: Epistemic Handoff &amp; Custody/awareness\\
+H13 &amp; Trading Theorem 003 &amp; Representation trade\\\midrule
+N01 &amp; Universal Theorem Geometry I &amp; Distances\\
+N02 &amp; Universal Theorem Geometry II &amp; Weighted paths\\
+N03 &amp; Universal Theorem Geometry III &amp; Horizon regions\\
+N04 &amp; Fixed-Target Geometric Proof-Distance &amp; Displacements\\
+N05 &amp; Hilbert Geometry for ATP: Part I &amp; Addressing\\
+N06 &amp; Path-First Universal Theorem Geometry &amp; Legal proof paths\\
+N07 &amp; Atlas UTG Proof Regions and Search Fronts &amp; Backward obligations\\
+N08 &amp; Atlas UTG Polynomial Quotient Audit &amp; Quotient repairs\\
+N09 &amp; Annular Logic and Trading Isometries &amp; Cost annuli\\
+N10 &amp; Atlas-Addressed UTG Reasoning Protocol &amp; Protocol (not theorem paper)\\
+N11 &amp; Search Dynamics to Semi-Ideal Computers &amp; Dynamics/tests\\
+N12 &amp; Closed-Form Surjection $\mathbb N\to\mathbb Q$ &amp; Rational naming\\
+N13 &amp; Basin Escape: Sufficient Conditions, Guarantees, and Limits &amp; Certified exits\\
+N14 &amp; How M* Was Identified and Found &amp; Conceptual origin note\\
+N15 &amp; Recursive ``What If?&#x27;&#x27; Imagination in AMLD &amp; Tagged conjectures\\
+N16 &amp; AMLD+0 Settlement of the Geodesic Curvature-Profile Conjecture &amp; Counterexample\\\midrule
+N17 &amp; From Guaranteed Basin Escape to Certified Cost Optimality &amp; Rank/annulus bounds\\
+N18 &amp; Generalized Board Games 2.0 &amp; Game-to-proof model\\
+N19 &amp; Generalized Board Games and GBG+: Board as Player &amp; GBG+ foundations\\
+N20 &amp; From Game States to Certified Settlements &amp; Proof-carrying games\\
+N21 &amp; Automatic Knowledge Machines: Deductive Surplus and Dreaming &amp; AKM survey\\
+N22 &amp; Automatic Knowledge Machines: Surplus After Revisitation &amp; Low-fan-in surplus\\
+N23 &amp; Automatic Knowledge Machines: Epistemic and Reflective Surplus &amp; Reflective closure\\
+N24 &amp; A Unified Location Board for Awareness, Intelligence, Creativity and Elusiveness &amp; Location boards\\
+N25 &amp; AKM and Checkpointed Deductive-Surplus Discovery &amp; Verified checkpoints\\
+N26 &amp; Operational Awareness and Elusiveness &amp; Finite separation\\
+N27 &amp; Policy Completeness, Adaptive Search and Security Boundaries &amp; Noninterference\\
+N28 &amp; Certified Shortcuts, Charged Elusiveness and Noninterference &amp; Charged shortcuts\\
+N29 &amp; Certified Reflection, Controlled Awareness and Security as Elusiveness &amp; Synthesis\\
+N30 &amp; Self-Optimizing Mathematical Discovery &amp; Creativity control\\
+N31 &amp; Certified Adaptive Mathematical Intelligence &amp; FORGE-6 adaptation\\
+N32 &amp; CAMI&#x27;s Theorems and Theories, Volume I &amp; Antichain frontier\\
+N33 &amp; CAMI&#x27;s Theorems and Theories, Volume III &amp; Location histories\\
+N34 &amp; CAMI&#x27;s Theorems and Theories, Volume IV &amp; Board equivalence\\
+N35 &amp; Hilbert-Filled Inference Spaces for Automated Theorem Proving &amp; Finite coverage\\
+N36 &amp; Conjecture Settling II: ALD and Three-Way Lemma Exchange &amp; Typed packets\\
+N37 &amp; Learned Search Policies for Proof Search &amp; Learning/verification\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{What counts as a publication-grade claim}
+This appendix supplies an evidentiary checklist rather than asserting that all listed obligations are complete. For a cross-article theorem $\varphi$, its proof record should specify $(F,\Gamma,\varphi,V,\nu)$, the source documents and exact imported statements, a typed assumption map and the independent verification receipt. For a performance theorem or experiment, it should additionally specify $(S,A,G,c,\pi)$, the comparator, the information snapshot, the fair scheduler, and a full charge trace. An explicitly bounded UNKNOWN or a failed checker result is a legitimate outcome; it must not be relabeled a refutation or independence proof.
+
+For the original OP-01, a mere invocation of H01--H13 and N01--N16 is insufficient. At least twenty-six families from the original 29-family registry must materially contribute to a single certified proof or operational trace. Such materiality is best recorded as a typed dependency DAG, with edges carrying distinct obligations for proof, translation, scheduling or cost. New N17--N37 work may support future attempts, but the original core membership is preserved unless the problem is formally restated.
+
+
+\section{The bounded OP-01 experiment: exact accounting}\label{app:ledger}
+The synthetic test in Section~\ref{sec:attempt} is reproducible with the companion file \texttt{OP01\_reproduce\_v0\_2.js}, which emits the companion JSON receipt of \emph{its own} computed events. Running the script is not equivalent to independent certification of OP-01. Its direct-parent and exhaustive-antecedent proof checkers are different local implementations of the same tiny Horn inference relation. The guided route is built by repeated integer inversion $n\mapsto\lfloor n/4\rfloor$, not by an unknown general-purpose theorem prover.
+
+\begin{center}\small
+\begin{tabularx}{\textwidth}{@{}p{2.32in}rX@{}}
+\toprule
+Run &amp; Total &amp; Breakdown of declared unit-cost event counters\\\midrule
+Forward BFS &amp; 5,809 &amp; Setup 1; popped states 341; generated candidates 1,364; goal tests 1,364; parent records 1,364; queue insertions 1,364; reconstructed proof rows 5; checked rows 5; receipt 1.\\
+What If bridge &amp; 33 &amp; Setup 1; activation 1; inverse steps 5; consistency checks 5; lemma choice 1; certificate construction 5; conditional setup 1; checked rows 10; dependency check 1; BANK-style deposit event 1; cut event 1; receipt 1.\\
+Direct backward &amp; 22 &amp; Setup 1; inverse steps 5; consistency checks 5; certificate construction 5; checked rows 5; receipt 1.\\\bottomrule
+\end{tabularx}
+\end{center}
+
+All three algorithms receive $F_4$, $\Gamma$ and $T$ as frozen inputs. The \emph{software} BANK-style deposit is a toy event in the local accounting ledger, not a write to a real theorem repository. The two local verifiers accept the same five-step proof, but no third-party proof checker ran. The comparison exhibits a failure of strong optimality and an illustration of methodological difficulty, not an established performance discovery beyond this finite artificial family. Actual elapsed time, peak memory, branch-generator design costs and other platform resources were \emph{not} measured as a matched total-cost experiment, so the displayed unit ledger cannot certify OP-01&#x27;s cost condition.
+
+\section{Source notes and limits of this synthesis}
+Source families were indexed from the checkpoint and dated intake records below. This exposition does not claim independent examination of every original manuscript page in all 50 families; statements drawn from an intake are explicitly bounded by that archival summary. The article&#x27;s diagrams are conceptual and not proof objects. Its reconstructed short proofs are explanatory; the new bounded study used local hand-coded proof checks but no independent external proof-assistant checker. Its operation charges are synthetic, not hardware-calibrated.
+
+\begin{thebibliography}{99}\small
+\bibitem{checkpoint} B. Tenneson, \emph{The Foggy Multiarticle Metaworld: Checkpoint 0.3---Mathematical Islands, Verified Bridges, Counterfactual Imagination, and the Search for Explanations}, research article, version 0.4, 19 October 2026, 13 pp. Earlier snapshot: 29 source families, six proposed crosswalks, OP-01. File: \texttt{Foggy\_Multiarticle\_Metaworld\_Checkpoint\_0\_3\_Article\_v0\_4.pdf}.
+\bibitem{n17} \emph{Foggy Multiarticle Metaworld---Incoming Island N17}, intake checkpoint 0.1, 20 October 2026; documents DATA MIND, \emph{From Guaranteed Basin Escape to Certified Cost Optimality}, v0.2 (19 October 2026), \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/from_guaranteed_basin_escape_to_certified_cost_optimality/}.
+\bibitem{gbg} \emph{Foggy Multiarticle Metaworld---GBG and GBG+ Intake Checkpoint 0.1}, 20 October 2026; N18--N20; archive note \texttt{Foggy\_Multiarticle\_GBG\_and\_GBGplus\_Intake\_Checkpoint\_0\_1.md}.
+\bibitem{akm} \emph{Foggy Multiarticle Metaworld---AKM/CAMI Archival Intake Checkpoint 0.1}, 20 October 2026; N21--N34, 14 primary work families from 18 archived PDFs; archive note \texttt{Foggy\_Multiarticle\_AKM\_CAMI\_Intake\_Checkpoint\_0\_1.md}.
+\bibitem{n35} \emph{Foggy Multiarticle Metaworld---N35 Hilbert Intake Checkpoint 0.1}, 20 October 2026; records B. Tenneson, \emph{Hilbert-Filled Inference Spaces for Automated Theorem Proving}, Draft 0.2; archive note \texttt{Foggy\_Multiarticle\_N35\_Hilbert\_Intake\_Checkpoint\_0\_1.md}.
+\bibitem{n36} \emph{Foggy Multiarticle Metaworld---N36 Three-Way Lemma Exchange Intake Checkpoint 0.1}, 20 October 2026; records B. Tenneson, \emph{Conjecture Settling II: Automated Logical Deciders and Three-Way Lemma Exchange}, Draft 001; archive note \texttt{Foggy\_Multiarticle\_N36\_Three\_Way\_Lemma\_Exchange\_Intake\_0\_1.md}.
+\bibitem{n37} \emph{Foggy Multiarticle Metaworld---N37 Learned Search Policies Intake Checkpoint 0.1}, 20 October 2026; records B. Tenneson, \emph{Learned Search Policies for Proof Search: What Machine Learning Can and Cannot Buy an Automated Theorem Prover}, v2, 27 July 2026; \url{https://github.com/btenneson/ATP/blob/main/LEARNE~1.PDF}.
+\end{thebibliography}
+\vspace{.12in}\hrule\vspace{.12in}
+{\footnotesize\sffamily\color{graytext}Prepared for author review · 20 October 2026 · Synthetic OP-01 research attempt, no certified settlement or publication · Continuity beacon \texttt{91042014201224789}.}
+\end{document}
+</pre></main></body></html>
