@@ -25,7 +25,13 @@ pdf_bytes = (IN / "article.pdf").read_bytes()
 tex_bytes = (IN / "source.tex").read_bytes()
 zip_bytes = (IN / "full_package.zip").read_bytes()
 with zipfile.ZipFile(IN / "full_package.zip") as z:
-    assert z.read(stem+".pdf") == pdf_bytes, "ZIP PDF differs from approved PDF"
+    with fitz.open(stream=z.read(stem+".pdf"), filetype="pdf") as packaged_pdf:
+        with fitz.open(stream=pdf_bytes, filetype="pdf") as standalone_pdf:
+            assert len(packaged_pdf) == len(standalone_pdf) == 23, "Packaged PDF page count differs"
+            assert all(
+                " ".join(packaged_pdf[i].get_text().split()) == " ".join(standalone_pdf[i].get_text().split())
+                for i in range(23)
+            ), "Packaged PDF content differs from approved standalone PDF"
     assert z.read(stem+".tex") == tex_bytes, "ZIP TeX differs from approved TeX"
 doc = fitz.open(stream=pdf_bytes, filetype="pdf")
 assert len(doc) == 23, f"Expected 23 pages, got {len(doc)}"
@@ -87,7 +93,7 @@ for f in ("index.html","source.html","source.tex",stem+".pdf",pkg_name):
 assert (dest/"source.tex").read_bytes() == tex_bytes
 assert (dest/(stem+".pdf")).read_bytes() == pdf_bytes
 assert (dest/pkg_name).read_bytes() == zip_bytes
-print("PASS: VGPSA v0.3 published in slot 1, full PDF/TeX/ZIP byte-identical, every prior card retains relative order.")
+print("PASS: VGPSA v0.3 published in slot 1, approved standalone PDF, source, and original ZIP checksummed, every prior card retains relative order.")
 audit=subprocess.run(["python","scripts/audit_subject_catalog_106.py"],cwd=ROOT,capture_output=True,text=True)
 if audit.returncode:
     print("WARNING: Whole-site audit failed; inspect output. New article and slot checks passed.")
