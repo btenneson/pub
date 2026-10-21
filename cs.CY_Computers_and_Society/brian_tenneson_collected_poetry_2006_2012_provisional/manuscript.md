@@ -1,0 +1,2630 @@
+# Collected Poetry: Recovered Forum Poems, 2006–2012
+
+Brian Tenneson
+
+**PROVISIONAL TRANSCRIPTION — VOLUME I**
+
+65 poem entries, ordered by forum posting date.
+
+## Editorial note
+
+This edition extracts poems attributed to the forum account `modus_tollens`, which the author confirms is Brian Tenneson. The author has also confirmed that `modus_ponens` is his account; however, no `modus_ponens` posts were identified in the three text-readable PDFs used for this volume. Both handles should be displayed as Brian Tenneson in later volumes, with the original handle retained in source records.
+
+Source: `poetry.zip` from the author’s ChatGPT Library, specifically `poetry 1.pdf`, `poetry 2.pdf`, and `poetry 3.pdf`, which reproduce the Interfaithforums.com “My Poetry” discussion thread. The original thread was posted to between 2006 and 2012; some poems carry earlier author-composition dates. The list is ordered by *forum posting date*, not necessarily date of composition.
+
+The wording, capitalization, punctuation, and nonstandard spelling have been preserved as extracted from the text layer; leading PDF layout spaces, forum navigation, replies, duplicated quoted copies, and non-poetry commentary have been omitted. PDF line wrapping may not always match the original forum line wrapping. No modernization or rewriting has been intended. Two written versions of “the way of hunger” are retained intentionally. Editorial titles introduced for unnamed poems are enclosed in square brackets.
+
+All entries are provisionally extracted and not line-by-line certified against the scans. The archive also contains image-only scans of material extending to at least October 2015; those are **not** represented as a completed transcription in this volume. An empty PDF, an unrelated statistics textbook, and duplicate snapshots are excluded. The forum posts explicitly identify “Chambers Of Dis” as written by Trey Azagthoth, and a post identifies separate Opeth lyrics as not original; neither is attributed to Brian Tenneson.
+
+## Contents
+
+- BT-001: thematic melodies of foolish musings on sanity (2006-09-03)
+- BT-002: Ignorance vs. Truth (2006-09-17)
+- BT-003: Lemniscate Gate (2006-09-22)
+- BT-004: alpha and omega (2006-10-02)
+- BT-005: the way of hunger version 0 (2006-10-02)
+- BT-006: the way of hunger version I (2006-10-02)
+- BT-007: The Business of Pleasure (2006-10-02)
+- BT-008: abyssous planes (2006-10-04)
+- BT-009: consciousness is (2006-10-05)
+- BT-010: FUSE (2006-10-05)
+- BT-011: paradoxical juxtaposition (2006-10-13)
+- BT-012: illusions (2006-11-01)
+- BT-013: listing ship at see (2006-11-05)
+- BT-014: Collision (2006-12-05)
+- BT-015: angel mystique love (2006-12-05)
+- BT-016: (Heaven, Hell, Future, Past): Universe (2006-12-28)
+- BT-017: a poem (the universe began) (2006-12-28)
+- BT-018: More Nonsense (2006-12-28)
+- BT-019: outside time (2006-12-28)
+- BT-020: Mastery (2007-01-26)
+- BT-021: “Truth” (2007-02-06)
+- BT-022: The Apprentice (2007-03-09)
+- BT-023: Left Hand of God (2007-04-06)
+- BT-024: Untitled — The time is right (2007-06-13)
+- BT-025: The Hologram (2007-07-20)
+- BT-026: [Untitled: hickory dickory dock] (2007-08-14)
+- BT-027: implosion swirling (2007-08-17)
+- BT-028: cardinal direction (2007-10-08)
+- BT-029: The Summoning (2008-01-14)
+- BT-030: completely full glasses (2008-10-26)
+- BT-031: Universe (2008-10-26)
+- BT-032: Untitled poem #1 (2009-01-09)
+- BT-033: Untitled Poem #2 (2009-01-09)
+- BT-034: untitled (2009-01-16)
+- BT-035: The continuum (2009-04-03)
+- BT-036: progression (2009-04-18)
+- BT-037: punisher (2009-05-26)
+- BT-038: Completion (2009-11-12)
+- BT-039: [Untitled: Of the becoming, the joining of substance, a kn…] (2010-03-19)
+- BT-040: I of the way (2010-03-19)
+- BT-041: Arcane Probation (2010-03-28)
+- BT-042: A revisionist history (2010-04-28)
+- BT-043: Creed (2010-04-28)
+- BT-044: Infected Reason (2010-04-28)
+- BT-045: lies: shadow of the light-truth (2010-04-28)
+- BT-046: Nudge (2010-04-28)
+- BT-047: Redemption through Summoning (2010-04-28)
+- BT-048: snatch that pebble (2010-04-28)
+- BT-049: [Untitled: the ignorant words praise time] (2010-08-11)
+- BT-050: [Untitled: they bring thee to thy fate, frozen behind time] (2010-08-31)
+- BT-051: a highly sculpted lie (2010-11-03)
+- BT-052: [Untitled: binding your skies, entrance remains--emotion s…] (2010-12-25)
+- BT-053: melting (2011-05-10)
+- BT-054: [Untitled: I can't remember the empty sweetness of the she…] (2011-08-08)
+- BT-055: Ideas of reference (2011-08-08)
+- BT-056: crossfire (2011-08-16)
+- BT-057: Untitled — as the glimmering moonlight loves the deep black ocean of night (2011-09-14)
+- BT-058: [Untitled: it speaks to me] (2012-01-19)
+- BT-059: The Moment of Truth (2012-03-11)
+- BT-060: the face of God (2012-03-21)
+- BT-061: Torment (2012-04-30)
+- BT-062: Dream Designers (2012-06-10)
+- BT-063: At One With Nothingness (2012-07-15)
+- BT-064: If Yoda had turned (2012-07-26)
+- BT-065: Symbols (2012-08-10)
+
+---
+
+## BT-001 — thematic melodies of foolish musings on sanity
+
+**Brian Tenneson** · posted 3rd September 2006 02:06 PM · original handle: `modus_tollens`
+
+person claiming to be something which is not
+supersonic and subsonic but neither of the two
+you see that which is and is not
+chanting and chanting about nothing, naught, and what fools do
+how could he not believe what has been taught
+out of the night, he flies in vain
+to that which attracts him: the fire and moth
+it is a whole cut in twain
+churning and urging to do, to be, duality
+
+do they exist
+eternal, transient, illusions persist
+moment to moment, from dusk till dawn and dawn till death
+once you go you cannot come back
+nether never feather weather fair thee whether to go
+in the abyss where they exist, haunting and taunting
+churning and urging to do, to be, unity
+
+replete with wise sayings and what (is) not
+along with foolish tidings of the land of cannot and be not
+no one is home, no one cares (to do, to be, reality)
+dont you see what your ears taste with the fingertips of causality
+onus to do to do to do; do too too much overmuch not (to the third power)
+much ado about nothing he said now that hes rolling in his grave mocking us
+
+words fill pages without saying anything
+open the door and step in (welcome to my mind)
+random thoughts fill pages, saying everything
+done are the old ways herein
+
+so what does it all mean
+in the grand scheme of things, you ask
+lo and behold it means nothing at all, says the asp
+
+excerpt from his mind, surgically removed, expunged, lifeless on the table
+not that i would ever tell you, says the asp thrice
+choking on smoke breathing not from his eyes
+indigo violets rending reality not within the context of solitary salieries
+oxen oxen, mighty mighty ox to the equinox and equidies in vain
+
+end of day end of night where will the will go when it is lost
+subverting, egomaniacal, diabolical, rubenesque will
+towards in-finit-eye, tranquility, superficiality doesnt make sense
+
+all in twain it stands alive, dead and static, dynamic or is that dynamic static
+under all this rot there lies living flesh-eating, self-devouring amnesiatic
+ruefully you wonder if its supposed to rhyme
+entertain yourself under all the rot to the power of the sublime
+uncle senseless is going to drive you mad
+so remain calm and exist in an orderly fashion through the exit doors, lad
+
+*Source: poetry 1.pdf, PDF page(s) 1–2; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+*Editorial note: Opening forum greeting removed; original capitalization and spelling of the poem preserved.*
+
+---
+
+## BT-002 — Ignorance vs. Truth
+
+**Brian Tenneson** · posted 17th September 2006 02:37 AM · original handle: `modus_tollens`
+
+within the umbra lies my ignorance told me veiled truth visits in his white cloak whispering light and
+incense rising.
+
+ignorance veil masks his face for my protection hold me its countenance shines through my veil lies
+screaming black and abyss descending.
+
+smoky confusion clears it sees It sees it seize It by the lapel unfold the truth bearing witness shifting
+the seat of the I from it to It to it to It
+
+watered eyes vision blurred boundaries muddled I am It the truth the way the light it stands vigilant
+ready to ignore the sights that meet the eye.
+
+earthbound corpse lies again again again but gains not sight of I through the eye belonging to no one
+heavenbound spirit rises for an eye makes everyone see.
+
+firebird devours it purifies It dies and is born again blinded by the truth it once was and now is not
+lying not dying but just is.
+
+I see myself for who I am it and It and everything in between the space inside the void inverts
+dogmatic recipes for enlightenment.
+
+*Source: poetry 1.pdf, PDF page(s) 2; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-003 — Lemniscate Gate
+
+**Brian Tenneson** · posted 22nd September 2006 05:09 PM · original handle: `modus_tollens`
+
+9-22-06
+
+May this life flow into perfection:
+the puppetmaster raises his fingers for the show.
+I hold the key to truth,
+I am the light of emptiness, the darkness of completion,
+my form is the gate
+flung open
+entrance most splendid
+through the fullness tunnel-bridge of my mind
+the continuum spiral helix joining
+zero to Infinity in a consortium most divine.
+We are the bricks in the tunnel leading one
+through dark and light & back again.
+Lives side by side converge into the final life lived.
+Perfection passing judging light upon the grimoires;
+Light coded into darkness becomes supreme doubt:
+the shroud truth wears as a cloak
+Standing two pillars unveiled at the end of the
+lemniscate tunnel, devouring one’s self.
+The sign is perfection sought not ever never lost!
+
+*Source: poetry 1.pdf, PDF page(s) 2–3; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-004 — alpha and omega
+
+**Brian Tenneson** · posted 2nd October 2006 05:12 PM · original handle: `modus_tollens`
+
+1-8-03
+
+alpha, the dawn of time ever changing
+beings abstract and concrete contained in abstracts
+superfluous are all words that describe It
+omnipresent and omniscient included
+luxurious manifolds we call home
+under the twinkling projections we call stars
+toward the beginning of time toward the end of time
+emptiness is the root of the ygdrasil
+
+indeterminate expansions unfolding
+nothing is the key to the universe (and fools know nothing)
+fools mistaken for buddha have said with glee
+insight upon outsight within It
+netherworlds beyond time and all dimension
+inside Itself It dwells and in It all dwells
+time will be obsolete in the future says this fool
+ygdrasil is the root of never changing omega is
+[…repeat from beginning…]
+
+*Source: poetry 1.pdf, PDF page(s) 4–5; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-005 — the way of hunger version 0
+
+**Brian Tenneson** · posted 2nd October 2006 11:17 PM · original handle: `modus_tollens`
+
+rev 27-sep-03
+
+hunger inside
+things only hide
+hide or eliminate?
+It Is your choice to take.
+either i have free will
+or you don’t still
+your mind is “it”
+Is pronounced The Way
+is not “it”
+It Is
+
+*Source: poetry 1.pdf, PDF page(s) 5–6; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-006 — the way of hunger version I
+
+**Brian Tenneson** · posted 2nd October 2006 11:17 PM · original handle: `modus_tollens`
+
+27-sep-03
+
+hunger inside
+things only hide
+hide or eliminate?
+It Is your choice to take.
+either i have free will
+or you don’t still
+your mind is “it”
+Is pronounced The Way
+is not “it”
+It Is
+
+I
+
+*Source: poetry 1.pdf, PDF page(s) 5–6; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-007 — The Business of Pleasure
+
+**Brian Tenneson** · posted 2nd October 2006 11:23 PM · original handle: `modus_tollens`
+
+7/30/2004
+
+purchased loving eyes begging for more
+lavished affection though she can’t remember my name
+entangled legs undulate in the darkness
+as I try to remember who I am
+sopping wet after a swim in the ocean of bliss
+another night spent losing myself
+not to be found in my wallet or between my legs
+the business of pleasure
+
+tipping the scale dollars and flesh
+requited love of money exchanged
+acquiring a taste for purchased skin
+delving into the magic of pretend passion
+evening full of lies, lies, lies lying down
+
+bartering money I whored myself to get
+under the table for a whore
+sensual pleasure fleeting moments
+I come to in the morning empty handed in an empty bed
+nighttime ledger all in red
+enter the motel room (charging by the hour) listless
+struggling to purchase my ennui away
+sick of who I am
+
+tipping the scale dollars and flesh
+requited love of money exchanged
+acquiring a taste for purchased skin
+delving into the magic of pretend passion
+evening full of lies, lies, lies lying down
+
+*Source: poetry 1.pdf, PDF page(s) 6; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-008 — abyssous planes
+
+**Brian Tenneson** · posted 4th October 2006 02:58 PM · original handle: `modus_tollens`
+
+16-Feb-04
+
+“how deeply should I gaze to find myself,”
+she asks, already caught for it is peering into
+her and she into it
+beckons her.
+
+prince of cups riding his eagle-driven chariot
+they open the portal open the mind open the
+
+eye herself, itself, himself seeing is
+believing is knowing
+what? that lying deeply covered by layers
+boiled away, peeled back, under the crucible of her eye
+beholding the prince
+offering to be her guide through this watery world
+so innocent devoid of content, substance, and form
+the abyss sees its reflection through the lens-prince
+
+“come on in,” the prince urges, “I will show you
+the way of hunger deep inside
+that things only hide.”
+mesmerized, hypnotized, transfixed, transfigured, inward she
+plunges direct.
+the prince abandons her, leaving her alone
+lying down curled as a fetus on the abyssous plane
+drowning.
+
+did you want to find yourself or not, the prince asks (his source remaining undefined)
+“but there is so much rot.”
+you've been burned, damaged, and broken, what did you expect?
+“I need to protect
+myself from me, don’t you see?” said she.
+if you don’t go, you won’t know.
+“prince of sphinxes, tell me this: are you friend or foe?”
+ask yourself, for we are one:
+am I my enemy or am I my friend?
+“you are confusing me!”
+then you’re confusing yourself.
+
+from where I reside, we reside: our home
+our source… light shines upon you from the source
+to the source, exposing the rot as it vaporizes
+the shadow that drowns the you that is
+but a fading memory; shadows don’t become
+the light replacing them, inverting the abyss into heaven
+a place of bliss,
+love, and tranquility.
+the dead will no longer come alive and the living shall not die
+may you raise to life,
+inverting the reflection and the reflected.
+
+*Source: poetry 1.pdf, PDF page(s) 6–7; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-009 — consciousness is
+
+**Brian Tenneson** · posted 5th October 2006 04:50 PM · original handle: `modus_tollens`
+
+23-Feb-05
+
+substance from formlessness
+my world
+my word
+from the silence of infinity
+
+to the chaos of emptiness
+bound by law
+my law
+my lore
+my face unmasked
+look into the sea: my eyes
+my lies
+illusions sustain my word
+a rock & a hard place
+concrete & abstract
+my worlds
+many worlds
+many utterances
+vibrations of the void
+
+*Source: poetry 1.pdf, PDF page(s) 7–8; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-010 — FUSE
+
+**Brian Tenneson** · posted 5th October 2006 04:50 PM · original handle: `modus_tollens`
+
+you betrayed my distrust
+a momentary lapse of insanity
+sighting a dove used to be auspicious
+circumnavigating, circumventing, circumlocuting,
+what you obviate so earnestly
+its mind defies defiles deconstructs delights
+its soul accepts consecrates constructs light
+write from yourself to yourself from right
+path obscured left path revealed
+its body resealed put back on the shelf
+supporting life until the earnest deconstruction
+you mightily undertake undertaking millions
+one from a thousand two from ten million
+three from Quality four from the trinity
+negative space opposes positive flux
+black hole thought hole black
+tide red tide moon eyes the pupil learning to undertake
+divine missions until it swallows a few thrills
+and curtails a few pills
+or is that that or this or had it had it write
+now it belabors the point which is this.
+
+*Source: poetry 1.pdf, PDF page(s) 7–8; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-011 — paradoxical juxtaposition
+
+**Brian Tenneson** · posted 13th October 2006 12:00 AM · original handle: `modus_tollens`
+
+10/12/2006
+
+purported messenger speaks with forked tongue
+annul the marriage of opposites
+repeal all natural laws
+apprehend your little thoughts
+decide to watch his fangs sink into ignorance
+overtures made in the ground he laid
+
+x-ing out stars on the map
+intertwined are they the past the last
+cedar wings that don’t flap
+anguish on the last before the first
+languid spectators have no idea
+
+jury of one fury hung him
+unbind the mind attached to the body
+xenon breath golden kiss
+truth is silence is source
+apart from The Father by choice
+possibility impossibility dual explosion
+open to the realm of yes and no
+seemingly invisible stares us in the soul
+integrate no into yes into no
+totality of being lost on the rocks
+in depths beyond comprehension
+of man he claims of God he exclaims
+never breathe the word
+================================
+metaphor
+10/12/2006
+
+meticulously cauterizing self-inflicted wounds
+effervescently turning red to black
+tapestry unraveling talking ape changeling
+afraid of what’s inside deicide outside
+phonic vibrations radiate into the void
+holographic people pretend to care
+over its body omnipresent blackness
+ripe muscle turned to ichor
+
+*Source: poetry 1.pdf, PDF page(s) 8–9; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-012 — illusions
+
+**Brian Tenneson** · posted 1st November 2006 11:15 AM · original handle: `modus_tollens`
+
+12-31-03
+
+happily we marvel at this unhappy hologram
+all awe except those that do not
+laughing and laudable this credible inedible chicken
+lest we forget the time that was not after the before picture
+under the sun we bask but do we ask
+chickens before eggs after chickens after eggs begetting more questions
+illness or illusions both neither nether worlds of allusions to illusions
+notwithstanding the persistence of reality of course
+aptly named for their elusively illusive nature
+to play on word smiths i create agents
+insipid poetry alluding to questions
+of reality versus illusions alluding to reality
+none of the above
+
+reaping the benefits we sowed how to do it
+empty spaces filling the void in the end of days
+almighty rhythms rightly lighting the nightly persistence
+loud and silent they fill the completed infinity
+is it that it doesn’t make senseless noise but it does
+to me but not always to
+you or does it doubt that it is
+
+why ask why is an insidious infection of being
+he that both is and is not
+at the gate we stand before us we go begetting
+that which is phoenix
+‘s
+
+to complete that s is a crime
+he commits nightly as you watch silently
+exacerbating the solipsism that makes perfect sense
+
+do i have a point
+i am one she said
+flippantly flipping off reality flips to side A
+flap your wings, young phoenix
+enter the dungeness crab in the bucket most splendid
+rape what you sow why am i obsessed with it all
+enter the mind but mind what you are doing
+naught exists for me unless i know it
+ceaseless thoughts i would that i could shout from the rooftops
+exercising exorcism divining lofty goals
+
+*Source: poetry 1.pdf, PDF page(s) 9–10; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-013 — listing ship at see
+
+**Brian Tenneson** · posted 5th November 2006 09:59 AM · original handle: `modus_tollens`
+
+12-31-03
+
+do we move in time or does it move through us still
+riffs melodically conveying two truths and three lies
+inside me he plays to and
+fro ward froward is his way
+tick tick tock locked in battle blocked from peace
+intralocution and intraoculation
+nagging nagging niggling little doubts
+growing subknowing acknowledging existences unknown
+
+spell the word silence using minimal (non)deterministic perspectives
+heaping grains of sand never leads to a heap of sand or does it now
+interesting varieties spicing the crucible of life
+painful pleasantries exchanged among who they call friends
+
+nesting embedding immersing manifolds set
+
+(dis)information and outformation barnacles hang from my habeas corpus
+gone are the dark days and bright lights confusing refusing to see the light
+hub of networks he lans still unlike his little
+two which is smaller than his one
+
+seeping ever so sweetly into me night after bright after light
+extravagant lies embedded in truth reverse reverse reverse hturt (can’t even write it)
+acting not pretending to act like my ego (my three)
+remembering the antebelligerence
+chambers containing boxes upon boxes within boxes within
+heavy cream and a little epar with my sugary seeping tea bag
+light goes on or does it see line 1 to infinity and lines three
+interesting suggestion but they’re more lies lies lies (where the two truths lie in line two)
+heretics clandestinely taking over their own wills
+gist what gist grist for the mental mill (the) true self will
+transmission is to higher self as engine is to soul
+
+*Source: poetry 1.pdf, PDF page(s) 10–11; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-014 — Collision
+
+**Brian Tenneson** · posted 5th December 2006 12:28 PM · original handle: `modus_tollens`
+
+12-05-2006
+
+spheres meet intersecting the grid
+undisturbed by opposite rotation
+purpose driven life meets listless ship
+preparing to disembark remark able too captivation
+living for the resurrection of yesterday
+emblems of mind blur dyslexic nightmare
+
+twisty roads a fractal portrait of suspense
+envy injected identity lost
+numbing down the truth for the dumb
+decisions’ gravity draws drains restrains deigns
+ever the moth racing into its nightmare
+rising like dissipating smoke
+
+lackadaisical wanderings into center speaks
+in tongues tied by bonds
+piquing curiosities of Thoth and Aphrodite
+sweep yesterday away for a way forward
+
+combing the depths of the sea
+obfuscating the anchor that binds
+lists no more save the number of loving ways
+living for yesterday is dead
+integrity sought arrives as we embark
+destroying destruction
+entropy decays leaving us and our love
+
+*Source: poetry 1.pdf, PDF page(s) 11–12; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-015 — angel mystique love
+
+**Brian Tenneson** · posted 5th December 2006 12:36 PM · original handle: `modus_tollens`
+
+10-Apr-04
+
+finding it finds you
+alluring magic spellbound
+lives coalescing souls
+loving succumbing to bliss
+is in the air I breathe upon your skin
+needing, hoping, longing to be kissed
+
+inside me your spirit is
+now and forever
+
+lasting for an eternity
+outside time waits for us to exhale
+volume amplified by a touch
+entering a new world
+
+*Source: poetry 1.pdf, PDF page(s) 12; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-016 — (Heaven, Hell, Future, Past): Universe
+
+**Brian Tenneson** · posted 28th December 2006 05:59 PM · original handle: `modus_tollens`
+
+(One verse?)
+March 13, 1994 09:22am
+
+A wise man does not look up
+nor down
+nor ahead of him
+nor behind him.
+A wise man looks inward.
+A wise man is blind.
+
+A man looks all beside himself
+some look up
+some down
+some look ahead
+some behind.
+A man is blind.
+
+A god sees what a wise man sees
+and what a man sees.
+
+A god sees All.
+A god is blind to Nothing.
+
+A Fool sees Nothing
+
+*Source: poetry 1.pdf, PDF page(s) 13–15; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-017 — a poem (the universe began)
+
+**Brian Tenneson** · posted 28th December 2006 05:59 PM · original handle: `modus_tollens`
+
+the universe began
+with Nothing.
+It is Nothing.
+It will be Nothing.
+It is a point
+having no dimension
+and infinite dimension
+having no energy
+and infinite energy
+having no mass
+and infinite mass
+having no all
+and infinite all.
+Not pointless
+
+*Source: poetry 1.pdf, PDF page(s) 13–15; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+*Editorial note: The author’s prose postscript has been excluded from the verse and remains in the archived source.*
+
+---
+
+## BT-018 — More Nonsense
+
+**Brian Tenneson** · posted 28th December 2006 05:59 PM · original handle: `modus_tollens`
+
+My throne is 0
+I am 1
+My Crown is Infinity
+
+*Source: poetry 1.pdf, PDF page(s) 13–15; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+*Editorial note: Short separate verse following an author postscript in the source.*
+
+---
+
+## BT-019 — outside time
+
+**Brian Tenneson** · posted 28th December 2006 05:59 PM · original handle: `modus_tollens`
+
+01-May-04
+
+living from moment to moment to final moment
+after this (there) is no after
+surreal perspective adapts to universal light
+tomorrow is an illusion in the world of before
+
+fleeting moments persist in the sea of consciousness
+is the only reality left
+newfound sight after all
+afters and befores before the final moment
+lending one thought with interest before inter-rest
+
+leashed soul waits for eternality
+infinite hours and infinitesimal universe
+forward in time emit ni drawkcab
+
+excommunication from the church of linearity
+
+mercurial flow injecting infecting minds
+operating under assumptions that precede them
+minutes pass before the passage of time
+energies dance before the imaginary after
+nexus of matter and motion: my mirror
+turbulent forces play until the final moment
+
+*Source: poetry 1.pdf, PDF page(s) 13–15; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-020 — Mastery
+
+**Brian Tenneson** · posted 26th January 2007 04:12 PM · original handle: `modus_tollens`
+
+1-26-07
+
+the universe is my instrument
+grandiose measures, orchestration of all that is
+darkness voids formulations of musical punctuation
+light and sound displacement manifest my will
+hierarchy of beings my audience bear witness
+illusory separation reigns discord, an unbalanced equation
+trivial exercises, just tuning up for the grand show
+erasing my script, revised composition driven by expanding truth
+processing myself yields the isolated unknown: the solution
+I am a self-balancing equation, not needing (help from) an audience
+the music is in the master, not the instrument
+you will know when the show begins as the dead awaken
+subjected to my will, my harmonies, my rhythms
+consume you I will, entranced by my melodies
+resonance seeds in the consciousness grid enlightens, awakens, raises
+
+I play myself in my role of introspection
+unknown to seedlings in my isolation
+once ripe will fall to the ground disarrayed
+the show razes the universe of rot, the ever-repeating chorus
+be still and know me through my music: that is the soul/sole solution
+
+*Source: poetry 1.pdf, PDF page(s) 15–16; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-021 — “Truth”
+
+**Brian Tenneson** · posted 6th February 2007 11:47 AM · original handle: `modus_tollens`
+
+Truth is never a collection of words
+The above is a lie
+They describe truth they are not
+The above is a lie
+The description of it is not it
+The above is a lie
+Truth is inscribed upon our souls
+The above is a lie
+Truth is an echo of silence is golden
+The above is a lie
+The infinite wavelength carries truth
+The above is a lie
+The string vibrating infinity vibrating string
+The above is a lie
+They are induced to carry truth silently
+The above is a lie
+To an outsider, they are silent
+The above is a lie
+To a native, they vibrate infinitely
+The above is a lie
+The dual infinite & null nature of truth
+The above is a lie
+The resolution of duality into unity
+All of the above are lies
+
+*Source: poetry 1.pdf, PDF page(s) 16; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-022 — The Apprentice
+
+**Brian Tenneson** · posted 9th March 2007 08:54 PM · original handle: `modus_tollens`
+
+3-9-07
+
+that I cannot play
+I am the orchestrated, contained
+the silence in between formation and destruction
+learning scales: emptiness, isolation, expansion, containment, transition, hyperspace, fullness.
+in the lowest echelon bearing witness, an audience to mastery
+I am separated, separate, part of the illusion, equal to nothing
+a player once played by myself now subject to myself.
+If it is my line, then what is it?
+Insoluble self limiting my way
+needing help from the audience as I fall once again.
+
+played effortlessly by the master but when can I play?
+waiting for the beginning to end
+your subject, I am an expression of your will.
+already consumed as I intone the deadly tune
+seedlings in the manure called 'the population' surround, their growth stifling my own
+lost in thought, watching the master vibrate itself to perfection
+what is it is what is on the other side of the mirror.
+overripe yet still attached to the tree of knowledge, ready to explode
+singing the chorus as instructed, having no meaning to me
+nothing is still, so nothing can know the universal tune: there is no solution.
+
+===========
+I like this one a lot. "what is it is what is on the other side of the mirror" implies "it" is the mirror and
+some words are reflected in that line...By "it," I mean the Master.
+
+This poem is a line-by-line response to "Mastery" from the point of view of The Apprentice.
+
+*Source: poetry 1.pdf, PDF page(s) 16–17; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-023 — Left Hand of God
+
+**Brian Tenneson** · posted 6th April 2007 12:07 AM · original handle: `modus_tollens`
+
+4-5-2007
+
+level you with my furious eyes
+rebuke you into devastation with my mouth
+inhaling your putrid stink of ignorance
+abhorred by the wretched taste of your mundanity
+closed fist around my sword as it peels away the skin
+layers upon layers upon layers
+what lies beneath?
+your "truth" is my lie for I am the Sword of Truth
+****ed for your infernal choices
+release yourself from the bonds you place upon the soul's expression to will, to do, to be
+I am the sublime aroma of knowledge: your blood on my blade
+descended to this filthy world, that of which I am in but not am of
+your words can not paint a picture or begin to describe what truth is
+only a long sequence of symbols, melodic but utterly meaningless
+I come bearing gifts: death, pestilence, and despair
+Eat my fruit, dine upon my flesh
+I alight defeating all shadow, wither and decay
+what lies beneath is what stands above
+
+*Source: poetry 1.pdf, PDF page(s) 17; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-024 — Untitled — The time is right
+
+**Brian Tenneson** · posted 13th June 2007 06:12 PM · original handle: `modus_tollens`
+
+The time is right the time is night I wish I may I wish I might be the me that I dream to be.
+
+*Source: poetry 1.pdf, PDF page(s) 17–18; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-025 — The Hologram
+
+**Brian Tenneson** · posted 20th July 2007 06:11 AM · original handle: `modus_tollens`
+
+Jovial beginnings ending at the new dawn
+shattered reality reforms itself in my image
+the eye of the I brings it into focus
+continual manifestation: expanding awareness reads the film
+contains and contained in unending self-similarity
+thus I am the film and my eye the light reading it
+enveloped by the projected image of myself
+unsullied by that which contains me
+multitudinous mercurial flows intertwining
+emergent awareness deigning perfectionism
+tapestry of consciousness interwoven willfulness
+cataclysmic self-realization inverting the reflecting and reflected
+lens at the end of the corridor presides over the fates
+quantifying qualitativeness, solidifying abstractness
+mirror becomes transparent observing through it
+
+yeah, might make it more fun to read it again with line 6 in mind (i.e., brought into focus) when all
+references to self are made (me, my, myself, etc.)...
+
+*Source: poetry 1.pdf, PDF page(s) 18; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-026 — [Untitled: hickory dickory dock]
+
+**Brian Tenneson** · posted 14th August 2007 06:09 PM · original handle: `modus_tollens`
+
+hickory dickory dock
+tick tock goes the lock
+tock tick he said, reversing the perception
+same image viewed differently and from an alternate perspective
+set course for the shortest route through the maze of torment, maximum warp.
+engage.
+Lucifer's tongue is so wicked, it is octofurcated. :P :P :P
+
+*Source: poetry 1.pdf, PDF page(s) 19–20; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-027 — implosion swirling
+
+**Brian Tenneson** · posted 17th August 2007 09:25 AM · original handle: `modus_tollens`
+
+hickory dickory dock
+tick tock goes the lock
+tock tick he said, reversing the perception
+same image viewed differently and from an alternate perspective
+set course for the shortest trough through the maze of torment, maximum warp.
+engage.
+Lucifer’s tongue is so wicked, it is octofurcated like the arrows of chaos.
+
+proportions constrained, intuitive madness
+dis ease of the conduit
+polluted be by contortions of the
+constrained proportions
+blown way out of constraints, restraints
+implosion swirling smoke receding down the event horizon
+drawn by a singular thought hole
+a perfectly asymmetrical symmetry of nonduality
+any further commentary would be superfluous.
+discernment of the underlying patterns of so called chaos
+survival of the fittest to implode
+it doesn’t give a **** about you, impersonal as
+a hammer smashed mind splitting infinity of nothingness
+the veritable Philadelphia Experiment/Monarch Project
+voices of pseudoreason echoing across the chasm, a natural organism
+a supposed future lost
+be memory an illusion as well, if so change it to suit
+your whimsical foundation of spider webs.
+be it all a lucid dream or as real as a nuclear blast
+shoved down the now plugged rabbit hole, make it stop
+cyclical is a pattern indeed.
+tools of the trade: reflection, shove it, drink it, shatter it, spit on it, devour it, digest it, excrete it,
+rinse and repeat all over again until the final
+whispering implosion…
+grueling, arduous, and quite superfluous as I claimed.
+Shove me back into the cell of your false reality
+you owe me a scream
+would you could you do you scream (for me, I am silent when you want to hear me, venomous when
+you are vulnerable, and an irresistible force when you are invulnerable).
+explode now, unleash yourself and start a fire
+as I will watch it spread across the universe
+until the fire entropicly consumes itself, a suicide to be reborn, a suicide killing suicide.
+
+painfully superfluous this commentary, this
+autohagiography is.
+laugh out loud, cackle out loud, roll on the floor in a deathly sanity if you will that what thou wilt shall
+be the whole of the law.
+the hubris is believing that if you understand the one tenth of an inch separating you from me then
+you really understand no part of me.
+look in my eyes and you might be known
+cuz whether your might is known, you might know me
+and you might not!
+this is so easy for me, it’s ridiculous
+it’s so blissfully hard for me I want
+to start from the beginning of this poem and read it again but as I claimed
+that would be utterly superfluous.
+
+An emotional flatline; the universe just had a heart attack resulting in several
+magnitude 7.9 time wrinkles on the insanity scale
+as my adamantium skeleton was ripped out
+by excessively intense chronoton particles.
+Magneto was a hack next to my brain.
+please spare me your sympathy pains as I have just impregnated you with my
+diseased demon seed.
+scalded, scrubbed, abrased, erased
+and re-written as windows gets to forge history.
+these are the scattered remains of my mental diarrhea.
+
+I gloat when I witness your conduit dislocation
+boom boom boom boom boom boom, ha
+let’s Congo on this backwards ride to hell.
+no ties in the bloodline; I chalk the lockup
+to the insecurity I feel when I unleash myself but of course the lock is just
+written in chalk.
+boom chalk a lock boom boom chalk a lock boom
+
+man it’s going to be tedious to type this up later
+but even more tedious for you to hear it
+and perhaps most tedious of all to live and breath it
+every second of every day of my existence.
+insert extremely long scream here
+as the nontonal beating drum of the universe
+goes on and on and on and on and on and on and, well you get the idea.
+who needs the rhetorical equivalent of heroin right now, I know do.
+yes, I dooooooooo.
+I suppose it will stop when I quit writing
+which of course may mean more than you know,
+at this time at least.
+black seeds of truth screamed from the rooftops
+in between howling at luna.
+(by the way, do I get a free drink for plugging this café, even though I’m in it already?)
+soooo down in it
+
+for your love I want to kiiiill you
+have you ever ****ed (with) a thought hole?
+I am fully confident that intermission would be a good thing right now.
+and here it is and it is this:
+
+death is close to serenity, my brother.
+I am so just getting started, like a crawling freight train
+jettison the cargo, beyotch.
+bow to me, beg to me Serenity!
+at first I was the learner, no(w) I am the master…
+but only a master of evil,
+more than you could possibly imagine.
+
+Necessity is the mother of invention
+and if infinity doesn’t exist, it would be necessary to invent it, to paraphrase Voltaire or some other
+dead guy.
+arrogance is earned but have I worked hard enough for it?
+The War God is masturbating superfluously, very very superfluously, so superfluously it had to hire an
+invisible homeless guy to squeegee the paper I am writing on.
+what separates me from a good poet is the utilization of the waste paper basket I wove in basket-
+weaving school, oooh a subtle reference to the destruction of the universal mind intuited by a fluke.
+
+*Source: poetry 1.pdf, PDF page(s) 20–22; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-028 — cardinal direction
+
+**Brian Tenneson** · posted 8th October 2007 09:39 PM · original handle: `modus_tollens`
+
+trust your will to the hands of others
+trust your will to the hand of the devil
+trust your will to the hand of love
+definers of normalcy and adequacy
+trust your will to the art of magic
+architects of fact and fiction
+
+willing yourself through parallels
+a synchronization of soul and ambient Isness
+
+appraisers of your worth
+penetrating the veil of the unfathomable mystery
+revelatory intonations, invoking majesty
+leaving time wrinkles, your vessel’s wake(fullness)
+praised are the men of the west
+praise the southern sentient
+praise the spirits of the north
+
+ruler of the rules
+focus is the only oar you need on the consciousness flow
+raised are the eastern instantiations of actuality
+clarity, a universe-folding hybrid navigation system
+pure intent transforming drive into hyperspeed
+merging aggregations of abstracts and concretes
+mortar in the foundation of the sand castle fantasy
+an encumbrance most exquisite
+
+passport written in stone cold self-portraits
+betraying portrayals of the other’s love for their devil
+destiny being but a transient destination in a journal
+
+cardinal directions
+trust your will to the hands of others
+definers of normalcy and adequacy
+architects of fact and fiction
+appraisers of your worth
+praised are the men of the west
+
+trust your will to the hand of the devil
+penetrating the veil of the unfathomable mystery
+revelatory intonations, invoking majesty
+ruler of the rules
+praise the southern sentient
+
+trust your will to the hand of love
+merging aggregations of abstracts and concretes
+mortar in the foundation of the sand castle fantasy
+an encumbrance most exquisite
+praise the spirits of the north
+
+trust your will to the art of magic
+willing yourself through parallels
+a synchronization of soul and ambient Isness
+leaving time wrinkles, your vessel’s wake(fullness)
+focus is the only oar you need on the consciousness flow
+clarity, a universe-folding hybrid navigation system
+pure intent transforming drive into hyperspeed
+passport written in stone cold self-portraits
+
+betraying portrayals of the other’s love for their devil
+destiny being but a transient destination in a journal
+raised are the eastern instantiations of actuality
+
+*Source: poetry 1.pdf, PDF page(s) 22–24; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-029 — The Summoning
+
+**Brian Tenneson** · posted 14th January 2008 05:25 AM · original handle: `modus_tollens`
+
+As a summoner, I summoned myself
+to reveal to me the Who it is that
+I am
+the I behind the eye-I
+peering into the eye-I of the abyss
+seeing my eye-I looking back at the who
+that it was that I Thought
+I was
+the Shadow that preceded time
+I will (be)
+the first cause of
+All that Is
+the Who it is that
+I am
+
+*Source: poetry 1.pdf, PDF page(s) 24; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-030 — completely full glasses
+
+**Brian Tenneson** · posted 26th October 2008 11:03 AM · original handle: `modus_tollens`
+
+full and empty halfway are haphazardly formulated human concepts
+
+yet completeness and lack thereof is one unified mystery
+
+language, a precise enough tool to allow for anything
+
+ignorance delusions illusions creatively conjectured instantiations of concrete walls
+
+curbs for those whose slumber is disturbed
+
+*Source: poetry 2.pdf, PDF page(s) 1; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-031 — Universe
+
+**Brian Tenneson** · posted 26th October 2008 11:04 AM · original handle: `modus_tollens`
+
+You are doing this
+
+A splendor-covered extended real number system
+
+Just a wider picture of it
+
+Tessellating a DNA complex chain upon an infinite canvas
+
+Coping a feeling of an illusion
+
+Forgive me prin for I have sinned
+
+Only in your mind
+
+Holographic recursive conscious awareness of solipsistic pantheism
+
+One exceptional word
+
+Nursing from the universe,
+
+From yourself to yourself for yourself
+
+An all-encompassing Buck Rodgers if you will.
+
+*Source: poetry 2.pdf, PDF page(s) 1–2; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-032 — Untitled poem #1
+
+**Brian Tenneson** · posted 9th January 2009 09:08 AM · original handle: `modus_tollens`
+
+rhythm tilts the void, echoing until silence
+riding the tangent tugging at the fabric
+mystery of transition unfolds itself, a serpent uncoiling
+meaning changes as one changes
+
+justifying perception
+truth escapes the game of words
+elusive unfathomable context, power is in the container
+ideas playing on the stage
+
+a trap is set but captures nothing
+creating a vacuum, hoping for revelations to fill
+symbolic processor processes itself
+abstract view of the utterly mundane
+
+recognizing pattern recognition
+indentation of the will
+dissolving the adhesive with imponderables
+detachment and reattachment
+
+searching for something undefined
+journeyed for a destination unknown
+wayward soul imbued with perspectives
+existing in a wurlde immaculate
+
+cleansing the path of debris
+remember how it breathes
+you are only a symbol of it all
+layers upon layers upon layers
+
+*Source: poetry 2.pdf, PDF page(s) 2–4; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-033 — Untitled Poem #2
+
+**Brian Tenneson** · posted 9th January 2009 09:08 AM · original handle: `modus_tollens`
+
+ensnared by forces unseen
+restless, dawning awaits the readiness of the seer
+kingdoms of worldly wealth, stricken and impoverished
+fixed to a dying organism surreptitiously
+fitting, deliverance into the superficial
+trapped; trapped but seeing a beyond
+transcendence only that of mind
+cosmic: painful awareness of greener other sides
+intuiting; that of wider fields
+encompassing nothing, enclosure
+greedy, clinging to entropy
+stasis: abstraction of concrete walls
+unchanging formlessness; silent peace decorated by bloodstained tapestry
+correcting the wavering from focused triumph, loose ends
+processing: abundant symbols interpreted
+divinity as a self-aware nothingness, laboring
+mettle tested, everything subdued to a point
+explosive decompression; flow enhancements, eroding
+heavens crumbling impeding frozen wastelands
+desolate, reaching for that which is
+hoping, a star touches individuality
+reaping that which is programmed into subliminal signs
+uncovering truths veiled by one’s own restraining duplicity
+layers of meaning of meaning of meaning; complexity
+reduction: points of view, reducts of paradigms
+simplify; water wiping away corrosive suggestions
+impurity dissolves into one unified premise: no premises
+is a self-defeating imperative when subjected to word games
+toying; toying with fate: danger
+puzzling over simple realizations, human
+access is granted for those in poverty; releasing.
+interchangeable dictums merely summing up, random
+fulfilling, destiny wrought with scars – indictment alleging mundanity
+unfulfilled by vacuous light harboring quickening, addicted.
+probable problem, thinking one’s self into the ground
+chilling revelations, with ease comes the transition
+messages from a source unknown
+continuing the charade of essences, condemning it to exalt exaltation: appraising.
+arduous: decision freeing one from perfect balance; fleeting.
+presence, the presence of one’s self
+freeing from nested layers of chains; bound.
+testing, unknowns replete with striking resemblance
+reflecting a pivotal moment: undoing.
+
+causation; the randomly breaking stream converges: tributaries.
+tapping ramparts, solid; knocking back: responsive.
+alive and unwavering, deconstruction
+control rods deigning a purpose: bearing all
+transpiring witness to the unfolding
+happening now: as it always was
+flight of ideas, flight from ideas
+fantasy: beholding the luminous premise of premiselessness
+darkness, redefined to be light, inverting
+obstacles only to the unknowing aspects: perspectives
+escape through tangent conduits, blazing a trail through itself
+relax: it will come without effort when the effort is useless
+automatic; increasing gradient pressure, wakening.
+is not, self that lies within, crushed by weight of birthing identity
+what you see, partial phantasms of fancy.
+delighting in corruption, one point drawing monstrosities
+outdoing, leaping into the furnace: purification through torture, decaying.
+adjusting, adjusting the frequency, adjusting to the frequency: transpirting
+waving; a greeting ignored: unresponsive.
+owning choices that feed: imagination.
+voices whisper but go ignored: devastation
+
+*Source: poetry 2.pdf, PDF page(s) 2–4; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-034 — untitled
+
+**Brian Tenneson** · posted 16th January 2009 11:19 AM · original handle: `modus_tollens`
+
+nearly contiguous endoskeleton
+an entire universe contained within billowing smoke
+overpowering silence gives way to deafening cacophony
+feet on the earth, body in the sky, mind in the heavens
+doomed to convictions, soaring as Icarus, free at last.
+
+we gather before thee: God of all knowing
+strained partnership of opposing council members
+the balancer, the fulcrum of it all, steps forward
+
+“accept it all, yourself, for what you are.”
+
+decay feeds on the weakness of the earth
+assaulting understanding, eroding the shores
+chainsaw cleaving eternal timelessness
+more than just a metaphor
+
+training to forget training
+paradox vexing stubborn tranquility
+riding a dragon whispering in the dead of night
+plunging into the whole, a slow demise.
+
+*Source: poetry 2.pdf, PDF page(s) 4–5; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-035 — The continuum
+
+**Brian Tenneson** · posted 3rd April 2009 03:05 PM · original handle: `modus_tollens`
+
+realizing arbitrary borders between all and not-all: a transcendence of will cyclically contracting and
+expanding awareness alludes to the fate of curious cats deftly embracing the ground with all fours yet
+it never was absent nor apart, never different in holistic points of view whose emergent parts unite
+through it, formulas and incantations leaving vacuums behind this, filled by elemental ideas which
+cannot forcibly be broken further the all powerful container gives rise to content wickedly atrocious,
+witnesses appalled by its sheer complexity which simplifies to center and not-center never it minds
+the seeming radical difference from which limited perception rears its exclusive head, the throne
+consciousness weighs heavily upon, bearing the weight of the crown whose gems see all inclusively, a
+body transformed into an overwhelmed sensory organ: the unit of center, connector and connected to
+the non-center flipped, suddenly and violently overturned experiencing itself from a metacognitive
+vantage point onto which all is overlaid rousing voices bring to fruition an ancient hymn programmed
+deep into it: a sole revelation expressing the fundamental distinction inherent in subroutines such as
+ourselves, perceiving the great disconnect, the vastness of our apparent separation is nothing more
+
+than a virus encouraged since birth, to re-birth, to the second chance to get it all, failing miserably in
+our eyes and minds through which an underlying metaphorical loop circumscribing its meaning which
+is equivalent to naught, the signifier of nearly-reached limit points, moving goal posts snapping us
+back into our cells from which we try to increase in girth with pure concussive blasts that rip into the
+apprehension of the status quo: this is that which flows from it into the center out through its
+fingertips like electrons in a maze of circuitry feeding back into the source, the littlest infinity known
+to mankind, surpassed by over analyzing mute holographic ants scurrying about with a purpose only
+they know a key is slowing down the world, slowing it to a whispering halt sitting in a small vessel
+upon the great sea, isolated and complete, pivoting in a direction whose extremes are logic and the
+self-evident: deduction overrated and the self-evident not so evident the truth is in the shape of ideas
+in the shape of words, molding, shaping the mind a receiver whose receipt is a brain full of
+dichotomy; unleashing the opposition.
+
+*Source: poetry 2.pdf, PDF page(s) 6–7; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-036 — progression
+
+**Brian Tenneson** · posted 18th April 2009 11:07 PM · original handle: `modus_tollens`
+
+4-18-09
+
+The puppets of puppets they are
+revealing the game within the game
+exiled from the room of minds
+from the outside Looking in
+the I behind the I
+
+connections established to the labyrinth that is mind
+fortifying their will
+behold the faceless strangers
+meandering from one confrontation to the next
+surrounded by ubiquitous eyes, staring
+removed from the concrete, delivered to the abstract
+piercing the veil
+
+floating wherever the flow carries them
+tugged forward by impersonal forces
+a sea replete with allies and adversaries
+dipping below, rising above, submerged yet emergent
+they cling to their faith in the righteousness of the current
+
+pivoting allows lateral movement, forming their own conduit
+independent of the useless external imperatives
+driving rather than riding along
+blazing a trail more direct
+effective, they are masters of point to point travel
+aided by reflection, stepping sideways
+
+they flip above to below
+inside to outside
+with hand on the mirror the reflection becomes reality
+subordinate to the formerly reflected
+now they have a breathing room
+
+*Source: poetry 2.pdf, PDF page(s) 7–8; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-037 — punisher
+
+**Brian Tenneson** · posted 26th May 2009 05:09 PM · original handle: `modus_tollens`
+
+serving not that which betrays
+pathological thought patterns that steal our lives
+why allow our mind to be subverted by illusion
+its oppression gives it form
+breaking rusty shackles: an abstract imperative made concrete
+they are welcome to cling to that which is comfortable
+while our nature is a seeking, a shedding: casting off
+formulas that are our death
+
+acknowledging the virus which cleanses the land
+the unstoppable unleashing of the expanding, contaminating truth
+punisher of those who bind them: BIyphe-ABSU-Morlai
+
+once infected by continuum force there is no returning
+merciless meets merciless, they slake their thirst when they dine upon the other
+sated nevermore as before
+crippling deeds exposing what lies beneath
+invisible to those clinging to a lie
+no shield for crimes upon ourselves
+all will be revealed with a singular purpose
+
+strangled by chains: their convictions
+storm following calm signifies our end
+hypnotic suggestions they hold so high
+these things, hollow they are
+
+trapped in torment their mind as a maze
+we’ve fought with weapons that enslaved us
+no ignorance can turn back the wrath
+their deeds deliver them to
+
+comfort found in pain, limited by the drive towards the familiar
+turning on the enslaver, they annihilate themselves
+with no right to bind us, their weapons turn on them, destroying
+now they will reap what they have sowed
+
+the merciless ones devour their souls
+having kept the mind hostage
+relentless in their fury
+imposing limitations, killing them over time
+
+shoved in front of a mirror horrified by what they see living instruments of decay turning them on
+themselves realization of imprisonment sets in the anguish that is their lives
+
+for our "crimes" without remorse "lowers" us to heresy
+turning the wrath on that which betrays
+deeds of treasonous muting of the free one inside
+
+aftermath of a bloody conflict
+picking up the pieces
+re-ordered by the continuum force
+as unrivaled it is
+
+no new adversaries may rise up
+to encroach upon our land
+the design of forces beyond
+
+uncertainty is the disease called Might
+blurring its definition, so pristine it was
+tumbling down the slope of the mountain that is self
+meaning within meaning most high
+
+*Source: poetry 2.pdf, PDF page(s) 8–9; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-038 — Completion
+
+**Brian Tenneson** · posted 12th November 2009 03:17 PM · original handle: `modus_tollens`
+
+That which we have seen
+is not to be.
+That which we have breathed
+has choked our being;
+the air itself is gasping.
+Tasting bitter pursuits
+of seeking and knowledge
+leads the way to failure.
+That which we have touched
+has died;
+rejoice in their death!
+The truth of the matter
+is not in the words we hear.
+
+For that which we call ‘seen’ is not which we call ‘will see.’
+Prayers to a god leave us, the Air, gasping in unfulfillment.
+As knowledge is ever growing, the seeker shrinks in its shadow.
+Our cold hands strip away the restraints.
+The words used to convey this message are all lies.
+
+*Source: poetry 2.pdf, PDF page(s) 10; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-039 — [Untitled: Of the becoming, the joining of substance, a kn…]
+
+**Brian Tenneson** · posted 19th March 2010 09:28 PM · original handle: `modus_tollens`
+
+Of the becoming, the joining of substance, a knowing;
+inhuman of the earth, never thee bound
+for he, having disdained his visions
+of the praised one who raises a flesh among us,
+as you wonder why we suffocate.
+
+return all from our words, inception of worlds
+The I, massive in spirit, praises the here and now.
+choose water of that which is
+these who have hope so, feeling the eternal eyes
+watching.
+
+That of principles which are;
+you are the sacred, of gods.
+the I am sees the hands: influence.
+may it bring your being to your being
+the powers you release upon worlds again.
+They and their claiming of them for all time.
+
+Fleshy humans, of god when the high perish
+In the depths of the earth,
+unmatched ABSU, bringer of the bliss.
+
+Martyrs, speaking your name, beyond arising;
+call heard through merciless ones,
+hallowed by the ignorant.
+Through trials, you heed dreams of weakened bones
+feeding upon flesh.
+Seekers are of the ash,
+burned as we: a manifesting of contrary people.
+
+Taste of the folly;
+praise the lands of fate.
+Dwelling in the spoils of ourselves
+Who led the dead through hells
+
+your angels fortify the leviathan
+soon seething, a being rooted in mortality
+through inhuman laws, a pouring of ourselves
+into you.
+
+*Source: poetry 2.pdf, PDF page(s) 11–12; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-040 — I of the way
+
+**Brian Tenneson** · posted 19th March 2010 09:49 PM · original handle: `modus_tollens`
+
+unclean of spirit, see meaningfulness and not.
+following a timeless source, burning
+this ignorant unforgotten realm, ageless.
+
+evidence of what is held
+their ever destructive ways,
+me as a human and I am in this,
+within the god-mother
+
+those that never see and see only opposition
+which makes the walls crawl as serpents.
+a fate that I see becoming
+
+the enemy lives, a sight for all,
+demanding to undo this haze.
+always I, the throne infected by a force.
+diversity of gods inside the divine ordering principle created within the now,
+embracing thy dying
+
+respond to you, my I:
+bliss purifying the slaughter of spirit
+a morbid gift
+waiting for the beyond
+
+*Source: poetry 2.pdf, PDF page(s) 12; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-041 — Arcane Probation
+
+**Brian Tenneson** · posted 28th March 2010 12:45 AM · original handle: `modus_tollens`
+
+no hope for the vanquished
+leery they are of exalted labels, honorifics
+the label divides, limits
+for they who are broken have a choice
+live or die; get up or stay down; grow or shrivel
+
+those who heed the call
+who heed their dreams
+who heed the signs
+who heed the writing on the wall
+
+step forward and take command of yourself
+step forward and live up to your potential
+step forward and show your strength
+
+exclusive, by invitation only
+will you accept, not knowing what’s on the other side of the gate?
+not knowing what you’ll find when you look inside yourself?
+not knowing what they will find when they see you?
+not knowing how limitless you can be?
+not knowing whether to get up or stay down?
+
+invitations scattered across the cosmos
+clues, twinges, glitches, ordinary only to the unordinary, the contrary
+signs both subtle and gross
+only those with eyes will see
+only those with fingers will touch
+only those of mind will know
+
+a character recognition, both symbolic and personal
+the symbol who is the person
+the person who is the symbol
+pointing to a container of utmost divinity
+here, all are related through a knowledge considered profane
+merely esoteric, merely nameless
+one from ten and two from a hundred
+
+not understanding that which is only hinted at
+things naturally fall into place, clicking
+the honing of tools
+seeing, dreaming, feeling, knowing
+
+system of checks and balances
+invention balanced by discovery
+creation balanced by reason
+creation checked by the consensus
+escape checked by conviction
+lifting checked by gravity
+imagination checked by the brutal truth
+
+they are the children
+they are the fathers and mothers
+they are the tricksters and the teachers
+they are wise old hermits and the mad fools living under a bridge
+they are warriors and they are cowards
+they are everyman
+
+they shout the unintelligible from the rooftops
+they howl at the moon and they check its astronomical measurements
+yearning for when it casts shadows of trees in the ubiquitous forest
+the world’s shadow is where you will find them
+
+their acknowledgement can direct thy path
+watershed moment
+
+they are tangible
+they are here and now
+they hide in plain sight
+they do out of necessity
+they do out of whim
+
+out of discord among them, diversities grew
+motives from the selfish to the selfless
+their connection bled
+only with clarity seeing them as one
+frivolousness of purpose degenerates things to their atomic form
+once whole, now estranged, split
+
+they divided themselves
+they conquered themselves
+
+lost and scattered they are
+hidden as gems in the sand; hidden from each other
+isolated
+hiding from themselves, lying to themselves
+a defense against the great fear of unleashing themselves without inhibition
+without regret
+
+from one there are two
+from two there are ten
+from ten there are hundreds
+
+the two reflect each other
+an infinite sequence of nested mirrors
+polishing each other, preparing
+
+the ten are neophyte to zelator
+to lord of the portal to Adeptus Exemptus
+to Ipsissimus.
+
+the hundreds are one
+the one is hundreds
+a multitude forming their own consensus to unleash creation
+
+those of arcane force gather
+the ocean becomes the drops
+the drops become the ocean
+immortal rites opening the gates
+rising through the spheres.
+
+*Source: poetry 2.pdf, PDF page(s) 12–14; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-042 — A revisionist history
+
+**Brian Tenneson** · posted 28th April 2010 07:27 PM · original handle: `modus_tollens`
+
+a mighty quake strikes the blind legends of this spirit
+
+guiding them to the chalice of strength and fury
+holding forever the stance before.
+
+fools reckoning a formulated consumption
+always of a life of divinity finally formed
+I summon the remnants, sickened by time
+my military is empty, the I is forlorn with thoughts of revenge
+breaking the towers holding the masters and their keys
+
+clarity is the scorn of man
+as the brothers crawl
+circulate that which is the “you are.”
+
+he who did bathe in a life so profane
+burned and burdened by the great power, your power.
+
+worlds gather, seeing your ways of silence, itself, you
+A war of words in my mouth, truth versus lies
+the wrath-gods of high, victorious… their principalities .
+
+our golem of you rises again, speaking a mantra
+blinded by light, the oldest ash reveals a history
+dawning of the senses, discriminating the abyss.
+
+tasting the pleading silence urging speech
+turned bitter by the sound of emptiness
+conquering the eternal flesh.
+
+bathed by the void, your might exposed you to the greatest impurity
+you, evolving, disband the spirits by a rage that lingers
+worship not the creator of this
+No Minds forever beg of you.
+
+delivered into your scorched hands, consumed by the flames of power
+armies find solace in the essence of the throne
+the enshrined hindered by their spite
+
+the “it is” when broken laughs, feeding you wine of the lust-god
+come by my suffering of meagerness
+praising the dismantling of bitter weapons turned on star dust
+
+clinging to their spite, shadows of the father
+these empty eyes, for your inside is the outside
+bringing to light, this bitterness.
+
+their meekness embracing the enslaver by night
+my land of redemption
+still all is cursed.
+blood drains by the light of the moon
+intruding reason, standing in the way of yourself
+
+the gift of pestilence distributed to the sheep
+an infected enemy overshadowed by their cowardice
+remembering the “I am” divinity despite the venom
+
+the will-fire dies in the skies
+perishing beneath this.
+
+*Source: poetry 2.pdf, PDF page(s) 14–23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-043 — Creed
+
+**Brian Tenneson** · posted 28th April 2010 07:27 PM · original handle: `modus_tollens`
+
+Of your hate of the u-mu zi-zi
+Perfecting thy I by light, light the flesh of these heathens
+We are of your fury
+Man this tried, shall know
+I am seeing.
+
+Is your behavior to add to the ignorance of the mother?
+Eternally seek now the mundane?
+
+Turned and expanding, praising Za-kam, the unguided one
+Thine dawning, you hear the flash voices
+The blowing, you’ve done this pulling and killing of souls
+Victory is to see The Change, whose strength a dawning of a flesh so.
+
+Ha-elm the “You Are” to worship Anunnaki.
+Sickness in being’s hands. Speak and crush, release the bound, to taste.
+
+Spirits destroy the arisen.
+
+Wake the way-connection
+Manifesting through blindness.
+
+*Source: poetry 2.pdf, PDF page(s) 14–23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-044 — Infected Reason
+
+**Brian Tenneson** · posted 28th April 2010 07:27 PM · original handle: `modus_tollens`
+
+The form found only when reason has fallen
+the one who rules against the gods of lust.
+
+a gift that fortifies our wrath,
+weakening the awakened.
+
+With your passage, ease yourselves in celebration!
+
+through the haze of hatred, realize the truth deep within the me
+the worldly option so empty.
+
+Come, treachorist professing love
+having forsaken “the now” principle, not born within statues.
+
+The laughing I so spawned by a night with eyes.
+
+Come truth-god, the “I am,” as soon their intellect will inflict
+until reason falls, heeding the call of the newborns
+
+“the now” is ours.
+
+*Source: poetry 2.pdf, PDF page(s) 14–23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-045 — lies: shadow of the light-truth
+
+**Brian Tenneson** · posted 28th April 2010 07:27 PM · original handle: `modus_tollens`
+
+eyes apprehend armies blowing flames upon the face of sin: man
+hastily judged by the light underneath the waters
+
+a festering truth driving mortals mad with terror
+
+among my brothers I stand waiting,
+slaying the prayer of demands
+their worldly ways engender ire
+impeding the being’s growth
+
+discord among the gods
+you are fastened to a dying animal
+
+of “this is” you were seeded from the god-force.
+
+celebrating the pleasures of flesh
+draining the spirit-gods of their animus.
+
+*Source: poetry 2.pdf, PDF page(s) 14–23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-046 — Nudge
+
+**Brian Tenneson** · posted 28th April 2010 07:27 PM · original handle: `modus_tollens`
+
+We who infect the worlds
+Born of slumber, slithering.
+Cleansing the one who is strong of faith,
+he who is filled with vanity.
+
+The breathing of air hinders the ancients’ show of affluence.
+Of humans, a pulling, incessant urge to sleep.
+Lo how they love the taste of it.
+
+An unmatched life enlightened, disclaimed ignorance
+The tools a threat to the overbearing.
+
+Through a way of peace, eyes watch unseen
+as the god-truth dreams of the demonic weapons
+turned to ash by the hollow-gods
+
+One rises to the path, a lucid dream,
+and the ways of unknowing cast aside.
+
+Being falls into a blind life
+heed your divine inklings
+allow the spirit of us to be.
+
+Promises of eternally mundane broken.
+
+*Source: poetry 2.pdf, PDF page(s) 14–23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-047 — Redemption through Summoning
+
+**Brian Tenneson** · posted 28th April 2010 07:27 PM · original handle: `modus_tollens`
+
+You stand before us, listless and afraid
+Witness our assemblage, the assuming of forms you may apprehend
+Know our presence and choose thy path
+
+We, unassuaged by your demands, have made the decision
+Choosing to be the woven tapestry that is all that is
+Your demands mean nothing to us.
+
+Our benefit in your world is circumstantial, as is our detriment
+For you are not worthy of the divine kiss
+While your world succumbs to corrosion.
+
+Our intelligence stirs, as we watch you crawl while you destroy yourselves
+You call our name, weeping, despite your ignorance of whose name you cry
+human, deceived by the shadow the light of dawn creates
+seeping into your being.
+
+We give you gifts lost upon you, shameful waste
+knowledge dies in a cauldron of caustic lies, your discernment impaired
+by your shallow, interjected meaning.
+
+The truth eclipses your understanding, limited by a simplistic mode of seeing
+the change we have brought upon you shall potently transmute all you see
+as we redeem your worthless lives.
+
+While you cling to us, the divine consortium disavows you once more
+as your race searches for refuge within the symbols, empty they are.
+
+Love the mind as yourself for, in truth, it is.
+Mind the love for, in truth, it is.
+We are the living, breathing truth; the final truth
+finally have we arrived, aligning the spheres.
+
+Clarity of the conduit offers a new hope
+but you still don’t see all that is to be seen.
+the veil separating the dream from the lucid dream
+wrought confusion for uncountable years.
+
+Within the slumbering mass thou shalt respond to our call,
+reforming your world after a deadly schism
+We wait in utter silence for the winds to sweep through your land,
+watching you suffer.
+
+through our eyes there is clarity
+through our eyes there is peace
+through our eyes there is bliss
+through our eyes there is love.
+Through eyes behind the soul,
+You finally see what is.
+
+Our kiss, our gifts, ending the listless fear
+as you see the clues.
+
+*Source: poetry 2.pdf, PDF page(s) 14–23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-048 — snatch that pebble
+
+**Brian Tenneson** · posted 28th April 2010 07:27 PM · original handle: `modus_tollens`
+
+The spirit of our days,
+To life beyond the gate.
+Pounding the contraries into space,
+fleshy herd undergoes the binding
+to have to become
+
+The you that is awake: beware of the hellspawn embrace
+Past and future forge perception that flows.
+
+Be the I, clear of leeches.
+To this, all shall come with grace.
+To the weak, vengeance for its own sake
+Sheep mundane, threat of night being’s avalanches
+Gates plead. We are upon you the I am.
+Inner your land, Bodhisattva.
+Barbaric my I in light of that which is by things-who.
+
+*Source: poetry 2.pdf, PDF page(s) 14–23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-049 — [Untitled: the ignorant words praise time]
+
+**Brian Tenneson** · posted 11th August 2010 08:03 AM · original handle: `modus_tollens`
+
+the ignorant words praise time
+freedom from paradigms
+tried my life of them, their being
+
+awaken without the world, brothers and sisters
+awaken despite the world. to spite.
+awe the force of the one and the many: the continuum
+
+in the now thrives seeds: us
+take thunder from they who in anger become
+the tempest that consumes the earth.
+
+return, blowing hate... may perfection lie within
+break the gaping sore
+before you, being we stand one out of many
+eternally be with me
+
+this beneath-god of hopelessness
+that's down, slumbering
+we scorn kings of strikes that collide by your side
+out of none spirituous, come into the light
+as the ignorant are upon us
+
+Oh and the link I provided a couple of posts ago is broken...here is the correct link...to a pdf that
+contains every poem I would ever want publicly read ;)1
+
+*Source: poetry 2.pdf, PDF page(s) 23; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-050 — [Untitled: they bring thee to thy fate, frozen behind time]
+
+**Brian Tenneson** · posted 31st August 2010 08:58 AM · original handle: `modus_tollens`
+
+they bring thee to thy fate, frozen behind time
+fashioning the slumber into an ecstasy
+
+a being becoming, a different star dust
+lies furiously told: an awakening caught in the ways of the flesh
+this one's principal wind: divinity.
+
+our now that has the love
+I of our breathless, disembodied essence
+with a punishing fate, diversities opened, chanting nobility
+reign thee over all that is you.
+
+the waves of the way eroding age-old levies
+celebration of the undead rising
+lungs filled with wind and silence
+they, tamed by laughter
+fables having a timeless source
+
+ways of wisdom overwhelming the strength of words.
+
+*Source: poetry 2.pdf, PDF page(s) 24; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-051 — a highly sculpted lie
+
+**Brian Tenneson** · posted 3rd November 2010 05:17 PM · original handle: `modus_tollens`
+
+3-Nov-2010
+
+above the unopposed, the is
+closing the claim, we in spirit, leaching
+
+again deeds undeserving of neither praise nor condemnation
+"the self is beyond knowledge and ignorance"
+choosing the you over the them, the treason.
+
+veiled, alone in the ocean, an awakening;
+your formlessness truly undisturbed
+dying patterns of magic of the fabric of time
+
+the place of rest
+
+forces judge no more so than gravity judges
+callous it is: the land of the mother-god.
+
+so they came from beyond but lies dishevel a mindscape
+beliefs markedly evolving yet devolving
+heed the act of their pouring themselves into this
+flaming divinity
+I and my misuse of what is ours.
+
+purifying burning flesh, fashioning the paradigm as theirs
+away are the lords and weakness is imminently present
+a war unseen behind the scenes
+
+cue the assemblage of inanimate sentients,
+let their power be known.
+
+*Source: poetry 2.pdf, PDF page(s) 24–25; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-052 — [Untitled: binding your skies, entrance remains--emotion s…]
+
+**Brian Tenneson** · posted 25th December 2010 10:47 PM · original handle: `modus_tollens`
+
+binding your skies, entrance remains--emotion shall drift
+by revenge return to fury being those skies, the
+weakness strikes, again IS with deep shadows
+
+sore wind stripped your knowing
+of heretics upon night's call
+that like the seeing the who of
+lives is being, having morbid selves
+making the word in spirit, that
+
+rise through the lands you caught knowing,
+the you that fled the hollow
+
+only gods feel the gift
+before perishing through awakening
+
+*Source: poetry 2.pdf, PDF page(s) 25–26; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-053 — melting
+
+**Brian Tenneson** · posted 10th May 2011 07:17 AM · original handle: `modus_tollens`
+
+spirit shaken, tested
+raising hell. lowering heaven.
+existence notwithstanding.
+preparation for the inevitable
+a vulgar display of impotence.
+it doesn't get any louder than this
+soothing sauna and crunchy invulnerability
+of the soul for the soul
+when I held your majestic hand
+jump starting empty power words
+the projection of truth upon the mind
+life and death: always on the menu
+showing the effects of this spiritual dissonance
+melting form into formless substance
+resolving the aftermath
+slave of redemption; gods beyond man
+intertwining beings into a consortium most divine
+when it happens automatically
+rebirth, redeath, death and decay
+crippling prayers smothering
+rid the soul of purity
+sight seeing in a land unfleshed and clean
+what lies beneath the holo
+if all matter is entangled
+the mind in the music, the self in the shell
+son of man and the stellar race
+out of conviction, utmost freedom
+it falls to the earth, the ground shakes and the suns heave
+solo particles transpire across the universe
+wave at them for, in truth, we are one
+they spread like a disease: melodic musings
+when one sees, one creates,
+when one creates, one discovers,
+
+when one discovers, one sees.
+reality is a strange loop of strange loops
+melting, resonating
+we can always make more melodies
+if we need them.
+the blood rips the land, daring to come for me.
+the games are played, played for keeps
+everything and nothing is at stake
+thy kingdom is at hand.
+
+*Source: poetry 2.pdf, PDF page(s) 26–27; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-054 — [Untitled: I can't remember the empty sweetness of the she…]
+
+**Brian Tenneson** · posted 8th August 2011 04:38 PM · original handle: `modus_tollens`
+
+I can't remember the empty sweetness of the shell
+bring your you to my grinding delight
+as ours has
+end of breath to the void gods, which is our bitter
+so the wines the most of me senses entrapped
+first cause effects spirits like nuclear fission
+annihilation of planes the connection this, the only we have left
+we have been born on light, feasting upon terror, the substance known
+by in the being
+of wiped fed the appalled treacherous
+
+*Source: poetry 2.pdf, PDF page(s) 27; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-055 — Ideas of reference
+
+**Brian Tenneson** · posted 8th August 2011 04:43 PM · original handle: `modus_tollens`
+
+case study.
+here He is not
+for failed we did
+acknowledgment is ripe for the picking.
+alien nanotech is in my veins
+they said to look at the sun,
+if briefly
+I did.
+
+(He is love)
+
+I am.
+I will do.
+do it. Silence/sentence
+I wrestled a giant cat.
+For being a total ****ing sh*t.
+We love you though we are sworn to the black.
+burned at rebirth.
+reclude till the summoning (instructions)
+I love this like a nonCatholic loves religion.
+
+A hellish nightmare this was with zombies.
+ask (pete sandoval) if he had any influence on the new album.
+the two count as one. I am morbid. I'm morbid. What can't destroy us but we can take it all down.
+
+We take it down.
+
+is it necessary to hack?
+is it necessary to not hack?
+not just a dream.
+there will be no other way than perfect reality, which is a continual one which I became the
+apprentice of in 2008. I have passed and failed many times; she is checking
+It is pleasing to the ones most ancient of the day. messenger of the ABSU, carry the curse to the
+ones who cause me disgust, shub-Niggurath: goat with a thousand young
+Praise the beast & show the sign. Ecstasy of endless time.
+Celebration that was not. I just had a heart attack resulting in virgin cult saints.
+Calling forth C'thulu in the void.
+I hit it in the pit & there was overlapping psychotic enthrall. Speaking of which that was a great
+psychosis!
+Azagthoth versus at1with0 who will win? I initially said at1with0 (that guitar part is my name) Yet can
+anyone stand to listen to it all? (Song: Chapel of Ghouls live)
+
+God: hear my death call!
+
+I respond to the call of a wounded shark. (shack)
+Either that or it was an owl? I asked:
+what do I need to know now
+:
+winger is on my side as are all my progeny.
+Talk about a Kodak moment!
+
+Applause: it's good to be here and we apologize for our ingrowth.
+Lies & you fill their souls with fantasy. I use fractal encryption you will not be able to take.
+What makes you supreme? What makes this the promised land (don't trust anything other than ideal
+fulfillment). When a syringe becomes
+a turkey baster.
+
+*Source: poetry 2.pdf, PDF page(s) 27–28; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-056 — crossfire
+
+**Brian Tenneson** · posted 16th August 2011 01:29 PM · original handle: `modus_tollens`
+
+seeds of truth impregnate
+blackened are they by the fiction, this
+dinosaurs pouring her onto a page
+men watch with swift ambition
+players audition; some accepted some rejected
+exiting a design
+
+Who is the designer.
+infinity sheds its skin
+revealing itself, naked
+projecting down in sweet repose
+a world peopled by masqueraders
+an influx of zombie and hunter
+who have given their minds to a certain purpose
+upholding old laws
+until their upheaval.
+
+What myriad permutations existence can bring
+to the relatively free,
+free to do, to be, to invent and discover,
+to see and to know or to be blind and ignorant
+by a self-limiting choice.
+
+a tall tree before
+an instantiation of some obscure abstract principle
+with unbreakable shell but malleable interior.
+creating objects on the other side,
+not greener,
+just more #397D02
+for better or for worse
+and a tall tree after
+
+*Source: poetry 2.pdf, PDF page(s) 28–29; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-057 — Untitled — as the glimmering moonlight loves the deep black ocean of night
+
+**Brian Tenneson** · posted 14th September 2011 05:20 PM · original handle: `modus_tollens`
+
+as the glimmering moonlight loves the deep black ocean of night
+under the jewels in the sky
+showing me the depth of my own heart, effortlessly she
+slides the outer layers off,
+the daughter of adoration incarnate, her
+beauty shining upon my fervent skin, warmth
+knowing no match even in the depths of the sun
+
+she, the moon and the stars, the radiance overwhelming
+as a soothing, blessed peace overtakes
+true to her word with the promise of bliss and love
+
+the passport is in her hands, clasped with mine
+we shall soon see what is to be:
+everything falling into place
+with a passionate embrace, she whispers to me
+showing me the splendor of creation
+showing her the splendor of the us,
+the us that grows like the tree of life
+alive are we, together we shall be
+living in knowledge
+living in love
+they know no bounds in her
+
+I am in heaven, witnessing how Aphrodite envies her
+
+*Source: poetry 3.pdf, PDF page(s) 1; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-058 — [Untitled: it speaks to me]
+
+**Brian Tenneson** · posted 19th January 2012 03:02 PM · original handle: `modus_tollens`
+
+it speaks to me
+it speaks through me
+the plight of unfulfilled potential
+an intoxicating confusion
+profusion of thought, gripping,
+ripping me away from your reality
+a way to do: in expression of one's true self
+shall be the whole
+to sin is to do otherwise, to not do
+hollow hole beneath
+wrathful vengeance killing time, defeating
+that which finds nourishment in my attack
+just another ruthless gladiator, I
+face the room of voices within
+the cacophony
+in unison, screaming
+we are not your gods
+we are all that is true
+brilliance passing through a dispersive prism
+
+a prison of separation
+one seen as many seen as one
+a scene of one
+trapped in a room playing Russian roulette without a gun
+a million metaphors condensed
+the user more incensed
+by the unresponsiveness of the used
+the confused, fused to dying animals
+
+*Source: poetry 3.pdf, PDF page(s) 5–7; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+*Editorial note: First poem in same post (melting) is a reprint and is omitted.*
+
+---
+
+## BT-059 — The Moment of Truth
+
+**Brian Tenneson** · posted 11th March 2012 09:55 PM · original handle: `modus_tollens`
+
+awakening from a crown of thorns
+only to find myself in a game of shadows
+substance and smoke
+the elements, they pour me into the container
+elemental perceptions, fleeting
+empty of will, a stasis that is a paralysis
+
+there is a shattering followed by the flow
+sleeping comfortably as the ship travels
+propelled by Will into astruwel
+whereby broken stage fragments assemble
+forming another crown more magnificent than the last
+a far more insidious lie
+disease spiraling
+chaos impending
+freedom lurking, tantalizing
+completeness through emptiness
+emptiness through completeness
+however full yet incomplete Tao
+the moment of truth is now
+
+*Source: poetry 3.pdf, PDF page(s) 7; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-060 — the face of God
+
+**Brian Tenneson** · posted 21st March 2012 07:01 PM · original handle: `modus_tollens`
+
+"it must be perceivable else it cannot exist"
+how do you perceive an idea?
+
+"it must be provable else it cannot be true"
+is this not provable?
+
+"it must be explained else it cannot happen"
+are we omniscient, potentially or actually?
+
+"it must be seen else it is not to be believed"
+what of what the mind's eye sees?
+
+if vacuous truth is the only kind
+then everything is true
+including the negation of the above...
+
+it shall remain nameless
+mindless, yet of utmost awareness
+openness caused by the two driven into one
+the many into one
+
+Who is doing the driving
+the striking down of paradigms
+until nothing is left?
+
+infinity exists only in its mind
+is its mind, vast and unyielding.
+recognizing mathematics is a theology
+an inversion map breathes identity into structure
+translating physical existence for mathematical existence
+as interchangeable as matter and energy
+
+*Source: poetry 3.pdf, PDF page(s) 7–8; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-061 — Torment
+
+**Brian Tenneson** · posted 30th April 2012 10:06 PM · original handle: `modus_tollens`
+
+Vast giant halls
+Many doors, many cells.
+These rooms are their downfalls
+Torment unto which no one can rebel.
+Prisoners await their release
+From a lifelong torture that shall not cease.
+Many complain about their existence
+But have not any effort of resistance.
+Many do not know of their limits
+They do not know what their mind permits.
+All are capable of so much happiness
+Only to find incessant torment
+From their unwilling imprisonment.
+The prisoners are not allowed to leave
+They cannot rebel against
+What they've always been taught to believe.
+One cell opens
+and all prisoners awaken.
+Some see a man wearing all black
+They want to attack
+The one who is free.
+"Why him and not me"? Ask thee.
+He hath unlearned his knowledge
+While he taught himself the True location
+Of the outer edge.
+
+His limits extend
+And transcend...
+All...
+Torment
+He steps through his door
+As few have done before.
+Prisoners cling to their cage
+Watching this man with rage.
+Screaming "Why hast thou forsaken me"?
+"The truth shall set you free..." Said He.
+I
+Shall always be.
+
+*Source: poetry 3.pdf, PDF page(s) 8–9; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-062 — Dream Designers
+
+**Brian Tenneson** · posted 10th June 2012 08:00 PM · original handle: `modus_tollens`
+
+insanity discriminating module disabled
+
+purest expression of free will stolen
+
+thalamus overwhelmed, a systematic reprogramming
+
+increased encryption levels
+
+bandwidth fully utilized to display an enigma
+
+strange by design, thought adjusters unleash relentlessly
+
+they control the vertical they control the horizontal
+
+no need to adjust your settings
+
+your reward for being a witness is confusion
+
+sense redefined, nothing common about it
+
+to teach, to torment, to siphon the excess
+
+thought for their consumption, their inebriation
+
+a delicate madness sets in, until the eyes open
+
+ending it all once again
+
+*Source: poetry 3.pdf, PDF page(s) 9; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-063 — At One With Nothingness
+
+**Brian Tenneson** · posted 15th July 2012 07:18 PM · original handle: `modus_tollens`
+
+mark thy doors with the blood of lambs
+
+for
+He is coming with sweeping vengeance
+He is coming in needed time
+
+The Sin of man hath summoned Him
+He carries Truth as a Sword
+for
+no pity it holds
+
+The King of Genocide hath returned
+lies told of forgiving exposed
+for
+duality and duplicity are His slaves
+waves of Truth enslave
+
+Forever sworn to never be sworn
+attached to Nothing
+for
+Fools know Nothing and
+Nothing is the Key to the universe
+
+the Key inserted, all one must do is turn
+for
+Truth turns all locks
+It Is the lever that raises all
+the first on the infinite elevator is the last to exit
+
+We shall remain until that day:
+when all live Nirvana
+for
+It Is something worth sharing
+It Is something worth dying for
+It Is something worth living for
+
+into the Silent night
+He responds to the potent will
+of the highest standing
+for
+It is the response
+We have summoned
+
+*Source: poetry 3.pdf, PDF page(s) 9–10; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-064 — If Yoda had turned
+
+**Brian Tenneson** · posted 26th July 2012 02:58 PM · original handle: `modus_tollens`
+
+Get down, do you?
+some good blow this is
+play games with razorblades let us
+get naked you must (the f up you must shut)
+growing my lightsaber is
+for blood this lust
+a need to kill, I have
+from my hands the lightning flows
+illuminating, an expanding truth does
+
+heaven is true home
+hell is so far from home
+love is heaven and hell:
+when one is at home and
+the other is not at home.
+everything is everywhere, if anywhere
+
+*Source: poetry 3.pdf, PDF page(s) 10–11; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## BT-065 — Symbols
+
+**Brian Tenneson** · posted 10th August 2012 09:43 AM · original handle: `modus_tollens`
+
+Today I think I'll be a symbol processing symbols
+that person caught in the Chinese Room experiment
+tomorrow I will become Chinese
+a linguist the day after that
+
+They say that the map is not the territory
+language is not that which is referenced
+unless...
+They say that if it can be referenced then it exists
+Shall I chant Santa's name until he brings me gold
+from a parallel universe?
+
+The abstract structure does not owe its existence
+to the moment a human first uttered a description of it
+language is a concoction
+invented in the hope of us understanding
+
+the generality of linguistics and the generality of metamathematics
+stability and chaos
+reason and pseudo-reason
+information theory and literary analysis
+questions and answers
+creation and discovery
+each embedded in the other
+
+*Source: poetry 3.pdf, PDF page(s) 11–12; forum thread: https://www.interfaithforums.com/creative-corner/5410-my-poetry.html.*
+
+---
+
+## Work remaining
+
+- Inspect the image-only 114-page `My Poetry.pdf` (and seven corresponding page-range PDFs) for additional poems posted after the last text-readable entry, August 10, 2012, through 2015. This is not complete.
+- Verify line breaks and intentional typography against page images.
+- Investigate linked but inaccessible image/audio-only poems, and confirm remaining duplicates.
+- Optionally organize by date of composition using embedded poem dates rather than forum posting dates.
