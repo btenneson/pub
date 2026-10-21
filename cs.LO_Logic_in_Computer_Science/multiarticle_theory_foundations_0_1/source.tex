@@ -1,0 +1,112 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.81in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\definecolor{ink}{HTML}{172B3A}
+\definecolor{muted}{HTML}{5E6D77}
+\definecolor{accent}{HTML}{2B5B78}
+\titleformat{\section}{\large\bfseries\color{ink}}{}{0pt}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{ink}}{}{0pt}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{muted} MULTIARTICLE THEORY / FOUNDATIONS 0.1}
+\fancyhead[R]{\footnotesize\color{muted} 21 OCTOBER 2026}
+\fancyfoot[C]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.25pt}
+\setlength{\headheight}{14pt}
+\titlespacing{\section}{0pt}{8pt}{5pt}
+\titlespacing{\subsection}{0pt}{6pt}{4pt}
+\newtheoremstyle{simple}{5pt}{5pt}{}{} {\bfseries\color{ink}}{.}{0.5em}{}
+\theoremstyle{simple}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newcommand{\Cn}{\operatorname{Cn}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Th}{\operatorname{Th}}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries\color{ink} Multiarticle Theory}\par
+\vspace{3pt}
+{\Large A Short Foundational Text}\par
+\vspace{7pt}
+{\small\color{muted} Definitions, theorem graphs, recursive zipping, and transcendent theorems}\par
+\vspace{5pt}
+{\small Research note in the Multiarticle Theory program of Brian Tenneson}\par
+{\small Version 0.1 --- 21 October 2026}
+\end{center}
+\vspace{3pt}
+\noindent\textbf{Purpose.} This short text states the basic mathematical vocabulary for joining distinct articles without silently changing their premises, and introduces the term \emph{transcendent theorem}. The term has a specific, relative meaning defined here; it is not being claimed as established terminology elsewhere in mathematics. The examples are explanatory and do not assert new results for the historical six-paper corpus.
+
+\section{1. Articles and their theorem graphs}
+An article is treated as a formal-context package
+\[
+ A_i=(L_i,F_i,\Gamma_i,G_i,V_i,\nu_i),\qquad i=1,\ldots,n,
+\]
+where $L_i$ is its language, $F_i$ its inference calculus, $\Gamma_i$ its stated axioms and active hypotheses, $G_i$ its tagged theorem/dependency graph, $V_i$ its verification obligations or proof checker if present, and $\nu_i$ its provenance and version. A theorem-graph vertex records a proposition \emph{together with its assumptions and status}; an edge records a justified dependency. A graph is a finite (or otherwise exhibited) record of derivations, not the entire deductive closure.
+
+\begin{definition}[Individual consequence closure]
+After a declared, sound translation $\tau_i$ into a common language and common calculus $F$, define
+\[
+ C_i=\Cn_F\bigl(\tau_i(\Gamma_i)\bigr)
+ =\{\varphi:\tau_i(\Gamma_i)\vdash_F\varphi\}.
+\]
+The source-article graph $G_i$ supplies displayed proof witnesses and support relations for portions of $C_i$. Comparisons of closures are meaningful only under explicit translations and a consistent convention for hypotheses.
+\end{definition}
+
+The \emph{deductive surplus} of one article, relative to its displayed theorem-card set $D_i$, consists of consequences $C_i\setminus D_i$. A statement can be an unlisted or undiscovered local consequence without being new to the theory's logical closure.
+
+\section{2. Multiarticle construction}
+A structural \emph{zip} records an alignment between tagged vertices from different articles, preserving the identity, provenance, hypotheses, and proof obligations of every source. It does not assert two superficially similar formulas are identical, does not automatically add axioms, and does not create a valid cross-theory inference without a justified bridge.
+
+A disciplined workflow first inventories each $G_i$, mines local low-in-fan consequence shells, and only then recursively zips adjacent source packages, retaining unmatched packages for subsequent rounds. The resulting multiarticle graph $G_M$ contains the source vertices, lawful intra-source edges, and any justified inter-source edges. For a common calculus and legitimate interface conditions $B$, set
+\[
+ \Gamma_M=\bigcup_{i=1}^{n}\tau_i(\Gamma_i)\cup B,\qquad
+ C_M=\Cn_F(\Gamma_M).
+\]
+Every element of $B$ must be declared and independently justified, or any theorem using it must be stated conditionally on that assumption. The mere act of drawing a cross-article edge is not evidence of derivability.
+
+\section{3. Transcendent theorems}
+\begin{definition}[Transcendent theorem]
+A proposition $T$ in the common language is \textbf{transcendent relative to the specified source articles and comparison calculus} when
+\[
+ \boxed{\displaystyle
+ T\in C_M\setminus\bigcup_{i=1}^{n} C_i.}
+\]
+Equivalently, $T$ is derivable in the combined multiarticle consequence closure but \emph{unavailable in the consequence closure of the theorem graph of every individual input article}, when each graph is understood together with its full underlying theory. The collection of all such propositions is
+\[
+ \Tr(M;A_1,\ldots,A_n):=C_M\setminus\bigcup_{i=1}^{n}C_i.
+\]
+\end{definition}
+
+The word \emph{transcendent} signals the crossing of an article-level consequence boundary. It does \emph{not} mean merely ``not explicitly printed in an input article,'' nor does it imply exceptional depth, historical novelty, or metaphysical transcendence.
+
+\begin{proposition}[Minimal illustration]
+In ordinary classical propositional logic let $A_1$ have sole premise $p\to q$ and $A_2$ have sole premise $p$. Their combined multiarticle has a transcendent consequence $q$.
+\end{proposition}
+\begin{proof}
+The combined premises $p\to q$ and $p$ derive $q$ by modus ponens. But $p\to q$ alone does not entail $q$ (take $p$ false and $q$ false), and $p$ alone does not entail $q$ (take $p$ true and $q$ false). Thus $q\in C_M$ while $q\notin C_1\cup C_2$.
+\end{proof}
+
+The example establishes that the concept is mathematically coherent, not that every actual multiarticle automatically produces a transcendent theorem. Even a simple consequence may qualify; mathematical significance must be assessed separately.
+
+\section{4. The required proof obligations}
+To elevate a \emph{candidate transcendent theorem} to an established one, a report should give: (a) a valid derivation of $T$ in the declared combined theory; (b) preservation of source premises under its translations; (c) justification of every interface bridge; and (d) a genuine reason why $T\notin C_i$ for \emph{each} input article. Non-derivability may be witnessed, for example, by a countermodel for each source when the relevant semantics is sound. Failure to find a proof in a bounded search is \emph{not} a non-derivability proof.
+
+In a classical explosive logic, an inconsistent union makes $C_M$ trivial; hence a meaningful claim must also address consistency or work in a specified non-explosive calculus. A stronger, optional filter demands that a chosen proof depend essentially on contributions from at least two distinct sources rather than only on new external assumptions.
+
+\noindent\textbf{Status words.} \emph{Candidate}: cross-article derivability or non-derivability remains unverified. \emph{Conditionally proved}: the derivation is valid subject to explicit interface assumptions. \emph{Established relative to $F$}: derivability and every source-side non-derivability obligation are met in the frozen formal context. \emph{Independently certified}: the specified checker has accepted the requisite certificates; non-derivability requires its own appropriate evidence and should not be implied by ordinary proof acceptance.
+
+\section{5. Relation to the existing Multiarticle Theory corpus}
+The research paper \emph{The Multiarticle Theory 0.1: Six-Paper Deductive Surplus, Low-In-Fan Shells, and Recursive Structural Zipping} (17 October 2026) is an early worked case study. The separate \emph{ATLAS-Style Audit, Repairs, and Deduplicated Consequences 0.2} (17 October 2026) reclassifies the original 42 candidate consequence cards into 15 canonical conditional result families and one unresolved compatibility obligation, without external proof-assistant certification. Those historical tallies are \emph{not} counts of transcendent theorems under the definition above; establishing that classification requires the closure-separation tests in Section 4.
+
+\medskip
+\noindent\textbf{Foundational principle.} \emph{A multiarticle is not simply a collection of articles. Its mathematical value lies in demonstrably valid consequences made available by justified combination---and, most distinctively, in transcendent theorems that lie outside every input article's own consequence closure.}
+\end{document}
