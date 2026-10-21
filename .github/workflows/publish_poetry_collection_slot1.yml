@@ -1,0 +1,41 @@
+name: Publish recovered poetry collection slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/brian_tenneson_poetry_2006_2012_provisional/manuscript.md'
+      - 'scripts/publish_poetry_collection_slot1.py'
+      - '.github/workflows/publish_poetry_collection_slot1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-recovered-poetry-slot1
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install poetry PDF builder and verifier
+        run: python -m pip install -q reportlab==4.4.3 pymupdf==1.26.4
+      - name: Verify manuscript, typeset the collection, and prepend publication card
+        run: python scripts/publish_poetry_collection_slot1.py
+      - name: Commit the poetry PDF, source, readers, and catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs cs.CY_Computers_and_Society/brian_tenneson_collected_poetry_2006_2012_provisional
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Brian Tenneson provisional collected poetry at library slot 1 [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
