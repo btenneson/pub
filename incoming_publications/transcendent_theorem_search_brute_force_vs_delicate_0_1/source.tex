@@ -1,0 +1,284 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.93in,headheight=15pt,headsep=16pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\definecolor{ink}{HTML}{203653}
+\definecolor{muted}{HTML}{536678}
+\definecolor{light}{HTML}{EAF0F5}
+\definecolor{line}{HTML}{B6C2CF}
+\hypersetup{pdftitle={The Search for Transcendent Theorems in Multiarticle Theory: a Brute Force versus a More Delicate Approach},pdfauthor={Brian Tenneson},pdfsubject={FAIR-ZIP: complete reading, selective theorem search, lossless mathematical fidelity},colorlinks=true,linkcolor=ink,urlcolor=ink}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small\textcolor{muted}{The Search for Transcendent Theorems}}
+\fancyhead[R]{\small\textcolor{muted}{FAIR-ZIP 0.1}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\titleformat{\section}{\large\bfseries\color{ink}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{ink}}{\thesubsection}{0.55em}{}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0.20em}
+\setlist[itemize]{leftmargin=1.5em,topsep=3pt,itemsep=2pt}
+\setlist[enumerate]{leftmargin=1.6em,topsep=3pt,itemsep=2pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Cert}{\operatorname{Cert}}
+\newcommand{\Models}{\operatorname{Mod}}
+\newcommand{\B}{\mathsf{B}}
+\newcommand{\Loss}{\mathsf{Loss}}
+\newcommand{\Fair}{\textsc{FAIR-ZIP}}
+\begin{document}
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{0.68in}
+{\large\color{muted}\textsc{Multiarticle Theory / Research Article 0.1}\par}
+\vspace{0.38in}
+{\LARGE\bfseries\color{ink} The Search for Transcendent Theorems\\[0.10in] in Multiarticle Theory\par}
+\vspace{0.22in}
+{\Large\color{ink} a Brute Force versus a More Delicate Approach\par}
+\vspace{0.42in}
+\noindent\color{ink}\rule{0.95\linewidth}{1.0pt}\par
+\vspace{0.30in}
+{\large\bfseries\color{ink} Lossy Selection, Lossless Mathematical Fidelity\par}
+\vspace{0.40in}
+{\large Brian Tenneson\par}
+\vspace{0.13in}
+{\normalsize Research development and editorial assistance by ChatGPT\par}
+\vspace{0.13in}
+{\normalsize 21 October 2026 \quad \textbullet \quad \#beacon91042014201224789\par}
+\vfill
+\noindent\begin{minipage}{0.95\linewidth}
+\color{ink}\textbf{Central thesis.} Look at every article at least once; spend serious proof-search resources selectively; never discount the rigor of a proof or erase its provenance. The procedure is \emph{lossy in discovery coverage}, not in accepted mathematical truth. Estimates for the 70-link settler corpus indicate a reduction of approximately 91.7--95.9\% in the number of deep pairwise investigations under an illustrative 100--200-pair budget, \emph{not} the same reduction in total computational cost.
+\end{minipage}\par
+\vspace{0.30in}\par
+{\small\color{muted}\textbf{Status:} Proposed and analyzed search architecture. The cost numbers are analytic scenarios, not measurements from a completed 70-article theorem-mining run. Theorems proved here concern the formal algorithm and finite logical examples; they do not certify new transcendent results across the full settler corpus.\par}
+\end{titlepage}
+\begin{abstract}
+A multiarticle joins the theorem graphs of distinct articles through declared, proof-carrying interfaces. Its most distinctive discoveries are \emph{transcendent theorems}: propositions derivable in the combined consequence closure but not derivable from the consequence closure of any individual input. Exhaustive search across many articles is difficult for reasons extending beyond the number of pairs: deductive closures may be infinite, compatibility depends on justified translations, and proving individual non-derivability can be undecidable. This paper contrasts a brute-force program with \Fair, a reduced-search algorithm that mandates a substantive first examination of every input, mines bounded local low-fan-in consequences, ensures fair opportunities for cross-article pairing, and then prioritizes selected proof-carrying zips. The compression analogy is deliberately asymmetric: like a perceptual codec, the algorithm can omit potentially interesting parts of the search space, but it is not allowed to degrade any accepted theorem, certificate, hypothesis, or provenance record. In the 70-URL settler case there are exactly 2,415 unordered pairs and 54,740 triples. A budget of 100--200 deep pairwise investigations eliminates 91.7--95.9\% of pairwise investigations. An explicit weighted model instead gives 72.7--76.0\% total saving when first-pass examinations are relatively expensive. We prove coverage and soundness properties, exhibit the inevitable loss of recall, and specify the conditions under which complete bounded-fragment certification remains possible.
+\end{abstract}
+\noindent\textbf{Keywords:} Multiarticle Theory; transcendent theorem; deductive surplus; verifier-gated search; fair search; bounded proof mining; theorem graph; epistemic provenance; computational complexity.
+
+\section{The 70-article question}
+In October 2026, a proposed addition to the Foggy Multiarticle Metaworld consisted of 70 published URLs touching on Automated Logical Deciders (ALD), Automated Metalogical Deciders (AMLD), AMLD+0 settlers, proof horizons, fair scheduling, security, self-awareness, and related mathematical developments. The question was not simply whether these URLs could be catalogued, but whether their conjunction with the earlier metaworld would reveal results that no input article could establish alone. The reader naturally asks: must we search every pair, triple, and larger subcollection?
+
+The answer proposed here is a qualified no. We should inspect \emph{every article} at least once, and we should neither discard historical versions nor silently identify apparently similar theorem cards. But we need not assign expensive proof-search resources to every conceivable combination. The alternative is deliberate selection with a complete audit trail and uncompromising verification.
+
+The previously documented N42 checkpoint recorded 55 source families in the metaworld: H01--H13 and N01--N42. This is a checkpoint count, not proof that the 70 added links represent 70 independent new islands. The provisional S70 register classified its 70 URLs as 48 primary candidates, nine versioned mathematical sources, nine archives, three expository or contextual sources, and one metaworld self-reference. These are \emph{provisional intake labels}, not fully audited mathematical equivalence classes. Each URL must first be substantively examined; only then may duplicate content or redundant mathematical claims be grouped without losing their distinct provenance.
+
+\section{What is a transcendent theorem?}
+\begin{definition}[Article closure]
+For each article $A_i$, retain a record $(L_i,F_i,\Gamma_i,G_i,V_i,\nu_i)$ consisting of its language, calculus, hypotheses, displayed theorem graph, verification obligations, and provenance. Freeze a common comparison calculus $F$ and a sound translation $\tau_i$ from the source language. With a declared common background $\B_0$, write
+\[
+C_i=\Con_F(\B_0\cup\tau_i(\Gamma_i)).
+\]
+The finite graph $G_i$ records what has been displayed or mined; it is not automatically the entirety of $C_i$.
+\end{definition}
+
+A provenance-preserving \emph{zip} retains distinct source records, their hypotheses, and proof dependencies. An inter-source bridge must be justified by a separate derivation, translation certificate, or explicit additional assumption; graphical similarity is insufficient. Let $\B_{\mathrm{int}}$ denote the collection of licensed interface statements and conditions, with every contingent bridge labeled as such. The combined consequence closure is
+\[
+C_M=\Con_F\left(\B_0\cup\bigcup_{i=1}^n\tau_i(\Gamma_i)\cup\B_{\mathrm{int}}\right).
+\]
+\begin{definition}[Strictly transcendent theorem]
+Relative to these frozen languages, translations, hypotheses, and calculus, $T$ is \emph{transcendent} if
+\[
+\boxed{T\in \Tr(M):=C_M\setminus\bigcup_{i=1}^n C_i.}
+\]
+The assertion requires a derivation in the combined theory and a proof of non-derivability from \emph{every} individual source theory. Mere absence from printed theorem lists is not enough.
+\end{definition}
+
+The bridge rules are crucial. If a new interface simply imports an independent axiom $T$, calling $T$ a cross-article discovery would be formally misleading. Hence we separately mark \emph{bridge-dependent} conditional statements and prefer results whose proof essentially uses at least two source contributions. In an explosive logic, we must also check consistency of the combined assumptions, or else any $T$ can be derived trivially.
+
+\begin{proposition}[Minimal strict example]
+With $A_1$ carrying $p\to q$ and $A_2$ carrying $p$, the combined propositional theory has transcendent theorem $q$.
+\end{proposition}
+\begin{proof}
+Modus ponens derives $q$ from $p$ and $p\to q$. For $A_1$ alone, $p=\mathrm{false}$ and $q=\mathrm{false}$ is a countermodel to entailment of $q$. For $A_2$ alone, $p=\mathrm{true}$ and $q=\mathrm{false}$ is a countermodel. Both source closures therefore omit $q$.
+\end{proof}
+
+This example is small but logically exact. In larger and stronger theories, finding analogous non-derivability witnesses is generally the difficult part.
+
+\section{Brute force: what would it mean?}
+There are three quite different notions of exhaustiveness.
+\begin{enumerate}[label=(\roman*)]
+\item \emph{Combination coverage}: inspect every pair, triple, or source subset.
+\item \emph{Derivation coverage}: enumerate proofs of unbounded length in each combined theory.
+\item \emph{Strict-transcendence closure}: decide for each resulting theorem $T$ whether all individual source closures omit it.
+\end{enumerate}
+The first is finite at a fixed source count, the second may run forever, and the third can be undecidable in sufficiently expressive settings. In particular, comparing all 2,415 pairs is \emph{not} a guarantee that all two-source consequences have been found, nor does it capture results needing three or more sources.
+
+For $n$ source candidates, the number of unordered distinct $k$-article groups is $\binom{n}{k}$. For the 70-URL case,
+\[
+\binom{70}{2}=2,415,\qquad \binom{70}{3}=54,740.
+\]
+The number of nonempty subcollections of size at least two is $2^{70}-71$, before a single proof attempt is charged. Brute-force enumeration thus becomes prohibitive even if a theorem attempt per combination were cheap; full closure cannot in general be reduced to a finite count of attempts.
+
+\section{FAIR-ZIP: a more delicate algorithm}
+\Fair\ (\emph{Fair Article Inspection and Ranked Zipping}) uses two distinct ideas: universal first-pass attention and budgeted, adaptive second-pass exploration. It is not a claim to compute the complete closure of an arbitrary theory. The following is the proposed research algorithm.
+
+\subsection{Mandatory universal examination}
+Each of the 70 URLs receives a recorded, substantive first pass. Its record includes at least (a) original identity, title, version, file hash where available; (b) language, axioms, definitions, and major theorems; (c) hypothesis and proof dependency signatures; (d) stated or evidenced verification status and gaps; (e) apparent overlap with already registered islands. This pass must inspect mathematical content, not merely a title, category, or URL. Every audit is logged even when the item is subsequently marked as archival or extensionally equivalent to another version.
+
+If $v_i$ is the number of substantive examinations of source $i$, the initial checkpoint must satisfy
+\[
+\boxed{\min_{1\le i\le 70}v_i\ge 1.}
+\]
+This is a \emph{precondition} for focused theorem hunting, not an optional goal whose budget may run out halfway through. If the mandatory pass cannot be completed, the run reports an incomplete intake and does not claim FAIR-ZIP coverage.
+
+\subsection{Local deductive surplus before zipping}
+For each article, perform bounded consequence mining on low-fan-in shells $+1$ through $+6$ (number of premises feeding a candidate rule application), or equivalently record why a given shell is unavailable. Accepted local consequences retain their exact proof receipts and remain classified as \emph{local}, not transcendent. The goal is to reveal more of each graph before choosing bridges. The fan-in cap is a search parameter, not a completeness theorem: deeper or wider deductions may be missed.
+
+\subsection{Fairness in pair selection}
+Construct a provisional compatibility graph $K$ on the 70 source records. Edge weights are \emph{heuristic scores} for mathematical compatibility and expected value: aligned signatures, complementary premises, meaningful proof transport, unsettled obligations, and charged expected search cost. Scores never serve as truth certificates. Assign at least one actual \emph{attempted cross-article pairing} to every vertex; if no sound interface is found, record the failed attempt instead of fabricating an edge of the theorem graph. Subsequent opportunities alternate between high-score proposals and round-robin coverage of underexplored sources.
+
+\begin{lemma}[Minimum number of first pairing attempts]
+If $n$ is even, at least $n/2$ unordered pair attempts are necessary to give every distinct source at least one incident attempt, and $n/2$ are sufficient when arbitrary distinct pairs may be attempted. Thus for $n=70$ the minimum is 35.
+\end{lemma}
+\begin{proof}
+An attempt touches at most two sources, so $2m\ge n$. Conversely, partition the 70 sources into 35 disjoint pairs and attempt each pair. Whether any such attempt yields a \emph{valid bridge} is a separate question.
+\end{proof}
+
+A connected scaffold would require at least 69 source-to-source attempts in a successful connected comparison graph, but FAIR-ZIP does not require a fictitious connected mathematical interface when source languages genuinely resist translation. Either minimum fits inside a 100--200-attempt illustration.
+
+\subsection{Selective zipping and certified output}
+After all mandatory first passes, select 100--200 deep pairwise investigations as an initial \emph{proposed} budget. Recursive zipping preserves tagged source vertices and their original hypotheses; higher-arity groups are selected when dependencies require them. A reserve of the remaining budget is dedicated to round-robin exploration rather than simply exploiting apparent best pairs. Candidate status is never silently promoted by repeated search failure.
+
+\noindent\textbf{Algorithm 1 (FAIR-ZIP; schematic).}
+\begin{enumerate}[label=\textsf{F\arabic*.},leftmargin=3.5em,itemsep=3pt]
+\item Freeze source list, original metaworld version, comparison calculus, translation rules, verifier, budget schedule, and costs.
+\item For \emph{every} supplied URL: inspect mathematical substance once; preserve source files and provenance; classify exact duplicates and historical versions without deleting records.
+\item Mine bounded local deductive-surplus shells of fan-in $1,\ldots,6$; deposit only verified local results.
+\item Score possible interfaces; schedule pairing attempts so every article participates at least once; keep negative and inconclusive results.
+\item Spend the declared deep-pair budget on ranked, fair, and exploratory pairs; add selected higher-arity zips when justified; never identify vertices merely by apparent synonymy.
+\item For each cross-source candidate $T$: check a combined derivation; then separately seek a valid model, invariant, or decidable-fragment decision proving $T\notin C_i$ for every input $i$.
+\item Classify $T$ as \emph{certified transcendent}, \emph{composite but not certified transcendent}, \emph{candidate}, or \emph{failed/redundant}; emit an audit ledger and account for charged work.
+\end{enumerate}
+The distinction in F6 is essential: a failed or timed-out theorem search is \emph{not} a non-derivability certificate. An article with no promising identified bridge still appears in the coverage ledger with a truthful unresolved status.
+
+\section{Lossy search and perfect fidelity}
+The MP3 analogy is helpful but has a mathematical limit. A perceptual codec discards some information to reduce storage or processing while attempting to preserve the features that matter. FAIR-ZIP similarly discards \emph{search opportunities}: many pairs and higher-order combinations receive little or no proof-search time. Yet a mathematical article must not tolerate the corresponding loss in \emph{theorem correctness}.
+
+Let $\mathcal Q$ denote all permissible prospective investigations under a frozen protocol, and $S\subseteq\mathcal Q$ those actually selected. Our lossy operation is $\mathcal Q\rightsquigarrow S$. It is \emph{not} a weakening of the accepted proof predicate, a change of source premises, or an unverifiable approximation of a theorem. We distinguish:
+\[
+\underbrace{\text{discovery recall}}_{\text{may decrease}}
+\qquad\text{versus}\qquad
+\underbrace{\text{certificate fidelity}}_{\text{unchanged by selection}}.
+\]
+
+\begin{proposition}[Proof-fidelity invariant]
+Assume the same sound formal proof checker $V$ is used before and after pair selection, source translations and active hypotheses are frozen, and a candidate enters the verified theorem bank only upon acceptance of a valid proof from the combined assumptions. Removing proof-search tasks cannot turn an invalid derivation into an accepted valid derivation. If a proposed transcendent theorem is additionally assigned that label only after valid source-side non-derivability evidence for \emph{each} source, such selection cannot itself create a false positive transcendence certificate.
+\end{proposition}
+\begin{proof}
+The acceptance predicate depends on the certificate, source assumptions, and frozen checker, not on which unvisited candidate searches have been discarded. Deleting searches changes the set of certificates that are \emph{found}, never the checker result for a fixed certificate. For strict transcendence, requiring a valid source-separation witness for each $i$ exactly checks the second defining condition. The conclusion is conditional on the soundness of the proof and non-derivability verification methods.
+\end{proof}
+
+\begin{proposition}[Fairness does not imply perfect recall]
+For any 70-source, pair-only FAIR-ZIP run that omits some pair $\{a,b\}$ and never otherwise combines both sources in a tested proof obligation, there exists a propositional source family with a transcendent theorem missed by that run, despite perfect first-pass coverage and soundness of every accepted proof.
+\end{proposition}
+\begin{proof}
+Place $p\to q$ in $A_a$, place $p$ in $A_b$, and let the other 68 sources contain only tautologies. Then the full combined theory proves $q$, whereas no single source proves $q$. Because the stipulated search never tests a joint obligation using both $A_a$ and $A_b$, it cannot discover this witness through its restricted pair-only proof attempts. First-pass examination can identify the premises but, under the stated restricted search policy, cannot substitute for the omitted cross-source derivation. This is a counterexample to \emph{complete discovery}, not to certificate soundness.
+\end{proof}
+
+Thus the strongest warranted fidelity claim is: \emph{every reported certified result retains its exact logical and provenance obligations}. It is not: \emph{the compressed search recovers every result the exhaustive search might eventually reveal}.
+
+\section{Numerical estimates for the 70-URL settler intake}
+The earlier conversational estimate was a range of 90--96\% fewer \emph{deep pairwise investigations}. The exact values under the stated assumption are as follows.
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X r r r}
+\toprule
+Deep pairs investigated & Count & Pairs avoided & Pairwise reduction\\
+\midrule
+All unordered pairs (brute force) & 2,415 & 0 & 0\%\\
+FAIR-ZIP (higher budget) & 200 & 2,215 & 91.72\%\\
+FAIR-ZIP (lower budget) & 100 & 2,315 & 95.86\%\\
+\bottomrule
+\end{tabularx}
+\caption{Proposed workload, not measured running time; every scheme still reads all 70 articles once.}
+\end{table}
+At 200 pairs the pairwise stage has $2,415/200=12.075$ times fewer deep investigations; at 100 it has $24.15$ times fewer. Even an all-pairs search omits the $54,740$ triples unless those are separately funded. No expected theorem-yield percentage follows automatically from the pair reduction.
+
+\subsection{Why total cost savings can be much smaller}
+Let $a$ be the charged cost per substantive article examination, $p$ the cost per deep pair investigation, $h$ the aggregate higher-order search cost, and $v$ the cost of formal certification. An illustrative cost model is
+\[
+T_{\rm brute}=70a+2,415p+h_{\rm brute}+v_{\rm brute},\qquad
+T_{\rm FAIR}=70a+Bp+h_{\rm FAIR}+v_{\rm FAIR},
+\]
+where $B\in\{100,200\}$ is the planned pair budget. These terms must be logged with a fixed accounting convention. To show the effect of mandatory reading, \emph{suppose only for illustration} that each article audit costs $a=9p$ and temporarily set the unmeasured $h$ and $v$ terms to zero. Then
+\begin{table}[h!]
+\centering\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X r r r}
+\toprule
+Scenario (units of $p$) & Audit cost & Pair cost & Total\\
+\midrule
+Brute force: 2,415 pairs & 630 & 2,415 & 3,045\\
+FAIR-ZIP: 200 pairs & 630 & 200 & 830\\
+FAIR-ZIP: 100 pairs & 630 & 100 & 730\\
+\bottomrule
+\end{tabularx}
+\caption{Explicitly hypothetical equal-cost units, not an empirical resource benchmark.}
+\end{table}
+The respective \emph{total} reductions are $1-830/3,045\approx72.74\%$ and $1-730/3,045\approx76.03\%$. Certification might dominate either run and reduce savings further; selective search could also find fewer or more expensive candidates. There is no honest universal percentage for total compute, memory, elapsed time, or tokens without measured costs.
+
+A responsible experimental report therefore records article-reading effort, cheap compatibility screening (potentially on all 2,415 metadata pairs), deep attempted bridges, attempted derivations, verifier cost, failed proofs, countermodel work, and higher-order search separately. We must not confuse inexpensive metadata scoring with deep mathematical investigation.
+
+\section{Can anything be exhaustive without violating undecidability?}
+The halting theorem does not impose a threshold such as 1, 70, or 70 million source articles. It limits universal decision procedures over unrestricted classes of computations and formal theories. A single added theorem can already participate in an undecidable decision problem; millions of finite propositional articles can still lie in a decidable fragment.
+
+\begin{theorem}[Exhaustiveness in a frozen finite propositional fragment]
+Suppose there is a fixed finite set of propositional atoms, all $\tau_i(\Gamma_i)$ and justified interface formulas are finite, and all proofs and entailment comparisons are interpreted in classical propositional logic. Then the strict transcendence of any given candidate $T$ is decidable. Moreover, all \emph{semantic equivalence classes} of strictly transcendent propositional consequences over those atoms can, in principle, be enumerated completely.
+\end{theorem}
+\begin{proof}
+The truth table over $m$ atoms has $2^m$ valuations. Entailment of $T$ from the combined theory and non-entailment from each source can each be decided by checking these finitely many valuations. There are only finitely many Boolean functions of $m$ atoms ($2^{2^m}$); choose one formula representative of each function and classify it by the same terminating checks. The procedure can be astronomically expensive, but is finite and exact.
+\end{proof}
+
+By contrast, unrestricted theorem and non-theorem recognition for effective expressive first-order theories need not be decidable. Even if every combinatorial subset of the 70 sources has been visited, proof exploration may continue forever and strict non-derivability may remain unproven. The right response is a bounded, explicitly scoped search whose stopping statement is \emph{budget exhausted}, not \emph{no more transcendent theorems exist}.
+
+A final subtlety is that one genuinely transcendent theorem can generate infinitely many syntactically different variants such as $T\wedge\top$. A meaningful census must select canonical representatives modulo declared equivalence or substantive relevance. This selection is another reduction in search presentation, not a license to erase original proofs.
+
+\section{A reproducible FAIR-ZIP protocol for the settler corpus}
+The following is a proposed experiment, \emph{not} an assertion that it has already run.
+\begin{enumerate}[label=\arabic*.,leftmargin=1.6em]
+\item \textbf{Freeze the baseline.} Identify the exact Foggy Metaworld checkpoint and 70 URLs. Do not advance island labels until content de-duplication and version accounting are complete.
+\item \textbf{Complete the census.} Substantively audit all 70 source documents. Require a visible 70-of-70 coverage ledger and retain archives even if their theorem content overlaps later versions.
+\item \textbf{Mine locally.} Attempt shells of low fan-in $+1$ through $+6$ in each source within published budgets; verify actual results.
+\item \textbf{Use an initial 200-pair deep-search budget.} Assign incident pairing attempts to every source, then spend remaining attempts on a mixture of ranked interfaces, fairness revisits, and deliberately exploratory pairings. Keep an untried-edge ledger.
+\item \textbf{Try selected higher-order zips.} Seek triples and larger groups when type-compatible theorem chains genuinely need three or more original premises. Preserve tagged graph vertices.
+\item \textbf{Attempt strict separation.} For each proof of $T$ in the combined calculus, test $T\notin C_i$ for \emph{every} input under the frozen source translations. Label unsolved tests unresolved.
+\item \textbf{Publish measured outcomes.} Report total verified derivations, strictly certified transcendent families, conditional bridges, unresolved candidates, budget consumed, duplicates, countermodels, and missed-coverage risk.
+\end{enumerate}
+
+This protocol can be strengthened adaptively: if early bridge yields are high, raise the next pair budget; if the graph is mostly duplicated or structurally incompatible, redirect effort to better translations or local surplus. Budget changes are explicit protocol revisions, not silently inferred permission to run additional experiments.
+
+\section{Conclusion: selective exploration without selective truth}
+The choice between brute force and a more delicate approach is not a choice between mathematical rigor and approximation. It is a choice about \emph{where to spend scarce proof-search resources}. Every article receives a meaningful first examination, every candidate retains its exact source identity, and every accepted transcendent theorem must carry both a combined proof and a source-by-source reason for non-derivability. The search itself is compressed: pairs may be skipped, larger combinations postponed, and promising bridges explored first. That introduces possible \emph{false negatives in discovery}, not permissive \emph{false positives in certification}.
+
+For the 70-URL settler intake, the proposed 100--200-pair budget is approximately 12--24 times smaller than 2,415 deep pair investigations, but these numbers are workload scenarios rather than demonstrated time savings or guaranteed theorem yield. What survives compression is the part that matters most to mathematics: the fidelity of assumptions, definitions, proof obligations, verified consequences, and provenance. What remains open is which genuinely transcendent theorem families the more delicate search will actually uncover.
+
+\vspace{0.4em}
+\noindent\colorbox{light}{\parbox{0.955\linewidth}{\small\textbf{Research maxim.} \emph{Inspect everything at least once; explore selectively thereafter; certify without compromise; and never mistake an unvisited proof for a nonexistent theorem.}}}
+
+\section*{References and source provenance}
+\begin{enumerate}[label={[\arabic*]},leftmargin=2.2em,itemsep=3pt]
+\item Brian Tenneson, \emph{Multiarticle Theory: A Short Foundational Text}, version 0.1, 21 October 2026. Local library reference establishing the strict definition $C_M\setminus\bigcup_i C_i$ and proof obligations.
+\item Brian Tenneson, \emph{The Multiarticle Theory}, version 0.1, 17 October 2026. Earlier six-paper deductive-surplus and recursive zipper case study.
+\item Brian Tenneson, \emph{The Foggy Multiarticle Metaworld: Discoveries, Connections, and Open Frontiers}, version 0.2, 20 October 2026. \href{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/foggy_multiarticle_metaworld_discoveries_connections_open_frontiers_0_2/}{\textit{Public publication page}}.
+\item Brian Tenneson, \emph{Foggy Multiarticle N42: Hilbert Space Filling Curve-Style Theorem Search, Additive Accession 0.1}, 21 October 2026. Internal source-family ledger and methodological qualifications (55-family baseline).
+\item \emph{Foggy Settler S70 Accession 0.1}, provisional intake of 70 supplied publication URLs and source-role register, 21 October 2026. Directory presence established; 70-source mathematical theorem mining not yet executed.
+\item Brian Tenneson, \emph{Deterministic and Nondeterministic Search Policies: A Four-Article Multiarticle and Its Transcendend Theorems}, provisional 0.1, 21 October 2026. Six paper-level cross-source theorems; strict source non-derivability not yet established for that corpus.
+\end{enumerate}
+\end{document}
