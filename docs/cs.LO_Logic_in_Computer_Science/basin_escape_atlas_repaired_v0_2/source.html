@@ -1,0 +1,278 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Basin Escape, Player-0 Activation, and Settlement Preorders — ATLAS-Repaired v0.2 — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/basin_escape_atlas_repaired_v0_2/">Back to publication</a><h1>Basin Escape, Player-0 Activation, and Settlement Preorders — ATLAS-Repaired v0.2</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/basin_escape_atlas_repaired_v0_2/Basin_Escape_ATLAS_Repaired_v0_2.tex" download>Download source</a><pre>\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.82in,headheight=15pt,headsep=18pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,tabularx}
+\usepackage{fancyhdr,lastpage,xcolor}
+\usepackage[unicode,colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\definecolor{navy}{RGB}{24,47,77}
+\definecolor{grey}{RGB}{87,95,107}
+\hypersetup{pdftitle={Basin Escape, Player-0 Activation, and Settlement Preorders: ATLAS-Repaired Working Note v0.2},pdfauthor={Research direction: Brian Tenneson; technical drafting and audit assistance: ChatGPT}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\footnotesize\textcolor{grey}{GBG+ / AMLD+0 --- ATLAS-repaired working note}}
+\fancyhead[R]{\footnotesize\textcolor{grey}{21 October 2026}}
+\fancyfoot[C]{\footnotesize\thepage\ / \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.35pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}\linespread{1.035}
+\setlist[itemize]{topsep=2pt,itemsep=2pt,leftmargin=20pt}
+\setlist[enumerate]{topsep=2pt,itemsep=3pt,leftmargin=23pt}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\Win}{\mathsf{Win}}
+\newcommand{\Goal}{\mathsf{Goal}}
+\newcommand{\Runs}{\mathsf{Runs}}
+\newcommand{\Acc}{\mathsf{Acc}}
+\newcommand{\Cost}{\mathsf{Cost}}
+\newcommand{\Sim}{\mathsf{Sim}}
+\newcommand{\Act}{\mathsf{Activate}_0}
+\newcommand{\SelfWin}{\mathsf{SelfWin}}
+\newcommand{\proven}{\mathrel{\vdash}}
+\newcommand{\subpre}{\preccurlyeq_{\mathcal Q,b}}
+\newcommand{\equsim}{\mathrel{\sim_{\mathcal Q,b}}}
+\begin{document}
+\begin{center}
+{\Large\bfseries\textcolor{navy}{Basin Escape, Player-0 Activation,\\[2pt] and Settlement Preorders}}\\[6pt]
+{\normalsize A formal note on ``White wins,&#x27;&#x27; Eureka, IAE, chess, static proofs, and passwords}\\[7pt]
+{\small Research direction: Brian Tenneson \quad $\bullet$ \quad Technical drafting and ATLAS-style review: ChatGPT}\\[3pt]
+{\small \textbf{ATLAS-repaired edition v0.2} \quad$\bullet$\quad 21 October 2026}\\[4pt]
+{\small\textcolor{grey}{Working research note; revised after a manual audit; no experiment or mechanized formal verification claimed}}
+\end{center}
+
+\begin{quote}\small
+\textbf{Central interpretation.} In the intended conjecture-settler use, ``White wins&#x27;&#x27; means the designated agent&#x27;s first-person future prediction \emph{``I will prove the theorem&#x27;&#x27;} (or, in GBG terms, \emph{``I will reach the target&#x27;&#x27;}). It is not an imperative, generic capability claim, or existential assertion that some successful path is possible.
+\end{quote}
+
+\begin{abstract}\noindent
+An automated prover may stall because of its search policy rather than because its fixed theorem is unprovable. We describe three candidate interventions: Player-0 activation of a verifier-gated AMLD+0 federation addressing a first-person settlement event; Eureka search for intermediate lemmas; and Iterative Adaptive Eureka (IAE). A shared BANK accepts only typed, independently verified results and enforces consumer-side assumption discharge. We separate \emph{actual executed success} from \emph{existential certificate reachability}: the latter, with a uniformly budget-preserving operational simulation preorder, supports well-defined upward-closed settlement regions on mutual-simulation classes. In well-founded quotient orders these upper regions have minimal-antichain generators (not necessarily finite). We distinguish adversarial chess, static theorem proving, and fixed versus adaptive passwords, and present a resource-accounted experimental design without claiming unperformed speedup experiments.
+\end{abstract}
+
+\section{Motivation: not knowing the next move}
+A person studying a chess position may fail to identify a winning move despite the existence of one. The difficulty can lie in move ordering, an unexamined defense, a missing tactic, or failure to identify a useful intermediate position. Analogously, an automated theorem prover (ATP) can spend significant effort without a new accepted derivation. A \emph{quicksand basin} is a region of a declared search state space in which charged effort yields little or no certified progress under a frozen diagnostic. The Grass-Growth idea in the accompanying Quicksand work calls for detecting progress \emph{and} nonprogress \cite{quicksand}.
+
+A stalled search is not a proof of falsity, nonderivability, or independence. Chess has an opponent that makes legal moves; a fixed formal theory has no opponent that changes the axioms; a fixed password does not move, whereas a rotating challenge may. These environments share search language without sharing all logical quantifiers.
+
+\section{Three target settings, one search vocabulary}
+\begin{definition}[Location report and rule-complete chess state]\label{def:chess}
+Let $A$ be the squares, $P$ the occupant tokens, and $E$ the distinguished empty-square token. A location report is
+\[ f\in[A\to(P\cup\{E\})]. \]
+A rule-complete state is $s=(f,\tau,\eta)$, with turn $\tau$ and all relevant auxiliary rule state $\eta$ (castling and en-passant rights, clocks, and whatever game history the declared rule set requires). A legal transition $s\xrightarrow{\mu}s&#x27;$ must be authenticated under that rule set. The token $E$ is not the empty set. A difference between reports alone does not establish a legal move.
+\end{definition}
+\begin{definition}[Chess forced-win statement]
+Fix a declared ruleset and termination/horizon convention. Then
+\[\mathsf{ForceWin}(s)\iff \exists\sigma_W\ \forall\sigma_B\ \Goal(\mathsf{Play}(s,\sigma_W,\sigma_B)).\]
+The property quantifies over all legal Black strategies against a selected legal White strategy. Its evidence generally takes a strategy tree or an equivalent complete certificate.
+\end{definition}
+\begin{definition}[Static formal target]
+A static task is $q=(T,c,V)$, with fixed formal theory $T$, target formula $c$, and a sound, frozen checker $V$ for finite derivations. Search states may change, but $T$ and $c$ remain fixed. An accepted proof $\pi$ of $T\vdash c$ is a certificate of derivability, not merely a plausible explanation.
+\end{definition}
+\begin{definition}[Password target]
+A fixed challenge has a secret $w$ and acceptance relation $\mathsf{Accept}(x,w)$. An adaptive challenge allows an explicitly legal evolution $(w_t,\mathsf{Accept}_t)$, such as rotation or challenge updates. Only the latter has a moving target in this sense.
+\end{definition}
+\begin{proposition}[Path versus strategy]\label{prop:path}
+A verified chess path ending in a White win need not establish $\mathsf{ForceWin}(s)$. A checker-accepted finite derivation under a fixed sound calculus establishes the indicated sequent (subject to its undischarged assumptions).
+\end{proposition}
+\begin{proof}
+The path selects one sequence of Black replies; the forced-win statement quantifies over every legal reply policy. For a static proof, the accepted finite derivation already witnesses the stated sequent, without a subsequent move changing the axioms.
+\end{proof}
+\begin{definition}[Families of targets and obstacles]
+Fix a formal environment $T$, a possibly infinite candidate family $\mathcal T=\{t_i:i\in I\}$, and a typed family $\mathcal O=\{o_j:j\in J\}$ of proof obligations, unresolved cases, or other obstacles. Each experiment freezes an original target $c\in\mathcal T$. A verified $t_i$ may later serve as an auxiliary lemma but does not replace $c$.
+\end{definition}
+\begin{remark}
+Thousands or infinitely many candidate formal targets are not thousands of moving Black pieces. An obstacle does not take a turn; a new lemma changes available knowledge, not the truth of a fixed formula. Ordinary chess has a finite physical piece inventory, though its rule-complete state and play-horizon conventions must still be specified.
+\end{remark}
+
+\section{The first-person conjecture ``White wins&#x27;&#x27;}
+\begin{definition}[Bounded first-person settlement event]\label{def:actual}
+Freeze an executable identity $M$ (including any authorized components), theory $T$, target $c$, checker $V$, charged budget $b$, optional deadline $d$, seeds and execution inputs $\xi$, scheduler, and output/handoff convention. Let $\rho_{M,\xi}$ be the \emph{actual authenticated run} under these frozen settings. Define
+\[\Win_{b,d}(M,T,c,V,\xi)=1\iff\exists\pi\text{ actually emitted by }M\text{ by }(b,d)\text{ with }V(\pi,T\vdash c)=1.\]
+The first-person statement ``I will prove the theorem&#x27;&#x27; denotes this actual event for the designated speaker $M$. It does not denote either $\exists$ some successful legal run or the object-level task of settling $c$ in either direction.
+\end{definition}
+\begin{remark}[Bounded non-success is not nonderivability]
+If the full frozen bounded run is authenticated and ends without the required output, the bounded future-event prediction was false; that does not show $T\nvdash c$ or $T\vdash\neg c$. Without a declared finite bound, failure to observe a proof does not generally certify that an eventual proof will never be emitted.
+\end{remark}
+\begin{definition}[Delegated output and speaker preservation]\label{def:handoff}
+If a graduate federation $G$ computes $\pi$, this counts as an emitted proof by the parent speaker $M$ \emph{only if} the frozen protocol explicitly allows delegation, the exact accepted certificate is transmitted and checked through the authorized interface, and $M$ produces its required authenticated output within the bound. A proof in $G$&#x27;s private log alone is not a successful first-person event for $M$. The referent of ``I&#x27;&#x27; cannot be altered retroactively.
+\end{definition}
+
+\section{Player 0 and the recursive federation}
+The intended GBG+ reference \cite{gbg} distinguishes board-state data from a board-player, and treats federation, certification and scheduling as optional protocol extensions. This note \emph{proposes} an additional Player-0 activation rule; it is not asserted to follow automatically from minimal GBG+ axioms.
+\begin{definition}[Federation-activation transition]
+A complete enhanced state is
+\[S=(q,\mathcal A,\mathcal F,\BANK,\sigma,\Pi,\beta),\]
+where $q$ is the frozen object target, $\mathcal A$ the active-agent register, $\mathcal F$ frontiers/subfederations, $\sigma$ the scheduler, $\Pi$ the provenance ledger, and $\beta$ remaining fully charged resources. A partial rule
+\[\Act(S,\mathit{subgoal},\mathit{budget},\mathit{protocol})\rightharpoonup S&#x27;\]
+is legal only with explicit authorization, a frozen new-component identity, adequate resources, a legal parent-child interface, and preservation of the original target and verifier. Activation, proof transport, checking, routing, BANK retrieval, and resource scheduling are charged. Nested activation is allowed only by a declared recursion rule.
+\end{definition}
+\paragraph{Roles and status.} The historical AMLD+0 roles are $0,P,R,D,I,C$ (Player 0, Prover, Refuter, Dependence, Independence, Contradiction). Separate $K$-style contradiction investigation or $U$-style unknown reporting are \emph{proposed variants}, not silent changes to the historical executable. Investigator labels, logical outcome labels, and verification types must be kept distinct.
+
+\section{Three distinct basin-escape methods}
+\begin{definition}[A: first-person self-settlement intervention]\label{def:A}
+With Player-0 authorization, the designated settler receives the frozen first-person target
+\[\SelfWin(M,q,b):\qquad\text{``I will prove the theorem.&#x27;&#x27;}\]
+A valid test must identify $M$ and its accepted output under Definitions~\ref{def:actual}--\ref{def:handoff}. A prompt alone is not an algorithm. To make A experimentally identifiable, the protocol must freeze \emph{what executable policy changes}: e.g., a specified task-selection or scheduling rule, activation guard, and handoff rule. If A only changes wording without an operational rule, a distinct computational effect is not established.
+\end{definition}
+\begin{definition}[B: Eureka bridge-lemma search]\label{def:B}
+Given frozen hypotheses $H$ and target $c$, the search proposes nontrivial lemmas $L=\{\ell_1,\ldots,\ell_k\}$ and attempts to obtain certificates of $H\vdash\ell_i$. A \emph{completed certified bridge} additionally has a valid derivation $H\cup L\vdash c$ and sound composition of the supporting proofs into $H\vdash c$. Proposed lemmas alone do not count as a completed bridge.
+\end{definition}
+Correctly certified $\ell_i$ do not strengthen $H$ semantically, yet may improve discovery or proof length computationally. Nontriviality and reuse criteria, and the cost of finding the bridge, must be declared rather than inferred from the eventual result. The search space may be infinite, although a finite successful certificate uses finitely many steps.
+\begin{definition}[C: Iterative Adaptive Eureka (IAE)]
+IAE is a finite-budget sequence
+\[(h_0,\BANK_0)\longrightarrow(h_1,\BANK_1)\longrightarrow\cdots\longrightarrow(h_m,\BANK_m),\]
+where each $h_t$ records a policy/prompt configuration, updates depend only on permitted logged feedback, and accepted BANK additions have independent checks. Iteration caps, charged feedback, stagnation thresholds, and stop rules are part of the frozen protocol.
+\end{definition}
+\begin{center}\small
+\fbox{\begin{minipage}{0.88\linewidth}\centering
+\textbf{Basin detected: insufficient certified advancement}\par\vspace{3pt}
+\begin{tabular}{&gt;{\centering\arraybackslash}p{0.28\linewidth}&gt;{\centering\arraybackslash}p{0.28\linewidth}&gt;{\centering\arraybackslash}p{0.28\linewidth}}
+A: authorized self-settlement &amp; B: certified bridge search &amp; C: budgeted adaptive attempts
+\end{tabular}\par\vspace{2pt}
+$\Downarrow$\quad Typed independent check\quad$\Downarrow$\par
+$\BANK$ $\longrightarrow$ authorized parent search / handoff
+\end{minipage}}
+\end{center}
+A changes a designated meta-target and possibly an \emph{explicit} scheduling policy; B targets intermediate theorems; C adaptively revises search policy. These interventions can be combined but do not guarantee escape. No experimental run is authorized or asserted here.
+
+\section{BANK: knowledge without illicit hypotheses}
+\begin{definition}[Typed verified BANK entry]\label{def:bank}
+A proof entry is a typed record
+\[e=(T,\ell,\pi,\Gamma,\mathit{kind},\mathit{origin},\mathit{cost},\mathit{checkerID},\mathit{provenance}),\]
+where the frozen sound checker accepts $V(\pi,T\cup\Gamma\vdash\ell)=1$, and $\Gamma$ is the complete finite set of undischarged assumptions. Only authenticated, checked results enter trusted BANK; unverifiable suggestions remain in a separate proposal store. Countermodels, satisfiability witnesses, independence evidence, and other outcome types have distinct validators and must not be represented as unconditional object-level proofs.
+\end{definition}
+\begin{definition}[Consumer-side verified import]\label{def:import}
+To use $e$ in an active context $T\cup\Delta$, the receiving prover must establish one of:
+\begin{enumerate}[label=(\roman*)]
+\item every $\gamma\in\Gamma$ is an admitted assumption in $\Delta$; or
+\item for each $\gamma\in\Gamma$, a frozen checker accepts a derivation $T\cup\Delta\vdash\gamma$.
+\end{enumerate}
+The dependency-preserving proof composition/import must itself be checked by $V$ or implemented by a trusted sound kernel rule. A theorem translation between different base theories or checkers requires an additional verified translation. Importing while omitting a required premise is illegal even if the BANK archive stores it correctly.
+\end{definition}
+\begin{lemma}[No hypothesis laundering --- repaired]\label{lem:launder}
+Assume sound checkers, faithful authenticated dependency and theory tagging, and mandatory enforcement of Definition~\ref{def:import} at \emph{every} consumer. Then the BANK mechanism cannot validly promote a certificate of $T\cup\Gamma\vdash\ell$ to $T\cup\Delta\vdash\ell$ unless $\Gamma$ is admitted or derivable in the active context and proof composition is valid. In particular, a conditional proof does not become an unconditional theorem solely by being shared.
+\end{lemma}
+\begin{proof}
+For each imported hypothesis $\gamma$, the import rule either includes $\gamma$ among active assumptions or provides a checked derivation from those assumptions. Sound sequent composition substitutes the latter derivations into the stored proof. The resulting conclusion remains conditional on $\Delta$. Deleting a necessary $\gamma$ without one of the two checks violates the rule and therefore is not a legal inference.
+\end{proof}
+\begin{remark}[Why storage alone fails]
+With empty base theory, $p\vdash p$ is valid. Merely archiving the dependency $\Gamma=\{p\}$ does not prevent a careless consumer from falsely using it to claim $\vdash p$. The \emph{verified consumer import} is the essential additional premise.
+\end{remark}
+
+\section{Investigation reports are not disjoint truth values}
+Proposed investigations include $P$ (derive $c$), $R$ (derive $\neg c$), $D$ (explicit dependence under a stated criterion), $I$ (certify nonderivability of both directions relative to a stated theory), and variants $K$ (derive $c\to\bot$) and $U$ (bounded unknown). The list describes possible investigations, not a mutually exclusive six-valued semantics.
+\begin{proposition}[Negation overlap]\label{prop:negrole}
+When negation is defined as $c\to\bot$, or when the calculus has the corresponding sound interderivability rule,
+\[T\vdash(c\to\bot)\iff T\vdash\neg c.\]
+In particular, $K$ and $R$ may report the same object-level outcome using different investigation routes.
+\end{proposition}
+\begin{proof}By the stipulated definition of negation, or the stipulated two derivation rules.\end{proof}
+Consistency and classicality are not needed merely for this implication-to-bottom equivalence. Independence requires genuine metamathematical justification (often stronger than a failed search). Unknown after a budget is not independence. In an inconsistent theory proof and refutation may coexist; a dependence report must specify what logical property it certifies.
+
+\section{Simulation preorders and settlement regions}
+This section fixes the \emph{semantic repair}: actual output and possible certified output have different meanings. The order below supports only the latter unless a separate actual-trace-preserving relation is introduced.
+
+\begin{definition}[Frozen task family and potential settlement]\label{def:potential}
+Fix a family $\mathcal Q$ of tasks $q_c=(T,c,V)$ using a common, specified theory and checker semantics for both signed conclusions $c$ and $\neg c$, an admissible class $\mathcal S$ of verifier-gated search systems, and a common charged budget $b$ (possibly a resource vector). Let $\Runs_b(X,q_c)$ be the legal, fully accounted finite runs of $X$ on task $q_c$ within $b$. Put
+\[\mathsf{PotSet}_{c,b}(X)\iff \exists\rho\in\Runs_b(X,q_c):\ \Acc_{q_c}(\rho)\in\{+, -\},\]
+where $+$ is a checker-accepted certificate of $T\vdash c$ and $-$ of $T\vdash\neg c$. Thus \emph{potential settlement} means that \emph{some} legal certified run exists within $b$, not that the frozen scheduler actually chooses that run. Total charges include all required workers, verifier calls, activation, routing, memory and certificate handoffs. Any fixed deadline is included in the admissibility condition, not silently discarded.
+\end{definition}
+\begin{definition}[Uniform budget-preserving operational simulation]\label{def:sim}
+For $X,Y\in\mathcal S$, let $X\subpre Y$ mean that a declared admissible operational simulation transports \emph{every} successful legal $X$-trace on \emph{every} $q_c\in\mathcal Q$ to a successful legal $Y$-trace on the same task and with the same certified polarity, \emph{without exceeding the same bound $b$}. The simulation must preserve the frozen verifier and legal certificate dependencies. Require identity simulations and composable simulations, hence reflexivity and transitivity. Let
+\[X\equsim Y\iff X\subpre Y\ \wedge\ Y\subpre X;\qquad\mathcal P_b=\mathcal S/{\sim_{\mathcal Q,b}}.\]
+The induced relation on $\mathcal P_b$ is a partial order. These are \emph{mutual-simulation equivalence classes}; they are not assumed to be graph-, state-, or structure-isomorphism classes (SICs) without an additional isomorphism proof.
+\end{definition}
+\begin{theorem}[Well-defined upward closure --- repaired]\label{thm:upward}
+For each task $q_c\in\mathcal Q$, define
+\[U^{\exists}_{c,b}=\{[X]\in\mathcal P_b:\mathsf{PotSet}_{c,b}(X)\}.\]
+Then class membership is well-defined and $U^{\exists}_{c,b}$ is an upper set: 
+\[[X]\in U^{\exists}_{c,b},\quad[X]\preccurlyeq[Y]\quad\Longrightarrow\quad[Y]\in U^{\exists}_{c,b}.\]
+\end{theorem}
+\begin{proof}
+A successful run of $X$ is a witness for $\mathsf{PotSet}_{c,b}(X)$. The simulation promised by $X\subpre Y$ supplies a legal certified run of $Y$ on the same $q_c$ without exceeding $b$. Thus $Y$ also has a witness. If $X\equsim Y$, apply the same implication in both directions, proving membership does not depend on the representative.
+\end{proof}
+\begin{remark}[Counterexample to the former actual-emission formulation]\label{rem:counter}
+Suppose $X$ has an accepted one-step proof run. Let $Y$ permit the same run but have a frozen scheduler that actually chooses an idle branch and exhausts the bound. $Y$ can simulate the successful path of $X$, yet its \emph{actual} run emits no proof. Ordinary potential-trace simulation therefore does not make actual-emission membership upward closed or representative-invariant. The actual event of Definition~\ref{def:actual} is intentionally kept outside $U^{\exists}_{c,b}$.
+\end{remark}
+\begin{remark}[Budget transformations rather than a same-budget theorem]
+If a simulation of an $X$ trace costing at most $b$ may instead cost $g_{X,Y}(b)$ in $Y$, it yields the cross-budget implication
+\[\mathsf{PotSet}_{c,b}(X)\Longrightarrow\mathsf{PotSet}_{c,g_{X,Y}(b)}(Y),\]
+\emph{not} generally same-$b$ upper closure. For example, a unit-cost proof and an eleven-unit simulation do not both fit budget $b=1$. Cost maps must include checking and communication overhead, and must be composable if used to define a preorder. Wall-clock latency remains a separate experimental metric.
+\end{remark}
+\begin{definition}[Settlement spectrum]
+Where minima exist, $M_{c,b}=\operatorname{Min}(U^{\exists}_{c,b})$ records minimal \emph{mutual-simulation capability types} relative to the fixed task family and budget, not simply minimum step count.
+\end{definition}
+\begin{theorem}[Minimal-antichain generation]\label{thm:antichain}
+If $\mathcal P_b$ is well-founded, every upper set $U\subseteq\mathcal P_b$ satisfies
+\[U=\uparrow\operatorname{Min}(U),\]
+and $\operatorname{Min}(U)$ is an antichain. In particular this holds for $U^{\exists}_{c,b}$.
+\end{theorem}
+\begin{proof}
+For $x\in U$, the nonempty set $U\cap\downarrow x$ has a minimal element $m$ by well-foundedness. Any element of $U$ strictly below $m$ would belong to this set, so $m\in\operatorname{Min}(U)$ and $m\preccurlyeq x$. Conversely, upper closure implies $\uparrow\operatorname{Min}(U)\subseteq U$. Distinct minimal elements cannot be comparable.
+\end{proof}
+\begin{remark}[No automatic finite basis]
+A well-founded partial order can have an infinite antichain: a countably infinite equality-only order is an example. A \emph{finite} minimal-generator result requires stronger assumptions, for example that the order is a well-quasi-order. Without well-foundedness an upper set can lack minima, as $(0,\infty)\cap\mathbb Q$ in the usual rational order illustrates; an arbitrary chain need not have a closed lower threshold.
+\end{remark}
+\begin{definition}[Derived conjecture preorder]\label{def:cpre}
+With the same $\mathcal Q$, $\mathcal P_b$ and $b$ across all target formulas, set
+\[ c\le_{\mathrm{set},b}d\iff U^{\exists}_{d,b}\subseteq U^{\exists}_{c,b}.\]
+This is a reflexive, transitive relation on task formulas; it is not automatically a logical-entailment ordering or a comparison of typical runtime.
+\end{definition}
+\begin{proposition}[Negation symmetry --- resource-conditional]\label{prop:sym}
+Suppose the task family contains $c$ and $\neg c$, the admissible systems/checkers are common to both, and checker-accepted double-negation proof conversions in \emph{both relevant directions} can be completed within the same charged bound $b$. Then
+\[U^{\exists}_{c,b}=U^{\exists}_{\neg c,b},\qquad M_{c,b}=M_{\neg c,b}\ \text{whenever defined}.\]
+\end{proposition}
+\begin{proof}
+A settlement witness for $c$ establishes either $c$ or $\neg c$. A proof of $\neg c$ directly settles the task $\neg c$; a proof of $c$ converts (under the stated budget-preserving rule) to a proof of $\neg\neg c$, which also settles $\neg c$. Conversely, a proof of $\neg c$ settles $c$ directly, and a proof of $\neg\neg c$ converts to one of $c$. These conversions are required to remain legal and within bound; hence the regions coincide and so do their minima.
+\end{proof}
+\begin{remark}
+Classical double-negation elimination may be necessary for the reverse conversion. The above object-level symmetry never equates the personal future events ``I will prove $c$&#x27;&#x27; and ``I will prove $\neg c$,&#x27;&#x27; which have different required outputs.
+\end{remark}
+
+\section{Federation and cost: reachability need not mean speed}
+\begin{proposition}[Optional-capability monotonicity]\label{prop:cap}
+Let $\mathcal A_0$ be a legal action system, and let $\mathcal A_1$ add optional federation activation, BANK reuse, Eureka and IAE. If all old legal traces and verification rules remain unchanged and no compulsory overhead is imposed, every old certificate path remains feasible in $\mathcal A_1$ with its original charges.
+\end{proposition}
+\begin{proof}The old witness trace can simply be selected again.\end{proof}
+A mandatory activation tax, proof transfer, contention, poor scheduling, or duplicate discovery can slow a configuration. Reachability therefore does not imply faster actual or expected settlement. In particular, the baseline may already have a one-step solution.
+
+\begin{definition}[Predeclared resource-accounted comparison]\label{def:experiment}
+Fix a workload distribution $D$ over frozen tasks, matched seeds/execution conditions, a \emph{scalar} fully charged aggregate work bound $b$, and failure penalty $\lambda&gt;0$. If operational resources form a vector, prespecify the scalar charge accounting and retain separate hard limits on each dimension. For actual bounded executions, measure success indicator $S_b$, fully charged resource expenditure $C$ on successful runs, and the penalized outcome
+\[L_{b,\lambda}=\begin{cases}C,&amp;S_b=1,\\ b+\lambda,&amp;S_b=0.\end{cases}\]
+Predeclare $\lambda$, the charge-unit conversions and handling of multiple resource dimensions. Report $\Pr_D(S_b=1)$, $\mathbb E[L_{b,\lambda}]$, conditional successful-run costs with denominator/sample size, and wall-clock latency separately. A cheaper failed run does not thereby count as superior settlement. The observed data, sampling uncertainty and all censoring must be reported.
+\end{definition}
+\paragraph{Research conjecture (unproved).} There exist nontrivial task distributions and frozen budgets for which a legally activated heterogeneous federation with verifier-gated BANK and prespecified A/B/C policies achieves lower expected $L_{b,\lambda}$ than both a matched solo prover and a matched nonsharing multiworker baseline, without a lower success probability at $b$. This is an \emph{experimental existence hypothesis}, not an established performance fact. A shared-BANK nonadaptive baseline is an additional essential comparator.
+
+\section{Protocol for an eventual controlled test}
+This section is a \emph{design specification}; no run was initiated for this paper.
+\begin{enumerate}
+\item \textbf{Freeze the task and subject.} Record $(T,c,V)$, hashes of all executable components and checker versions, seeds, scheduler, allowed input, source restrictions, exact meaning of ``I,&#x27;&#x27; budget, optional deadline, and legal handoff rule. Specify chess termination or password adaptation as applicable.
+\item \textbf{Detect stagnation without inferring refutation.} Prespecify the observation window and metrics: accepted new BANK entries, discharged proof obligations, certified frontier contractions, useful witness yield, and fully charged effort.
+\item \textbf{Freeze four comparator arms.} (i) Solo; (ii) matched workers without shared BANK; (iii) shared BANK without adaptive activation; (iv) Player-0-activated federation with explicitly operational A/B/C. Freeze any ablations isolating the text-only A prompt from executable action-policy modifications.
+\item \textbf{Charge every cost and authenticate every outcome.} Preserve aggregate work fairness across workers. Log each activation, verification call, failed check, BANK query, dependency discharge, schedule decision, certificate transfer and final parent output. Record wall-clock latency separately.
+\item \textbf{Separate categories.} Report actual-run PROVED (proof of $c$), REFUTED (proof of $\neg c$), independently justified INDEPENDENT, precisely typed conditional/dependence findings, and bounded UNKNOWN. Separately record the truth of each frozen first-person bounded event. Do not classify a timeout as independence.
+\item \textbf{Prespecify analysis.} State $D$, $b$, failure penalty, success rate, conditional costs, $L_{b,\lambda}$, statistical uncertainty and exclusions before examining outcomes. Compare to all matched arms.
+\item \textbf{Independently check before release.} Recheck accepted proof certificates in the frozen verifier; validate typed nonproof evidence with its declared checker; publish witness hashes and charge ledgers. Never represent a plausible bridge as a completed machine proof.
+\end{enumerate}
+
+\section{Summary, repair record, and open question}
+The chess analogy captures uncertainty over the next useful move but does not license replacing a fixed formal target with an adversarial moving one. Player 0 can \emph{propose} authorized activation of a graduate AMLD+0 federation; Eureka and IAE can generate verified intermediates and adapt search; a shared BANK preserves support obligations under an enforced consumer import rule. The order theory describes \emph{possible resource-feasible certificate production}, while ``I will prove the theorem&#x27;&#x27; describes a \emph{particular authenticated actual run}. Keeping those events separate is essential.
+
+\textbf{Repair record from original working note.} The section structure and research question are retained. This edition (i) corrects the actual/emittable versus possibly emittable confusion in former Definition 8.1 and Theorem 8.2; (ii) makes the quotient invariant and task family explicit; (iii) adds budget-preserving simulations and a cross-budget qualification; (iv) adds mandatory BANK import checks to former Lemma 6.2; (v) specifies the first-person referent and delegation; (vi) distinguishes mutual simulations from literal SIC isomorphisms; (vii) makes failure-sensitive experimental metrics explicit; and (viii) notes that minimal antichains need not be finite. These are mathematical and specification repairs, \emph{not} reports of new executed experiments.
+
+\textbf{Primary open question.} Can an authorized, resource-accounted Player-0 federation transform a stalled search policy into an accepted settlement, using certified bridge lemmas and controlled adaptive search, at lower fully charged cost than matched alternatives \emph{without} changing the frozen target or confusing an actual first-person event with reachability?
+
+\section*{Source materials and provenance}
+\begin{thebibliography}{9}\small
+\bibitem{gbg} Brian Tenneson, \emph{Generalized Board Games and GBG+: A Self-Contained Formal Foundation with the Board as a Player}, v0.04, 26 September 2026, as cited in the source working note. \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/gbg_and_gbg_plus_formal_foundations_004/}.
+\bibitem{quicksand} \emph{DATA MIND&#x27;s Frontiers of Discovery, Volume I: The Quicksand Problem}, working manuscript, 16 October 2026, cited in the source note as \texttt{DATA\_MIND\_Volume\_1\_Quicksand(2).pdf}.
+\bibitem{chess} \emph{DATA&#x27;S MIND Through Chess: Location Reports, Strategy Trees, and Verifier-Gated Theorem Settling}, cited in the source note as \texttt{DATAs\_Mind\_Chess\_Introduction(10).pdf}.
+\bibitem{settle} \emph{Conjecture Settling Part I}, 11-page working note, cited as \texttt{conjecture\_settling(1).pdf} in the source manuscript.
+\end{thebibliography}
+\textit{Provenance status.} The original was \texttt{Basin\_Escape\_Note(3).pdf} (9 pp., 16 Oct. 2026). The corrections respond to \texttt{ATLAS\_Basin\_Escape\_Audit\_v0\_1.pdf} (21 Oct. 2026). The cited companion works have not been independently re-audited for full source fidelity in this repair, and the public URL above was not accessible in this session. The proofs given here are manual derivations under explicitly declared assumptions, not independently mechanized certificates. This edition changes neither running solver protocols nor any prior frozen experiment.
+\end{document}</pre></main></body></html>
