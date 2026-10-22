@@ -1,0 +1,101 @@
+f}
+\begin{corollary}[Strong dependence is not independence]
+A certified $D$-receipt does not, without a checked conversion into
+the declared $I$-certificate language, constitute an accepted $I$
+settlement, even when its models are informative about $\Gamma_0$.
+\end{corollary}
+
+\begin{theorem}[Dual-model bridge from strong dependence]\label{thm:dualmodel}
+Under the same-model-class interpretation of the guard contexts, a
+strong $D$-receipt with its consistency model $M_+$ and deletion-side
+countermodel $M_-$ gives two models of $\Gamma_0$, one satisfying
+$T$ and the other satisfying $\neg T$. Therefore $\Gamma_0$
+semantically entails neither $T$ nor $\neg T$. If the frozen $I$
+verifier accepts this pair as a sufficient independence certificate,
+it can also establish an $I$ settlement after a separate typed check.
+\end{theorem}
+\begin{proof}
+Both $\Gamma_{A_+}$ and $\Gamma_{A_-}$ extend $\Gamma_0$.
+The model $M_+$ satisfies $T$ because the sound proof establishes
+$\Gamma_{A_+}\models T$. The model $M_-$ satisfies $\neg T$ by
+its verified counterexample. Both models satisfy $\Gamma_0$, so
+neither proposed entailment from $\Gamma_0$ holds. The final
+sentence follows only under the stated $I$-receipt rule and check.
+\end{proof}
+\begin{remark}[Overlap of evidence is not collapse of roles]
+This bridge is a new consequence of the nonvacuous strong guard
+semantics chosen for $D$ here. It illustrates how different
+settlement roles can share evidence, not that $D$ and $I$ have
+identical objectives or that every dependence framework yields
+independence.
+\end{remark}
+
+\section{Minimal security assumptions as an antichain}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex, line width=.75pt,font=\footnotesize\sffamily,
+ yes/.style={circle,draw,fill=black!25,minimum size=9mm},
+ no/.style={circle,draw,fill=white,minimum size=9mm},
+ min/.style={circle,draw,double, double distance=1.1pt,fill=black!25,minimum size=9mm}]
+\node[yes] (123) at (0,2.7) {$123$};
+\node[min] (12) at (-3,1.25) {$12$};
+\node[no] (13) at (0,1.25) {$13$};
+\node[min] (23) at (3,1.25) {$23$};
+\node[no] (1) at (-3,-.20) {$1$};
+\node[no] (2) at (0,-.20) {$2$};
+\node[no] (3) at (3,-.20) {$3$};
+\node[no] (e) at (0,-1.65) {$\varnothing$};
+\foreach \a/\b in {123/12,123/13,123/23,12/1,12/2,13/1,13/3,23/2,23/3,1/e,2/e,3/e}{\draw (\a)--(\b);}
+\node[anchor=west,align=left,font=\scriptsize] at (4.06,1.15) {Shaded: entails $T$\\Double outline: minimal guards\\White: not established as entailing $T$};
+\end{tikzpicture}
+\caption{Illustrative three-guard lattice, written $12=\{g_1,g_2\}$ and similarly for other nodes. All displayed guard contexts are assumed satisfiable. The assumed minimal nonvacuous sufficient sets are $\{g_1,g_2\}$ and $\{g_2,g_3\}$. This is a formal example, not empirical evidence.}
+\label{fig:guard-lattice}
+\end{figure}
+
+\begin{theorem}[Finite nonvacuous minimal-guard basis]\label{thm:antichain}
+For finite $G$, the satisfiable family $\mathcal C$ is downward closed
+in $2^G$, and the nonvacuous success family $\mathcal S_T$ is
+upward closed \emph{relative to} $\mathcal C$. Its unique antichain
+$\mathcal M_T$ of inclusion-minimal elements satisfies
+\[
+\mathcal S_T=\{A\in\mathcal C:\exists M\in\mathcal M_T\ (M\subseteq A)\}.
+\]
+No inconsistent $A$ enters this atlas, even when classical explosion
+makes $\Gamma_A\models T$ true.
+\end{theorem}
+\begin{proof}
+Deleting optional assumptions preserves satisfiability, so
+$\mathcal C$ is downward closed. If $A\in\mathcal S_T$,
+$A\subseteq B$ and $B\in\mathcal C$, then any model of $\Gamma_B$
+models $\Gamma_A$, hence $\Gamma_B\models T$. For every successful
+$A$, finite descent inside $\mathcal C$ gives a minimal successful
+subset; the preceding relative monotonicity proves the reverse
+inclusion. Minimal elements are unique and incomparable. Exclusion
+of $A\notin\mathcal C$ is by definition.
+\end{proof}
+\begin{corollary}[Certified nonvacuous sufficient-condition atlas]
+An entry $M$ can be promoted only with (i) a checked entailment receipt
+for $T$ at $\Gamma_M$, (ii) a checked satisfiability/consistency receipt
+for $\Gamma_M$, and (iii) checked negative entailment witnesses for all
+proper relevant subcontexts, for example immediate deletions. A
+\emph{complete} atlas additionally requires certified exhaustive
+coverage of the finite guard lattice. Without negative and coverage
+checks, a collection of successful entries is only a candidate atlas.
+\end{corollary}
+
+\begin{example}[Explosion rejected by the atlas]
+Let $\Gamma_0=\{p\}$, $G=\{\neg p\}$ and $T=q$ in classical
+propositional logic. The apparent ``success'' of $\{\neg p\}$
+under unrestricted entailment is vacuous: $\Gamma_0\cup\{\neg p\}$
+has no model. Therefore $\{\neg p\}\notin\mathcal C$ and it never
+appears in $\mathcal M_T$.
+\end{example}
+
+\begin{theorem}[Deletion-witness minimality]\label{thm:deletion}
+Let $M\subseteq G$ have a certified proof of $T$ under $\Gamma_M$
+and a checked satisfying model of $\Gamma_M$. If, for every $g\in M$,
+there is a certified model of
+$\Gamma_{M\setminus\{g\}}\land\neg T$, Then $M$ lies in $\mathcal M_T$, the nonvacuous
+inclusion-minimal sufficient guard family. If $M\ne\varnothing$, then
+for each $g\in M$ a

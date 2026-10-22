@@ -1,0 +1,95 @@
+ansition preserves the inductive invariant by (iii). The provenance
+of the proposal is irrelevant to the acceptance check.\end{proof}
+\begin{corollary}[Twenty-five-ATP immunity to voting]
+Even unanimous agreement of the twenty-five mathematical ATPs cannot
+promote an unsupported candidate in this protocol.\end{corollary}
+\begin{corollary}[Conditional semantic soundness]
+If, additionally, $V$ is sound on all accepted scopes and the meaning of
+each accepted tuple is interpreted in its declared scope, every member
+of $L_t$ has its certified typed meaning. This does \emph{not} imply
+that the admitted environment models the deployed world.
+\end{corollary}
+
+\begin{theorem}[Verifier-neutral controller replacement]\label{thm:neutral}
+Suppose two runs differ only in $B^\star$'s scheduling policy, a
+FORGE-6 internal search policy, or bus routing, while $V$, the
+certificate language, frozen contexts and ledger insertion rule are
+the same. For every \emph{identical candidate tuple} presented to $V$,
+its raw verification result is identical in both runs if the complete
+checker input, including referenced content hashes, is identical.
+Admission to $L_t$ is a separate state-dependent decision and may
+differ because dependency availability, budget and quarantine differ.
+The runs may also differ in candidates and resource use.
+\end{theorem}
+\begin{proof}The typed verifier is a fixed function of the complete
+frozen verification input, not its proposing policy. Ledger admission
+may depend on an additional changing dependency-availability predicate.\end{proof}
+\begin{corollary}[Policy improvement is not truth improvement]
+A changed schedule can improve certificate discovery rates but cannot
+make an invalid certificate valid under the same frozen checker.
+\end{corollary}
+
+\chapter{Scoped evidence and the Dependence federation}
+\section{Why dependence needs its own certificate}
+A claim that changes with an assumption is not the same as a claim
+independent of an axiomatic theory. The role $D$ investigates certified
+relationships between \emph{different} admissible contexts; $I$
+investigates non-derivability of a fixed statement and its negation
+from a \emph{fixed} theory under the chosen metatheory. Neither role
+may derive its conclusion from elapsed time or failed search alone.
+
+\begin{definition}[Admissible nonvacuous guard family]
+Fix a base theory $\Gamma_0$, a finite optional guard set
+$G=\{g_1,\ldots,g_n\}$, an unchanged object-language interpretation,
+and a common declared model class. For $A\subseteq G$ define
+$\Gamma_A=\Gamma_0\cup A$ and
+\[
+\mathcal C=\{A\subseteq G:\Sat(\Gamma_A)\},\quad
+\mathcal S_T=\{A\in\mathcal C:\Gamma_A\models T\}.
+\]
+Only $A\in\mathcal C$ are \emph{admissible security guard contexts}.
+The semantic predicate $f_T(A)$ is defined on $\mathcal C$ by
+$f_T(A)=1$ iff $\Gamma_A\models T$; $f_T(A)=0$ means that a model
+of $\Gamma_A\land\neg T$ exists. For $A\notin\mathcal C$ the
+security predicate is \emph{inadmissible}, not true by explosion.
+Certification of $A\in\mathcal C$ requires a sound, checked model
+witness or a separately justified, checkable consistency certificate.
+For arbitrary infinite theories such a finite checker may not exist;
+no universal decision procedure is presumed.
+\end{definition}
+
+\begin{definition}[Strong guarded $D$-receipt]
+A strong $D$-receipt for $T$ at guards $A_-\subsetneq A_+\subseteq G$
+consists of: (i) a checker-accepted proof of $T$ from $\Gamma_{A_+}$;
+(ii) a checker-accepted model of $\Gamma_{A_+}$ (to exclude
+vacuous proof from inconsistency); (iii) a checker-accepted countermodel
+to $T$ satisfying $\Gamma_{A_-}$; (iv) verified identity of target
+meaning across the two contexts; and (v) the declared environment,
+scope and guard provenance. It establishes $f_T(A_+)=1$ and
+$f_T(A_-)=0$ in a nonvacuous stronger context.
+It does not establish $\Gamma_0\models T$ or
+$\Gamma_0\models\neg T$ unless separately proved.
+\end{definition}
+
+This is deliberately a \emph{strong} operational certificate schema.
+A weaker \emph{conditional sufficiency record} consists of a checked
+proof of $T$ at an admissible, satisfiable guard $A$ but has no
+certified negative comparison; it is useful $D$-role evidence but is
+\emph{not} yet a $\mathsf{DEPENDENCE}$ settlement. A
+\emph{deletion-essentiality record} adds the checked countermodel at
+$A\setminus\{g\}$ and is a strong $D$ receipt for that guard.
+Consequently the strong $D$-to-semantic-$I$ bridge below need not apply
+to every preliminary or weak $D$ record. No general implication
+between other meanings of dependence is presumed.
+
+\begin{theorem}[Sound guarded dependence]\label{thm:d}
+If a strong $D$-receipt is accepted by a sound typed verifier and its
+contexts satisfy the stated guard semantics, then entailment of $T$
+differs between its certified contexts. Its promotion as a context-free
+$P$ or $R$ settlement is unjustified unless a separate matching
+receipt is accepted.
+\end{theorem}
+\begin{proof}The proof component gives $f_T(A_+)=1$. The countermodel
+component witnesses $f_T(A_-)=0$. Neither component proves the target
+in any unnamed context, so a change of certificate type or scope
+requires another inference and check.\end{proo

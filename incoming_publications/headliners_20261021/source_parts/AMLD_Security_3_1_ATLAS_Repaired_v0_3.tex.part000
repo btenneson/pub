@@ -1,0 +1,104 @@
+\documentclass[11pt,letterpaper,oneside]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[margin=1.12in,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{enumitem,booktabs,array,tabularx,longtable}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes,calc,fit,matrix}
+\usepackage{xcolor,hyperref,fancyhdr,titlesec,etoolbox,caption}
+\definecolor{ink}{gray}{0.06}
+\definecolor{teal}{gray}{0.10}
+\definecolor{soft}{gray}{0.96}
+\definecolor{muted}{gray}{0.35}
+\captionsetup{font=small,labelfont=bf,justification=centering}
+\hypersetup{colorlinks=false,hidelinks,pdftitle={AMLD Security 3.1: Certified Security Settlement with Five FORGE-6 Federations and Player-0 B-star},pdfauthor={Brian Tenneson}}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small\sffamily AMLD Security 3.1}\fancyhead[R]{\small\sffamily ATLAS-repaired monochrome edition 0.3}\fancyfoot[C]{\thepage}
+\titleformat{\chapter}{\normalfont\huge\bfseries\color{ink}}{\thechapter.}{.6em}{}
+\titleformat{\section}{\normalfont\Large\bfseries\color{teal}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{ink}}{\thesubsection}{.6em}{}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{protocol}[theorem]{Protocol}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newcommand{\Rls}{\mathcal R}
+\newcommand{\F}{\mathsf F}
+\newcommand{\K}{\mathsf K}
+\newcommand{\Ld}{\mathsf L}
+\newcommand{\Q}{\mathsf Q}
+\newcommand{\V}{\mathsf V}
+\newcommand{\Sc}{\mathsf{Scope}}
+\newcommand{\Cert}{\mathsf{Cert}}
+\newcommand{\Acc}{\mathsf{Acc}}
+\newcommand{\Serve}{\mathsf{Serve}}
+\newcommand{\Proj}{\mathsf{Proj}}
+\newcommand{\Reach}{\mathsf{Reach}}
+\newcommand{\Sat}{\mathsf{Sat}}
+\newcommand{\cost}{\mathsf{cost}}
+\newcommand{\Sett}{\mathsf{Settle}}
+\newcommand{\Sem}{\mathsf{Sem}}
+\newcommand{\Min}{\mathsf{Min}}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,leftmargin=1.5em}
+\setlist[enumerate]{topsep=3pt,itemsep=3pt,leftmargin=1.7em}
+\renewcommand{\contentsname}{Contents}
+\begin{document}
+\frontmatter
+\begin{titlepage}
+\centering
+\vspace*{1.15in}
+{\color{teal}\rule{0.63\textwidth}{1.6pt}}\par\vspace{.27in}
+{\sffamily\bfseries\Huge\color{ink} AMLD Security 3.1\par}
+\vspace{.20in}
+{\sffamily\LARGE Certified Security Settlement\par}
+\vspace{.10in}
+{\sffamily\Large with Five FORGE-6 Federations\par}
+\vspace{.08in}
+{\sffamily\Large and Player-0 $B^\star$\par}
+\vspace{.30in}
+{\color{teal}\rule{0.63\textwidth}{1.6pt}}\par
+\vspace{.38in}
+{\large A formal sequel to \emph{AMLD Security 3:\\ Eight Formal Application Sketches for Intelligent Target Settlement}}\par
+\vspace{.55in}
+{\Large Brian Tenneson}\par
+\vspace{.10in}
+{\color{muted}\small Research manuscript, ATLAS-repaired illustrated edition 0.3 $\;\cdot\;$ October 21, 2026}\par
+\vspace{.28in}
+\begin{tikzpicture}[>=Latex,line width=.8pt,font=\sffamily\scriptsize]
+  \node[draw=black,fill=black!7,rounded corners=5pt,minimum width=3.25cm,minimum height=.62cm] (root) at (0,1.5) {\textbf{PLAYER-0 $B^\star$}};
+  \foreach \x/\lab in {-4/P,-2/R,0/D,2/I,4/C}{
+    \node[draw=black,fill=white,rounded corners=2pt,minimum width=1.38cm,minimum height=.61cm] (r\lab) at (\x,0) {$\mathsf{FORGE6}^{\lab}$};
+    \draw[-{Latex[length=2mm]}] (root.south) -- (r\lab.north);
+    \draw[-{Latex[length=1.8mm]}] (r\lab.south) -- (0,-1.14);
+  }
+  \node[draw=black,double,fill=black!5,rounded corners=3pt,minimum width=4.55cm,minimum height=.56cm] (ver) at (0,-1.5) {\textbf{INDEPENDENT VERIFIER}};
+  \node[anchor=north,font=\sffamily\footnotesize] at (0,-1.95) {\textit{Search proposes. Verification certifies.}};
+\end{tikzpicture}
+
+\vfill
+\begin{minipage}{.84\textwidth}\small\itshape
+Status: ATLAS-repaired mathematical manuscript with explicit assumptions and proofs. No implementation,
+FORGE-6 run, exploit demonstration, empirical speedup, independent proof-assistant
+check, or universal-security result is claimed. Any role-directed investigation is
+conditional on a declared verifier, environment, resources and authorization.
+\end{minipage}
+\end{titlepage}
+
+\chapter*{Companion statement}\addcontentsline{toc}{chapter}{Companion statement}
+\noindent\textbf{Series identity.} This manuscript is \emph{AMLD Security 3.1},\ a direct sequel to \emph{AMLD Security 3}.\par\medskip
+\emph{AMLD Security 3} established eight defensively oriented application sketches for
+verifier-gated target settlement \cite{security3}. Its account had four active settlement
+roles $P,R,I,C$ and an explicit $\mathsf{UNKNOWN}$ outcome. The present sequel completes
+the five-role vocabulary by introducing $D$ (Dependence), assigns to each settlement
+role an entire specified FORGE-6 federation, and installs a distinct global
+Player-0 $B^\star$. It does not replace the older propositions. It develops the
+additional obligations that follow from this larger, nested architecture.
+
+In this sequel ``five F

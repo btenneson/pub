@@ -1,0 +1,87 @@
+ceptance of a $D$ certificate is not an unconditional proof
+of $T$ or $\neg T$.
+
+\section{FORGE-6 as an exact role-local template}
+\begin{definition}[A role-local FORGE-6 instance]
+For $r\in\Rls$, set
+\[
+\F^r=(B_0^r,B_1^r,B_2^r,B_3^r,B_4^r,B_5^r,
+\mathcal M^r,\sigma^r,\kappa^r,\mathcal L^r).
+\]
+Here $B_0^r$ is the internal coordinator, $B_1^r$ backward ATP,
+$B_2^r$ forward ATP, $B_3^r$ adversarial ATP, $B_4^r$ proof-geometry/zipper
+ATP, and $B_5^r$ counterfactual ATP. $\mathcal M^r$ is a typed message
+bus, $\sigma^r$ an internal scheduler, $\kappa^r$ a cost ledger, and
+$\mathcal L^r$ the role-local record of candidates and certified receipts.
+All five mathematical ATPs may use different search tactics but none can
+alter the target, context, verifier, or admission rule.
+\end{definition}
+
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex, line width=.55pt, font=\footnotesize\sffamily, every node/.style={align=center}]
+\node[draw,rounded corners=3pt,fill=black!8,minimum width=3.45cm,minimum height=.60cm] (coord) at (0,2.0) {\textbf{Internal coordinator $B_0^r$}};
+\node[draw,fill=black!4,minimum width=11.6cm,minimum height=.58cm] (bus) at (0,.75) {Typed NEED / HAVE / CANDIDATE / MATCH / RESULT bus};
+\foreach \x/\idx/\name in {-4.75/1/Backward,-2.37/2/Forward,0/3/Adversarial,2.37/4/Geometry,4.75/5/Counterfactual}{
+ \node[draw,rounded corners=2pt,fill=white,text width=1.86cm,minimum height=.82cm] (a\idx) at (\x,-.55) {\textbf{$B_{\idx}^r$}\\\name};
+ \draw[<->] (a\idx.north) -- (bus.south -| a\idx.north);
+}
+\draw[<->] (coord) -- (bus);
+\node[draw,double,fill=black!6,minimum width=6.0cm,minimum height=.48cm] (gate) at (0,-1.82) {Frozen typed verifier $V$};
+\foreach \idx in {1,2,3,4,5}{\draw[-{Latex[length=1.4mm]},black!60] (a\idx.south) -- (gate.north);}
+\node[below=1mm of gate,font=\scriptsize] {Any accepted result is role-typed, scoped, and checked; $B_0^r$ never supplies proof authority.};
+\end{tikzpicture}
+\caption{The six distinct components of one FORGE-6 federation. The full AMLD+0 sequel instantiates this template five times, one per settlement role.}
+\label{fig:local-forge}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=5mm and 7mm,>=Latex,
+  small/.style={draw=ink,rounded corners=2pt,fill=soft,text width=2.15cm,
+  align=center,minimum height=12mm,font=\small},
+  wide/.style={draw=teal,rounded corners=3pt,fill=soft,text width=11.3cm,
+  align=center,minimum height=10mm,font=\small}]
+\node[wide] (b) {\textbf{Global Player-0 $B^\star$}: permitted service, scheduling, authorization and accounting};
+\node[small,below=11mm of b,xshift=-4.68cm] (p) {$\F^P$\\Prover};
+\node[small,right=2.9mm of p] (r) {$\F^R$\\Refuter};
+\node[small,right=2.9mm of r] (d) {$\F^D$\\Dependence};
+\node[small,right=2.9mm of d] (i) {$\F^I$\\Independence};
+\node[small,right=2.9mm of i] (c) {$\F^C$\\Contradiction};
+\foreach \a in {p,r,d,i,c}{\draw[->,teal] (b.south) -- (\a.north);}
+\node[wide,below=17mm of d] (gate) {\textbf{Frozen typed verifier $V$} $\longrightarrow$ provisional certified ledger $L_t$\\Frozen BANK $K_0$ unchanged unless separately authorized};
+\foreach \a in {p,r,d,i,c}{\draw[->,ink] (\a.south) -- (gate.north);}
+\node[below=2mm of gate,font=\footnotesize,text=muted] {Each $\F^r$ contains an internal $B_0^r$ and five ATPs $B_1^r,\ldots,B_5^r$; buses initially OFF.};
+\end{tikzpicture}
+\caption{The two-level AMLD+0 architecture. Global Player-0 $B^\star$ dispatches five role-local FORGE-6 federations; the fixed verifier controls admission to the provisional certified ledger.}
+\label{fig:overview}
+\end{figure}
+
+\subsection{Role constraints without suppressing creative search}
+The outer role dictates the \emph{type of certified result}, not a single
+internal search style. For example, $B_3^P$ may search for weaknesses in a
+proposed proof and $B_5^R$ may hypothesize a counterexample, but only the
+correctly typed receipt makes an outer $P$ or $R$ settlement. Similarly,
+$B_1^D$ searches backward for a minimal dependency, $B_2^D$ mines useful
+conditional lemmas, $B_3^D$ challenges spurious assumptions, $B_4^D$
+navigates assumption lattices, and $B_5^D$ explores conditional alternatives.
+This is a design assignment, not a report that these processes have run.
+
+\begin{proposition}[Typed cardinality]
+If every $\F^r$ has one internal non-proving coordinator and five distinct
+mathematical ATP components, and if $B^\star$ is distinct from all of them,
+then the architecture has $5\cdot5=25$ mathematical ATPs, five internal
+coordinators and one global Player-0, hence $31$ components.
+\end{proposition}
+\begin{proof}Five disjoint role tags each index five ATPs and one coordinator;
+$B^\star$ is a separately tagged controller. Sum the disjoint sets.\end{proof}
+\begin{corollary}[Not thirty-one votes]
+No count of components confers proof authority: certificates are accepted by
+$V$, not by majority or agreement among any of the $31$ components.
+\end{corollary}
+
+\section{The outer board-player $B^\star$}
+The symbol $B^\star$ names the \emph{active global Player-0}, not BANK,
+not a stored board state, and not any $B_0^r$. At its legal turn $B^\star$
+may choose $\Serve(r)$ for enabled $r\in\Rls$ or a 

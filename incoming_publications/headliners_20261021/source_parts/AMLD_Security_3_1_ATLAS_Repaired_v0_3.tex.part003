@@ -1,0 +1,100 @@
+permitted delegation
+$\varepsilon$. The chosen federation and its internal $B_0^r$ then choose
+legal internal work according to their policies. $B^\star$ may reason about
+which permitted task to pursue, but does not choose an ATP's internal proof
+step or assert a role certificate on its own authority.
+
+An extended protocol may allow board/federation activation only upon
+an explicitly authorized $B^\star$ turn and subject to credits, frozen
+rules, and fully charged resources. Activation is \emph{not} automatic,
+and the $31$-component core does not require extra spawned instances.
+
+\section{Typed semantic bus and authority}
+Legal packet types are $\mathsf{NEED}$, $\mathsf{HAVE}$,
+$\mathsf{CANDIDATE}$, $\mathsf{MATCH}$, $\mathsf{STATUS}$,
+$\mathsf{RESULT}$, and $\mathsf{WITHDRAW}$ (and versioned extensions
+such as $\mathsf{FAIL}$). Every packet carries a role tag, originating
+ATP, target, context, dependency digest, trust status, destination and
+resource charge. Internal buses are initially OFF; $B^\star$ can
+explicitly authorize a bus in the declared mode and can disable it.
+Cross-federation packets pass a typed gateway and cannot self-promote.
+
+\chapter{Formal states, receipts, and admissible transitions}
+\section{Frozen instance and working evidence}
+\begin{definition}[Frozen instance]
+A run is parameterized by
+\[
+\mathcal I=(T,\Gamma_0,E_0,V,\mathfrak C, K_0,\mathcal A_0,
+\mathbb B,\sigma_{\rm base},\rho,\Pi_0),
+\]
+where $T$ is the target; $\Gamma_0$ is the admitted theory; $E_0$ is
+the environment; $V$ the fixed verifier (including certificate formats);
+$\mathfrak C$ the allowed context, assumption and label family;
+$K_0$ the frozen certified BANK; $\mathcal A_0$ the frozen transition
+authority; $\mathbb B$ the global charged resource budget;
+$\sigma_{\rm base}$ the baseline scheduler; $\rho$ the seed or
+other replay-determining data; and $\Pi_0$ the immutable, scoped
+settlement-reporting and revocation policy defined below. No component
+may silently revise these.
+\end{definition}
+
+\begin{definition}[Accepted tuple and provisional ledger]
+A checked object is a tuple
+\[
+ z=(\text{type},c,\gamma,e,\lambda,\pi,V\text{-version},
+ \mathrm{deps},\mathrm{origin},\mathrm{cost}) .
+\]
+The tuple's $\gamma$ identifies its exact assumption context, $e$ its
+environment and $\lambda$ its authority or secrecy label. An object is
+\emph{certified} when the fixed typed verifier accepts it and all
+referenced dependencies are certified in compatible scopes. Let $L_t$
+be an append-only \emph{provisional certified ledger}; its records do
+not overwrite $K_0$. Unchecked material belongs to $U_t$.
+The effective read-only verified view, where access is authorized, is
+$K_0\cup L_t$, not an unlogged mutation of $K_0$.
+\end{definition}
+
+A deployment profile can authorize separately gated write-back to a
+versioned persistent BANK, but is not assumed here. This distinction
+allows a frozen experimental baseline and learning during a run without
+silently changing its admitted premises.
+
+\begin{definition}[Rule-complete global state]
+A state consists of all thirty-one local control/search states, the
+frozen instance, $L_t,U_t$, bus-enable bits, role permissions, pending
+checker calls, provenance DAG, accepted typed outcomes, clocks,
+resource accounts and scheduler/seed state sufficient to determine
+legal successors. A \emph{legal move} is a transition allowed by
+$\mathcal A_0$ that preserves the immutable instance and obeys its
+verification and budget checks.
+\end{definition}
+
+\section{Frozen scoped arbitration and revocable reports}
+\begin{definition}[Frozen report arbiter and scope]
+A \emph{scope} $\gamma$ fixes theory, target, model class, environment,
+versioned verifier, authority label and relevant dependency identifiers.
+The frozen policy $\Pi_0$ includes (i) exact-scope matching and verified
+transfer rules; (ii) certificate eligibility, including a separate
+satisfiability receipt before display of a \emph{nonvacuous safety}
+claim; (iii) a deterministic precedence rule; (iv) terminal and
+stopping conditions; and (v) quarantine, supersession and revocation.
+Let $\mathcal E_t(\gamma)$ be the time-stamped vector of admitted
+$P,R,D,I,C$ receipts eligible for scope $\gamma$, \emph{not} a single
+truth value. All receipts remain in the append-only evidence ledger.
+For definiteness, this paper freezes the primary-display order
+\[
+ C\succ R\succ P\succ D\succ I,
+\]
+with accepted-event order followed by canonical receipt digest as
+its deterministic tie-breaker. This order is an administrative display
+convention, not a logical implication. The public record additionally
+contains the full eligible vector and each receipt's exact scope.
+\end{definition}
+\begin{definition}[Reporting, pending, unknown and quarantine]
+Define $\operatorname{Report}_{\Pi_0}(\mathcal E_t,\gamma,t)$ by:
+(a) a verified $C$ receipt at $\gamma$ or in a certified weaker
+context whose theory extends into $\gamma$ marks the relevant scope
+\textsf{QUARANTINED}, and revokes every previous \emph{safety display}
+in that affected scope; (b) otherwise eligible receipts are shown as
+a full vector with a primary display chosen by the frozen order;
+(c) if none is eligible and eith

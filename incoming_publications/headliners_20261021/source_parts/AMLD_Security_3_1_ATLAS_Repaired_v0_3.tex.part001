@@ -1,0 +1,86 @@
+ORGE-6 federations'' has a literal interpretation:
+$\F^P,\F^R,\F^D,\F^I,\F^C$ are five role-local FORGE-6 instances. Each has one internal
+coordinator $B_0^r$ and five mathematical ATPs $B_1^r,\ldots,B_5^r$. Thus there
+are $25$ mathematical search ATPs, five internal coordinators, and one global
+Player-0 $B^\star$: $31$ distinguished components. This count describes an
+architecture, not a claim that 31 executable processes were launched.
+
+\chapter*{Abstract}\addcontentsline{toc}{chapter}{Abstract}
+A verifier-gated architecture can insulate security claims from speculative
+search, but the addition of assumption dependence, nested federations, and an
+adaptive controller creates new composition and scheduling problems. We define
+$\mathsf{AMLD}^{+0}_{5\times\mathrm{FORGE6}}$ with settlement roles
+$\{P,R,D,I,C\}$, each realized by a FORGE-6 federation, and Player-0 $B^\star$.
+We distinguish semantic truth, checker acceptance, scoped dependence, and
+resource-bounded nonsettlement; separate a frozen BANK baseline from a provisional
+certified ledger; and formalize service authority, typed communication, and
+cost accounting. The proved results include scoped deterministic report arbitration, nonvacuous guard atlases, multi-federation noncontamination,
+context-safe transfer, finite guard-basis and guard-criticality theorems,
+passive emulation, two-level round-robin bounds under committed replay,
+conditional certificate-sharing gains, game-aware quotient preservation,
+and generator-independent promotion. An ATLAS-style repair pass corrected guard consistency, outcome arbitration, service-macrostep horizons, latency units, and report revocation. Counterexamples rule out automatic
+speedup, unsafe state quotienting, and universal safety claims from finite
+regression tests. Applications to eight security and engineering domains and a
+preregistered experimental program identify what remains open.
+
+\noindent\small\textit{Illustration note.} All illustrations are monochrome vector diagrams included directly in this editable LaTeX source. They illustrate formal architecture and conditional implications, not experimental execution.\normalsize
+\tableofcontents
+\mainmatter
+
+\chapter{Purpose, lineage, and claims}
+\section{What changes and what does not}
+The underlying problem remains the same: a powerful search process may propose
+objects, but acceptance into trusted knowledge is a separate act. This sequel
+makes that principle robust under five simultaneous settlement disciplines,
+internal FORGE-6 cooperation, and external Player-0 control. We adopt the
+established FORGE-6 interpretation of an internal $B_0$ coordinator and five
+different mathematical searchers \cite{forge}, and the established
+AMLD+0 convention $P_0=B^\star$ with role-local authority \cite{depths}.
+The main claims are formal, conditional statements about this defined protocol.
+They are not discoveries of weaknesses in real cryptographic schemes or a proof
+of global AI safety.
+
+\section{Truth, certificates, and three possible sources of confusion}
+Three distinctions govern everything that follows.
+\begin{enumerate}
+\item A verifier accepting a byte string is not by itself a proof that the verifier,
+its model, or its axioms are sound. Semantic conclusions below explicitly assume
+soundness for the relevant certificate type and scope.
+\item $D$ is an active settlement role; $\mathsf{UNKNOWN}$ is a report of
+nonsettlement under the prescribed stopping conditions, not a search agent or
+a certificate that the target is independent.
+\item An assertion true under an augmented context is not thereby true in a
+weaker, unscoped or differently labeled context.
+\end{enumerate}
+
+\section{Contributions and audit posture}
+The paper supplies a complete process decomposition, new guarded statements and
+proofs, cost accounting, and a test design. Where a conclusion needs fairness,
+faithful replay, decidable model checking, or a perfect lifting obligation,
+those hypotheses are stated rather than silently presumed. No theorem herein
+asserts unconditional settlement, polynomial cryptanalysis, alignment, or
+practical security of a deployed implementation.
+
+\chapter{The thirty-one-component architecture}
+\section{Five settlement roles and six outcome categories}
+\begin{definition}[Role and outcome alphabets]
+Let
+\[
+\Rls=\{P,R,D,I,C\},\qquad
+\begin{aligned}
+\mathcal O=\{&\mathsf{PROVED},\mathsf{REFUTED},\mathsf{DEPENDENCE},\\
+&\mathsf{INDEPENDENCE},\mathsf{CONTRADICTION},\mathsf{UNKNOWN}\}.
+\end{aligned}
+\]
+The five members of $\Rls$ are roles that generate candidate evidence. The sixth
+member of $\mathcal O$ is a bounded no-certificate outcome. The settlement
+report must identify the accepted certificate and its scope whenever it reports
+one of the first five categories.
+\end{definition}
+
+$P$ seeks a proof of $T$; $R$ seeks a refutation of $T$; $D$ seeks certified
+assumption-sensitive behavior; $I$ seeks metatheoretically certified
+independence in a fixed formal setting; and $C$ seeks a certified inconsistency
+of the declared assumptions. Roles may produce overlapping diagnostic evidence,
+but acceptance is always typed and priority rules are declared before a run.
+In particular, ac

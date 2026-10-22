@@ -1,0 +1,95 @@
+er the stop rule has not fired or
+mandatory checker calls remain pending, return \textsf{PENDING};
+(d) if none is eligible, the stop rule has fired, and no mandatory
+checker call remains pending, return \textsf{UNKNOWN}. Quarantine is a reporting status,
+not a seventh settlement role. A revoked report remains in the
+historical log tagged \textsf{REVOKED}, never silently erased. Scope
+propagation requires a checked extension relation with the same
+logic and environmental meaning; unrelated scopes remain untouched.
+The protocol creates versioned replacement reports or revocation
+notices, but cannot retract copies already exported to ungoverned
+external systems.
+\end{definition}
+\begin{theorem}[Deterministic scoped report and revocation]
+\label{thm:arbiter}
+If the accepted ledger, immutable scope-compatibility data, event
+sequence, stop status and $\Pi_0$ are identical, then the report vector,
+primary display, quarantine and revocation flags are identical.
+An accepted $C$ receipt cannot, by this rule, revoke reports in an
+unrelated scope, but it invalidates all affected prior safety displays.
+\end{theorem}
+\begin{proof}
+Every predicate, precedence comparison and digest tie-break is a
+fixed function of those inputs. Quarantine is computed from checked
+scope extension; affected historical safety entries receive a
+revocation tag. Unrelated entries fail that extension predicate.
+\end{proof}
+\begin{corollary}[Unknown is neither a role nor a timeout theorem]
+\textsf{UNKNOWN} is reported only for the specified scope after its
+stop rule fires, with no eligible certificate; it implies neither
+independence nor falsity. Pending checks instead give
+\textsf{PENDING}.
+\end{corollary}
+\begin{remark}[Inconsistency and certificate validity]
+A $C$ receipt does not erase proofs from the immutable evidence
+ledger. It may render them unsafe for \emph{nonvacuous safety reporting}.
+A semantic soundness failure or changed checker is not repaired
+merely by report precedence; such incidents require separate trust
+reassessment.
+\end{remark}
+
+\section{What does a certificate establish?}
+The verifier is a family of typed checks $V_{\tau}(\pi,c\mid\gamma,e)$.
+For $P$, a receipt proves the target in the specified context.
+Displaying it as nonvacuous security additionally requires the
+declared model-satisfiability obligation. For $R$,
+a proof of its negation or an admitted semantically sufficient
+counterexample is checked. For $I$, the proof or pair of models must
+establish the declared independence claim in the fixed metatheory;
+failure of $P$ and $R$ searches is not evidence of $I$. For $C$, a
+receipt certifies inconsistency of the specific context. For $D$, a
+receipt certifies stated context sensitivity, defined precisely in
+Chapter 5. The checker must not confuse these types. Raw $V$ checking
+uses the full immutable input; ledger admission additionally needs
+currently certified dependencies, an unexpired scope key and the
+frozen $\Pi_0$ eligibility rules.
+
+\begin{definition}[Soundness hypothesis]
+A verifier is \emph{sound on an admitted scope family} if every accepted
+receipt supports exactly its stated semantic or metatheoretic
+conclusion in the declared model and scope. We do not assume that
+acceptance by an arbitrary implementation implies this hypothesis.
+\end{definition}
+
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex, line width=.65pt, font=\footnotesize\sffamily,
+ box/.style={draw,rounded corners=2pt,minimum height=.83cm,text width=2.7cm,align=center}]
+\node[box,fill=black!5] (u) at (-4,0) {$U_t$\\speculative candidates};
+\node[box,fill=black!13] (v) at (0,0) {\textbf{Typed verifier $V$}\\scope + dependencies};
+\node[box,fill=black!5] (l) at (4,0) {$L_t$\\certified provisional ledger};
+\draw[-{Latex[length=2.3mm]}] (u.east)-- node[above,font=\scriptsize] {proposal} (v.west);
+\draw[-{Latex[length=2.3mm]}] (v.east)-- node[above,font=\scriptsize] {accept only} (l.west);
+\node[draw,fill=white,minimum width=3.4cm,minimum height=.55cm] (k) at (4,-1.25) {$K_0$ = frozen BANK};
+\draw[dashed] (l.south)-- node[right,font=\scriptsize] {read-only union} (k.north);
+\draw[very thick,densely dotted] (-2.6,-.65) -- (-2.6,.8);
+\node[font=\scriptsize,align=center] at (-2.6,-1.15) {trust\\boundary};
+\end{tikzpicture}
+\caption{No packet, role decision, vote or Player-0 instruction crosses the trust boundary as a certified assertion without verification. This model deliberately keeps the original BANK $K_0$ frozen.}
+\label{fig:trust-gate}
+\end{figure}
+
+\section{The governing noncontamination theorem}
+\begin{theorem}[Federated noncontamination]\label{thm:noncontam}
+Suppose (i) $L_0$ is certified; (ii) the only ledger insertion operation
+appends a $V$-accepted, scope-valid, support-closed tuple; and (iii)
+all other moves, including all $31$ components' actions and packet
+transmissions, leave $L$ unchanged. Then every $L_t$ contains only
+certified tuples, and no member of $U_t$ enters $L_t$ merely by being
+transmitted, repeated, scored highly or proposed by $B^\star$.
+\end{theorem}
+\begin{proof}
+Induct on legal global transitions. The base case is assumption (i).
+The only transition that enlarges the ledger satisfies (ii). Every other
+tr
