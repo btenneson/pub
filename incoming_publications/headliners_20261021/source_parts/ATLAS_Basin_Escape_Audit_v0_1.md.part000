@@ -1,0 +1,53 @@
+---
+title: "ATLAS Independent Logical Audit"
+subtitle: "Basin Escape, Player-0 Activation, and Settlement Preorders"
+date: "21 October 2026"
+author: "ATLAS-style review, prepared by ChatGPT"
+lang: en-US
+geometry: margin=0.78in
+fontsize: 10pt
+colorlinks: true
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyhead[L]{\small ATLAS AUDIT — BASIN ESCAPE}
+  - \fancyhead[R]{\small 21 Oct 2026}
+  - \fancyfoot[C]{\thepage}
+  - \setlength{\headheight}{14pt}
+---
+
+# Decision and scope
+
+**Verdict: CONDITIONAL PASS as a working research note; NOT YET PASS for an unqualified formally audited theorem paper.** The central distinctions—actual first-person success versus possible success; adversarial chess versus static formal proof; verifier-gated lemma sharing; and reachable proofs versus measured speedup—are mostly sound and carefully qualified. A genuine gap occurs in the stated settlement-preorder theorem. A second gap occurs in the BANK lemma unless import eligibility is made an explicit assumption.
+
+**Audited artifact:** *Basin Escape, Player-0 Activation, and Settlement Preorders*, 9-page PDF dated 16 October 2026, uploaded as `Basin_Escape_Note(3).pdf`. The findings below concern only the supplied manuscript. This is a **manual mathematical and protocol audit**: no external theorem prover was run, no computational experiment was initiated, and the four works in its bibliography were not independently checked against their full texts. The source URL for [1] could not be confirmed from the available public web access. Thus source fidelity and independent machine verification remain **NOT VERIFIED**, not failed.
+
+## Disposition matrix
+
+| ID | Severity | Location | Result |
+|:---|:---|:---|:---|
+| A01 | **Blocking** | §8, Definition 8.1 / Theorem 8.2 | Actual emission does not follow from simulability; membership on equivalence classes is underdefined. |
+| A02 | **High** | §6, Lemma 6.2 | Dependency retention alone does not enforce sound downstream BANK imports. |
+| A03 | **High** | §8, bounded settlement | Resource transforms do not automatically preserve the same fixed budget. |
+| A04 | Moderate | §§3–5, first-person intervention A | The subject, handoff, and distinct operational effect of prompting must be specified. |
+| A05 | Moderate | §8, “SIC” | Mutual simulation is not generally simulation *isomorphism*. |
+| A06 | Moderate | §§9–10, experiment design | Expected cost and failure/censoring treatment are not defined enough for comparisons. |
+| A07 | Advisory | §8, Theorem 8.4 | Well-foundedness gives minimal antichains, but not necessarily finite ones. |
+| A08 | Advisory | §7, Proposition 7.1 | Classicality and consistency are stronger assumptions than needed for usual negation. |
+| A09 | Advisory | §§4, 7, 10, provenance | Freeze C/K/U role status, checker interfaces, and source-verification limitations. |
+
+# Mathematical findings and repairs
+
+## A01 — Blocking: actual-emission versus possible-execution semantics
+
+**Textual conflict.** Definition 8.1 (p. 6) places `[X]` in `U_c` when **X emits** an accepted certificate of `T ⊢ c` or `T ⊢ ¬c`. However, the preorder `X ≼ Y` is formulated through Y's ability to **reproduce** relevant certified behavior, and Theorem 8.2 assumes that an accepted certificate produced by X **can be** reproduced or transferred to Y. Ability to produce is not identical to actual production. The proof silently replaces *may emit* with *does emit*.
+
+**Counterexample.** Let X have one admissible successful run that outputs a valid proof in one step. Let Y include every legal step of X, but also an idle branch selected by Y's frozen scheduler, which consumes the budget without output. Y can legally simulate X's successful trace, yet its actual execution does not emit the proof. Thus `X ≼ Y`, `X ∈ U_c`, and `Y ∉ U_c` are simultaneously possible. Even worse, if mutual simulations preserve only available traces, a system's actual success may not be invariant under `X ∼ Y`; then membership of `[X]` itself is **not well-defined**.
+
+**Required repair (choose one and apply consistently):**
+
+1. **Capability semantics (recommended for SIC ordering):** define `U^{∃}_{c,b}` by the **existence of a legal, resource-feasible** trace that emits an accepted settlement certificate. Define `≼_b` to preserve every accepted successful trace, including the budget, and quotient by the corresponding symmetric relation. Under these hypotheses, the revised upward-closure theorem is correct. Actual experiments belong to a separate outcome relation.
+2. **Actual-run semantics (recommended for first-person predictions):** include the complete machine identity, scheduler, seed, verifier, budget, activation history, and trace-selection convention. Demand that the simulation relation preserve the **actual certified output trace**, not merely its availability. This stronger relation yields an upper-set result for actual outputs, but not from ordinary capability simulation alone.
+
+**Minimal replacement theorem:** Fix a common object task `q = (T,c,V)`, a bound `b`, and an admissible-run

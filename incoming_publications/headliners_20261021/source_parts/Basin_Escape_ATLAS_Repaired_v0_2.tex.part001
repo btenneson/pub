@@ -1,0 +1,44 @@
+l{def:chess}
+Let $A$ be the squares, $P$ the occupant tokens, and $E$ the distinguished empty-square token. A location report is
+\[ f\in[A\to(P\cup\{E\})]. \]
+A rule-complete state is $s=(f,\tau,\eta)$, with turn $\tau$ and all relevant auxiliary rule state $\eta$ (castling and en-passant rights, clocks, and whatever game history the declared rule set requires). A legal transition $s\xrightarrow{\mu}s'$ must be authenticated under that rule set. The token $E$ is not the empty set. A difference between reports alone does not establish a legal move.
+\end{definition}
+\begin{definition}[Chess forced-win statement]
+Fix a declared ruleset and termination/horizon convention. Then
+\[\mathsf{ForceWin}(s)\iff \exists\sigma_W\ \forall\sigma_B\ \Goal(\mathsf{Play}(s,\sigma_W,\sigma_B)).\]
+The property quantifies over all legal Black strategies against a selected legal White strategy. Its evidence generally takes a strategy tree or an equivalent complete certificate.
+\end{definition}
+\begin{definition}[Static formal target]
+A static task is $q=(T,c,V)$, with fixed formal theory $T$, target formula $c$, and a sound, frozen checker $V$ for finite derivations. Search states may change, but $T$ and $c$ remain fixed. An accepted proof $\pi$ of $T\vdash c$ is a certificate of derivability, not merely a plausible explanation.
+\end{definition}
+\begin{definition}[Password target]
+A fixed challenge has a secret $w$ and acceptance relation $\mathsf{Accept}(x,w)$. An adaptive challenge allows an explicitly legal evolution $(w_t,\mathsf{Accept}_t)$, such as rotation or challenge updates. Only the latter has a moving target in this sense.
+\end{definition}
+\begin{proposition}[Path versus strategy]\label{prop:path}
+A verified chess path ending in a White win need not establish $\mathsf{ForceWin}(s)$. A checker-accepted finite derivation under a fixed sound calculus establishes the indicated sequent (subject to its undischarged assumptions).
+\end{proposition}
+\begin{proof}
+The path selects one sequence of Black replies; the forced-win statement quantifies over every legal reply policy. For a static proof, the accepted finite derivation already witnesses the stated sequent, without a subsequent move changing the axioms.
+\end{proof}
+\begin{definition}[Families of targets and obstacles]
+Fix a formal environment $T$, a possibly infinite candidate family $\mathcal T=\{t_i:i\in I\}$, and a typed family $\mathcal O=\{o_j:j\in J\}$ of proof obligations, unresolved cases, or other obstacles. Each experiment freezes an original target $c\in\mathcal T$. A verified $t_i$ may later serve as an auxiliary lemma but does not replace $c$.
+\end{definition}
+\begin{remark}
+Thousands or infinitely many candidate formal targets are not thousands of moving Black pieces. An obstacle does not take a turn; a new lemma changes available knowledge, not the truth of a fixed formula. Ordinary chess has a finite physical piece inventory, though its rule-complete state and play-horizon conventions must still be specified.
+\end{remark}
+
+\section{The first-person conjecture ``White wins''}
+\begin{definition}[Bounded first-person settlement event]\label{def:actual}
+Freeze an executable identity $M$ (including any authorized components), theory $T$, target $c$, checker $V$, charged budget $b$, optional deadline $d$, seeds and execution inputs $\xi$, scheduler, and output/handoff convention. Let $\rho_{M,\xi}$ be the \emph{actual authenticated run} under these frozen settings. Define
+\[\Win_{b,d}(M,T,c,V,\xi)=1\iff\exists\pi\text{ actually emitted by }M\text{ by }(b,d)\text{ with }V(\pi,T\vdash c)=1.\]
+The first-person statement ``I will prove the theorem'' denotes this actual event for the designated speaker $M$. It does not denote either $\exists$ some successful legal run or the object-level task of settling $c$ in either direction.
+\end{definition}
+\begin{remark}[Bounded non-success is not nonderivability]
+If the full frozen bounded run is authenticated and ends without the required output, the bounded future-event prediction was false; that does not show $T\nvdash c$ or $T\vdash\neg c$. Without a declared finite bound, failure to observe a proof does not generally certify that an eventual proof will never be emitted.
+\end{remark}
+\begin{definition}[Delegated output and speaker preservation]\label{def:handoff}
+If a graduate federation $G$ computes $\pi$, this counts as an emitted proof by the parent speaker $M$ \emph{only if} the frozen protocol explicitly allows delegation, the exact accepted certificate is transmitted and checked through the authorized interface, and $M$ produces its required authenticated output within the bound. A proof in $G$'s private log alone is not a successful first-person event for $M$. The referent of ``I'' cannot be altered retroactively.
+\end{definition}
+
+\section{Player 0 and the recursive federation}
+The intended GBG+ reference \cite{gbg} distinguishes board-state data from a board-player, and treats federation, certification and scheduling as optional protocol extensions. This note \emph{proposes} an additional Player-0 activation ru

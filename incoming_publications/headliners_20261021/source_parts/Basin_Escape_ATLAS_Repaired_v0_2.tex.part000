@@ -1,0 +1,63 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.82in,headheight=15pt,headsep=18pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,array,tabularx}
+\usepackage{fancyhdr,lastpage,xcolor}
+\usepackage[unicode,colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\definecolor{navy}{RGB}{24,47,77}
+\definecolor{grey}{RGB}{87,95,107}
+\hypersetup{pdftitle={Basin Escape, Player-0 Activation, and Settlement Preorders: ATLAS-Repaired Working Note v0.2},pdfauthor={Research direction: Brian Tenneson; technical drafting and audit assistance: ChatGPT}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\footnotesize\textcolor{grey}{GBG+ / AMLD+0 --- ATLAS-repaired working note}}
+\fancyhead[R]{\footnotesize\textcolor{grey}{21 October 2026}}
+\fancyfoot[C]{\footnotesize\thepage\ / \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.35pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}\linespread{1.035}
+\setlist[itemize]{topsep=2pt,itemsep=2pt,leftmargin=20pt}
+\setlist[enumerate]{topsep=2pt,itemsep=3pt,leftmargin=23pt}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\Win}{\mathsf{Win}}
+\newcommand{\Goal}{\mathsf{Goal}}
+\newcommand{\Runs}{\mathsf{Runs}}
+\newcommand{\Acc}{\mathsf{Acc}}
+\newcommand{\Cost}{\mathsf{Cost}}
+\newcommand{\Sim}{\mathsf{Sim}}
+\newcommand{\Act}{\mathsf{Activate}_0}
+\newcommand{\SelfWin}{\mathsf{SelfWin}}
+\newcommand{\proven}{\mathrel{\vdash}}
+\newcommand{\subpre}{\preccurlyeq_{\mathcal Q,b}}
+\newcommand{\equsim}{\mathrel{\sim_{\mathcal Q,b}}}
+\begin{document}
+\begin{center}
+{\Large\bfseries\textcolor{navy}{Basin Escape, Player-0 Activation,\\[2pt] and Settlement Preorders}}\\[6pt]
+{\normalsize A formal note on ``White wins,'' Eureka, IAE, chess, static proofs, and passwords}\\[7pt]
+{\small Research direction: Brian Tenneson \quad $\bullet$ \quad Technical drafting and ATLAS-style review: ChatGPT}\\[3pt]
+{\small \textbf{ATLAS-repaired edition v0.2} \quad$\bullet$\quad 21 October 2026}\\[4pt]
+{\small\textcolor{grey}{Working research note; revised after a manual audit; no experiment or mechanized formal verification claimed}}
+\end{center}
+
+\begin{quote}\small
+\textbf{Central interpretation.} In the intended conjecture-settler use, ``White wins'' means the designated agent's first-person future prediction \emph{``I will prove the theorem''} (or, in GBG terms, \emph{``I will reach the target''}). It is not an imperative, generic capability claim, or existential assertion that some successful path is possible.
+\end{quote}
+
+\begin{abstract}\noindent
+An automated prover may stall because of its search policy rather than because its fixed theorem is unprovable. We describe three candidate interventions: Player-0 activation of a verifier-gated AMLD+0 federation addressing a first-person settlement event; Eureka search for intermediate lemmas; and Iterative Adaptive Eureka (IAE). A shared BANK accepts only typed, independently verified results and enforces consumer-side assumption discharge. We separate \emph{actual executed success} from \emph{existential certificate reachability}: the latter, with a uniformly budget-preserving operational simulation preorder, supports well-defined upward-closed settlement regions on mutual-simulation classes. In well-founded quotient orders these upper regions have minimal-antichain generators (not necessarily finite). We distinguish adversarial chess, static theorem proving, and fixed versus adaptive passwords, and present a resource-accounted experimental design without claiming unperformed speedup experiments.
+\end{abstract}
+
+\section{Motivation: not knowing the next move}
+A person studying a chess position may fail to identify a winning move despite the existence of one. The difficulty can lie in move ordering, an unexamined defense, a missing tactic, or failure to identify a useful intermediate position. Analogously, an automated theorem prover (ATP) can spend significant effort without a new accepted derivation. A \emph{quicksand basin} is a region of a declared search state space in which charged effort yields little or no certified progress under a frozen diagnostic. The Grass-Growth idea in the accompanying Quicksand work calls for detecting progress \emph{and} nonprogress \cite{quicksand}.
+
+A stalled search is not a proof of falsity, nonderivability, or independence. Chess has an opponent that makes legal moves; a fixed formal theory has no opponent that changes the axioms; a fixed password does not move, whereas a rotating challenge may. These environments share search language without sharing all logical quantifiers.
+
+\section{Three target settings, one search vocabulary}
+\begin{definition}[Location report and rule-complete chess state]\labe

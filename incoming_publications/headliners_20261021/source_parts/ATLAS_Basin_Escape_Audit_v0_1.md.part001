@@ -1,0 +1,37 @@
+ semantics. Let `S_b(X,c)` mean *some legal X-run of charged cost at most b emits a V-accepted certificate for c or ¬c*. Suppose `X ≼_b Y` guarantees that every such X-run maps to a legal Y-run whose charged cost is also at most b and whose certificate remains accepted. Then `U^{∃}_{c,b} = {[X] : S_b(X,c)}` is well-defined on mutual-`≼_b` classes and is upward closed. The proof is immediate by applying the simulation to the successful witness run.
+
+**Propagation:** Definitions 8.3 and 8.6 and Proposition 8.7 should refer to the repaired settlement region, or be explicitly restricted to a domain on which the region is well-defined.
+
+## A02 — High: BANK provenance is necessary, not an import rule
+
+Lemma 6.2 (p. 5) assumes sound checking and preservation of a certificate's undischarged hypothesis set Γ. But the proof adds another, unstated requirement: “any later use must preserve its dependencies or provide” a valid discharge. That **consumer-side admissibility rule** is essential and should be part of the formal statement, not merely the proof.
+
+**Counterexample.** In an empty base theory, the conditional sequent `p ⊢ p` has a perfectly sound trivial certificate. A BANK that retains `Γ = {p}` has not laundered anything *yet*. If a receiving prover silently treats the imported `p` as unconditional, it can incorrectly claim `⊢ p`, although Γ was accurately recorded. Faithful storage does not prevent unsound consumption without an enforced import check.
+
+**Repair:** Store `e = (T, ℓ, π, Γ, origin, cost, verifier-id, provenance)` with `V(π, T ∪ Γ ⊢ ℓ) = 1`. For importing into current context `T ∪ Δ`, require either (i) that every premise in Γ is already admitted in Δ, or (ii) independently checked derivations of `T ∪ Δ ⊢ γ` for **each** `γ ∈ Γ`. Composition/import itself must be verified or be a sound kernel rule. Reject all other promotions. Restate Lemma 6.2 with this rule among its explicit hypotheses.
+
+## A03 — High: simulation overhead and the fixed budget
+
+Section 8 allows a “declared resource-accounting transformation,” but that is not enough to preserve membership in a **same-budget** settlement region. An X trace with cost 1 may map to a Y trace costing 11; with bound `b = 1`, Y does not settle in that budget even though it correctly simulates X. A simulation cost map `g` generally yields `U_{c,b}(X) ⇒ U_{c,g(b)}(Y)`, not `U_{c,b}(Y)`.
+
+**Repair:** Either index the preorder by budget and permit only mappings whose transformed charge does not exceed `b`, or state a cross-budget monotonicity theorem with the explicit map `g`. State how verifier calls, activation, routing, ledger operations, certificate transport, and parallel compute are charged. Preserve wall-clock time as a **distinct** outcome.
+
+## A04 — Moderate: first-person and federation semantics
+
+Definition 3.1 (p. 3) correctly identifies the designated M and its actual output event, and correctly warns that a graduate federation's proof does not automatically satisfy a claim made about its parent. Definition 5.1 (p. 4) should carry this discipline into the activation rule: who speaks, which executable is frozen, which component's output counts, and whether a verified delegated result becomes the parent's emitted output must be specified **before the run**. An assertion that “I will prove c” is **not itself** a verifier-accepted proof of c.
+
+A second issue is empirical identifiability: “A: self-settlement prompt” is a framing or task-assignment rule, not yet a distinct executable search algorithm. Specify the actual action-selection/update behavior induced by A, otherwise no causal basin-escape benefit can be assigned to that intervention rather than to other solver changes.
+
+## A05 — Moderate: SIC terminology
+
+The §8 quotient `X ∼ Y` iff `X ≼ Y` and `Y ≼ X` is a legitimate quotient of a preorder and produces a partial order. But mutual simulation need not imply a structure-preserving isomorphism of the underlying simulations. If “SIC” already has a stricter meaning in the larger framework, this paper must either prove coincidence in its intended model class, explicitly redefine the term, or use **mutual-simulation equivalence classes** here instead.
+
+## A06 — Moderate: performance outcomes and experimental comparison
+
+Research Conjecture 9.2 (p. 8) is correctly labeled unproven. However, the proposed “lower expected fully charged settlement cost” must state how **failure within the budget** is treated. A method that quits cheaply without settling can have a lower mean spent cost than one that succeeds. Prespecify success probability by budget, cost conditional on success, cost of timeouts/failures or a common penalty, paired workloads/seeds, overhead charges, stopping rules, and statistical uncertainty. Compare the four configurations in §10 under equal **aggregate** resource accounting; report wall-clock performance separately.
+
+# Claim-by-claim proof audit
+
+| Manuscript item | ATLAS status | Reason |
+|:---|:---|:---|
+| Prop. 2.5, path versus forced strategy | **PASS** | Existential single chess line does not establish the universal opponent-

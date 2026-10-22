@@ -1,0 +1,47 @@
+ation equivalence classes}; they are not assumed to be graph-, state-, or structure-isomorphism classes (SICs) without an additional isomorphism proof.
+\end{definition}
+\begin{theorem}[Well-defined upward closure --- repaired]\label{thm:upward}
+For each task $q_c\in\mathcal Q$, define
+\[U^{\exists}_{c,b}=\{[X]\in\mathcal P_b:\mathsf{PotSet}_{c,b}(X)\}.\]
+Then class membership is well-defined and $U^{\exists}_{c,b}$ is an upper set: 
+\[[X]\in U^{\exists}_{c,b},\quad[X]\preccurlyeq[Y]\quad\Longrightarrow\quad[Y]\in U^{\exists}_{c,b}.\]
+\end{theorem}
+\begin{proof}
+A successful run of $X$ is a witness for $\mathsf{PotSet}_{c,b}(X)$. The simulation promised by $X\subpre Y$ supplies a legal certified run of $Y$ on the same $q_c$ without exceeding $b$. Thus $Y$ also has a witness. If $X\equsim Y$, apply the same implication in both directions, proving membership does not depend on the representative.
+\end{proof}
+\begin{remark}[Counterexample to the former actual-emission formulation]\label{rem:counter}
+Suppose $X$ has an accepted one-step proof run. Let $Y$ permit the same run but have a frozen scheduler that actually chooses an idle branch and exhausts the bound. $Y$ can simulate the successful path of $X$, yet its \emph{actual} run emits no proof. Ordinary potential-trace simulation therefore does not make actual-emission membership upward closed or representative-invariant. The actual event of Definition~\ref{def:actual} is intentionally kept outside $U^{\exists}_{c,b}$.
+\end{remark}
+\begin{remark}[Budget transformations rather than a same-budget theorem]
+If a simulation of an $X$ trace costing at most $b$ may instead cost $g_{X,Y}(b)$ in $Y$, it yields the cross-budget implication
+\[\mathsf{PotSet}_{c,b}(X)\Longrightarrow\mathsf{PotSet}_{c,g_{X,Y}(b)}(Y),\]
+\emph{not} generally same-$b$ upper closure. For example, a unit-cost proof and an eleven-unit simulation do not both fit budget $b=1$. Cost maps must include checking and communication overhead, and must be composable if used to define a preorder. Wall-clock latency remains a separate experimental metric.
+\end{remark}
+\begin{definition}[Settlement spectrum]
+Where minima exist, $M_{c,b}=\operatorname{Min}(U^{\exists}_{c,b})$ records minimal \emph{mutual-simulation capability types} relative to the fixed task family and budget, not simply minimum step count.
+\end{definition}
+\begin{theorem}[Minimal-antichain generation]\label{thm:antichain}
+If $\mathcal P_b$ is well-founded, every upper set $U\subseteq\mathcal P_b$ satisfies
+\[U=\uparrow\operatorname{Min}(U),\]
+and $\operatorname{Min}(U)$ is an antichain. In particular this holds for $U^{\exists}_{c,b}$.
+\end{theorem}
+\begin{proof}
+For $x\in U$, the nonempty set $U\cap\downarrow x$ has a minimal element $m$ by well-foundedness. Any element of $U$ strictly below $m$ would belong to this set, so $m\in\operatorname{Min}(U)$ and $m\preccurlyeq x$. Conversely, upper closure implies $\uparrow\operatorname{Min}(U)\subseteq U$. Distinct minimal elements cannot be comparable.
+\end{proof}
+\begin{remark}[No automatic finite basis]
+A well-founded partial order can have an infinite antichain: a countably infinite equality-only order is an example. A \emph{finite} minimal-generator result requires stronger assumptions, for example that the order is a well-quasi-order. Without well-foundedness an upper set can lack minima, as $(0,\infty)\cap\mathbb Q$ in the usual rational order illustrates; an arbitrary chain need not have a closed lower threshold.
+\end{remark}
+\begin{definition}[Derived conjecture preorder]\label{def:cpre}
+With the same $\mathcal Q$, $\mathcal P_b$ and $b$ across all target formulas, set
+\[ c\le_{\mathrm{set},b}d\iff U^{\exists}_{d,b}\subseteq U^{\exists}_{c,b}.\]
+This is a reflexive, transitive relation on task formulas; it is not automatically a logical-entailment ordering or a comparison of typical runtime.
+\end{definition}
+\begin{proposition}[Negation symmetry --- resource-conditional]\label{prop:sym}
+Suppose the task family contains $c$ and $\neg c$, the admissible systems/checkers are common to both, and checker-accepted double-negation proof conversions in \emph{both relevant directions} can be completed within the same charged bound $b$. Then
+\[U^{\exists}_{c,b}=U^{\exists}_{\neg c,b},\qquad M_{c,b}=M_{\neg c,b}\ \text{whenever defined}.\]
+\end{proposition}
+\begin{proof}
+A settlement witness for $c$ establishes either $c$ or $\neg c$. A proof of $\neg c$ directly settles the task $\neg c$; a proof of $c$ converts (under the stated budget-preserving rule) to a proof of $\neg\neg c$, which also settles $\neg c$. Conversely, a proof of $\neg c$ settles $c$ directly, and a proof of $\neg\neg c$ converts to one of $c$. These conversions are required to remain legal and within bound; hence the regions coincide and so do their minima.
+\end{proof}
+\begin{remark}
+Classical double-negation elimination may be necessary for the reverse conversion. The above object-level symmetry never equates the personal future events ``I will prove $c$'' and ``I will prove $\neg c$,'' which have different required output

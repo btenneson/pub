@@ -1,0 +1,34 @@
+strategy claim; a checked derivation does establish derivability in a fixed calculus. |
+| Def. 3.1 and Remark 3.2, bounded Win | **PASS with protocol qualification** | Sound distinction between actual bounded completion and object-theorem falsity; needs fixed trace and speaker semantics. |
+| Def. 4.1, Player-0 activation | **Specification only** | Coherent partial rule, but legality must be furnished by an executable formal protocol. |
+| Defs. 5.2–5.3, Eureka / IAE | **PASS as definitions** | Correctly distinguishes logically conservative proved lemmas from computational usefulness; no speedup theorem follows. |
+| Lemma 6.2, no hypothesis laundering | **REPAIR REQUIRED** | Missing enforced consumer-side dependency/discharge rule. |
+| Prop. 7.1, negation overlap | **PASS** | Derivability of `¬c` and `c → ⊥` agrees under the stated negation convention; consistency/classicality may be relaxed. |
+| Theorem 8.2, upward closure | **NOT ESTABLISHED AS WRITTEN** | May-simulate does not imply actual emission, and quotient membership can be ambiguous. |
+| Theorem 8.4, minimal-antichain generation | **PASS** | Standard consequence of well-foundedness plus upper-closedness, with no finiteness conclusion. |
+| Def. 8.6, task preorder | **CONDITIONAL PASS** | Reverse inclusion is reflexive/transitive whenever each settlement region is well-defined. |
+| Prop. 8.7, negation symmetry | **CONDITIONAL PASS** | Holds for symmetric settlement with both certified double-negation directions admissible in the resource regime. |
+| Prop. 9.1, optional-capability monotonicity | **PASS** | Old certified paths remain feasible if no compulsory tax or other change affects them. |
+| Research Conjecture 9.2 | **OPEN / NOT VERIFIED** | Empirical existence and cost advantage not established by the note. |
+
+**A07 (Theorem 8.4 detail).** In a well-founded partial order, every nonempty `U ∩ ↓x` has a minimal element, so `U = ↑Min(U)` for upper `U`; pairwise distinct minimal elements are incomparable. This does **not** mean there are finitely many generators: a countable antichain ordered only by equality is well-founded and has infinitely many minimal points. A finite-basis conclusion would require an additional assumption such as a well-quasi-order. Indeed global well-foundedness can be weakened to the local condition that every nonempty `U ∩ ↓x` has a minimal element.
+
+**A08 (Prop. 7.1 detail).** If negation is defined as implication into bottom, `¬c` and `c → ⊥` are identical or interderivable even in an intuitionistic setting; a consistent classical base is sufficient but not necessary. This is clarification, not a refutation.
+
+**A09 (roles and trust).** The text thoughtfully preserves the historical 0/P/R/D/I/C roles and labels K/U as proposed variants. Retain this separation in every formal protocol and outcome table: *investigation agents*, *result labels*, and *truth statuses* are different objects. A countermodel or an independence claim may require a different checker or meta-level justification than a proof of c; tag the certificate type and trusted validator explicitly. This review has not checked the prose summaries of cited works [1]–[4] against the originals.
+
+# Required minimal repair set
+
+1. **Choose a single settlement-region semantics** (existential attainable certificate or actual emitted certificate); change Definition 8.1, Theorem 8.2 and dependent results accordingly, including the equivalence-class invariant.
+2. **Index resource-sensitive relations explicitly**; state admissible simulation cost maps and deadline behavior.
+3. **Add the verified BANK import/discharge rule** to Lemma 6.2 and its proof.
+4. **Specify speaker/parent/federation identity and handoff** in A's operational protocol, and identify A's actual search-policy change.
+5. **Clarify SIC terminology** or show why mutual simulation equals the earlier intended SIC equivalence.
+6. **Operationalize the experiment comparison**: outcome definitions, success accounting, costs for failures, baseline matching and logging.
+7. **Keep status labels truthful**: conjectured speedup is untested; §8.4 is a valid conditional order-theoretic theorem; external source fidelity and independent mechanized checks remain unverified.
+
+# Final ATLAS judgment
+
+**Keep the manuscript and its thesis.** The strongest part is the careful separation of a moving opponent, a fixed formal target, and a designated prover's future execution, together with the refusal to infer speedup from mere added capabilities. Its principal mathematical contribution is an elementary but potentially useful **conditional** upper-set/minimal-generator framework; that framework needs a repaired settledness semantics before it is sound as a single formal system. Nothing in this audit demonstrates basin escape, verified superiority of federation, or physical/empirical performance. No experiments, protocol changes, file replacements, or solver substitutions were performed.
+
+**Release recommendation:** retain **WORKING NOTE / PROVISIONAL** until A01–A06 are addressed and then perform a second audit focused on exact 

@@ -1,0 +1,37 @@
+itted assumption in $\Delta$; or
+\item for each $\gamma\in\Gamma$, a frozen checker accepts a derivation $T\cup\Delta\vdash\gamma$.
+\end{enumerate}
+The dependency-preserving proof composition/import must itself be checked by $V$ or implemented by a trusted sound kernel rule. A theorem translation between different base theories or checkers requires an additional verified translation. Importing while omitting a required premise is illegal even if the BANK archive stores it correctly.
+\end{definition}
+\begin{lemma}[No hypothesis laundering --- repaired]\label{lem:launder}
+Assume sound checkers, faithful authenticated dependency and theory tagging, and mandatory enforcement of Definition~\ref{def:import} at \emph{every} consumer. Then the BANK mechanism cannot validly promote a certificate of $T\cup\Gamma\vdash\ell$ to $T\cup\Delta\vdash\ell$ unless $\Gamma$ is admitted or derivable in the active context and proof composition is valid. In particular, a conditional proof does not become an unconditional theorem solely by being shared.
+\end{lemma}
+\begin{proof}
+For each imported hypothesis $\gamma$, the import rule either includes $\gamma$ among active assumptions or provides a checked derivation from those assumptions. Sound sequent composition substitutes the latter derivations into the stored proof. The resulting conclusion remains conditional on $\Delta$. Deleting a necessary $\gamma$ without one of the two checks violates the rule and therefore is not a legal inference.
+\end{proof}
+\begin{remark}[Why storage alone fails]
+With empty base theory, $p\vdash p$ is valid. Merely archiving the dependency $\Gamma=\{p\}$ does not prevent a careless consumer from falsely using it to claim $\vdash p$. The \emph{verified consumer import} is the essential additional premise.
+\end{remark}
+
+\section{Investigation reports are not disjoint truth values}
+Proposed investigations include $P$ (derive $c$), $R$ (derive $\neg c$), $D$ (explicit dependence under a stated criterion), $I$ (certify nonderivability of both directions relative to a stated theory), and variants $K$ (derive $c\to\bot$) and $U$ (bounded unknown). The list describes possible investigations, not a mutually exclusive six-valued semantics.
+\begin{proposition}[Negation overlap]\label{prop:negrole}
+When negation is defined as $c\to\bot$, or when the calculus has the corresponding sound interderivability rule,
+\[T\vdash(c\to\bot)\iff T\vdash\neg c.\]
+In particular, $K$ and $R$ may report the same object-level outcome using different investigation routes.
+\end{proposition}
+\begin{proof}By the stipulated definition of negation, or the stipulated two derivation rules.\end{proof}
+Consistency and classicality are not needed merely for this implication-to-bottom equivalence. Independence requires genuine metamathematical justification (often stronger than a failed search). Unknown after a budget is not independence. In an inconsistent theory proof and refutation may coexist; a dependence report must specify what logical property it certifies.
+
+\section{Simulation preorders and settlement regions}
+This section fixes the \emph{semantic repair}: actual output and possible certified output have different meanings. The order below supports only the latter unless a separate actual-trace-preserving relation is introduced.
+
+\begin{definition}[Frozen task family and potential settlement]\label{def:potential}
+Fix a family $\mathcal Q$ of tasks $q_c=(T,c,V)$ using a common, specified theory and checker semantics for both signed conclusions $c$ and $\neg c$, an admissible class $\mathcal S$ of verifier-gated search systems, and a common charged budget $b$ (possibly a resource vector). Let $\Runs_b(X,q_c)$ be the legal, fully accounted finite runs of $X$ on task $q_c$ within $b$. Put
+\[\mathsf{PotSet}_{c,b}(X)\iff \exists\rho\in\Runs_b(X,q_c):\ \Acc_{q_c}(\rho)\in\{+, -\},\]
+where $+$ is a checker-accepted certificate of $T\vdash c$ and $-$ of $T\vdash\neg c$. Thus \emph{potential settlement} means that \emph{some} legal certified run exists within $b$, not that the frozen scheduler actually chooses that run. Total charges include all required workers, verifier calls, activation, routing, memory and certificate handoffs. Any fixed deadline is included in the admissibility condition, not silently discarded.
+\end{definition}
+\begin{definition}[Uniform budget-preserving operational simulation]\label{def:sim}
+For $X,Y\in\mathcal S$, let $X\subpre Y$ mean that a declared admissible operational simulation transports \emph{every} successful legal $X$-trace on \emph{every} $q_c\in\mathcal Q$ to a successful legal $Y$-trace on the same task and with the same certified polarity, \emph{without exceeding the same bound $b$}. The simulation must preserve the frozen verifier and legal certificate dependencies. Require identity simulations and composable simulations, hence reflexivity and transitivity. Let
+\[X\equsim Y\iff X\subpre Y\ \wedge\ Y\subpre X;\qquad\mathcal P_b=\mathcal S/{\sim_{\mathcal Q,b}}.\]
+The induced relation on $\mathcal P_b$ is a partial order. These are \emph{mutual-simul

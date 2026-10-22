@@ -1,0 +1,47 @@
+le; it is not asserted to follow automatically from minimal GBG+ axioms.
+\begin{definition}[Federation-activation transition]
+A complete enhanced state is
+\[S=(q,\mathcal A,\mathcal F,\BANK,\sigma,\Pi,\beta),\]
+where $q$ is the frozen object target, $\mathcal A$ the active-agent register, $\mathcal F$ frontiers/subfederations, $\sigma$ the scheduler, $\Pi$ the provenance ledger, and $\beta$ remaining fully charged resources. A partial rule
+\[\Act(S,\mathit{subgoal},\mathit{budget},\mathit{protocol})\rightharpoonup S'\]
+is legal only with explicit authorization, a frozen new-component identity, adequate resources, a legal parent-child interface, and preservation of the original target and verifier. Activation, proof transport, checking, routing, BANK retrieval, and resource scheduling are charged. Nested activation is allowed only by a declared recursion rule.
+\end{definition}
+\paragraph{Roles and status.} The historical AMLD+0 roles are $0,P,R,D,I,C$ (Player 0, Prover, Refuter, Dependence, Independence, Contradiction). Separate $K$-style contradiction investigation or $U$-style unknown reporting are \emph{proposed variants}, not silent changes to the historical executable. Investigator labels, logical outcome labels, and verification types must be kept distinct.
+
+\section{Three distinct basin-escape methods}
+\begin{definition}[A: first-person self-settlement intervention]\label{def:A}
+With Player-0 authorization, the designated settler receives the frozen first-person target
+\[\SelfWin(M,q,b):\qquad\text{``I will prove the theorem.''}\]
+A valid test must identify $M$ and its accepted output under Definitions~\ref{def:actual}--\ref{def:handoff}. A prompt alone is not an algorithm. To make A experimentally identifiable, the protocol must freeze \emph{what executable policy changes}: e.g., a specified task-selection or scheduling rule, activation guard, and handoff rule. If A only changes wording without an operational rule, a distinct computational effect is not established.
+\end{definition}
+\begin{definition}[B: Eureka bridge-lemma search]\label{def:B}
+Given frozen hypotheses $H$ and target $c$, the search proposes nontrivial lemmas $L=\{\ell_1,\ldots,\ell_k\}$ and attempts to obtain certificates of $H\vdash\ell_i$. A \emph{completed certified bridge} additionally has a valid derivation $H\cup L\vdash c$ and sound composition of the supporting proofs into $H\vdash c$. Proposed lemmas alone do not count as a completed bridge.
+\end{definition}
+Correctly certified $\ell_i$ do not strengthen $H$ semantically, yet may improve discovery or proof length computationally. Nontriviality and reuse criteria, and the cost of finding the bridge, must be declared rather than inferred from the eventual result. The search space may be infinite, although a finite successful certificate uses finitely many steps.
+\begin{definition}[C: Iterative Adaptive Eureka (IAE)]
+IAE is a finite-budget sequence
+\[(h_0,\BANK_0)\longrightarrow(h_1,\BANK_1)\longrightarrow\cdots\longrightarrow(h_m,\BANK_m),\]
+where each $h_t$ records a policy/prompt configuration, updates depend only on permitted logged feedback, and accepted BANK additions have independent checks. Iteration caps, charged feedback, stagnation thresholds, and stop rules are part of the frozen protocol.
+\end{definition}
+\begin{center}\small
+\fbox{\begin{minipage}{0.88\linewidth}\centering
+\textbf{Basin detected: insufficient certified advancement}\par\vspace{3pt}
+\begin{tabular}{>{\centering\arraybackslash}p{0.28\linewidth}>{\centering\arraybackslash}p{0.28\linewidth}>{\centering\arraybackslash}p{0.28\linewidth}}
+A: authorized self-settlement & B: certified bridge search & C: budgeted adaptive attempts
+\end{tabular}\par\vspace{2pt}
+$\Downarrow$\quad Typed independent check\quad$\Downarrow$\par
+$\BANK$ $\longrightarrow$ authorized parent search / handoff
+\end{minipage}}
+\end{center}
+A changes a designated meta-target and possibly an \emph{explicit} scheduling policy; B targets intermediate theorems; C adaptively revises search policy. These interventions can be combined but do not guarantee escape. No experimental run is authorized or asserted here.
+
+\section{BANK: knowledge without illicit hypotheses}
+\begin{definition}[Typed verified BANK entry]\label{def:bank}
+A proof entry is a typed record
+\[e=(T,\ell,\pi,\Gamma,\mathit{kind},\mathit{origin},\mathit{cost},\mathit{checkerID},\mathit{provenance}),\]
+where the frozen sound checker accepts $V(\pi,T\cup\Gamma\vdash\ell)=1$, and $\Gamma$ is the complete finite set of undischarged assumptions. Only authenticated, checked results enter trusted BANK; unverifiable suggestions remain in a separate proposal store. Countermodels, satisfiability witnesses, independence evidence, and other outcome types have distinct validators and must not be represented as unconditional object-level proofs.
+\end{definition}
+\begin{definition}[Consumer-side verified import]\label{def:import}
+To use $e$ in an active context $T\cup\Delta$, the receiving prover must establish one of:
+\begin{enumerate}[label=(\roman*)]
+\item every $\gamma\in\Gamma$ is an adm
