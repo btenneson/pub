@@ -1,0 +1,123 @@
+name: Publish second ATLAS audit after selected headliners
+on:
+  workflow_run:
+    workflows: ["Publish selected October 21 headlining PDFs"]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-atlas-second-audit-headliner
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Confirm approved first-stage publications before doing anything
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('scripts/publications.json').read_text())['items']
+          expected=[
+          'cs.CR_Cryptography_and_Security/amld_security_3_1_atlas_repaired_v0_3',
+          'cs.LO_Logic_in_Computer_Science/basin_escape_atlas_repaired_v0_2',
+          'cs.LO_Logic_in_Computer_Science/atlas_basin_escape_audit_v0_1']
+          assert [x['id'] for x in d[:3]]==expected, 'BLOCK: first three must be published in the required order'
+          for x in d[:3]:
+              pdf=Path('docs')/x['pdf']
+              assert pdf.is_file() and pdf.read_bytes()[:5]==b'%PDF-' and pdf.stat().st_size>10000, f'BLOCK: {pdf}'
+          print('First three PDFs confirmed and in slots 1-3.')
+          PY
+      - name: Install PDF publishing tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y pandoc texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-dejavu-core poppler-utils
+      - name: Compile the second ATLAS audit and add it at slot one
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('incoming_publications/headliners_20261021/source_parts')
+          chunks=sorted(p.glob('ATLAS_Basin_Escape_Reaudit_v0_2.md.part*'))
+          assert len(chunks)==3, 'Second audit has incomplete source'
+          src=b''.join(x.read_bytes() for x in chunks)
+          assert b'Second-pass mathematical audit' in src
+          out=Path('.build/headliners_second')
+          out.mkdir(parents=True,exist_ok=True)
+          (out/'ATLAS_Basin_Escape_Reaudit_v0_2.md').write_bytes(src)
+          PY
+          pandoc .build/headliners_second/ATLAS_Basin_Escape_Reaudit_v0_2.md --pdf-engine=xelatex -V mainfont='DejaVu Serif' -V monofont='DejaVu Sans' -o .build/headliners_second/ATLAS_Basin_Escape_Reaudit_v0_2.pdf
+          pdfinfo .build/headliners_second/ATLAS_Basin_Escape_Reaudit_v0_2.pdf | grep '^Pages:'
+          python3 - <<'PY'
+          import json,hashlib,shutil
+          from pathlib import Path
+          repo=Path('.')
+          pdf=repo/'.build/headliners_second/ATLAS_Basin_Escape_Reaudit_v0_2.pdf'
+          md=repo/'.build/headliners_second/ATLAS_Basin_Escape_Reaudit_v0_2.md'
+          assert pdf.is_file() and pdf.read_bytes()[:5]==b'%PDF-' and pdf.stat().st_size>10000
+          cat=repo/'scripts/publications.json'
+          raw=json.loads(cat.read_text())
+          previous=list(raw['items'])
+          id='cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2'
+          assert not any(x['id']==id for x in previous)
+          dst=repo/'docs'/id
+          dst.mkdir(parents=True,exist_ok=True)
+          shutil.copy2(pdf,dst/pdf.name)
+          shutil.copy2(md,dst/md.name)
+          record={
+           'id':id,'href':id+'/',
+           'title':'ATLAS Second-Pass Mathematical and Protocol Audit — Basin Escape v0.2',
+           'kind':'Audit report','subject':'cs.LO_Logic_in_Computer_Science',
+           'authors':'ATLAS-style manual review, prepared by ChatGPT',
+           'pdf':id+'/'+pdf.name,'archive_path':'docs/'+id+'/'+pdf.name,
+           'source':id+'/source.html','source_file':id+'/'+md.name,
+           'card_text':'Second-pass mathematical and protocol audit of the repaired Basin Escape note. Verifies conditional fixes to the settlement-preorder and BANK assumption-import rules. Does not claim independent machine verification or measured performance.',
+           'quote':'PASS, CONDITIONAL on the stated mathematical hypotheses',
+           'quote_attribution':'ATLAS re-audit v0.2, audit decision',
+           'quote_also_on_card':True,
+           'status':'SECOND-PASS MANUAL AUDIT v0.2 — CONDITIONAL PASS; not independent theorem-prover verification or an executed AMLD+0 experiment.',
+           'classification_note':'Audited conditional arguments; implementation and empirical evidence not supplied.',
+           'sha256':hashlib.sha256(pdf.read_bytes()).hexdigest()
+          }
+          raw['items']=[record]+previous
+          assert [x['id'] for x in raw['items'][1:]]==[x['id'] for x in previous]
+          cat.write_text(json.dumps(raw,ensure_ascii=False,indent=2)+'\n')
+          print('Inserted second ATLAS audit at slot #1; existing cards preserved in order.')
+          PY
+          python3 scripts/build_publications.py
+      - name: Verify library order and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          items=json.loads(Path('scripts/publications.json').read_text())['items']
+          expected=[
+           'cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2',
+           'cs.CR_Cryptography_and_Security/amld_security_3_1_atlas_repaired_v0_3',
+           'cs.LO_Logic_in_Computer_Science/basin_escape_atlas_repaired_v0_2',
+           'cs.LO_Logic_in_Computer_Science/atlas_basin_escape_audit_v0_1']
+          assert [x['id'] for x in items[:4]]==expected
+          html=Path('docs/index.html').read_text()
+          positions=[html.index('/pub/'+x+'/') for x in expected]
+          assert positions==sorted(positions),positions
+          print('Confirmed requested slots 1–4.')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs scripts/publications.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish ATLAS second Basin Escape audit at slot 1 after prior selected PDFs'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
