@@ -1,0 +1,55 @@
+name: Repair out-of-sync PDF reader pages and validate catalog
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair_pdf_readers_catalog_20261022.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: repair-publication-pdf-reader-catalog
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF verifier
+        run: python -m pip install pymupdf==1.26.4
+      - name: Rebuild all publication readers from current catalog
+        run: python scripts/build_publications_106.py
+      - name: Validate every publication PDF, quote, link, reader and redirect
+        run: |
+          python scripts/audit_subject_catalog_106.py
+          python scripts/diagnose_publication_integrity.py
+      - name: Ensure PDFs and scientific sources remain untouched
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --name-only | grep -E '\.(pdf|tex|md)$'; then
+            echo 'ERROR: PDF or source changed unexpectedly'
+            exit 1
+          fi
+          git diff --stat
+      - name: Commit repaired reader pages without changing card order
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs
+          if git diff --cached --quiet; then
+            echo 'Readers already consistent; no commit needed.'
+            exit 0
+          fi
+          git commit -m 'Repair publication PDF reader pages and synchronize searchable catalog'
+          git pull --rebase origin main
+          python scripts/audit_subject_catalog_106.py
+          git push origin HEAD:main
