@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ATLAS Second-Pass Mathematical and Protocol Audit — Basin Escape v0.2 — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2/">Back to publication</a><h1>ATLAS Second-Pass Mathematical and Protocol Audit — Basin Escape v0.2</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2/ATLAS_Basin_Escape_Reaudit_v0_2.md" download>Download source</a><pre>---
+title: &quot;ATLAS Second-Pass Mathematical and Protocol Audit&quot;
+subtitle: &quot;Basin Escape, Player-0 Activation, and Settlement Preorders — Repaired v0.2&quot;
+date: &quot;21 October 2026&quot;
+author: &quot;ATLAS-style manual review, prepared by ChatGPT&quot;
+lang: en-US
+geometry: margin=0.84in
+fontsize: 10pt
+colorlinks: true
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyhead[L]{\small ATLAS — REAUDIT v0.2}
+  - \fancyhead[R]{\small 21 Oct 2026}
+  - \fancyfoot[C]{\thepage}
+  - \setlength{\headheight}{14pt}
+---
+
+# Audit decision
+
+**Disposition: PASS, CONDITIONAL on the stated mathematical hypotheses, for a PROVISIONAL / WORKING research note.** The previously blocking defect in settlement-region semantics and the high-severity BANK import defect are repaired. I did not identify another blocking logical error in the revised statements and proofs. This is **not** a claim of independent formal-machine verification, experimental evidence of basin-escape speedup, external peer review, or verified fidelity to all cited companion manuscripts.
+
+**Artifacts reviewed:** the original 9-page `Basin_Escape_Note(3).pdf` dated 16 October 2026; the earlier `ATLAS_Basin_Escape_Audit_v0_1.md` and PDF; and the newly typeset 9-page `Basin_Escape_ATLAS_Repaired_v0_2.pdf` alongside its editable LaTeX source. The new note maintains all eleven main thematic sections. This re-audit checks the revised manuscript, not merely the editor&#x27;s stated intentions.
+
+**Review method:** manual definition-by-definition and proof-by-proof consistency check; construction of the original counterexample and rechecking it against the repaired semantics; confirmation that all original audit findings have a specific disposition; LaTeX compilation and PDF rendering inspection. No AMLD+0 federation, theorem prover, chess engine, or solver-performance experiment was run. No source PDF was represented as externally checked.
+
+# Audit issue resolution matrix
+
+| Previous item | Severity before | Second-pass disposition | Corrective location |
+|:---|:---|:---|:---|
+| A01: simulated capability conflated with actual output | Blocking | **RESOLVED** | Definitions 8.1–8.2, Theorem 8.3, Remark 8.4 |
+| A02: BANK dependencies recorded but not enforced | High | **RESOLVED** | Definition 6.2, Lemma 6.3 |
+| A03: simulation might exceed the original budget | High | **RESOLVED AS CONDITIONAL MODEL** | Definition 8.2, Remark 8.5 |
+| A04: delegated proof and self-settlement speaker underspecified | Moderate | **RESOLVED AS SPECIFICATION** | Definitions 3.1, 3.3, 5.1 |
+| A05: mutual simulation described as actual isomorphism | Moderate | **RESOLVED** | Definition 8.2 |
+| A06: cost metric rewarded cheap failure | Moderate | **RESOLVED AT DESIGN LEVEL** | Definition 9.2, §10 |
+| A07: well-founded does not imply finite antichain | Advisory | **RESOLVED** | Theorem 8.7, Remark 8.8 |
+| A08: unnecessarily strong classicality assumption for $\neg c$ | Advisory | **RESOLVED** | Proposition 7.1 |
+| A09: investigator variants / source status | Advisory | **RESOLVED OR DISCLOSED** | §4, §7, final provenance |
+
+A03, A04, and A06 are conditional on **future executable implementations**. A complete proof of the conditional mathematical statements does not establish that a real federation satisfies their operational premises.
+
+# Second-pass mathematical audit
+
+## 1. Correctness of the revised settlement semantics
+
+Definition 8.1 now uses **existential potential settlement**:
+
+$$
+\operatorname{PotSet}_{c,b}(X)
+\iff
+\exists\rho\in\operatorname{Runs}_b(X,q_c)
+\quad \operatorname{Acc}_{q_c}(\rho)\in\{+,-\}.
+$$
+
+The successful trace must be legal, verifier-accepted, and within the fully charged common bound. In contrast, Definition 3.1 evaluates the **one actual authenticated run** of the frozen machine/scheduler/input to determine whether the designated first-person speaker emits a proof of **$c$**, not just of either sign. These two events are properly kept distinct.
+
+**Counterexample retest (former blocking issue):** Let $X$ have a successful proof branch. Let $Y$ contain that branch, but let $Y$&#x27;s frozen actual scheduler choose an idle branch. Potential settlement may hold for both systems, whereas actual success may hold only for $X$. The repaired paper correctly allows that divergence. The old counterexample no longer falsifies the **new** Theorem 8.3.
+
+## 2. Preorder and quotient validity (Theorem 8.3)
+
+Definition 8.2 requires a uniform transport of every successful trace across **every task in a common task family**, preserving legal certificate polarity and not exceeding the **same** bound. Identity transport gives reflexivity. Composing transports gives transitivity **provided** their legality and budget-preserving properties compose, as the definition explicitly requires. Mutual simulation is therefore an equivalence relation and induces a partial order on the quotient. If $X\sim Y$, the witness-transfer implication holds both ways, so membership in $U^\exists_{c,b}$ is representative-independent. The upward-set claim then follows by one witness transfer. **PASS, conditional on the promised operational transports.**
+
+**Scope:** The theorem is an elementary order-theoretic consequence of a deliberately strong simulation contract, not a demonstration that the contract has been implemented, or a proof that a randomly selected scheduler will emit the certificate. It is appropriate to retain the word “conditional.”
+
+## 3. Budget semantics and signed task family
+
+The former same-budget gap is closed by explicitly requiring target-bound preservation in Definition 8.2. Remark 8.5 correctly weakens a non-budget-preserving simulation to a cross-budget conclusion at $g_{X,Y}(b)$. This repair prevents any implicit zero-cost transfer of proofs, activation, checking, or communication. **PASS.**
+
+The conjecture preorder in Definition 8.9 uses the **same** simulation poset and bound for both $c$ and $d$, so comparing $U_d\subseteq U_c$ is now type-correct. It is reflexive/transitive by the corresponding set-inclusion laws. **PASS.**
+
+## 4. BANK dependency theorem (Lemma 6.3)
+
+Definition 6.1 preserves proof, theory, assumptions, source, checker version, charge, and provenance. Definition 6.2 adds the missing **mandatory receiver-side check**: every undischarged assumption is either admitted in the current context or supported by an independently accepted derivation there, and proof composition must be sound. Lemma 6.3 now explicitly invokes both storage fidelity and this consumer-side enforcement. The example $p\vdash p$ versus $\vdash p$ correctly demonstrates why accurate archival metadata alone is insufficient. **PASS under the stated kernel and soundness assumptions.**
+
+Residual implementation obligation: an actual shared BANK must enforce this import policy at **every** read/use interface. An informal design description alone cannot rule out a buggy implementation.
+
+## 5. Minimum-antichain theorem (Theorem 8.7)
+
+The proof is valid. For any $x$ in an upper set $U$ in a well-founded poset, choose a minimal member $m$ of $U\cap\downarrow x$. Such $m$ is also minimal in $U$; otherwise a smaller $U$-member would also lie below $x$. Thus $x\in\uparrow\operatorname{Min}(U)$. The reverse containment uses upper closure. Distinct minima are incomparable. **PASS.**
+
+Remark 8.8 correctly notes that the minimal antichain need not be finite. An equality-only countably infinite poset is well-founded and has infinitely many minimal elements. A finite-basis result would need a stronger restriction, such as a well-quasi-order. The rational open-cut counterexample correctly limits arbitrary closed-threshold claims.
+
+## 6. Negation symmetry (Proposition 8.10)
+
+The result is expressly conditional on a shared classical-compatible checker/task family and **same-budget** accepted proof conversion when necessary. A proof of $c$ can be transformed into one of $\neg\neg c$; a proof of $\neg\neg c$ can be transformed back to $c$ only where the requisite principle (e.g., classical double-negation elimination) is valid. The manuscript explicitly charges conversions, so it does not infer same-budget equivalence for free. **PASS as a conditional proposition.**
+
+Object-level symmetric settlement still does not equate the separate actual first-person predictions “I will prove $c$” and “I will prove $\neg c$.” This boundary is preserved.
+
+## 7. Remaining theorem checks
+
+| Statement | Second-pass finding |
+|:---|:---|
+| Proposition 2.5, one chess path vs. forced strategy | **PASS**; existential favorable play is not the universal strategy property; the fixed formal proof analogy is appropriately restricted to checked certificates. |
+| Definition 3.1 / Remark 3.2, bounded actual achievement | **PASS** as an event definition; authenticated bounded failure refutes only that event prediction, not the object theorem. |
+| Definition 3.3, authorized delegation | **PASS** as a protocol rule; parent emission is not inferred from child success without frozen handoff. |
+| Definition 4.1, activation | **PASS AS PROPOSED RULE**, not a derivation from minimal GBG+. |
+| Definitions 5.1–5.3, self-settlement, Eureka, IAE | **PASS AS INTERVENTION SPECIFICATIONS**, not speedup theorems. A&#x27;s executable effect must be frozen for causal measurement. |
+| Proposition 7.1, negation overlap | **PASS** under stipulated negation conventions; classicality/consistency no longer improperly necessary. |
+| Theorem 8.3, upward closure and representative invariance | **PASS CONDITIONAL** under Definition 8.2. |
+| Theorem 8.7, antichain generation | **PASS** under well-foundedness; no implied finiteness. |
+| Definition 8.9, derived conjecture preorder | **PASS**; inclusion relation is automatically reflexive/transitive. |
+| Proposition 8.10, negation symmetry | **PASS CONDITIONAL**, including costs of double-negation conversions. |
+| Proposition 9.1, optional extension | **PASS** with the explicitly stated old-trace-preservation/no-compulsory-cost conditions. |
+| Research conjecture in §9 | **UNTESTED / OPEN**, correctly labeled empirical. |
+
+# Review of performance claims and protocol freezing
+
+The repaired experimental loss is $L_{b,\lambda}=C$ for verified success, versus $b+\lambda$ for bounded non-success, for a scalar aggregate charged bound $b$ and predeclared failure penalty $\lambda&gt;0$. Vector resources require a predeclared scalar charge convention plus separate hard dimension limits. This makes “cheap failure” an invalid shortcut to a lower expected *settlement loss*. It does **not** prevent researchers from obtaining different experimental conclusions at different penalties; $\lambda$ must be declared **before** seeing the outcomes.
+
+The four comparator arms remain: solo prover; matched independent workers without sharing; shared BANK without adaptive activation; and Player-0-activated federation. The protocol freezes executable versions, target, checkers, speaker, seeds, legal actions, scheduler, resource accounting, handoffs and analysis. No forced speedup is claimed from reachability monotonicity. The conjecture adds an explicit noninferiority constraint for success probability at the common bound. **PASS as a prospective controlled-test design**, not an executed trial.
+
+# Residual limitations and publication decision
+
+1. **No mechanized proof certificate:** The logical proof checks here are manual. Theorems 8.3 and 8.7 can be formalized in an independent proof assistant if later requested, but that has not occurred.
+2. **No working certified simulator / BANK implementation:** Definitions specify correct behavior; they do not prove an executable meets the contracts. In particular, verifying operational trace translation and budget preservation can be a substantial task.
+3. **No empirical speedup result:** The existence conjecture has not been tested. Conditional cost formulas do not establish observed performance.
+4. **Source fidelity still unverified:** The original references were retained and labeled as such. The companion full texts were not independently re-audited, and the cited GBG+ publication URL could not be retrieved using public web access in this session.
+5. **No silent protocol authorization:** Nothing in this document authorizes a run, substitutes a solver, revises a frozen bank, or modifies a published repository.
+
+**Final ATLAS decision:** **PASS (CONDITIONAL MATHEMATICS / PROVISIONAL RESEARCH NOTE)**. The substantial earlier defects have been repaired. The revised manuscript may be circulated as a carefully qualified theoretical working note; it must **not** be described as externally formally verified, an independently replicated result, or experimentally validated evidence of federation speedup. A further source-fidelity or machine-checking audit would be a **new**, distinct verification stage rather than a prerequisite to the internal logical correctness of the current conditional claims.</pre></main></body></html>
