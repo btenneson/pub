@@ -1,0 +1,96 @@
+ at (\X,-.51*\r) {$B_{\j}^{\lab}$};
+ }
+}
+\foreach \j in {1,2,3,4,5}{\pgfmathsetmacro{\X}{(\j-1)*1.55} \node[above] at (\X,.26) {ATP $\j$};}
+\node[below,align=center,font=\scriptsize] at (3.1,-2.77) {Under executed two-level cyclic service, a designated $B_j^r$ receives one local step per 25 global ticks.\\Committed baseline replay and adequate checker/budget allowances remain necessary for a settlement bound.};
+\end{tikzpicture}
+\caption{Five role-local federations $\times$ five mathematical ATPs form 25 distinct service channels. The diagram illustrates the fairness accounting, not simultaneous 25-step execution.}
+\label{fig:service}
+\end{figure}
+
+A precise bound requires an actual scheduling policy, not a slogan
+about fair opportunity. Define a global \emph{service tick} as an
+authorized dispatch to one outer federation that results in exactly
+one counted local ATP transition. Local verifier time is separately
+charged; if verification is asynchronous, its delay is tracked.
+
+\begin{definition}[Two-level cyclic service]
+The global controller visits $P,R,D,I,C$ in a fixed round-robin cycle.
+On its $k$th service, each $\F^r$ dispatches exactly one of its five
+mathematical ATPs in a fixed cycle. Thus every ordered pair
+$(r,j)\in\Rls\times\{1,\ldots,5\}$ receives exactly one executed
+transition in every block of $25$ global service ticks, provided the
+run does not terminate early and every scheduled move is enabled.
+\end{definition}
+
+\begin{theorem}[Twenty-five-channel committed-replay bound]\label{thm:25}
+Fix a pair $(r,j)$ with a checker-accepted target-typed certificate
+after $m\ge1$ local transitions of a frozen baseline policy. Assume:
+(i) two-level cyclic service executes one local transition in each
+scheduled slot until settlement; (ii) the designated ATP implements
+the successful committed baseline policy; (iii) other work leaves
+its state projection, scope and verifier unchanged; and (iv) the
+budget covers $25m$ dispatched transitions and all mandatory checks.
+Then the certificate is \emph{submitted} by dispatch count
+$N_{\rm dispatch}\le25m$, unless a qualifying certified outcome
+terminates the run earlier. If a fully serviced dispatch, including
+all mandatory intermediate administration but not the final check,
+consumes elapsed time at most $d_{\max}$, idle waiting is included in
+that bound, and the final checker latency is at most $\tau_V$, then
+\[
+ t_{\rm settlement}-t_{\rm start}\le25m\,d_{\max}+\tau_V.
+\]
+Absent such duration and verifier bounds, the dispatch guarantee
+implies \emph{no finite wall-clock guarantee}.
+\end{theorem}
+\begin{proof}
+Every block of 25 executed dispatches contains one transition for
+$(r,j)$. With no earlier accepted termination, $m$ blocks supply
+$m$ designated moves, which by committed replay generate the proof
+candidate. This establishes the discrete dispatch bound. For the
+elapsed-time claim add the worst-case time for at most $25m$ charged
+dispatch intervals and the separately bounded final checker call.
+\end{proof}
+\begin{corollary}[Role-local bound]
+If one only round-robins the five inner ATPs and the outer controller
+services the role at every tick, the corresponding dispatch bound is
+$5m$, under the same replay assumptions.\end{corollary}
+\begin{corollary}[No bound from fair offers alone]
+Replacing ``executes a transition'' by ``offers an opportunity'' in
+Theorem~\ref{thm:25} invalidates the conclusion: an ATP may idle or
+choose another admissible move forever.\end{corollary}
+
+\begin{example}[Necessity of commitment]
+Let an internal prover have two legal actions, $\mathsf{finish}$
+(producing a proof of $T$ in one step) and $\mathsf{idle}$ (returning
+to itself). A perfectly fair controller may serve it infinitely often;
+a local policy always choosing $\mathsf{idle}$ never settles.
+\end{example}
+
+\section{Buses, activation, and charged time}
+Service ticks are not total work or necessarily wall-clock seconds. A resource accounting convention is
+\[
+ C_{\rm total}=C_{\rm search}+C_{\rm verify}+C_{\rm route}
+ +C_{\rm schedule}+C_{\rm activation}+C_{\rm inherit}+C_{\rm admin}.
+\]
+Every positive event appears once in its cost category; no free
+oracle, invisible bus or free spawn is allowed. If the bus is OFF,
+there is no cross-role communication through it; if enabled, each
+message is typed, logged and charged. $B^\star$ can activate a
+permitted child only on an authorized turn and with adequate credit.
+Neither an extra child nor a new lemma may be written silently into
+frozen $K_0$.
+
+\chapter{Cooperation, certification graphs, and cost}
+\section{How five FORGE-6 federations cooperate}
+An internal $B_1^r$ may emit $\mathsf{NEED}(\ell)$, an internal
+$B_2^s$ may emit $\mathsf{HAVE}(\ell)$, and $B_4$ searchers can
+identify theorem-graph proximity. $B_3$ can challenge the bridge;
+$B_5$ can explore a conditional route. A common, typed certificate
+for $\ell$ can then be reused across legal boundaries only after
+scope and dependency checks. The important object is a checked
+proof-DAG with labeled edges, not an unrestricted union of claims.
+
+\begin{proposition}[Composite deduction without new axioms]
+Let two certified local collections at a \emph{common scope} be
+$K_1=\{a\}$ 

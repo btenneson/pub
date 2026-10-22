@@ -1,0 +1,102 @@
+attempted insertions are gated.\end{proof}
+\begin{remark}This is an \emph{integrity isolation} result, not a
+liveness or availability guarantee. A faulty federation can still
+consume resources or starve useful work if scheduling and budgets
+allow it.\end{remark}
+
+\chapter{Controller-aware quotients and search}
+\section{Why a history quotient can break Player-0}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex,font=\footnotesize\sffamily,line width=.6pt,
+ q/.style={draw,circle,fill=white,minimum size=8mm},
+ win/.style={draw,double,circle,fill=black!15,minimum size=8mm}]
+\node[q] (s) at (-3.5,1.1) {$s$};
+\node[q] (s1) at (-5,-.45) {$u$};\node[win] (s2) at (-2,-.45) {$w$};
+\node[q] (t) at (3.5,1.1) {$\bar s$};
+\node[q] (t1) at (2,-.45) {$\bar u$};\node[win] (t2) at (5,-.45) {$\bar w$};
+\draw[->] (s) -- node[left,font=\scriptsize] {$a$} (s1);
+\draw[->] (s) -- node[right,font=\scriptsize] {$b$} (s2);
+\draw[->] (t) -- node[left,font=\scriptsize] {$a$} (t1);
+\draw[->] (t) -- node[right,font=\scriptsize] {$b$} (t2);
+\draw[<->,densely dashed,black!60] (s)-- node[above,font=\scriptsize] {$Z$} (t);
+\draw[<->,densely dashed,black!60] (s1) -- (t1);
+\draw[<->,densely dashed,black!60] (s2) -- (t2);
+\node[below=1mm of s2,font=\scriptsize] {accepted};
+\node[below=1mm of t2,font=\scriptsize] {accepted};
+\node[above=1mm of s,font=\scriptsize] {original};
+\node[above=1mm of t,font=\scriptsize] {quotient};
+\end{tikzpicture}
+\caption{A schematic controller-respecting correspondence $Z$: matching authorized actions and successor behavior plus matching accepted-target labels are necessary for game-aware reuse. This is an illustration of the hypotheses, not proof of a particular quotient.}
+\label{fig:quotient}
+\end{figure}
+
+The original security manuscript requires future-sufficient
+compression. In a controller game, merely matching terminal labels
+is insufficient: a quotient must also preserve which service choices
+remain legal and the possible reactions after each choice.
+
+\begin{definition}[One-service macro-step and stalling]
+A \emph{stable boundary} is a rule-complete state at which $B^\star$
+may choose the next charged service. Write\[
+ s\xRightarrow{a}s'
+\]
+if one legal $B^\star$ action $a$ charges exactly one service
+and, after its prescribed zero-service bus, checking, ledger,
+quarantine and arbitration microsteps, reaches the next stable
+boundary $s'$. Intermediate accepted target status is recorded in
+$s'$. A timeout, infinite administrative loop or checker divergence
+is represented by a dedicated nonaccepting losing sink $\bot$,
+which cannot be passed off as a successful boundary. Each enabled
+action has at least one macro-successor including $\bot$ if
+necessary. All nondeterministic macro outcomes are included.
+A run that continuously performs such macrosteps receives no uncharged
+external changes in between them. The ``one move'' bound below counts
+exactly these macrosteps, \emph{not} checker microsteps or elapsed time.
+\end{definition}
+
+\begin{definition}[Controller-respecting bisimulation]
+Let $\mathcal G$ and $\bar{\mathcal G}$ be turn-based, nondeterministic
+settlement transition systems, with target-accepting terminal sets
+$W$ and $\bar W$. A relation $Z$ between states is a
+\emph{controller-respecting bisimulation} if, whenever $sZ\bar s$:
+(i) $s\in W$ iff $\bar s\in\bar W$;
+(ii) the enabled $B^\star$ service-action labels agree (up to a
+fixed verified renaming); and (iii) for each corresponding action
+$a$, every \emph{macro-successor} of $s$ under $a$ is related
+to a macro-successor of $\bar s$ under $a$, and conversely.
+The relation contains any distinguished timeout/divergence sink and
+matches nonaccepting sink labels. Raw checker/bus microsteps are
+included in the macrostep closure, not counted as service actions.
+\end{definition}
+
+\begin{theorem}[Finite-horizon game-aware quotient preservation]\label{thm:quotient}
+Let $Z$ be a controller-respecting bisimulation between states
+$sZ\bar s$. For each finite horizon $n\ge0$, $B^\star$ has a
+strategy forcing an accepted target state within $n$ service moves
+against every admitted macro-successor choice from $s$ if and only if the
+corresponding statement holds at $\bar s$.
+\end{theorem}
+\begin{proof}
+Define $W_0=W$ and recursively
+\[
+ W_{n+1}=W_n\cup\{s:\exists a\in A(s)\ \forall s'\in\mathrm{Succ}(s,a),
+ \ s'\in W_n\},
+\]
+where $\mathrm{Succ}(s,a)=\{s' : s\xRightarrow{a}s'\}$
+contains all completed service-macro outcomes, including failure sinks,
+and is nonempty for enabled $a$; define $\bar W_n$ analogously.
+For $n=0$ the claim is clause (i). Assume the claim for $n$.
+Corresponding enabled actions and both directions of successor
+matching in clause (iii), together with the induction hypothesis,
+make the existential-action/universal-macro-successor clause invariant
+under $Z$. Hence membership in $W_{n+1}$ agrees, and induction proves
+the claim.\end{proof}
+\begin{corollary}[Safe strategic state merging]
+A quotient whose classes satisfy this stronger relation preserves
+finite-horizon forced certified settlement. Mere equality of a
+search heuristic, local proof count, or current terminal status does
+not suffice.\end{corollary}
+
+\begin{example}[An uns

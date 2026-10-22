@@ -1,0 +1,100 @@
+ strong $D$-receipt is furnished by the proof
+for $M$ and the corresponding deletion countermodel.
+\end{theorem}
+\begin{proof}
+Each immediate deletion fails to entail $T$. Any proper subset
+$A\subsetneq M$ lies inside at least one $M\setminus\{g\}$; its
+set of models includes the verified countermodel for that deletion,
+which therefore refutes entailment at $A$. Thus no proper subset of
+$M$ is sufficient. The satisfying model of $\Gamma_M$ rules out
+vacuous success, and the receipt pairs satisfy the strong $D$ schema.\end{proof}
+\begin{corollary}[Criticality is explicit]
+The $D$ federation can name a guard $g$ as critical to a minimal
+certificate only with a checked deletion witness, not merely because
+$B_5^D$ imagined the guard absent or $B_1^D$ requested it.\end{corollary}
+
+\begin{example}[Two independent protections]
+Let a toy authorization event be safe exactly when guards $g_1$
+(``strong authentication'') or $g_2$ (``physical isolation'') is
+present in a stipulated Boolean model. Then $f_T(A)=1$ iff
+$g_1\in A$ or $g_2\in A$, and
+$\Min_T=\{\{g_1\},\{g_2\}\}$. The empty guard set has a direct
+countermodel; each singleton has a trivial Boolean proof. This is a
+model-relative example of an antichain, not a real system audit.
+\end{example}
+
+\section{Preventing context laundering}
+\begin{definition}[Scope-safe use]
+A certified tuple established under $\gamma$ may be used in $\delta$
+only if a checked transfer operation licenses the use
+$\gamma\rightsquigarrow\delta$, including required theory,
+label, environment, dependency and certificate-lifting obligations.
+A $\mathsf{HAVE}$ packet with a proof from $\gamma$ is not such a
+transfer by itself.
+\end{definition}
+\begin{theorem}[No unlicensed cross-context promotion]\label{thm:scope}
+Suppose every local inference either (a) uses premises with matching
+scopes or (b) includes a verified scope-transfer receipt, and every
+ledger insertion checks this property recursively through its support
+DAG. Then no ledger proof of $T$ at scope $\delta$ can depend on a
+foreign-scope premise without a verified chain of transfers from that
+premise to $\delta$.
+\end{theorem}
+\begin{proof}
+Induct over the finite acyclic dependency graph for the inserted
+certificate. Leaves are appropriately scoped axioms or transferred
+premises by the insertion rule. For an internal inference, the rule
+ensures that each parent is locally scoped or arrives by a verified
+transfer. Concatenating parent chains gives the required chain for
+every dependency.\end{proof}
+\begin{corollary}[Provenance-preserving federated reuse]
+Shared ledgers may reduce repeated proof work without equating the
+authorization labels, hypotheses, or environmental assumptions of
+different security domains.\end{corollary}
+
+\chapter{Player-0 control, emulation, and fairness}
+\section{Passive rewiring}
+\begin{definition}[Faithful baseline delegation]
+A baseline run is \emph{faithfully embeddable} if an explicit
+embedding $e_r$ maps each legacy role-local state into one designated
+$B_j^r$ state, with a committed, input-preserving step interpreter
+that simulates each recorded transition and returns the same checked
+receipt and context. The baseline scheduler choices
+can be reproduced by $B^\star$'s legal $\varepsilon$-delegation or
+$\Serve(r)$ actions, the chosen $\F^r$ executes each recorded local
+move under a committed replay policy, other components may remain
+inactive without changing those moves, and verification and resource
+allowances suffice for the replay including extra administration.
+The interpreter and its cost are data of the embedding, not assumed
+to exist for every arbitrary legacy ATP.
+\end{definition}
+\begin{theorem}[Passive embedding with charged overhead]\label{thm:embedding}
+If a legacy four- or five-role certified trace is faithfully
+embeddable, there exists a run of the new architecture whose projection
+onto the legacy role states and certified outcomes is that trace.
+If legacy cost is $C$, the embedded run needs budget at least
+$C+H$, where $H\ge0$ is its measured added control, routing and
+bookkeeping cost. No equal-budget simulation is asserted when $H>0$.
+\end{theorem}
+\begin{proof}
+At each baseline service event let $B^\star$ delegate or select its
+recorded role and let the internal federation perform the recorded
+committed move. All other components can idle legally. The specified step interpreter
+witnesses each simulated transition. Induction on events gives the same
+projected state and checker decisions. The new
+control and accounting actions add the measured $H$.\end{proof}
+\begin{corollary}[Reachability inclusion, not unconditional efficiency]
+At adequately increased budget the new architecture can preserve old
+certified reachability. This alone proves neither better discovery
+rates nor strict cost dominance at the same budget.\end{corollary}
+
+\section{A two-level fairness theorem}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\footnotesize\sffamily,>=Latex]
+\foreach \r/\lab in {0/P,1/R,2/D,3/I,4/C}{
+ \node[anchor=east] at (-1.0,-.51*\r) {$\F^{\lab}$};
+ \foreach \j in {1,2,3,4,5}{
+  \pgfmathsetmacro{\X}{(\j-1)*1.55}
+  \node[draw,minimum width=1.40cm,minimum height=.42cm,fill=black!7]

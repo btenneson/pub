@@ -1,0 +1,84 @@
+afe tempting quotient]
+Two states are both unsettled and have identical current certified
+BANK. From the first the controller can service $P$ to obtain an
+accepted certificate in one move; from the second $P$ is permanently
+disabled. Merging these states because their present ledger is equal
+loses the one-step winning distinction.\end{example}
+
+\begin{remark}[Scope and cost must survive quotienting]
+If the target is a minimal-cost or probabilistic guarantee rather
+than finite-horizon reachability, one needs additionally cost-preserving
+transfers or appropriate kernel-equivalence and optimization
+hypotheses. Theorem~\ref{thm:quotient} proves neither speedup nor
+preservation of probability distributions.\end{remark}
+
+\chapter{Security-domain deductions and limitations}
+\section{The eight application families revisited}
+\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{.20\textwidth}>{\raggedright\arraybackslash}p{.37\textwidth}>{\raggedright\arraybackslash}p{.34\textwidth}}
+\toprule
+Domain & New $D$-federation question & New $B^\star$/FORGE-6 obligation \\\midrule
+\endhead
+Cryptography & Under which exact structural assumptions is a quotient sound? & Controller must preserve certificate lifting and avoid assuming an attack from compression.\\
+Vulnerability research & Which guard or policy clause is essential to a defect/safety certificate? & Route checked traces and proofs without mixing implementation models.\\
+Critical infrastructure & Which segmentation cuts are necessary for bounded blast radius and service? & Schedule containment and availability checks with explicit nonregression.\\
+Compartmentation & Which label, declassification or authority assumption supports noninterference? & Keep cross-domain certificate labels, provenance and policy context distinct.\\
+Software correctness & Which environmental assumptions make an invariant inductive? & Coordinate invariants/counterexamples while retaining executable gate invariants.\\
+Scientific discovery & Which observation family and model assumptions support sufficient quotients? & Rank hypotheses, but do not turn predictive fit into unconditional theorems.\\
+Engineering optimization & Which constraints preserve feasible continuations and optimum values? & Price checker overhead and preserve downstream objective obligations.\\
+AI safety & Under which verifier, deployment and scope assumptions is a generated claim promotable? & No role or controller may rewrite its own acceptance predicate.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{A scoped infrastructure theorem}
+\begin{theorem}[Typed cut-and-service nonregression, model relative]
+Let $G=(V,E_c,E_s)$ have separate directed compromise-reachability
+edges $E_c$ and required-service edges $E_s$. A design installs
+$E_c'\subseteq E_c$ and separately declares $E_s'$; no implication
+between the two edge types is presumed. For each initial compromise
+node $c$, $\Reach_{(V,E_c')}(c)\subseteq\Reach_{(V,E_c)}(c)$.
+If a checker also verifies the required service paths in $(V,E_s')$
+with any declared capacities and timing conditions, then the design
+meets the conjunction of these \emph{separate modeled} containment
+and service obligations.
+\end{theorem}
+\begin{proof}
+Every directed compromise path using edges in $E_c'$ is also a
+path in $E_c$. Independent certified service-path witnesses, and
+any separately assumed capacity/timing obligations, establish the
+other conjunct. No equivalence between compromise and service links
+is used.
+\end{proof}
+\begin{corollary}[Dependence-guided segmentation]
+A $D$ federation can seek minimal edge-cut guards whose deletion
+witnesses establish which barriers are critical, while $B^\star$
+coordinates separate containment and service certificates. Such
+certificates do not validate the physical graph or all real-world
+failure modes.\end{corollary}
+
+\section{Contradiction, quarantine, and false security}
+A classical inconsistent context proves every formula, so a
+verifier checking only syntactic derivability does not by itself
+supply useful security assurance. The $C$ federation has a special
+role: it can raise a certified inconsistency flag for the precise
+context in which its receipt is accepted.
+
+\begin{theorem}[Scoped quarantine and historical report revocation]
+Suppose the reporting policy $\Pi_0$ is enforced at every report
+transition; all safety displays require an explicit nonvacuous
+context-consistency receipt; and a checked $C$ receipt for $\gamma$
+causes an atomic quarantine update covering $\gamma$ and every
+certified extension scope. Then no \emph{new} safety display for an
+affected scope is emitted after that update, and all previously
+published \emph{protocol-governed} safety displays in affected scopes
+are marked \textsf{REVOKED} in the versioned report log.
+Unrelated scopes are not revoked by this receipt alone.
+\end{theorem}
+\begin{proof}
+The frozen report rule suppresses new safety displays for all scopes
+in the checked extension closure. Its atomic quarantine transition
+marks precisely the existing affected displays revoked; the extension
+predicate excludes unrelated scopes. The claim concerns the governed
+log, not ungoverned external copies.
+\end{proo

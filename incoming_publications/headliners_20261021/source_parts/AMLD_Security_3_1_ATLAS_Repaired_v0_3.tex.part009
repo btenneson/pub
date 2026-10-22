@@ -1,0 +1,104 @@
+and $K_2=\{a\to b\}$, with ordinary propositional
+consequence. Then $b\in\operatorname{Cn}(K_1\cup K_2)$ but
+$b\notin\operatorname{Cn}(K_1)$ and
+$b\notin\operatorname{Cn}(K_2)$.
+\end{proposition}
+\begin{proof}
+Modus ponens yields $b$ jointly. A model with $a$ true and $b$
+false satisfies $K_1$; a model with both false satisfies $K_2$.
+Thus neither collection separately entails $b$.\end{proof}
+\begin{remark}
+This is an example of \emph{distributed knowledge synergy}, not a
+new theorem relative to the full frozen premises, which may already
+entail $b$. It also differs from a multiarticle transcendent theorem,
+which requires non-derivability from each \emph{full individual
+closure}. The distinction must not be blurred.\end{remark}
+
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex,font=\footnotesize\sffamily,line width=.65pt,
+ bx/.style={draw,rounded corners=2pt,minimum height=.6cm,minimum width=2.5cm,fill=black!5,align=center}]
+\node[bx] (a) at (-3,1.7) {$B_1^{P}$ requests $\ell$};
+\node[bx] (b) at (3,1.7) {$B_2^{D}$ proposes $\ell$};
+\node[bx,fill=black!16] (v) at (0,.4) {Verifier checks $\ell$};
+\node[bx] (l) at (0,-1.0) {Scoped receipt for $\ell$};
+\node[bx] (x) at (-3,-2.25) {Proof-DAG in $\F^P$};
+\node[bx] (y) at (3,-2.25) {Proof-DAG in $\F^D$};
+\foreach \u/\w in {a/v,b/v,v/l,l/x,l/y}{\draw[-{Latex[length=2mm]}] (\u)--(\w);}
+\node[font=\scriptsize,anchor=west] at (2.0,.4) {one checked node};
+\end{tikzpicture}
+\caption{Typed NEED/HAVE cooperation can reuse an identical, scope-compatible certified proof node in multiple investigations. Cost savings arise only when avoided verification work exceeds routing and bookkeeping overhead.}
+\label{fig:proof-dag}
+\end{figure}
+
+\section{Exactly when sharing saves measured verification work}
+\begin{definition}[Identical certified proof nodes]
+A proof node $x$ includes its normalized statement, inference rule,
+full context, verifier version, dependencies and label. A canonical cache key includes a byte-exact normalized statement,
+proof/certificate bytes, transitive dependency digests, inference
+rules, theory and environment digests, verifier version, authority
+label and scope. A digest lookup is an index, not a license to trust
+hash collisions: identity is checked by collision-resistant assumptions
+plus byte-level equality or an equivalent authenticated representation.
+Changing any field invalidates the corresponding key. Cached results
+remain subject to scope checks, dependency replay, revocation and
+cache-read verification charges; these costs belong in $H$ below.
+Nodes with the same surface text but different scope or authority are
+\emph{not} identical and cannot silently share certified status.
+\end{definition}
+\begin{theorem}[Conditional DAG-reuse saving]\label{thm:reuse}
+Suppose $k$ standalone investigations have certified proof-node DAGs
+$D_1,\ldots,D_k$ and identical-node verification costs
+$v(x)\ge0$. If checking every node afresh costs
+\[
+ C_{\rm sep}=\sum_{i=1}^k\sum_{x\in D_i}v(x),
+\]
+and shared proof-DAG checking costs
+\[
+ C_{\rm shared}=\sum_{x\in\cup_i D_i}v(x)+H,
+\]
+where $H$ is all incremental routing, deduplication, scheduling,
+key comparison, cache replay, invalidation, lookup and certification overhead, then
+\[
+ C_{\rm sep}-C_{\rm shared}
+ =\sum_{x\in\cup_iD_i}(m_x-1)v(x)-H,
+\]
+where $m_x$ is the number of standalone DAGs containing $x$.
+Consequently shared checking is cheaper \emph{if and only if} the
+avoidable repeated-check cost exceeds $H$.
+\end{theorem}
+\begin{proof}
+Count the verification charge of each distinct node $m_x$ times
+in $C_{\rm sep}$ and once in $C_{\rm shared}$; subtract $H$.\end{proof}
+\begin{corollary}[No assumed federation speedup]
+Twenty-five ATPs can increase overhead faster than they save checking.
+Parallelism, certificate sharing and better guidance require separate
+measured evidence to establish total-cost improvements.\end{corollary}
+
+\begin{theorem}[No unconditional cost dominance]\label{thm:nomagic}
+If the global architecture incurs any strictly positive unavoidable
+startup cost $h>0$ relative to a standalone ATP, then there are target
+families for which it cannot strictly beat the standalone ATP in
+\emph{total charged work}, even while faithfully reproducing the
+standalone proof.
+\end{theorem}
+\begin{proof}
+Choose a target whose complete verified certificate is already
+available in the initial trusted context, so a standalone baseline
+may return it with no proof-search work (or the minimum mandatory
+reporting charge). Any extra unavoidable startup charge $h$ of
+the new protocol cannot lower that minimum. Thus universal strict
+cost dominance cannot follow merely from adding the architecture.\end{proof}
+
+\section{Fault containment across federations}
+\begin{theorem}[Candidate fault isolation]\label{thm:isolate}
+Assume a faulty $\F^r$ can generate arbitrary proposals and packets
+but cannot modify $V$, its admission predicate, other roles' private
+states, or the certified ledger except through the common gate. Then
+that federation cannot, by proposal alone, add an unaccepted
+assertion to the ledger.
+\end{theorem}
+\begin{proof}
+Its actions are among the non-insertion moves of
+Theorem~\ref{thm:noncontam}; its 
