@@ -1,0 +1,38 @@
+** their legality and budget-preserving properties compose, as the definition explicitly requires. Mutual simulation is therefore an equivalence relation and induces a partial order on the quotient. If $X\sim Y$, the witness-transfer implication holds both ways, so membership in $U^\exists_{c,b}$ is representative-independent. The upward-set claim then follows by one witness transfer. **PASS, conditional on the promised operational transports.**
+
+**Scope:** The theorem is an elementary order-theoretic consequence of a deliberately strong simulation contract, not a demonstration that the contract has been implemented, or a proof that a randomly selected scheduler will emit the certificate. It is appropriate to retain the word “conditional.”
+
+## 3. Budget semantics and signed task family
+
+The former same-budget gap is closed by explicitly requiring target-bound preservation in Definition 8.2. Remark 8.5 correctly weakens a non-budget-preserving simulation to a cross-budget conclusion at $g_{X,Y}(b)$. This repair prevents any implicit zero-cost transfer of proofs, activation, checking, or communication. **PASS.**
+
+The conjecture preorder in Definition 8.9 uses the **same** simulation poset and bound for both $c$ and $d$, so comparing $U_d\subseteq U_c$ is now type-correct. It is reflexive/transitive by the corresponding set-inclusion laws. **PASS.**
+
+## 4. BANK dependency theorem (Lemma 6.3)
+
+Definition 6.1 preserves proof, theory, assumptions, source, checker version, charge, and provenance. Definition 6.2 adds the missing **mandatory receiver-side check**: every undischarged assumption is either admitted in the current context or supported by an independently accepted derivation there, and proof composition must be sound. Lemma 6.3 now explicitly invokes both storage fidelity and this consumer-side enforcement. The example $p\vdash p$ versus $\vdash p$ correctly demonstrates why accurate archival metadata alone is insufficient. **PASS under the stated kernel and soundness assumptions.**
+
+Residual implementation obligation: an actual shared BANK must enforce this import policy at **every** read/use interface. An informal design description alone cannot rule out a buggy implementation.
+
+## 5. Minimum-antichain theorem (Theorem 8.7)
+
+The proof is valid. For any $x$ in an upper set $U$ in a well-founded poset, choose a minimal member $m$ of $U\cap\downarrow x$. Such $m$ is also minimal in $U$; otherwise a smaller $U$-member would also lie below $x$. Thus $x\in\uparrow\operatorname{Min}(U)$. The reverse containment uses upper closure. Distinct minima are incomparable. **PASS.**
+
+Remark 8.8 correctly notes that the minimal antichain need not be finite. An equality-only countably infinite poset is well-founded and has infinitely many minimal elements. A finite-basis result would need a stronger restriction, such as a well-quasi-order. The rational open-cut counterexample correctly limits arbitrary closed-threshold claims.
+
+## 6. Negation symmetry (Proposition 8.10)
+
+The result is expressly conditional on a shared classical-compatible checker/task family and **same-budget** accepted proof conversion when necessary. A proof of $c$ can be transformed into one of $\neg\neg c$; a proof of $\neg\neg c$ can be transformed back to $c$ only where the requisite principle (e.g., classical double-negation elimination) is valid. The manuscript explicitly charges conversions, so it does not infer same-budget equivalence for free. **PASS as a conditional proposition.**
+
+Object-level symmetric settlement still does not equate the separate actual first-person predictions “I will prove $c$” and “I will prove $\neg c$.” This boundary is preserved.
+
+## 7. Remaining theorem checks
+
+| Statement | Second-pass finding |
+|:---|:---|
+| Proposition 2.5, one chess path vs. forced strategy | **PASS**; existential favorable play is not the universal strategy property; the fixed formal proof analogy is appropriately restricted to checked certificates. |
+| Definition 3.1 / Remark 3.2, bounded actual achievement | **PASS** as an event definition; authenticated bounded failure refutes only that event prediction, not the object theorem. |
+| Definition 3.3, authorized delegation | **PASS** as a protocol rule; parent emission is not inferred from child success without frozen handoff. |
+| Definition 4.1, activation | **PASS AS PROPOSED RULE**, not a derivation from minimal GBG+. |
+| Definitions 5.1–5.3, self-settlement, Eureka, IAE | **PASS AS INTERVENTION SPECIFICATIONS**, not speedup theorems. A's executable effect must be frozen for causal measurement. |
+| Proposition 7.1, negation overlap | **PASS** under stipulated negation conventions; classicality/con

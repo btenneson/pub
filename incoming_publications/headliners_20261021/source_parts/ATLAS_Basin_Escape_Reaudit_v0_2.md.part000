@@ -1,0 +1,63 @@
+---
+title: "ATLAS Second-Pass Mathematical and Protocol Audit"
+subtitle: "Basin Escape, Player-0 Activation, and Settlement Preorders — Repaired v0.2"
+date: "21 October 2026"
+author: "ATLAS-style manual review, prepared by ChatGPT"
+lang: en-US
+geometry: margin=0.84in
+fontsize: 10pt
+colorlinks: true
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyhead[L]{\small ATLAS — REAUDIT v0.2}
+  - \fancyhead[R]{\small 21 Oct 2026}
+  - \fancyfoot[C]{\thepage}
+  - \setlength{\headheight}{14pt}
+---
+
+# Audit decision
+
+**Disposition: PASS, CONDITIONAL on the stated mathematical hypotheses, for a PROVISIONAL / WORKING research note.** The previously blocking defect in settlement-region semantics and the high-severity BANK import defect are repaired. I did not identify another blocking logical error in the revised statements and proofs. This is **not** a claim of independent formal-machine verification, experimental evidence of basin-escape speedup, external peer review, or verified fidelity to all cited companion manuscripts.
+
+**Artifacts reviewed:** the original 9-page `Basin_Escape_Note(3).pdf` dated 16 October 2026; the earlier `ATLAS_Basin_Escape_Audit_v0_1.md` and PDF; and the newly typeset 9-page `Basin_Escape_ATLAS_Repaired_v0_2.pdf` alongside its editable LaTeX source. The new note maintains all eleven main thematic sections. This re-audit checks the revised manuscript, not merely the editor's stated intentions.
+
+**Review method:** manual definition-by-definition and proof-by-proof consistency check; construction of the original counterexample and rechecking it against the repaired semantics; confirmation that all original audit findings have a specific disposition; LaTeX compilation and PDF rendering inspection. No AMLD+0 federation, theorem prover, chess engine, or solver-performance experiment was run. No source PDF was represented as externally checked.
+
+# Audit issue resolution matrix
+
+| Previous item | Severity before | Second-pass disposition | Corrective location |
+|:---|:---|:---|:---|
+| A01: simulated capability conflated with actual output | Blocking | **RESOLVED** | Definitions 8.1–8.2, Theorem 8.3, Remark 8.4 |
+| A02: BANK dependencies recorded but not enforced | High | **RESOLVED** | Definition 6.2, Lemma 6.3 |
+| A03: simulation might exceed the original budget | High | **RESOLVED AS CONDITIONAL MODEL** | Definition 8.2, Remark 8.5 |
+| A04: delegated proof and self-settlement speaker underspecified | Moderate | **RESOLVED AS SPECIFICATION** | Definitions 3.1, 3.3, 5.1 |
+| A05: mutual simulation described as actual isomorphism | Moderate | **RESOLVED** | Definition 8.2 |
+| A06: cost metric rewarded cheap failure | Moderate | **RESOLVED AT DESIGN LEVEL** | Definition 9.2, §10 |
+| A07: well-founded does not imply finite antichain | Advisory | **RESOLVED** | Theorem 8.7, Remark 8.8 |
+| A08: unnecessarily strong classicality assumption for $\neg c$ | Advisory | **RESOLVED** | Proposition 7.1 |
+| A09: investigator variants / source status | Advisory | **RESOLVED OR DISCLOSED** | §4, §7, final provenance |
+
+A03, A04, and A06 are conditional on **future executable implementations**. A complete proof of the conditional mathematical statements does not establish that a real federation satisfies their operational premises.
+
+# Second-pass mathematical audit
+
+## 1. Correctness of the revised settlement semantics
+
+Definition 8.1 now uses **existential potential settlement**:
+
+$$
+\operatorname{PotSet}_{c,b}(X)
+\iff
+\exists\rho\in\operatorname{Runs}_b(X,q_c)
+\quad \operatorname{Acc}_{q_c}(\rho)\in\{+,-\}.
+$$
+
+The successful trace must be legal, verifier-accepted, and within the fully charged common bound. In contrast, Definition 3.1 evaluates the **one actual authenticated run** of the frozen machine/scheduler/input to determine whether the designated first-person speaker emits a proof of **$c$**, not just of either sign. These two events are properly kept distinct.
+
+**Counterexample retest (former blocking issue):** Let $X$ have a successful proof branch. Let $Y$ contain that branch, but let $Y$'s frozen actual scheduler choose an idle branch. Potential settlement may hold for both systems, whereas actual success may hold only for $X$. The repaired paper correctly allows that divergence. The old counterexample no longer falsifies the **new** Theorem 8.3.
+
+## 2. Preorder and quotient validity (Theorem 8.3)
+
+Definition 8.2 requires a uniform transport of every successful trace across **every task in a common task family**, preserving legal certificate polarity and not exceeding the **same** bound. Identity transport gives reflexivity. Composing transports gives transitivity **provided
