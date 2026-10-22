@@ -1,0 +1,435 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reading source — Basin Escape: Sufficient Conditions, Guarantees, and Limits</title><link rel="stylesheet" href="/pub/publications.css"><style>main{max-width:1000px;margin:2rem auto;padding:0 20px}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}</style></head><body><main><p><a href="/pub/cs.LO_Logic_in_Computer_Science/basin_escape_sufficient_conditions_guarantees_and_limits/">Back to article</a></p><h1>Basin Escape: Sufficient Conditions, Guarantees, and Limits</h1><p>Text extracted from original eight-page audited PDF, 19 October 2026. Typography and mathematical symbols should be verified against the original before quotation.</p><pre>Basin escape: audited sufficient conditions                                              Audited assessment 0.2
+
+
+                          Basin Escape: Sufficient Conditions,
+                                Guarantees, and Limits
+       A six-lens mathematical assessment of Player-0 self-settlement, Eureka, and IAE
+               Research direction: Brian Tenneson | Technical analysis: ChatGPT
+               19 October 2026 | Version 0.2 | Audited theoretical assessment
+
+Status and provenance. This note extends the supplied nine-page Basin Escape, Player-0 Activation,
+and Settlement Preorders (16 October 2026) [1]. “Six-lens” means six analytical checks inspired by
+the FORGE-6 discussion, not independently running six automated theorem provers. The conditional
+deductions below were reviewed analytically and repaired for their stated hypotheses; they have not
+been independently machine-checked and are not experimental speedup measurements. No proving
+experiment or federation activation was initiated. Version 0.2 preserves the original v0.1 as a separate
+historical artifact.
+
+                                                   Abstract
+          A basin is a region in which a specified policy makes little certified progress, not necessarily
+      an inaccessible part of the proof space. For fixed target, verifier, legal transition rules, and cost
+      budget, we distinguish leaving a basin from settling a goal and characterize both by admissible
+      finite witnesses; supply stronger, constructive sufficient conditions based on ranking functions,
+      certified lemmas, fair proof enumeration, bounded self-settlement executions, and adaptive search;
+      and separate route existence from execution and speedup. We also state game-theoretic sufficient
+      conditions for forced wins, conditional guarantees for shared BANKs and simulation preorders,
+      and counterexamples to common overclaims.
+
+
+1 Frozen framework: three different claims
+
+Fix a theory T , target c, sound certificate checker V, initial executable state s0 , a legal transition
+system A, charged budget b, and a protocol defining accepted success receipts. An execution state
+includes the search frontier, currently certified lemmas and their undischarged hypotheses, scheduler,
+activated agents, provenance, and remaining budget. In particular, the target and verifier do not
+change when search policy changes. Write s →A t for a legal transition, cost(s, t) ≥ 0 for its fully
+charged cost, and G for states containing a checker-accepted receipt for T ⊢ c (or, if explicitly
+authorized, T ⊢ ¬c in an object-level settlement task).
+
+Definition 1.1 (Operational basin and its boundary). For a policy π, progress functional p and
+diagnostic window h, a set B ⊆ S \ G containing s0 is a diagnosed search basin if a prespecified
+observation over the declared number of steps or charged work detects negligible certified progress
+under π. The diagnosis does not assert closure of B under every action of A. A basin exit is the first
+transition from B to S \ B; settlement is a reached state in G. A certified settlement from s0 ∈ B
+necessarily entails a basin exit, but an exit need not settle the goal.
+
+Definition 1.2 (Possibility, guarantee, and cost). Relative to (s0 , B, A, G, b): (i) possible basin exit
+means some finite admissible execution reaches S \ B by charge b; (ii) possible settlement means some
+such execution reaches G; (iii) a guarantee requires an identified policy that realizes the event on every
+permitted execution (or with a clearly stated probability); and (iv) cost improvement requires a fully
+charged matched comparator. Mere earlier wall-clock completion does not establish lower total work.
+
+Theorem 1.3 (Finite witnesses for basin exit and settlement). Assume s0 ∈ B ⊆ S \ G. Basin exit
+within budget b is possible if and only if there is a finite legal path from s0 whose final state lies outside
+
+
+                                                       1
+
+—— Page break ——
+
+Basin escape: audited sufficient conditions                                                  Audited assessment 0.2
+
+
+B with total charge at most b. Settlement within budget b is possible if and only if there is such a path
+ending in G:
+                                                                m−1
+                                                                X
+                             (0)                   (m)
+                      s0 = s       →A · · · →A s         ∈ G,         cost(s(i) , s(i+1) ) ≤ b.
+                                                                i=0
+Every settlement witness contains a basin-exit step, but the converse need not hold. Neither witness
+condition alone guarantees that a given search policy will discover the path.
+Proof. Each equivalence unpacks the definition of a successful finite execution for the respective
+destination set. Since B ∩ G = ∅ and s0 ∈ B, every settlement path first leaves B. A legal exit may
+lead to a state outside both B and G, showing that exit alone is insufficient.
+
+Theorem 1.4 (Finite-descent sufficient condition for guaranteed escape). Suppose an authorized
+deterministic policy π has a rank r : Sπ → N on all its reachable states, with r(s) = 0 implying s ∈ G,
+and that the policy halts successfully on reaching G. Suppose whenever s ∈/ G (hence r(s) &gt; 0), π takes
+a legal transition s → t with r(t) &lt; r(s) and charge at most C (including all obligatory verification,
+activation, and transfer overhead). Then π reaches G in at most r(s0 ) transitions and charge r(s0 )C.
+In particular, b ≥ r(s0 )C suffices.
+Proof. The nonnegative integer rank decreases strictly at each nonglobal step, hence there are at
+most r(s0 ) such steps. After at most r(s0 ) transitions, the policy must reach G: otherwise another
+strict decrease would be required below zero. A rank-zero state is in G by assumption. Summing the
+stepwise cost bound proves the charge bound.
+
+Remark 1.5. The rank need not be computable or available in practice; discovering a sound rank and
+implementing a policy that decreases it is substantive. An empirical “progress score” that sometimes
+rises cannot serve as this proof without an amended argument.
+
+2 Method A: Player-0 self-settlement (“White wins”)
+
+The supplied note defines the first-person claim as the actual bounded event
+          Winb (M, T, c, V, ξ) = 1 ⇐⇒ M (ξ) emits a complete accepted proof of T ⊢ c by b.
+The designated speaker M and frozen input ξ matter. An activated subsidiary’s achievement alone
+does not certify a prediction about a different speaker. The sentence “I will prove the theorem” is a
+forecast of an operational event, not a new inference rule and not evidence that the event occurs.
+Proposition 2.1 (Sufficient condition for successful A). Assume (A1) Player 0 is legally authorized
+to activate a specified executable M as part of the frozen protocol; (A2) the activation and handoff
+preserve T, c, V, actor identity, and dependency/provenance information; (A3) the activated search,
+together with its authorized caller where applicable, is guaranteed to execute a finite, legally checked
+proof-producing trace; and (A4) the entire trace, including activation and checking, fits budget b, and
+the designated M emits the prescribed receipt. Then method A succeeds.
+Proof. Conditions (A1)–(A4) construct an admissible bounded execution satisfying the event’s defining
+receipt condition.
+
+Remark 2.2 (Noncircular strengthening). One may discharge (A3) using an independently established
+rank as in Theorem 1.4, or a finite verified execution schedule, rather than assuming success directly.
+A proof about the future event does not replace the prescribed actual execution. For fixed deterministic
+finite-time execution with a decidable checker, the resulting bounded event is in principle decidable by
+faithful execution; the answer still requires execution or an independently sound operational certificate.
+
+                                                           2
+
+—— Page break ——
+
+Basin escape: audited sufficient conditions                                             Audited assessment 0.2
+
+
+3 Method B: Eureka bridge lemmas
+
+Theorem 3.1 (Certified-bridge composition). Let H encode the actual frozen admissible hypotheses.
+Suppose there are finite proof objects π1 and π2 accepted respectively for
+
+                                        H⊢ℓ         and      H, ℓ ⊢ c,
+
+and the proof calculus permits a verified composition (cut/substitution) of these derivations without
+adding or losing undischarged hypotheses. Then an accepted finite derivation of H ⊢ c exists. To settle
+the frozen objective T ⊢ c, require additionally that every member of H used by the proof is authorized
+by T (or established from T ), or that all otherwise open assumptions have been validly discharged in
+the final certificate. Under this requirement, if a specified policy can construct/import both proofs,
+verify their composition, and emit a T ⊢ c receipt within b, settlement by B is guaranteed.
+
+Proof. Substitute π1 for any undischarged use of ℓ in π2 , or invoke the calculus’s checked cut rule.
+Dependency tracking ensures every surviving assumption belongs to H. The additional discharge or
+admissibility condition ensures that the final verifier checks the frozen judgement T ⊢ c, not merely a
+stronger-hypothesis judgement. The operational statement follows if the declared policy executes this
+finite construction and fits the budget.
+
+What makes a bridge useful? The logical relation H ⊢ ℓ adds no new axioms. The bridge can still
+change the search graph, make a difficult step locally accessible, or permit reuse. A useful nontrivial
+bridge should be cheaper to discover and exploit than the original search obstacle, actually accessible
+to the receiving prover, and neither merely the target renamed nor an illicit assumption. This is a
+design criterion, not a theorem that every valid bridge helps.
+
+Proposition 3.2 (Explicit cost criterion for improved Eureka escape). Let C0 be the full cost of a
+matched baseline success. If B yields a verified target proof at charged total cost
+
+           CB = Csetup + Cfind ℓ + Cverify ℓ + Chandoff + Cfinish|ℓ + Cverify c + Ccoord + Cretries ,
+
+with all displayed categories aggregating all nonoverlapping mandatory costs, then CB &lt; C0 is sufficient
+for strict improvement in total charged cost on that instance. This inequality is a comparison criterion,
+not evidence that it holds for any actual run.
+
+Counterexample 3.3 (A valid but unhelpful lemma). Let H = {p, p → q}, c = q and ℓ = p. The
+bridge is valid and permits q in one modus-ponens step, but if the baseline already uses that step,
+rediscovering and sharing p adds cost rather than reducing it.
+
+Remark 3.4 (Proof sharing can be exponentially significant). Proof-complexity literature exhibits
+exponential separations between tree-like and DAG-like proof systems for some families [4]. Shared
+certified intermediate derivations provide a concrete mechanism for avoiding repeated subproof con-
+struction. This supports possibility on some families, not a universal exponential-to-linear conversion
+or a performance claim for the proposed federation.
+
+4 Method C: Iterative Adaptive Eureka
+
+A legitimate IAE stage chooses a legal policy or candidate-lemma query using permitted observations.
+Only independently verified items enter BANK; all trials and checks are charged.
+
+
+
+
+                                                       3
+
+—— Page break ——
+
+Basin escape: audited sufficient conditions                                                   Audited assessment 0.2
+
+
+Theorem 4.1 (Fair enumerative discovery). Assume that the frozen static task admits an effective
+enumeration of finite proposed proof traces, including every valid finite successful trace; candidate
+verification terminates; and competing traces can be evaluated in isolated reproducible states (or as
+self-contained proof certificates) without altering the frozen task. A dovetailed exhaustive procedure
+that grants each candidate finite prefix unbounded cumulative work eventually detects any existing
+successful finite trace. If a valid a priori upper bound on all required enumeration, reconstruction, and
+checking charges is b, settlement is guaranteed within b.
+
+Proof. A successful finite trace has a finite description and thus appears at a finite index of the
+enumeration. Each of its finitely many required checks receives sufficient work under dovetailing and
+terminates, so the receipt is eventually identified. Isolation/reproducibility makes parallel candidate
+testing legal rather than illicitly combining mutually incompatible state histories. The charged upper
+bound yields the bounded claim.
+
+Remark 4.2. Effective completeness gives no uniform finite deadline. It does not decide all non-
+theorems or prove independence by a failed search, and it does not apply unchanged to moving-adversary
+games in which one favorable trace is insufficient.
+
+Theorem 4.3 (Constructive bounded-tree discovery). Suppose an authorized search policy can exhaust
+a rooted tree of legal, reproducible static proof attempts of depth at most d, with at most k ≥ 1 children
+per node, using breadth-first expansion. Suppose some node at depth at most d carries a verifier-
+accepted proof of the frozen target, and that complete expansion of one node, including reconstruction,
+checking, queue management, and receipt generation where applicable, costs at most C. Then this
+explicit policy discovers a settlement using at most
+                            d
+                            X
+                   Nk,d =         kj   node expansions and total charge at most         CNk,d .
+                            j=0
+
+Thus b ≥ CNk,d is a constructive sufficient budget.
+
+Proof. A breadth-first traversal exhausts every node through level d. Bounded branching gives at
+most Nk,d nodes. By hypothesis the successful node is among them, and each expansion terminates
+with all costs included. Summing the uniform per-node charge proves the claim.
+
+Remark 4.4. The finite-tree theorem guarantees discovery rather than postulating that the system
+will happen to follow a successful path. Its hypotheses can be expensive: Nk,d is generally exponential
+in d for k &gt; 1.
+
+Theorem 4.5 (Probabilistic adaptive escape). Let Ei be success with a verified receipt on trial i, and
+take all displayed conditional probabilities over positive-probability prior-failure histories. If the policy
+preserves an admissible opportunity to try again and, for each reached trial,
+
+                              Pr(Ei | E1c ∩ · · · ∩ Ei−1
+                                                     c
+                                                         ) ≥ pi ,      0 ≤ pi ≤ 1,
+
+then                                                        m                           m
+                                                            Y                          X       
+                   Pr(success in first m trials) ≥ 1 −          (1 − pi ) ≥ 1 − exp −         pi .
+                                                            i=1                         i=1
+If i pi = ∞ and every required further trial remains legally executable, success occurs with probability
+  P
+
+one. If each complete trial (including its success verification) costs at most C and pi ≥ p &gt; 0, the
+expected aggregate trial charge through first success is at most C/p, plus any separately accounted
+non-trial setup cost.
+
+                                                        4
+
+—— Page break ——
+
+Basin escape: audited sufficient conditions                                          Audited assessment 0.2
+
+
+Proof. By the chain rule, probability of m consecutive failures is the product of the successive
+conditional failure probabilities and hence at most (1 − pi ). Use 1 − x ≤ e−x . A divergent probability
+                                                   Q
+
+sum drives the upper bound to zero. With a uniform lower bound p, Pr(N &gt; m) ≤ (1 − p)m , so
+E[N ] ≤ m≥0 (1−p)m = 1/p; multiply by the per-trial charge bound. Independence is not needed.
+        P
+
+
+Remark 4.6. The theorem’s pi bounds are assumptions to establish, not inferred from observing
+“stagnation.” The finite-budget guarantee is probabilistic unless a deterministic successful schedule is
+shown. Adaptive feedback can be uninformative or adversarial; a policy that permanently abandons the
+only successful method breaks fair discovery.
+
+5 Combined A+B+C: sufficient conditions
+
+Theorem 5.1 (Federated certified-escape theorem). Suppose (F1) a frozen target c, a theory T , an
+independent sound checker V, and a recorded relation between H and T that allows every final open
+assumption to be checked or discharged as a proof of T ⊢ c; (F2) permitted Player-0 activation and
+a well-defined designated speaker; (F3) a finite chain of lemmas ℓ1 , . . . , ℓk with checked derivations
+whose open assumptions are discharged solely by H or earlier eligible lemmas; (F4) a checked terminal
+derivation of c from H and this chain; (F5) a specified scheduler that either satisfies Theorem 1.4 for
+successful goal states or exhaustively explores a reproducible finite search tree satisfying Theorem 4.3,
+whose candidate space includes that chain and terminal proof; (F6) every BANK handoff preserves
+proof dependencies and target identity; and (F7) the appropriate rank or tree bound, including all
+necessary search, checking, activation, communication, and receipt costs, is at most b. Then the
+designated federation settles c by b. It also satisfies the first-person prediction precisely when the frozen
+protocol designates that federation as speaker (or legally assigns its output to the specified speaker)
+and that speaker emits the required receipt.
+
+Proof. Induct over the bridge chain. The first lemma is certified under H; if the first i − 1 lemmas
+are available with proper dependencies, the ith verified derivation is safely composable. Compose the
+terminal proof, discharging every assumption not permitted by the frozen judgement T ⊢ c as required
+by (F1). The certified rank policy or finite-tree exhaustive scheduler in (F5), together with (F7),
+ensures that this legal certificate is actually reached and emitted within budget. The protocol-bound
+actor and receipt requirement gives the last clause.
+
+Corollary 5.2 (Optional extensions preserve possibility). If an extended federation retains every
+legal old action path unchanged at the same charge, without mandatory overhead, then adding A, B,
+and C cannot remove any formerly possible escape. This does not assert that a new scheduler will
+choose an old winning path or that costs improve.
+
+6 Opponents, static proofs, and adaptive targets
+
+6.1 Chess and other adversarial games
+A verified favorable chess line covers only one possible Black response sequence; a forced win requires
+∃σW ∀σB . For a fixed finite-horizon turn-based game, let W0 be declared White-winning terminal
+states and recursively define
+
+      Wk+1 = Wk ∪ {s (White turn) : ∃(s → t), t ∈ Wk } ∪ {s (Black turn) : ∀(s → t), t ∈ Wk }.
+
+The displayed recurrence applies only to nonterminal positions with at least one legal move; terminal/no-
+move conventions must be specified separately. If the initial rule-complete state lies in Wk and the
+
+
+                                                     5
+
+—— Page break ——
+
+Basin escape: audited sufficient conditions                                       Audited assessment 0.2
+
+
+legal transition relation and terminal classifications are correct, induction gives a White strategy
+forcing the target within at most k individual legal moves (plies); the recurrence is not counting
+full pairs of turns. That is a sufficient condition for game-theoretic basin escape, different from the
+first-person operational proof event.
+
+6.2 Static proofs and password tasks
+In theorem proving, the adversary does not move the frozen T or c; counterexample/refutation
+branches test the same problem. For a fixed finite password candidate set of size N known to contain
+the fixed secret, if equality tests are sound, every candidate may legally be tested, the target remains
+fixed, and the total charged cost of up to N tests fits the budget, exhaustive search guarantees success.
+If the secret or acceptance rule may adapt without restrictions, that guarantee disappears; a bound
+on adaptation or a winning-strategy argument is then needed.
+
+7 Six analytic audits (not six executed solvers)
+
+These are six analytical perspectives designated B0 –B5 for this report, not claimed outputs of six
+actual FORGE-6 ATP executions and not a modification of the historical AMLD+0 roles.
+ B0 Legality and actor identity: Are activation, schedules, recursion, delegation, and
+    speaker/receipt identity actually authorized? Without them A may be only a sentence.
+ B1 Proof validity: Does a complete accepted T ⊢ c proof path exist, with all extra assumptions
+    discharged, and will the selected policy execute it rather than merely predict it?
+ B2 Bridge construction: Are intermediate lemmas nontrivial, certifiable, composable, and gen-
+    uinely accessible to the receiving prover?
+ B3 Adaptive completeness: Does IAE allocate recurring opportunities to productive alternatives,
+    or can premature abandonment cause permanent stagnation?
+ B4 Obstructions and adversaries: Is a purported exit blocked by a legal-action invariant,
+    exhausted budget, an independent target, or unmodelled adversarial responses?
+ B5 Dependencies and full cost: Does every shared entry retain all undischarged assumptions,
+    and are verification, transport, retries, and coordination included in reported improvements?
+These six perspectives do not certify logical independence, imply a universal ATP, or establish
+experimental execution.
+
+8 Boundary conditions and impossibility witnesses
+
+Proposition 8.1 (Closed-obstruction condition). If B ∩ G = ∅ and all legally reachable successors
+of every s ∈ B lie in B, then no protocol restricted to those legal transitions can escape B. Likewise,
+no path can satisfy a cost budget smaller than the infimum charge of legal successful paths (where a
+path exists).
+
+Proof. Closure inductively keeps every finite execution in B, disjoint from G. The cost claim follows
+from the definition of an infimum.
+
+Counterexample 8.2 (Possibility without discovery). A state s has a zero-progress self-loop and
+one legal exit to a state with an immediate accepted proof. A deterministic policy that always chooses
+the self-loop never escapes, although a two-step successful path exists. Merely adding an exit or telling
+the policy “you will win” proves no operational success.
+
+
+
+                                                   6
+
+—— Page break ——
+
+Basin escape: audited sufficient conditions                                     Audited assessment 0.2
+
+
+Counterexample 8.3 (A stronger-hypothesis proof is not target settlement). Take T = ∅ and
+H = {c}, where c is not a logical validity. Then H ⊢ c has an immediate derivation, but T ⊬ c. A
+Eureka bridge built from unlicensed H does not settle the frozen T -goal.
+
+Counterexample 8.4 (Sharing without a sound BANK). An agent certifies T ∪ {a} ⊢ ℓ and shares
+ℓ as if T ⊢ ℓ. A receiving prover may then appear to prove c from T using an unproved assumption.
+This is not a legal escape even if a permissive logger accepts the text.
+
+Remark 8.5 (Limit of global guarantees). For general effectively presented first-order theories,
+semidecision of provability by proof enumeration is possible under standard enumerability assumptions;
+universal decision of both theoremhood and non-theoremhood is not thereby obtained. Unbounded
+search cannot be advertised as a uniform deadline or a proof of independence on failure. The source
+note’s SIC upward closure holds only for certificate-preserving legal simulations under the applicable
+cost transformation; well-foundedness is additionally needed for minimal-antichain generation [1].
+
+9 Evidence, implications, and a concise sufficient-condition checklist
+
+Peer-reviewed proof-complexity results show rigorous tree/DAG separations [4]; research on restarts
+establishes that controlled randomization can improve difficult search distributions on some families
+but does not make every hard problem easy [5]; distributed SAT research shows that independently
+verifiable proof reconstruction from shared work is implementable [2], with newer parallel proof
+representations demonstrating further scalability [3]. These are external analogues, not measurements
+of AMLD+0, Eureka, IAE, or FORGE-6.
+Seven sufficient-condition questions for any proposed escape:
+S1. Is the frozen theorem, hypothesis set, designated speaker, checker, and accepted goal explicit?
+S2. Is there a finite legal path (or winning game strategy) to that goal?
+S3. Are intermediate products proved, independently verified, and free of unauthorized open assump-
+    tions?
+S4. Does the chosen mechanism actually provide an authorized transition out of the diagnosed basin?
+S5. Will a specified policy execute/discover the complete route (via rank, completeness/fairness, or a
+    quantified success probability)?
+S6. Does the complete route fit the budget after all charges, including checking and delegation?
+S7. Does the correct actor emit the exact accepted certificate/receipt, and is any speedup assessed
+    only relative to a fully charged baseline?
+Final judgment. The strongest defensible claim is a conditional possibility and guarantee theorem:
+verified bridges, legal activation, certified composition, a specifically terminating rank policy or
+complete bounded-tree schedule, and sufficient fully charged resources suffice for success. The source
+note does not establish that every basin has such a bridge, that any particular proposed agent can
+find one, or that a federation is universally faster. The next genuinely new theorem would identify a
+nontrivial task family together with a constructive rank/fairness argument and an audited asymptotic
+(or empirical) cost bound.
+
+
+
+
+                                                  7
+
+—— Page break ——
+
+Basin escape: audited sufficient conditions                                           Audited assessment 0.2
+
+
+References
+[1] B. Tenneson (research direction), Basin Escape, Player-0 Activation, and Settlement Preorders, working
+    formal note, 16 October 2026, user-supplied Basin_Escape_Note(2).pdf.
+
+[2] D. Michaelson et al., “Producing Proofs of Unsatisfiability with Distributed Clause-Sharing SAT Solvers,”
+    Journal of Automated Reasoning 69, art. 12 (2025). https://doi.org/10.1007/s10817-025-09725-w.
+
+[3] R. Götz, M. Dörr, D. Schreiber, “A Natively Parallel Proof Framework for Clause-Sharing SAT Solving,”
+    SAT 2026, LIPIcs 377, 17:1–17:19 (2026). https://doi.org/10.4230/LIPIcs.SAT.2026.17.
+
+[4] M. L. Bonet, J. L. Esteban, N. Galesi, J. Johannsen, “On the Relative Complexity of Resolution Refinements
+    and Cutting Planes Proof Systems,” SIAM J. Comput. 30 (2000/2001). https://doi.org/10.1137/
+    S0097539799352474.
+
+[5] C. P. Gomes, B. Selman, H. Kautz, “Boosting Combinatorial Search through Randomization,” AAAI
+    (1998), pp. 431–437. https://ocs.aaai.org/Library/AAAI/1998/aaai98-061.php.
+
+
+
+
+                                                      8</pre></main></body></html>
