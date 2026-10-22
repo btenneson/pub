@@ -66,7 +66,7 @@ def main():
   (folder/'index.html').write_text(shell(x['title'],body,x['href']))
  DOCS.joinpath('publications.css').write_text(CSS)
  DOCS.joinpath('publications.js').write_text('''const q=document.getElementById('q'),kind=document.getElementById('kind'),cat=document.getElementById('cat'),sort=document.getElementById('sort'),grid=document.getElementById('grid');const cards=[...grid.children];const norm=s=>s.normalize('NFKD').toLowerCase();function render(){let tokens=norm(q.value).trim().split(/\\s+/).filter(Boolean),n=0;for(const c of cards){c.hidden=!(tokens.every(t=>norm(c.textContent).includes(t))&&(!kind.value||c.dataset.kind===kind.value)&&(!cat.value||c.dataset.subject===cat.value));if(!c.hidden)n++}const ordered=[...cards];if(sort.value==='title')ordered.sort((a,b)=>a.dataset.title.localeCompare(b.dataset.title));if(sort.value==='subject')ordered.sort((a,b)=>a.dataset.subject.localeCompare(b.dataset.subject)||a.dataset.title.localeCompare(b.dataset.title));ordered.forEach(c=>grid.appendChild(c));document.getElementById('count').textContent=n+' of '+cards.length+' publications';document.getElementById('empty').hidden=n!==0;}[q,kind,cat,sort].forEach(e=>e.addEventListener(e===q?'input':'change',render));document.getElementById('clear').onclick=()=>{q.value='';kind.value='';cat.value='';sort.value='default';render();q.focus()};render();''')
- visible=[x for x in items if x.get('visibility')!='archive']
+ visible=[x for x in items if x.get('visibility') not in ('archive','hidden')]
  archived=[x for x in items if x.get('visibility')=='archive']
  DOCS.joinpath('index.html').write_text(index(visible,'Brian Tenneson — Publication Library'))
  for subject in sorted({x['subject'] for x in items}):
@@ -75,7 +75,8 @@ def main():
   (DOCS/subject/'index.html').write_text(index(group,code+' — '+SUBJECTS[code],subject))
  (DOCS/'archive').mkdir(parents=True,exist_ok=True)
  DOCS.joinpath('archive/index.html').write_text(index(archived,'Brian Tenneson — Research Archive'))
- DOCS.joinpath('search-index.json').write_text(json.dumps({'schema_version':1,'count':len(items),'items':items},ensure_ascii=False,indent=2)+'\n')
+ public_items=[x for x in items if x.get('visibility')!='hidden']
+ DOCS.joinpath('search-index.json').write_text(json.dumps({'schema_version':1,'count':len(public_items),'items':public_items},ensure_ascii=False,indent=2)+'\n')
  DOCS.joinpath('404.html').write_text(shell('Publication moved','<main><h1>Find this publication</h1><p id="message">Checking the updated publication address…</p><a href="/pub/">Browse all publications</a></main><script>fetch("/pub/redirects.json").then(r=>r.json()).then(m=>{const p=decodeURIComponent(location.pathname.replace(/^\\/pub\\//,""));if(Object.prototype.hasOwnProperty.call(m,p)){location.replace("/pub/"+m[p]+location.search+location.hash)}else{document.getElementById("message").textContent="This address is no longer in the catalog. Search the publication library below."}}).catch(()=>{document.getElementById("message").textContent="Please open the publication library."});</script>'))
  # Keep legacy/historical reader pages consistent with the current fullscreen control.
  fullscreen_button='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\'.reader-frame\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'
