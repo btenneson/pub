@@ -1,0 +1,65 @@
+name: Publish selected October 21 headlining PDFs
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_selected_headliners_20261021.yml'
+      - 'scripts/publish_selected_headliners_20261021.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-selected-headliners-oct21
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install TeX and document tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y pandoc latexmk texlive-xetex texlive-latex-extra texlive-fonts-recommended fonts-dejavu-core poppler-utils
+      - name: Reconstruct staged original source files
+        run: python3 scripts/publish_selected_headliners_20261021.py prepare
+      - name: Compile the three selected PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          p='.build/headliners_20261021'
+          latexmk -pdf -halt-on-error -interaction=nonstopmode -output-directory="$p" "$p/AMLD_Security_3_1_ATLAS_Repaired_v0_3.tex"
+          latexmk -pdf -halt-on-error -interaction=nonstopmode -output-directory="$p" "$p/Basin_Escape_ATLAS_Repaired_v0_2.tex"
+          pandoc "$p/ATLAS_Basin_Escape_Audit_v0_1.md" --pdf-engine=xelatex -V mainfont='DejaVu Serif' -V monofont='DejaVu Sans' -o "$p/ATLAS_Basin_Escape_Audit_v0_1.pdf"
+          for file in AMLD_Security_3_1_ATLAS_Repaired_v0_3 Basin_Escape_ATLAS_Repaired_v0_2 ATLAS_Basin_Escape_Audit_v0_1; do
+            test -s "$p/$file.pdf"
+            pdfinfo "$p/$file.pdf" | grep '^Pages:'
+          done
+      - name: Publish cards at slots 1, 2 and 3
+        run: |
+          python3 scripts/publish_selected_headliners_20261021.py finalize
+          python3 scripts/build_publications.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path('scripts/publications.json').read_text())['items']
+          expected=['cs.CR_Cryptography_and_Security/amld_security_3_1_atlas_repaired_v0_3','cs.LO_Logic_in_Computer_Science/basin_escape_atlas_repaired_v0_2','cs.LO_Logic_in_Computer_Science/atlas_basin_escape_audit_v0_1']
+          assert [x['id'] for x in j[:3]]==expected
+          page=Path('docs/index.html').read_text()
+          positions=[page.index('/pub/'+x+'/') for x in expected]
+          assert positions==sorted(positions)
+          assert len(set(positions))==3
+          print('Verified selected top three cards and unchanged pre-existing relative order')
+          PY
+      - name: Commit published PDFs and library updates
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs scripts/publications.json
+          if git diff --cached --quiet; then echo 'No changes to publish'; exit 0; fi
+          git commit -m 'Publish selected AMLD 3.1, Basin Escape repair, and first audit at top slots'
+          git pull --rebase origin main
+          git push origin HEAD:main
