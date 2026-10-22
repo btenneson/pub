@@ -1,0 +1,23 @@
+name: Diagnostic audit of publication integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/diagnose_publication_integrity.py'
+      - '.github/workflows/diagnose_publication_integrity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pymupdf==1.26.4
+      - name: Build current expanded catalog and readers
+        run: python scripts/build_publications_106.py
+      - name: Enumerate all errors without changing repository
+        run: python scripts/diagnose_publication_integrity.py
