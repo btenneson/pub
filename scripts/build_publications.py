@@ -24,6 +24,8 @@ def links(x,reader=False):
   if reader:
    if x['id']==DIRECT_PDF_READER:result+='<a href="'+p+'" target="_blank" rel="noopener">Open PDF</a>'
    else:result+='<button type="button" class="fullscreen-reader" onclick="const f=document.querySelector(\'.reader-frame\');if(f?.requestFullscreen)f.requestFullscreen();else if(f?.webkitRequestFullscreen)f.webkitRequestFullscreen();">Open full-screen reader</button>'
+  if reader and x['id']=='cs.LO_Logic_in_Computer_Science/basin_escape_atlas_repaired_v0_2':
+   result+='<a href="'+p+'" target="_blank" rel="noopener">Open PDF directly</a><a href="/pub/pdf-reader.html?file='+quote(p,safe='')+'" target="_blank" rel="noopener">Alternative PDF reader</a>'
   result+='<a href="'+p+'" download>Download PDF</a>'
  if x.get('download'):result+='<a href="'+url(x['download'])+'" download>Download DOCX</a>'
  if x.get('source'):result+='<a href="'+url(x['source'])+'">Source</a>'
@@ -52,6 +54,9 @@ def main():
   if x.get('classification_note'):body+='<p class="meta">'+esc(x['classification_note'])+'</p>'
   trilogy=[y for y in items if y['title'].startswith(('MAPQUEST I —','MAPQUEST II —','MAPQUEST III —'))]
   if x in trilogy:body+='<p>MAPQUEST trilogy: '+ ' · '.join('<a href="'+url(y['href'])+'">'+esc(y['title'].split(' —')[0])+'</a>' for y in trilogy)+'</p>'
+  if x['id']=='cs.LO_Logic_in_Computer_Science/basin_escape_atlas_repaired_v0_2':
+   p=url(x['pdf']);alt='/pub/pdf-reader.html?file='+quote(p,safe='')
+   body+='<p class="meta"><strong>PDF reading options:</strong> If the embedded viewer does not display the document, use <a href="'+p+'" target="_blank" rel="noopener">Open PDF directly</a> or the <a href="'+alt+'" target="_blank" rel="noopener">alternative PDF reader</a>. Both links access the same nine-page manuscript.</p>'
   body+='</header>'
   if x.get('figure_image'):
    body+='<figure style="max-width:490px;margin:1.2rem auto;text-align:center"><img loading="lazy" src="'+url(x['figure_image'])+'" alt="'+esc(x.get('figure_alt','Editorial illustration'))+'" style="display:block;width:100%;height:auto;border-radius:6px"><figcaption style="font-size:.88rem;color:var(--muted);margin:.45rem 0">'+esc(x.get('figure_caption',''))+'</figcaption></figure>'
