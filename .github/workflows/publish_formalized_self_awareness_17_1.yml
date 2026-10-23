@@ -1,0 +1,72 @@
+name: Publish Formalized Self-Awareness 17.1
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/cs.LO_Logic_in_Computer_Science/formalized_self_awareness_17_1/Formalized_Self_Awareness_17_1.pdf'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-formalized-self-awareness-17-1
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check publication source and order
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          id = 'cs.LO_Logic_in_Computer_Science/formalized_self_awareness_17_1'
+          records = json.loads(Path('scripts/publications.json').read_text())['items']
+          assert records[0]['id'] == id, 'Publication must remain in slot one'
+          assert sum(x['id']==id for x in records)==1
+          path = Path('docs')/id/'Formalized_Self_Awareness_17_1.pdf'
+          assert path.is_file() and path.read_bytes().startswith(b'%PDF-')
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == 'd5119d09812d0df09db2055d08452ac03ea39e1af7682f9ca31eb0d540bfdf26'
+          assert (Path('docs')/id/'Formalized_Self_Awareness_17_1.tex').is_file()
+          print('PDF, source, and slot-one catalog entry verified')
+          PY
+      - name: Regenerate publication site and PDF readers
+        run: python3 scripts/build_publications_106.py
+      - name: Check built site and unchanged existing card order
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          id='cs.LO_Logic_in_Computer_Science/formalized_self_awareness_17_1'
+          cards=json.loads(Path('scripts/publications.json').read_text())['items']
+          html=Path('docs/index.html').read_text()
+          visible=[x for x in cards if x.get('visibility') not in ('archive','hidden')]
+          assert visible[0]['id']==id
+          slugs=[x['id'] for x in visible[:5]]
+          positions=[html.index('/pub/'+slug+'/') for slug in slugs]
+          assert positions == sorted(positions), 'Visible cards not in catalog order'
+          assert (Path('docs')/id/'index.html').is_file()
+          assert (Path('docs')/id/'source.html').is_file()
+          print('Slot 1 and the subsequent card order verified')
+          PY
+      - name: Commit built pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Build reader and slot-one card for Formalized Self-Awareness 17.1'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

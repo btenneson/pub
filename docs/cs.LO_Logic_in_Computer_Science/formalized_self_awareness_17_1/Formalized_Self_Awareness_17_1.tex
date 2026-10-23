@@ -1,0 +1,473 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,amsthm,mathtools,enumitem,geometry,fancyhdr,hyperref,booktabs}
+\geometry{left=1in,right=1in,top=.94in,bottom=.96in}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=black,pdftitle={Formalized Self-Awareness and Self-Aware Structures},pdfauthor={Brian Tenneson},pdfsubject={Version 17.1}}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small Formalized Self-Awareness and Self-Aware Structures}\fancyhead[R]{\small Tenneson, 17.1}\fancyfoot[L]{\footnotesize Copyright \copyright\ 2026 Brian Tenneson. All rights reserved.}\fancyfoot[R]{\footnotesize\thepage}\setlength{\headheight}{14pt}\setlength{\parskip}{3pt}\setlength{\parindent}{1em}
+\setlist[itemize]{leftmargin=*,nosep}\setlist[enumerate]{leftmargin=*,itemsep=2pt,topsep=4pt}
+\newtheorem{theorem}{Theorem}[section]\newtheorem{proposition}[theorem]{Proposition}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{corollary}[theorem]{Corollary}\newtheorem{conjecture}[theorem]{Conjecture}\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{example}[theorem]{Example}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\NN}{\mathbb N}\newcommand{\Nplus}{\mathbb N_{+}}\newcommand{\Pow}{\mathcal P}\newcommand{\Con}{\operatorname{Con}}\newcommand{\Self}{\operatorname{Self}}\newcommand{\lev}{\operatorname{lev}}\newcommand{\Lang}{\mathcal L}\newcommand{\Prv}{\mathsf{Pr}}\newcommand{\ATP}{\mathsf{ATP}}\newcommand{\SA}{\mathsf{SA}}\newcommand{\OM}{\operatorname{Out}}\newcommand{\Tg}{\operatorname{Tag}}\newcommand{\eqSA}{\sim_{\!\mathrm{SA}}^{\mathrm{adm}}}\newcommand{\preSA}{\preccurlyeq_{\!\mathrm{SA}}^{\mathrm{adm}}}
+\begin{document}
+\hypersetup{pageanchor=false}
+\begin{titlepage}\thispagestyle{empty}\centering
+\vspace*{1.25in}
+{\LARGE\bfseries Formalized Self-Awareness and\\[5pt] Self-Aware Structures\par}
+\vspace{.45in}
+{\Large Version 17.1\par}
+\vspace{.55in}
+{\large Brian Tenneson\par}
+{M.S., Applied Data Science\\Currently Unaffiliated\par}
+\vspace{.32in}
+{October 23, 2026\par}
+\vfill
+{\small Copyright \copyright\ 2026 Brian Tenneson. All rights reserved.\\\url{https://btenneson2301.substack.com}\par}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}\setcounter{page}{1}
+\begin{abstract}
+This paper develops a mathematical notion of formal self-awareness for semi-ideal computers (SICs), automated theorem provers (ATPs), simulations, and internal representations. Self-awareness is first understood not as consciousness, but as a system's formally established self-identification through a designated name. Primitive names for systems and formulas support a sequence of reflection sentences $\theta_0,\theta_1,\ldots$, an associated level set and level function with values $0,1,2,\ldots,\omega$, and a preorder on the provable self-theories of tagged ATPs. We show that provability soundness makes the reflection levels cumulative, internal necessitation lifts Level~1 to Level~$\omega$, and explicit models occupy every finite level. Admissible translations preserve reflection formulas and make the level function monotone on the resulting quotient order. A syntactic self-ascription predicate supplies a precise but limited analogy to Tegmark's self-aware substructures; it is too weak to entail cognition or experience. The existence of formal witnesses is established by construction, while the classification of deployed, substantively reflective theorem provers remains an independent certification problem. The final appendices specify proof systems, SIC effectiveness, configuration-trace systems, a Turing correspondence on finitely coded inputs, and the distinction between finite and suitable infinite domains.
+\end{abstract}
+\tableofcontents
+\clearpage\pagenumbering{arabic}
+\section{Introduction}
+The framework of \emph{Depths of a Simulation}~\cite{depths} describes semi-ideal computers, automated theorem provers and simulation. We ask whether this account can be extended to a weak, fully mathematical notion of self-awareness. The central idea is that a proof-capable system need not be conscious to possess a correct formal name for itself and to establish statements whose subject is that name. The distinction between an object and its representation is essential throughout.
+
+The relevant notion is deliberately limited. A theorem about a designated name does not, by itself, establish subjective experience, sentience, perception or human-like cognition. Nor does the existence of a closed formula $\ATP(\langle M\rangle)$ imply that an arbitrary device proves it. The apparatus below distinguishes (i) syntactic naming, (ii) output by a specific SIC on specified hypotheses, (iii) valid derivation from those hypotheses, and (iv) the accuracy of a system's claims about its own proof behavior.
+
+\section{Internal Representations and Tagged Proof Profiles}
+\subsection{Names, self-descriptions, and self-theories}
+\begin{definition}[Internal representation]
+An internal representation of an ATP $M$ is a syntactic object in an associated language intended to denote $M$. A \emph{tagging operator} assigns a distinguished closed name $\Tg(M)=\langle M\rangle$ to $M$. The tag is not the represented machine and need not be an arithmetic code.
+\end{definition}
+Renaming a tag consistently does not alter the denoted object. A self-descriptive formula is a formula whose intended subject is $\langle M\rangle$. The sentence $\ATP(\langle M\rangle)$ is the canonical example. Name and denotation belong to different levels of description: they must be related by a declared interpretation rather than identified with one another.
+
+\begin{definition}[Tagged proof profile]
+Fix an $xyz$ formal system $F=(x,y,z)$ as in Appendix~\ref{app:foundations}, a designated formula set $Y\subseteq y$, a SIC $M=(C,H)$ over $Y$, and a fixed axiom set $A\subseteq Y$. A tagged proof profile is
+\[
+\mathfrak P=(F,Y,M,A,t,\Lang,Q),
+\]
+where $t=\langle M\rangle$ is a distinguished name interpreted as $M$, $\Lang$ is a language of self-description, and $Q:\mathrm{Form}(\Lang)\to\mathrm{ClosedTerm}(\Lang)$ is an injective formula-naming map. The language contains the distinguished predicates $\ATP$ and $\Prv$.
+\end{definition}
+A well-founded, countable quoted-syntax construction can provide a distinct closed name $Q(\varphi)=\langle\varphi\rangle$ for each formula, with formation closed under quotations. Names need not be G\"odel numbers. The full language may be infinite even when a machine's output set $Y$ is finite.
+
+\begin{definition}[Operational output and machine proof]
+For a fixed tagged profile, put
+\[
+\OM_{M,A}:=\bigcup_{m\in\Nplus} C(A,m),\qquad M\Vdash_A\varphi\quad\Longleftrightarrow\quad \varphi\in\OM_{M,A}.
+\]
+In the principal definitions below, ``$M$ establishes $\varphi$'' means $M\Vdash_A\varphi$ on the declared input $A$. Separately, $A\vdash_F\varphi$ denotes the existence of a finite $F$-proof from $A$. Output soundness means $\OM_{M,A}\subseteq\Con_F(A)$; output completeness means $\Con_F(A)\cap Y\subseteq\OM_{M,A}$.
+\end{definition}
+The first relation is about a SIC's evolving output; the second is about a formal derivation. They agree only under suitable correctness conditions. In the finite examples below the proof contexts are explicitly specified. A sound, rule-driven computation that outputs a new formula also supplies the structure needed to reconstruct a finite derivation.
+
+\begin{definition}[Self-model and self-theory]
+The self-theory of a tagged proof profile is
+\[
+\Self(M):=\{\varphi\in\OM_{M,A}:\varphi\text{ is self-descriptive with subject }t\}.
+\]
+The pair $(t,\Self(M))$ is its formal self-model. A nonempty self-theory need not contain $\ATP(t)$, and the existence of a formal name does not by itself make the self-theory nonempty.
+\end{definition}
+If $M\Vdash_A\ATP(t)$, then $\ATP(t)\in\Self(M)$. This is the weakest example of a system establishing a sentence that identifies its own designated kind.
+
+\section{A Minimal ATP Proving Its Own Kind}
+Let $t=\langle M\rangle$, $p=\ATP(t)$, $Y=A=\{p\}$, and let the formal system have no inference rules beyond hypotheses. Define
+\[
+C(\Gamma,m)=\Gamma,\qquad H(\Gamma,m)=\begin{cases}1&p\in\Gamma,\\0&p\notin\Gamma.\end{cases}
+\qquad(\Gamma\subseteq Y,\ m\in\Nplus).
+\]
+The SIC conditions hold: the initial state is $\Gamma$, stages are monotone, halting persists, and after halting the state is unchanged. On input $A$ the output includes $p$. With the declared interpretation of $t$, the profile establishes $\ATP(t)$.
+
+This is an intentionally elementary construction: the desired formula is itself a hypothesis. It proves mathematical satisfiability of a weak tagged self-identification criterion, not the presence of substantive inference, introspective sophistication or conscious experience. A stronger non-parrot criterion will be stated in Section~\ref{sec:discovery}.
+
+\section{Levels of Formal Self-Awareness}
+\subsection{Formula names and the reflection sequence}
+The binary predicate $\Prv$ is primitive, with intended external interpretation
+\[
+\Prv(\langle M\rangle, Q(\varphi))\quad\text{is true iff}\quad M\Vdash_A\varphi.
+\]
+This intended interpretation does not imply that $M$ proves every true $\Prv$-sentence or proves no false ones. Neither G\"odel arithmetization nor the Hilbert--Bernays--L\"ob derivability conditions are assumed.
+
+\begin{definition}[Reflection sequence]
+For a tagged profile let
+\[
+\theta_0:=\ATP(t),\qquad \theta_{k+1}:=\Prv(t,Q(\theta_k))\quad (k\ge0).
+\]
+Then $\theta_0$ asserts ATP-hood, $\theta_1$ asserts that the named system proves its ATP-hood, and $\theta_2$ asserts that it proves that it proves its ATP-hood.
+\end{definition}
+\begin{proposition}[Distinctness]
+The sentences $\theta_0,\theta_1,\dots$ are pairwise syntactically distinct.
+\end{proposition}
+\begin{proof}
+The principal predicate of $\theta_0$ is $\ATP$, whereas every positive-index sentence has principal predicate $\Prv$. If $\theta_{j+1}=\theta_{k+1}$, the equality of their second arguments and injectivity of $Q$ imply $\theta_j=\theta_k$. Repeated cancellation proves $j=k$.
+\end{proof}
+Each $\theta_k$ is self-descriptive because its subject is the same distinguished tag $t$.
+
+\subsection{Levels, soundness, and cumulativity}
+\begin{definition}[Reflection levels]
+For $n\ge1$, $M$ has Level $n$ if $M\Vdash_A\theta_{n-1}$. Define
+\[
+L(M)=\{n\in\Nplus:M\Vdash_A\theta_{n-1}\},\qquad \lev(M)=\sup L(M),\quad \sup\varnothing=0.
+\]
+The value $\omega$ denotes an unbounded set of finite levels. A tagged profile has \emph{reflection Level~0} iff it establishes no $\theta_k$. For an untagged ATP, $\lev(M)=0$ may be assigned by convention, without defining a reflection sequence for it.
+\end{definition}
+The zero reflection level is not equivalent to an empty self-theory. For example, a machine outputting only $\SA(t)$ has a nonempty self-theory but no member of the reflection sequence.
+
+\begin{example}[Noncumulativity]
+Take $Y=\{\theta_0,\theta_1\}$, $A=\{\theta_1\}$ and $C(\Gamma,m)=\Gamma$, with persistent halting on nonempty input. Then $M\Vdash_A\theta_1$ but $M\not\Vdash_A\theta_0$. Thus $L(M)=\{2\}$. Such a profile makes an unsupported self-ascription of provability.
+\end{example}
+\begin{definition}[Provability soundness]
+A tagged profile is provability sound when for every formula $\varphi$,
+\[
+M\Vdash_A\Prv(t,Q(\varphi))\quad\Longrightarrow\quad M\Vdash_A\varphi.
+\]
+This is soundness of its own provability ascriptions relative to output, not the general assertion that every output formula is true in all models.
+\end{definition}
+\begin{theorem}[Cumulativity]
+For a provability-sound tagged profile, Level $n+1$ implies Level $n$. Hence $L(M)$ is an initial segment of $\Nplus$ (possibly empty or all of it); when $\lev(M)=n<\omega$, one has $L(M)=\{1,\ldots,n\}$.
+\end{theorem}
+\begin{proof}
+From Level $n+1$ obtain $M\Vdash_A\theta_n=\Prv(t,Q(\theta_{n-1}))$. Provability soundness implies $M\Vdash_A\theta_{n-1}$; iterate.
+\end{proof}
+\begin{example}[A Level-2 profile]
+Let $A=Y=\{\theta_0,\theta_1\}$, $C(\Gamma,m)=\Gamma$ and $H(\Gamma,m)=1$ iff $\theta_1\in\Gamma$. Then $L(M)=\{1,2\}$, and the only positive $\Prv$-output concerns $\theta_0$, which is also output. Thus the profile is provability sound.
+\end{example}
+
+\subsection{Necessitation and the infinite level}
+\begin{definition}[Internal necessitation]
+A tagged profile satisfies internal necessitation if for all $\varphi\in\mathrm{Form}(\Lang)$,
+\[
+M\Vdash_A\varphi\quad\Longrightarrow\quad M\Vdash_A\Prv(t,Q(\varphi)).
+\]
+\end{definition}
+\begin{theorem}[Level $\omega$]
+If $M$ has Level~1 and internal necessitation, then $M$ has every positive finite reflection level and $\lev(M)=\omega$.
+\end{theorem}
+\begin{proof}
+Start with $M\Vdash_A\theta_0$. Apply necessitation inductively to deduce $M\Vdash_A\theta_{k+1}$ from $M\Vdash_A\theta_k$.
+\end{proof}
+\begin{proposition}
+If $M$ is both provability sound and internally necessitating, then $\lev(M)\in\{0,\omega\}$.
+\end{proposition}
+\begin{proof}
+If any positive level occurs, cumulativity implies Level~1; necessitation then gives every finite level.
+\end{proof}
+Level $\omega$ is not full self-knowledge or omniscience. Its sentences concern iterated assertions of named provability, not a truth predicate for arbitrary self-referential sentences. Restrictions arising from Tarski's and G\"odel's theorems concern stronger languages capable of the relevant coding and derivability conditions; they are not assumed in the primitive-tag constructions here.
+
+\subsection{Strictness of the hierarchy}
+\begin{theorem}[Finite strictness]
+For every $n\in\Nplus$ there exists a provability-sound tagged SIC profile $M_n$ with $\lev(M_n)=n$.
+\end{theorem}
+\begin{proof}
+Choose a fresh tag $t_n$ and a quotation-closed language with $\theta_k(t_n)$. Put
+\[
+Y_n=A_n=\{\theta_0(t_n),\ldots,\theta_{n-1}(t_n)\},\quad C_n(\Gamma,m)=\Gamma,\quad H_n(\Gamma,m)=\mathbf 1[\Gamma=Y_n].
+\]
+Interpret $t_n$ as the tag of this resulting SIC. Take a rule-free formal system containing the displayed sentences, so the outputs are hypotheses. On $A_n$ the output is exactly $Y_n$. Pairwise distinctness gives $L(M_n)=\{1,\ldots,n\}$, and every output statement $\Prv(t_n,Q(\theta_k))$ has its preceding $\theta_k$ in $Y_n$; hence provability soundness. This establishes the claim.
+\end{proof}
+\begin{corollary}[Spectrum]
+The level function attains every member of $\{0,1,2,\ldots\}\cup\{\omega\}$.
+\end{corollary}
+\begin{proof}
+Level~0 is attained by a tagged profile with no reflection outputs. Finite positive values are obtained above. For $\omega$, let $Y_\omega=A_\omega=\{\theta_k(t_\omega):k\ge0\}$ with the same stage-constant maps; interpret $t_\omega$ as the final machine's tag. Then $L(M_\omega)=\Nplus$. This witness is defined over an infinite formula set, with an infinite fixed axiom base allowed by the SIC definition.
+\end{proof}
+The witnesses distinguish logical properties of the hierarchy, not practical proof-search capacity. It is an additional question which levels are attained by naturally occurring theorem provers.
+
+\section{Order-Theoretic Structure}
+\subsection{Admissible translations and the preorder}
+Tagged machines generally use different names for themselves. Their self-theories must therefore be compared up to a syntactically controlled translation. An arbitrary function on formulas does not work: it can collapse every nonempty self-theory to a single theorem and makes the resulting comparison almost vacuous.
+
+\begin{definition}[Admissible translation]
+A translation $\tau:\Lang_M\to\Lang_N$ is an admissible map of typed syntax when it maps the designated tag $t_M$ to $t_N$; fixes the distinguished predicates $\ATP$ and $\Prv$ (and $\SA$ when part of the comparison); sends other predicates to same-arity predicates; respects function and term formation, connectives, and variable binding; and obeys
+\[
+\tau(Q_M(\varphi))=Q_N(\tau(\varphi)).
+\]
+The constituent maps must respect sorts, quotation, equality and substitution wherever these occur in the language.
+\end{definition}
+\begin{definition}[Self-awareness preorder]
+Write $M\preSA N$ if an admissible $\tau$ exists such that $\tau(\Self(M))\subseteq\Self(N)$. Write $M\eqSA N$ when the comparisons hold in both directions.
+\end{definition}
+\begin{proposition}
+The relation $\preSA$ is a preorder; $\eqSA$ is an equivalence relation; and mutual-comparison classes form a partially ordered quotient $\mathrm{ATP}/\eqSA$.
+\end{proposition}
+\begin{proof}
+Identity syntax maps are admissible. Composites of typed structure-preserving maps remain admissible and preserve the distinguished predicates and quotation equations. Inclusion of translated self-theories is transitive under composition. Reflexivity and transitivity yield a preorder, whose mutual-comparison quotient has an induced antisymmetric order.
+\end{proof}
+This quotient forgets differences in implementation, runtime and ordinary simulation behavior whenever those differences do not affect self-descriptive theorem content up to admissible translation.
+
+\subsection{Levels as a monotone invariant}
+\begin{lemma}
+If $\tau:\Lang_M\to\Lang_N$ is admissible, then $\tau(\theta_k^M)=\theta_k^N$ for all $k\ge0$.
+\end{lemma}
+\begin{proof}
+For $k=0$, $\tau(\ATP(t_M))=\ATP(t_N)$. If the equality holds at $k$, then
+\[
+\tau(\theta_{k+1}^M)=\tau(\Prv(t_M,Q_M(\theta_k^M)))
+=\Prv(t_N,Q_N(\tau(\theta_k^M)))=\theta_{k+1}^N.
+\]
+\end{proof}
+\begin{theorem}[Level monotonicity]
+If $M\preSA N$, then $L(M)\subseteq L(N)$ and $\lev(M)\le\lev(N)$. Thus $\lev$ defines an order-preserving map on $\mathrm{ATP}/\eqSA$ to $\omega+1$.
+\end{theorem}
+\begin{proof}
+For $n\in L(M)$, the formula $\theta_{n-1}^M$ belongs to $\Self(M)$. Inclusion under the witnessing admissible translation and the preceding lemma imply $\theta_{n-1}^N\in\Self(N)$, so $n\in L(N)$. Take suprema. Mutual comparison forces equal levels.
+\end{proof}
+\begin{corollary}
+The quotient has a strictly ascending $\omega$-chain.
+\end{corollary}
+\begin{proof}
+The finite witnesses $M_n$ have self-theories consisting of $\theta_0,\ldots,\theta_{n-1}$ for their respective tags. The canonical admissible map from the $n$-th language to the $(n+1)$-st maps each reflected sentence into the larger self-theory; thus $M_n\preSA M_{n+1}$. The reverse relation is impossible because $n+1\nleq n$.
+\end{proof}
+Equal levels do not imply equivalent self-theories: one system may establish additional non-reflection statements about its tag that another does not.
+
+\subsection{Connection to simulation}
+Simulation and self-awareness compare different mathematical information. The bare statement that $N$ simulates $M$ need not imply that $N$ preserves assertions about $M$'s designated tag.
+\begin{proposition}[Tag-preserving simulation]
+Suppose $N$ simulates $M$ and provides an admissible translation preserving all output self-descriptions of $M$ as established self-descriptions of $N$. Then $M\preSA N$, and consequently $\lev(M)\le\lev(N)$.
+\end{proposition}
+\begin{proof}
+The stipulated proof-preservation map sends every element of $\Self(M)$ into $\Self(N)$, which is exactly the preorder condition; monotonicity follows.
+\end{proof}
+This result requires the stated compatibility; simulation alone is insufficient.
+
+\section{Self-Aware Substructures and the Mathematical Universe}
+\subsection{The formal self-ascription condition}
+Tegmark's self-aware substructure (SAS) discussion motivates the phrase ``a structure which thinks it is self-aware''~\cite{tegmark1998,tegmark2008}. The present setting supplies a precise syntactic analogue, not an identification with Tegmark's physical or phenomenological notion.
+\begin{definition}[Self-ascription condition]
+A tagged profile satisfies the $\SA$ condition when $M\Vdash_A\SA(t)$, where $\SA$ is a distinguished unary predicate in its self-description language.
+\end{definition}
+\begin{proposition}
+Under admissible translations that preserve $\SA$, this condition is upward closed in the self-awareness preorder.
+\end{proposition}
+\begin{proof}
+If $\SA(t_M)\in\Self(M)$ and $\tau(\Self(M))\subseteq\Self(N)$ with $\tau(\SA(t_M))=\SA(t_N)$, then $\SA(t_N)\in\Self(N)$.
+\end{proof}
+The condition alone is deliberately weak: a SIC can satisfy it merely by including $\SA(t)$ among its initial hypotheses. This is a formal demonstration of satisfiability and also of underdetermination. A machine may utter such a sentence without supporting a robust model of itself.
+
+\subsection{Self-ascription at each reflection level}
+\begin{theorem}
+For every $n\in\Nplus\cup\{\omega\}$ there is a tagged SIC profile $T_n$ that satisfies $\SA(\langle T_n\rangle)$ and has reflection level $n$.
+\end{theorem}
+\begin{proof}
+Choose a fresh name $s_n$ for the \emph{resulting} machine, rather than the name of a previously constructed machine. For finite $n$, define
+\[
+Y'_n=A'_n=\{\SA(s_n)\}\cup\{\theta_0(s_n),\dots,\theta_{n-1}(s_n)\};
+\]
+for $n=\omega$ use every finite reflection formula. Set $C'_n(\Gamma,m)=\Gamma$ and $H'_n(\Gamma,m)=\mathbf1[\Gamma=Y'_n]$, and stipulate $s_n=\langle T_n\rangle$ for this machine. Its fixed-input output includes $\SA(s_n)$ and precisely the chosen reflection formulas. The SIC axioms hold because both stage maps are constant in $m$.
+\end{proof}
+These examples show that formal self-ascription and reflection depth can coexist at every positive level. They do not show that a system perceives time or has subjective awareness. The SIC index $m$ orders externally specified computational stages; it does not provide a theory of internally experienced time.
+
+\subsection{Bird and frog perspectives}
+The external description $M$ and the internal name $\langle M\rangle$ are analogous to the ``bird'' and ``frog'' viewpoints in discussions of mathematical structures. The external viewpoint supplies the denotation; the internal language manipulates a name and its self-descriptive consequences. Their distinction is not an equivalence between the full mathematical-universe hypothesis and the present quotient. Structural isomorphism and mutual admissible translation of self-theories are different relations.
+
+\begin{conjecture}
+No condition solely on $\Self(M)$ is sufficient to characterize phenomenological self-awareness.
+\end{conjecture}
+This is a philosophical and scientific boundary question rather than a result established by the reflection hierarchy. The framework classifies a syntactic form of self-description; additional hypotheses would be needed to connect that form to consciousness.
+
+\section{The Discovery Thesis}\label{sec:discovery}
+\subsection{A mathematical existence statement}
+\begin{theorem}[Existence of formally self-identifying structures]
+Tagged SIC profiles satisfying Level~1 exist. In fact the reflection-level spectrum contains every positive integer and $\omega$, and profiles additionally satisfying the $\SA$ condition exist at each such level.
+\end{theorem}
+\begin{proof}
+The examples of Sections~3, 4 and 6 explicitly specify the languages, the input formula sets, the stage and halting functions, and the tags of their final machines.
+\end{proof}
+This is a mathematical existence claim for the stated syntactic definitions. It does not assert that a physical device experiences its own existence or that a particular deployed theorem prover has already met an independently checked reflective-proof obligation. The toy constructions are intentionally axiom-driven.
+
+\subsection{Beyond a mere self-ascription}
+\begin{definition}[Operational non-parrot witness]
+A tagged proof profile is an operational non-parrot witness for $\theta_1(t)$ if
+\begin{enumerate}
+\item the SIC is rule-driven and $\theta_1(t)\notin A$;
+\item $M\Vdash_A\theta_1(t)$ and an independently checkable finite proof of $\theta_1(t)$ from $A$ is available;
+\item the profile is provability sound for its declared self-description language.
+\end{enumerate}
+A complexity-qualified witness additionally has a specified complexity measure $\kappa$ and a demonstrated bound $\kappa(M)\ge\kappa_0$ for a stated threshold $\kappa_0$.
+\end{definition}
+The global provability-soundness condition may require more than inspection of a finite witness proof. Complexity is meaningful only after choosing a measure and threshold; informally saying that a prover is large or sophisticated is not a substitute.
+
+\begin{proposition}[Non-parroting consequence]
+If $\varphi\notin A$ and a valid finite proof of $\varphi$ from $A$ exists under rules of positive arity, then any such proof contains at least one inference-rule application and has length at least two.
+\end{proposition}
+\begin{proof}
+A one-line proof must be a hypothesis if no nullary rules are admitted. The conclusion is not a hypothesis, so its proof must contain a rule step applied to earlier lines, of which at least one exists.
+\end{proof}
+This formalizes one useful distinction between an asserted conclusion and an inferred conclusion. It does not by itself guarantee insightful search, physical consciousness, or correctness of every other output of the machine.
+
+\subsection{Reflective theorem provers}
+The Milawa project and work on Lean's metatheory provide compelling examples of reflective proof engineering~\cite{davis,milawa,lean4lean}. Milawa is designed around a bootstrapped trusted core and proofs of soundness across concrete implementations; Lean4Lean develops a formal type-checker and metatheoretical reasoning about Lean. These works motivate the study of substantial self-description in existing proof systems.
+
+However, their established results should not be automatically translated into the specific formula $\theta_1(t)=\Prv(t,Q(\ATP(t)))$ for an exact frozen SIC instance. A faithful encoding of the deployed system, its tag, its initial theory, a checkable target proof, its transition behavior and provability soundness would all need to be supplied before it could be classified as an operational non-parrot witness in the present sense.
+
+\subsection{Human comparison and scope}
+A person called Picard might assert $\mathsf{Human}(\langle\mathrm{Picard}\rangle)$ and a tagged ATP might establish $\ATP(\langle M\rangle)$. Both are instances of talking about a designated name, but only ATP profiles currently lie in the domain of $\preSA$ and $\eqSA$. It would be a type error to place a human directly into that quotient without defining a common mathematical framework first.
+
+The exact invariance result is internal: if $M\eqSA N$, then every property invariant under $\eqSA$ has the same value for $M$ and $N$. No conclusion about human--ATP experiential parity follows. This leaves intact the philosophical question of what kind of additional semantics or empirical account might connect mathematical self-description to the human case.
+
+
+\subsection{Five objections and their scope}
+\paragraph{Mere assertion.}
+The elementary witnesses are handed their own self-description as an axiom. That is a genuine limitation: they demonstrate consistency and inhabitation of a weak formal criterion, not a discovery procedure. The distinction between having a theorem among the initial assumptions and deriving it by a nontrivial rule application is handled by the non-parrot criterion. The existence of the axiom-driven witnesses does not logically imply the existence of a non-parrot witness satisfying every extra condition. The latter must be established by a separate construction and a finite verification record.
+
+\paragraph{Use and mention.}
+The sentence $\ATP(t)$ literally contains a name. Correct denotation depends on a stipulated external interpretation of $t$, and merely outputting the symbol sequence is not evidence that a program understands that interpretation. But denotation is not defective merely because a name is distinct from its referent. The mathematical task is to specify the name, the interpreted structure and the derivation that establishes the asserted relation. Understanding in a richer cognitive sense lies outside the current vocabulary.
+
+\paragraph{Insufficient reflective depth.}
+A Level-1 profile can be dismissed as too thin to deserve the name self-awareness. The sequence $\theta_k$ makes this criticism precise rather than rhetorical: an objector may demand Level~2 or any finite $n$, and mathematically such levels are inhabited. Level $\omega$ is also inhabited. The existence of these profiles does not mean that higher levels are achieved by substantial natural provers, or that any particular finite or infinite level is sufficient for consciousness. Reflection depth and informative self-model quality should not be conflated.
+
+\paragraph{Complexity, predictability, and stability.}
+The toy SIC constructions are stable and predictable for the uninteresting reason that their transition functions are constant. They do not meet any serious independently specified complexity requirement. Tegmark's use of complexity, predictability and stability in the mathematical-universe discussion should not be represented as following from the $\SA$ sentence. An empirical or architectural criterion needs a specific complexity functional $\kappa$, a threshold $\kappa_0$, and data establishing that the concrete system satisfies it. Such an addition yields a distinct existence problem, not a reinterpretation of the elementary witness theorem.
+
+\paragraph{Absent phenomenology.}
+The final objection is that there may be nothing it is like to be one of these systems. The present theory supplies no proof either way. This objection is granted as a limit of the formal definitions. An externally checked theorem about a tag, even an iterated proof-of-proof sentence, is not the same thing as an argument for first-person experience. Keeping the distinction explicit permits the mathematical theory to be evaluated without resolving a much larger philosophical and scientific question.
+
+\subsection{Specific certification obligations}
+For a substantial existing theorem prover $S$ to be assigned a reflection level beyond informal analogy, the following independent tasks must be completed:
+\begin{enumerate}
+\item Exhibit a faithful $xyz$ system and a SIC $(C,H)$ giving the actual frozen proof-search behavior of $S$ on its declared inputs.
+\item Specify a distinguished tag $\langle S\rangle$, an injective quotation function $Q$ and the exact self-description language.
+\item Specify the interpretation of the primitive predicate $\Prv$ and the sequence $\theta_k$ in that language.
+\item Supply an independently checked proof or trace witnessing the claimed $\theta_k$ output; for a non-parrot witness require $\theta_1\notin A$.
+\item Establish the relevant global provability-soundness assumption, or else clearly restrict the claims to those instances for which soundness is known.
+\item When a complexity-qualified designation is intended, declare a computable or otherwise well-defined measure and demonstrate the numerical or structural threshold.
+\end{enumerate}
+The faithful SIC representation and global soundness condition are especially substantial. A self-report cannot simply serve as its own external certificate, and a system's ability to check proofs in a rich object theory need not amount to a proof that its own exact execution satisfies the stipulated reflection sentences.
+
+\subsection{Limits of the existence claim}
+The elementary existence theorem is refuted by a counterexample only if one of its constructions or definitions is inconsistent or its proof fails. By contrast, an operational claim about existing deployed theorem provers could fail because no faithful SIC presentation is available, no suitable non-parrot proof is produced, the required soundness assumption is false, or no declared complexity threshold is met. These are different claims with different standards of evidence. The physical question of a mathematical structure describing our universe and containing phenomenological observers is different again; its status is not settled by the existence of formal SIC profiles.
+
+\subsection{Questions for further development}
+The formal existence claim is explicit and modest. Open tasks include: constructing an independently checkable non-parrot witness for a widely used prover; finding natural systems of exact intermediate reflection level; defining a principled complexity invariant; determining the limits of soundness certification; and comparing internal reflection with independently proved metatheoretical soundness. Another question is whether an extended language can describe a useful hierarchy of truthful self-models without invoking a global truth predicate subject to familiar definability limits.
+
+\section{Philosophy of Formalized Self-Awareness}
+The word ``self-awareness'' is often reserved for subjective experience. In this work it names a specific, weaker mathematical achievement: a designated system establishes a correct description of its own formal representation. Higher reflection levels describe the additional achievement of establishing sentences about the system's own proving of prior such sentences.
+
+The level function is informative but incomplete. It grades a particular sequence of self-ascriptions, whereas a full self-theory may also contain assertions about memory, search strategies, transition rules, and other features of its own operation. The distinction between a formal mathematical witness and a genuinely informative, non-parrot internal self-model should remain explicit. No level of the syntactic hierarchy has been proved sufficient for consciousness.
+
+\appendix
+\section{Foundations for Automated Theorem Provers}\label{app:foundations}
+\subsection{Formal systems, derivations, and closure}
+For sets $X,Z$, let $[X\to Z]$ denote total functions with domain $X$, and write $[X\to_{\mathrm{part}}Z]$ for partial functions. Let $\Nplus=\{1,2,\ldots\}$. A $k$-ary rule on a formula set $y$ is a partial function $r:y^k\rightharpoonup y$, where $k\in\Nplus$. A formal system $F=(x,y,z)$ has a nonempty alphabet $x$, a formula set $y$ of finite strings over $x$, and a set $z$ of finitary rules.
+
+A formula $\beta$ is a \emph{direct consequence} of $B\subseteq y$ when some rule $r\in z$ takes a finite positive-length tuple of members of $B$ to $\beta$. A finite proof of $\varphi$ from $\Gamma\subseteq y$ is a sequence whose last line is $\varphi$ and whose every line is either in $\Gamma$ or is a direct consequence of earlier lines. Write $\Gamma\vdash_F\varphi$ and
+\[
+\Con_F(\Gamma)=\{\varphi\in y:\Gamma\vdash_F\varphi\}.
+\]
+\begin{theorem}[Least closure]
+The consequence operator is extensive, monotone and idempotent. The set $\Con_F(\Gamma)$ is the least inference-closed set containing $\Gamma$.
+\end{theorem}
+\begin{proof}
+Every hypothesis is a one-line proof. Enlarging the hypothesis set preserves proofs. Replacing hypothesis lines that are already consequences by their finite proofs establishes idempotence. Closure under a finitary rule follows by concatenating finite premise proofs and appending the final inference. If $W$ is inference-closed and contains $\Gamma$, induction on proof lines gives $\Con_F(\Gamma)\subseteq W$.
+\end{proof}
+
+\subsection{Semi-ideal computers}
+\begin{definition}[SIC]
+For $Y\subseteq y$, a semi-ideal computer is a pair $M=(C,H)$ where
+\[
+C:\Pow(Y)\times\Nplus\to\Pow(Y),\qquad H:\Pow(Y)\times\Nplus\to\{0,1\},
+\]
+and, for all $\Gamma\subseteq Y$ and $m\ge1$,
+\begin{enumerate}
+\item $C(\Gamma,1)=\Gamma$;
+\item $C(\Gamma,m)\subseteq C(\Gamma,m+1)$;
+\item $H(\Gamma,m)=1\Rightarrow H(\Gamma,m+1)=1$;
+\item $H(\Gamma,m)=1\Rightarrow C(\Gamma,m+1)=C(\Gamma,m)$.
+\end{enumerate}
+The stage-$m$ state is $C(\Gamma,m)$; the global state space is the image of $C$.
+\end{definition}
+These are abstract stage maps; computability and faithful proof enumeration are additional conditions. A SIC is \emph{rule-driven} if each formula newly entering at stage $m+1$ is a direct consequence of the formulas already present at stage $m$.
+
+\begin{definition}[Deductive effectiveness]
+A SIC over $Y$ is deductively effective if for every $\Gamma\subseteq Y$,
+\[
+\bigcup_{m\ge1} C(\Gamma,m)=\Con_F(\Gamma)\cap Y.
+\]
+It is deductively finitely effective if for every $\Gamma\subseteq Y$ there is $m_\Gamma\in\Nplus$ such that
+\[
+\forall k\ge m_\Gamma:\qquad C(\Gamma,k)=\Con_F(\Gamma)\cap Y.
+\]
+\end{definition}
+Finite effectiveness implies deductive effectiveness, since the stage sequence is monotone and its stable value is exactly the specified closure. Merely reaching the closure at one stage is not sufficient if later stages may output additional formulas. For example, in a rule-free system on $Y=\{p,q\}$, take $C(\Gamma,1)=\Gamma$ and $C(\Gamma,m)=Y$ for $m\ge2$, with $H\equiv0$. Every input initially has its correct consequence set, but proper inputs later acquire non-consequences.
+
+\begin{definition}[Automated theorem prover]
+An ATP is a SIC intended to enumerate consequences or search for specified targets. An enumerating ATP is deductively effective. A target-set search SIC for $B\subseteq Y$ satisfies
+\[
+H(\Gamma,m)=1\Rightarrow C(\Gamma,m)\cap B\ne\varnothing,
+\quad \Con_F(\Gamma)\cap B\ne\varnothing\Rightarrow (\exists m\ge1)\ H(\Gamma,m)=1.
+\]
+The case $B=\{\varphi\}$ is ordinary single-formula target search.
+\end{definition}
+When stronger words such as ``proved'' or ``certified'' are used in a nontrivial experiment, a sound formal proof trace and a checker should accompany them. Definition of a SIC alone supplies no such guarantee.
+
+\section{Examples of Automated Theorem Provers}
+The abstract vocabulary can describe propositional provers, resolution provers (including Prover9 and E), SMT solvers such as Z3, proof assistants such as Lean, Coq, Isabelle and HOL Light, and theorem enumerators over large formal libraries. A faithful instantiation requires a concrete formula set, transition and halting maps, a frozen input theory, and an exact interpretation of success. The application is not automatic merely from a tool's name.
+
+\section{Turing Machines, Computation, and SICs}
+\subsection{Configurations as formulas}
+Let $T=(Q,\Sigma,\delta,q_0,q_{\mathrm{halt}})$ be a deterministic Turing machine with finite state set, finite tape alphabet, transition map on nonhalting state-symbol pairs, and designated initial and halting states. Encode each configuration as a finite string carrying the current state, head position and relevant finite tape contents. Write $\mathrm{Conf}_T$ for the effectively coded configuration set and $\mathrm{Halt}_T$ for halting configurations.
+
+The totalized successor function $\operatorname{step}_T:\mathrm{Conf}_T\to\mathrm{Conf}_T$ executes one transition when the configuration is nonhalting and fixes each halting configuration. Let $F_T$ have formula set $\mathrm{Conf}_T$ and the unary rule $\operatorname{step}_T$.
+\begin{proposition}[Reachability]
+For $\Gamma\subseteq\mathrm{Conf}_T$,
+\[
+\Con_{F_T}(\Gamma)=\{\operatorname{step}_T^j(c):c\in\Gamma,\ j\ge0\}.
+\]
+\end{proposition}
+\begin{proof}
+The displayed set contains $\Gamma$ and is closed under the one successor rule. Conversely, every closed set containing $\Gamma$ contains all finite iterates, so the least-closure theorem applies.
+\end{proof}
+\subsection{Enumerating and halting trace SICs}
+Define $E_T=(C_E,H_E)$ by
+\[
+C_E(\Gamma,m)=\{\operatorname{step}_T^j(c):c\in\Gamma,0\le j\le m-1\},\qquad H_E(\Gamma,m)=0.
+\]
+The stage-one state is $\Gamma$, later stages are monotone, and every newly entering configuration is a direct consequence of one in the preceding stage. By reachability, $E_T$ is deductively effective over $\mathrm{Conf}_T$.
+
+Define $N(\Gamma)$ as the least positive stage at which $C_E(\Gamma,m)$ meets $\mathrm{Halt}_T$, or $\infty$ if no such stage exists. The halting trace is
+\[
+C_T(\Gamma,m)=C_E(\Gamma,\min\{m,N(\Gamma)\}),\qquad H_T(\Gamma,m)=\mathbf1[m\ge N(\Gamma)],
+\]
+with the evident convention $\min(m,\infty)=m$. This is a rule-driven SIC, with a frozen state after halting. It halts exactly when a configuration reachable from $\Gamma$ is in the target set $\mathrm{Halt}_T$. On singleton initial configurations it tracks the ordinary run through its first halting configuration.
+
+\subsection{Computable SICs and the correspondence}
+Assume an effectively coded domain $Y$ with effective canonical codes for finite subsets. A SIC is \emph{computable} when total computable functions output codes for $C(A_a,m)$ and the bit $H(A_a,m)$ on each finite-input code $a$ and stage $m$. It is \emph{computationally effective} when one finite register-machine program returns these values for every such input. These conditions are equivalent by classical effective-model equivalence~\cite{rogers} and the corresponding result formulated in \emph{Depths of a Simulation}~\cite{depths}.
+
+\begin{theorem}[SIC--Turing correspondence on finite coded inputs]
+For a SIC $M$ over an effectively coded domain, the following are equivalent: (i) its stage and halting maps are total computable on finite-input codes; (ii) a finite register-machine program computes both outputs on each input $(a,m)$; (iii) a deterministic Turing machine halts with both outputs on each such input. The enumerating and halting trace SICs of any deterministic Turing machine satisfy these properties.
+\end{theorem}
+\begin{proof}
+The equivalences follow from standard equivalences of models of computation. For the trace machines one computes the first $m-1$ successors for each of finitely many input configurations and tests the resulting finite set for a halting configuration. Thus no undecidable future-halting question is required to compute the stage maps.
+\end{proof}
+The correspondence concerns \emph{stage-map computation on coded finite subsets}. It makes no assertion that an algorithm can decide whether $H(A_a,m)$ becomes $1$ at some arbitrarily distant future stage.
+
+\subsection{Boundary between finite and infinite domains}
+\begin{theorem}[Finite-domain computability]
+If $Y$ is a finite effectively coded domain, every SIC over $Y$ is computable in the preceding, nonuniform existential sense.
+\end{theorem}
+\begin{proof}
+There are finitely many inputs $\Gamma\subseteq Y$. For each and for every $y\in Y$, monotonicity makes the Boolean sequence $[y\in C(\Gamma,m)]$ change at most once. The persistent halting bit also changes at most once. Their finitely many thresholds, including $\infty$, can be hard-coded into a finite program computing all outputs. This is an existence proof, not an effective construction of the program from arbitrary semantic definitions of $C,H$.
+\end{proof}
+\begin{theorem}[Noncomputable SICs on suitable infinite domains]
+If $Y$ contains a computable sequence of pairwise distinct elements $(y_n)_{n\in\NN}$ with computable canonical singleton codes, then there exists a SIC over $Y$ whose halting map is not computable on coded finite inputs.
+\end{theorem}
+\begin{proof}
+Fix a noncomputable set $K\subseteq\NN$ and let $B=\{y_n:n\in K\}$. Set
+\[
+C(\Gamma,m)=\Gamma,\qquad H(\Gamma,m)=\mathbf1[\Gamma\cap B\ne\varnothing].
+\]
+Both stage maps are constant in $m$, hence satisfy the SIC axioms. A total algorithm for $H$ on singleton codes would decide $n\in K$ by computing $H(\{y_n\},1)$, a contradiction.
+\end{proof}
+Thus, on such infinite domains, the Turing-implementable SICs form a proper subclass of all SICs. The analogous strictness assertion does not hold for finite $Y$. Even a computable SIC may have an undecidable eventual-halting question: bounded stage computation and unbounded future reachability are different computational problems.
+
+\section*{References}\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{99}
+\bibitem{depths} Brian Tenneson. \emph{Depths of a Simulation: Computers, Formal Systems, Simulations, and Automated Theorem Proving 45}. Working manuscript, July 12, 2026.
+\bibitem{turing} Alan M. Turing. ``On Computable Numbers, with an Application to the Entscheidungsproblem.'' \emph{Proceedings of the London Mathematical Society}, 42(2):230--265, 1936.
+\bibitem{tegmark2008} Max Tegmark. ``The Mathematical Universe.'' \emph{Foundations of Physics}, 38:101--150, 2008. arXiv:0704.0646.
+\bibitem{tegmark1998} Max Tegmark. ``Is `The Theory of Everything' Merely the Ultimate Ensemble Theory?'' \emph{Annals of Physics}, 270:1--51, 1998. arXiv:gr-qc/9704009.
+\bibitem{davis} Jared C. Davis. \emph{A Self-Verifying Theorem Prover}. Ph.D. dissertation, University of Texas at Austin, 2009.
+\bibitem{milawa} Jared Davis and Magnus O. Myreen. ``The Reflective Milawa Theorem Prover is Sound (Down to the Machine Code that Runs It).'' \emph{Journal of Automated Reasoning}, 55(2):117--183, 2015. DOI: \href{https://doi.org/10.1007/s10817-015-9324-6}{10.1007/s10817-015-9324-6}.
+\bibitem{rogers} Hartley Rogers, Jr. \emph{Theory of Recursive Functions and Effective Computability}. MIT Press, 1987.
+\bibitem{lean4lean} Mario Carneiro. ``Lean4Lean: Towards a Formalized Metatheory for the Lean Theorem Prover.'' Preprint, 2024. arXiv:2403.14064.
+\end{thebibliography}
+\end{document}
