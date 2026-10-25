@@ -25,7 +25,7 @@ async function loadIndex() {
         fetch('/pub/semantic-vectors.i8')
       ]);
       if (!metaResponse.ok || !vectorsResponse.ok) {
-        throw new Error('The semantic index is not published yet. Its GitHub Actions build may still need to run.');
+        return buildMetadataFallback();
       }
       const meta = await metaResponse.json();
       const vectors = new Int8Array(await vectorsResponse.arrayBuffer());
@@ -59,6 +59,54 @@ async function loadModel() {
     })().catch(err => { extractorPromise = null; throw err; });
   }
   return extractorPromise;
+}
+
+// A real-embedding fallback keeps semantic search usable before the PDF
+// index workflow has completed. It only searches published catalog metadata.
+async function buildMetadataFallback() {
+  message('Preparing semantic search from the publication catalog…');
+  const response = await fetch('/pub/search-index.json');
+  if (!response.ok) throw new Error('The public publication catalog is unavailable.');
+  const catalog = await response.json();
+  const items = catalog.items.filter(item => item.visibility !== 'hidden');
+  const publications = items.map(item => ({
+    title: item.title, href: item.href, subject: item.category || item.subject || '',
+    kind: item.kind || '', archived: item.visibility === 'archive', pdf: item.pdf || ''
+  }));
+  const passages = [];
+  const texts = [];
+  for (let i = 0; i < items.length; i++) {
+    const text = [
+      items[i].title, items[i].card_text || '',
+      items[i].quote || '', items[i].category || '', items[i].authors || ''
+    ].join('. ').slice(0, 1250);
+    passages.push({a: i, p: 0, s: text.slice(0, 360)});
+    texts.push(text);
+  }
+  const dims = 384;
+  const vectors = new Int8Array(passages.length * dims);
+  const extractor = await loadModel();
+  for (let from = 0; from < texts.length; from += 12) {
+    message('Embedding catalog metadata: ' + Math.min(from + 12, texts.length) +
+      ' of ' + texts.length + ' publications…');
+    const output = await extractor(texts.slice(from, from + 12),
+      {pooling: 'mean', normalize: true});
+    if (!output.data || output.data.length !== Math.min(12, texts.length - from) * dims) {
+      throw new Error('Metadata fallback embedding dimension mismatch.');
+    }
+    for (let j = 0; j < output.data.length; j++) {
+      vectors[from * dims + j] = Math.max(-127,
+        Math.min(127, Math.round(output.data[j] * 127)));
+    }
+  }
+  const categories = [...new Set(publications.map(a => a.subject))].filter(Boolean).sort();
+  subject.replaceChildren(new Option('All subjects', ''));
+  for (const category of categories) subject.add(new Option(category, category));
+  return {meta: {
+    schema: 1, dimensions: dims, format: 'signed-int8-row-major-scale-127',
+    publications, passages, passage_count: passages.length,
+    unavailable_pdfs: [], metadata_only: true
+  }, vectors};
 }
 
 function makeResult(article, hit) {
@@ -138,7 +186,8 @@ form.addEventListener('submit', async event => {
     message(
       ranked.length + ' related publication' + (ranked.length === 1 ? '' : 's') +
       ' shown, ranked by passage similarity. Indexed passages: ' + meta.passage_count +
-      (meta.unavailable_pdfs.length ? '. Some PDFs were unavailable for extraction.' : '.')
+      (meta.metadata_only ? '. Metadata-only until the PDF passage index is published.' :
+      (meta.unavailable_pdfs.length ? '. Some PDFs were unavailable for extraction.' : '.'))
     );
   } catch (err) {
     message('Semantic search unavailable: ' + (err && err.message ? err.message : String(err)));
