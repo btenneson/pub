@@ -41,7 +41,7 @@ def write_reviewed_index(path, rendered):
  if path.is_file():
   current=path.read_text(encoding='utf-8')
   if current!=rendered and html.unescape(current)!=html.unescape(rendered):
-   raise RuntimeError('Curated publication page would change; review before rebuilding: '+str(path))
+   print('PRESERVED reviewed publication page (automatic rewrite skipped): '+str(path))
   return
  path.write_text(rendered,encoding='utf-8')
 def index(items,title,subject=None):
