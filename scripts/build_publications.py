@@ -36,6 +36,14 @@ def links(x,reader=False):
  return '<nav class="links" aria-label="Publication links">'+result+'</nav>'
 def card(x):
  return '<article class="card" data-subject="'+esc(x['category'])+'" data-kind="'+esc(x['kind'])+'" data-title="'+esc(x['title'])+'"><h2><a href="'+url(x['href'])+'">'+esc(x['title'])+'</a></h2><div class="meta">'+esc(x['kind']+' · '+x['category']+(' · '+x['publication_date'] if x.get('publication_date') else ''))+'</div>'+('<p>'+esc(x['card_text'])+'</p>' if x.get('card_text') else quote_block(x))+(quote_block(x) if x.get('quote_also_on_card') and x.get('card_text') else '')+('<p class="status">'+esc(x['status'])+'</p>' if x.get('status') else '')+links(x)+'</article>'
+def write_reviewed_index(path, rendered):
+ # Preserve deliberately hand-curated catalog pages; never silently regenerate them.
+ if path.is_file():
+  current=path.read_text(encoding='utf-8')
+  if current!=rendered and html.unescape(current)!=html.unescape(rendered):
+   raise RuntimeError('Curated publication page would change; review before rebuilding: '+str(path))
+  return
+ path.write_text(rendered,encoding='utf-8')
 def index(items,title,subject=None):
  controls='''<div class="controls"><input id="q" type="search" aria-label="Search publications" placeholder="Search titles, topics, quotes…"><select id="kind" aria-label="Collection"><option value="">All collections</option>'''+''.join('<option>'+esc(k)+'</option>' for k in sorted({x['kind'] for x in items}))+'''</select><select id="cat" aria-label="Subject"><option value="">All subjects</option>'''+''.join('<option>'+esc(k)+'</option>' for k in sorted({x['category'] for x in items}))+'''</select><select id="sort" aria-label="Sort"><option value="default">Library order</option><option value="title">Title A–Z</option><option value="subject">Subject</option></select></div><button id="clear" type="button">Clear filters</button>'''
  body='<main><h1>'+esc(title)+'</h1><p class="muted">Research papers, applied data science, and stories.</p><nav class="toplinks">'+('<a href="/pub/">All publications</a>' if subject or title.endswith('Research Archive') else '')+'<a href="/pub/archive/">Research archive</a><a href="/pub/PERMALINK_POLICY.md">Publication policy</a></nav>'+controls+'<p id="count" role="status">'+str(len(items))+' publications</p><div class="grid" id="grid">'+''.join(card(x) for x in items)+'</div><p id="empty" hidden>No publications match that search.</p><footer>Subject folders use arXiv classification names; these labels do not imply submission to or endorsement by arXiv.</footer></main><script src="/pub/publications.js"></script>'
@@ -72,11 +80,13 @@ def main():
  DOCS.joinpath('publications.js').write_text('''const q=document.getElementById('q'),kind=document.getElementById('kind'),cat=document.getElementById('cat'),sort=document.getElementById('sort'),grid=document.getElementById('grid');const cards=[...grid.children].filter(c=>!c.querySelector('a[href="/pub/cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2/"]'));for(const c of [...grid.children])if(!cards.includes(c))c.remove();const norm=s=>s.normalize('NFKD').toLowerCase();function render(){let tokens=norm(q.value).trim().split(/\\s+/).filter(Boolean),n=0;for(const c of cards){c.hidden=!(tokens.every(t=>norm(c.textContent).includes(t))&&(!kind.value||c.dataset.kind===kind.value)&&(!cat.value||c.dataset.subject===cat.value));if(!c.hidden)n++}const ordered=[...cards];if(sort.value==='title')ordered.sort((a,b)=>a.dataset.title.localeCompare(b.dataset.title));if(sort.value==='subject')ordered.sort((a,b)=>a.dataset.subject.localeCompare(b.dataset.subject)||a.dataset.title.localeCompare(b.dataset.title));ordered.forEach(c=>grid.appendChild(c));document.getElementById('count').textContent=n+' of '+cards.length+' publications';document.getElementById('empty').hidden=n!==0;}[q,kind,cat,sort].forEach(e=>e.addEventListener(e===q?'input':'change',render));document.getElementById('clear').onclick=()=>{q.value='';kind.value='';cat.value='';sort.value='default';render();q.focus()};render();;(()=>{const nav=document.querySelector('nav.toplinks');if(nav&&!nav.querySelector('a[href="/pub/semantic-search.html"]')){const a=document.createElement('a');a.href='/pub/semantic-search.html';a.textContent='Semantic search';nav.prepend(a);}})();''')
  visible=[x for x in items if x.get('visibility') not in ('archive','hidden')]
  archived=[x for x in items if x.get('visibility')=='archive']
- DOCS.joinpath('index.html').write_text(index(visible,'Brian Tenneson — Publication Library'))
+ write_reviewed_index(DOCS/'index.html',index(visible,'Brian Tenneson — Publication Library'))
  for subject in sorted({x['subject'] for x in items}):
   group=[x for x in visible if x['subject']==subject]
   code=subject.split('_')[0]
-  (DOCS/subject/'index.html').write_text(index(group,code+' — '+SUBJECTS[code],subject))
+  subject_page=DOCS/subject/'index.html'
+   if subject=='cs.LO_Logic_in_Computer_Science':write_reviewed_index(subject_page,index(group,code+' — '+SUBJECTS[code],subject))
+   else:subject_page.write_text(index(group,code+' — '+SUBJECTS[code],subject))
  (DOCS/'archive').mkdir(parents=True,exist_ok=True)
  DOCS.joinpath('archive/index.html').write_text(index(archived,'Brian Tenneson — Research Archive'))
  public_items=[x for x in items if x.get('visibility')!='hidden']
