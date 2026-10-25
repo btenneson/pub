@@ -73,9 +73,9 @@ def main():
   target=x.get('pdf') or x.get('text')
   if target:body+='<iframe class="reader-frame" src="'+url(target)+'" title="'+esc(x['title'])+' — document reader"></iframe>'
   else:body+='<main><p class="status">'+esc(x.get('status','Document unavailable.'))+'</p></main>'
-  if x['id'] in CUSTOM_READER_PAGES and not (folder/'index.html').is_file():
-   raise FileNotFoundError('Reviewed custom reader missing: '+x['id'])
-  write_reviewed_index(folder/'index.html',shell(x['title'],body,x['href']))
+  if x['id'] in CUSTOM_READER_PAGES:
+   if not (folder/'index.html').is_file():raise FileNotFoundError('Reviewed custom reader missing: '+x['id'])
+  else:write_reviewed_index(folder/'index.html',shell(x['title'],body,x['href']))
  DOCS.joinpath('publications.css').write_text(CSS)
  DOCS.joinpath('publications.js').write_text('''const q=document.getElementById('q'),kind=document.getElementById('kind'),cat=document.getElementById('cat'),sort=document.getElementById('sort'),grid=document.getElementById('grid');const cards=[...grid.children].filter(c=>!c.querySelector('a[href="/pub/cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2/"]'));for(const c of [...grid.children])if(!cards.includes(c))c.remove();const norm=s=>s.normalize('NFKD').toLowerCase();function render(){let tokens=norm(q.value).trim().split(/\\s+/).filter(Boolean),n=0;for(const c of cards){c.hidden=!(tokens.every(t=>norm(c.textContent).includes(t))&&(!kind.value||c.dataset.kind===kind.value)&&(!cat.value||c.dataset.subject===cat.value));if(!c.hidden)n++}const ordered=[...cards];if(sort.value==='title')ordered.sort((a,b)=>a.dataset.title.localeCompare(b.dataset.title));if(sort.value==='subject')ordered.sort((a,b)=>a.dataset.subject.localeCompare(b.dataset.subject)||a.dataset.title.localeCompare(b.dataset.title));ordered.forEach(c=>grid.appendChild(c));document.getElementById('count').textContent=n+' of '+cards.length+' publications';document.getElementById('empty').hidden=n!==0;}[q,kind,cat,sort].forEach(e=>e.addEventListener(e===q?'input':'change',render));document.getElementById('clear').onclick=()=>{q.value='';kind.value='';cat.value='';sort.value='default';render();q.focus()};render();;(()=>{const nav=document.querySelector('nav.toplinks');if(nav&&!nav.querySelector('a[href="/pub/semantic-search.html"]')){const a=document.createElement('a');a.href='/pub/semantic-search.html';a.textContent='Semantic search';nav.prepend(a);}})();''')
  visible=[x for x in items if x.get('visibility') not in ('archive','hidden')]
