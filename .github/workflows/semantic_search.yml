@@ -70,6 +70,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/semantic-index.json docs/semantic-vectors.i8
           if ! git diff --cached --quiet; then
+            source_before="$(git rev-parse HEAD:docs/search-index.json)"
             git commit -m "Build public semantic PDF passage index"
+            git fetch origin "$GITHUB_REF"
+            git rebase FETCH_HEAD
+            source_after="$(git rev-parse HEAD:docs/search-index.json)"
+            if [ "$source_before" != "$source_after" ]; then
+              echo "Catalog changed while embeddings were built; rerun on the updated catalog."
+              exit 1
+            fi
             git push origin HEAD:"$GITHUB_REF"
           fi
