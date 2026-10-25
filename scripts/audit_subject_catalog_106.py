@@ -16,7 +16,7 @@ def norm(s):
 
 def norm_pdf_quote(s):
     """Compare exact quote wording across PDF line wraps and apostrophe glyphs."""
-    value = re.sub(r"\\s+", " ", unicodedata.normalize("NFKC", s or "")).strip()
+    value = re.sub(r"\s+", " ", unicodedata.normalize("NFKC", s or "")).strip()
     return value.replace("- ", "-").replace("\u2019", "'").replace("\u2018", "'")
 
 
