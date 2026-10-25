@@ -73,9 +73,9 @@ def main():
   target=x.get('pdf') or x.get('text')
   if target:body+='<iframe class="reader-frame" src="'+url(target)+'" title="'+esc(x['title'])+' — document reader"></iframe>'
   else:body+='<main><p class="status">'+esc(x.get('status','Document unavailable.'))+'</p></main>'
-  if x['id'] in CUSTOM_READER_PAGES:
-   if not (folder/'index.html').is_file():raise FileNotFoundError('Reviewed custom reader missing: '+x['id'])
-  else:(folder/'index.html').write_text(shell(x['title'],body,x['href']))
+  if x['id'] in CUSTOM_READER_PAGES and not (folder/'index.html').is_file():
+   raise FileNotFoundError('Reviewed custom reader missing: '+x['id'])
+  write_reviewed_index(folder/'index.html',shell(x['title'],body,x['href']))
  DOCS.joinpath('publications.css').write_text(CSS)
  DOCS.joinpath('publications.js').write_text('''const q=document.getElementById('q'),kind=document.getElementById('kind'),cat=document.getElementById('cat'),sort=document.getElementById('sort'),grid=document.getElementById('grid');const cards=[...grid.children].filter(c=>!c.querySelector('a[href="/pub/cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2/"]'));for(const c of [...grid.children])if(!cards.includes(c))c.remove();const norm=s=>s.normalize('NFKD').toLowerCase();function render(){let tokens=norm(q.value).trim().split(/\\s+/).filter(Boolean),n=0;for(const c of cards){c.hidden=!(tokens.every(t=>norm(c.textContent).includes(t))&&(!kind.value||c.dataset.kind===kind.value)&&(!cat.value||c.dataset.subject===cat.value));if(!c.hidden)n++}const ordered=[...cards];if(sort.value==='title')ordered.sort((a,b)=>a.dataset.title.localeCompare(b.dataset.title));if(sort.value==='subject')ordered.sort((a,b)=>a.dataset.subject.localeCompare(b.dataset.subject)||a.dataset.title.localeCompare(b.dataset.title));ordered.forEach(c=>grid.appendChild(c));document.getElementById('count').textContent=n+' of '+cards.length+' publications';document.getElementById('empty').hidden=n!==0;}[q,kind,cat,sort].forEach(e=>e.addEventListener(e===q?'input':'change',render));document.getElementById('clear').onclick=()=>{q.value='';kind.value='';cat.value='';sort.value='default';render();q.focus()};render();;(()=>{const nav=document.querySelector('nav.toplinks');if(nav&&!nav.querySelector('a[href="/pub/semantic-search.html"]')){const a=document.createElement('a');a.href='/pub/semantic-search.html';a.textContent='Semantic search';nav.prepend(a);}})();''')
  visible=[x for x in items if x.get('visibility') not in ('archive','hidden')]
@@ -85,10 +85,9 @@ def main():
   group=[x for x in visible if x['subject']==subject]
   code=subject.split('_')[0]
   subject_page=DOCS/subject/'index.html'
-   if subject=='cs.LO_Logic_in_Computer_Science':write_reviewed_index(subject_page,index(group,code+' — '+SUBJECTS[code],subject))
-   else:subject_page.write_text(index(group,code+' — '+SUBJECTS[code],subject))
+  write_reviewed_index(subject_page,index(group,code+' — '+SUBJECTS[code],subject))
  (DOCS/'archive').mkdir(parents=True,exist_ok=True)
- DOCS.joinpath('archive/index.html').write_text(index(archived,'Brian Tenneson — Research Archive'))
+ write_reviewed_index(DOCS/'archive/index.html',index(archived,'Brian Tenneson — Research Archive'))
  public_items=[x for x in items if x.get('visibility')!='hidden']
  DOCS.joinpath('search-index.json').write_text(json.dumps({'schema_version':1,'count':len(public_items),'items':public_items},ensure_ascii=False,indent=2)+'\n')
  DOCS.joinpath('404.html').write_text(shell('Publication moved','<main><h1>Find this publication</h1><p id="message">Checking the updated publication address…</p><a href="/pub/">Browse all publications</a></main><script>fetch("/pub/redirects.json").then(r=>r.json()).then(m=>{const p=decodeURIComponent(location.pathname.replace(/^\\/pub\\//,""));if(Object.prototype.hasOwnProperty.call(m,p)){location.replace("/pub/"+m[p]+location.search+location.hash)}else{document.getElementById("message").textContent="This address is no longer in the catalog. Search the publication library below."}}).catch(()=>{document.getElementById("message").textContent="Please open the publication library."});</script>'))
