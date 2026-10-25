@@ -34,7 +34,7 @@ jobs:
         run: python -m py_compile scripts/check_semantic_rollout.py scripts/build_publications.py scripts/build_semantic_index.py
       - name: Verify every original card and PDF is preserved
         env:
-          BASE_SHA: \${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           if [ -n "$BASE_SHA" ]; then
             python scripts/check_semantic_rollout.py "$BASE_SHA"
