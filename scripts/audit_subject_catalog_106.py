@@ -14,6 +14,12 @@ def norm(s):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", s or "")).strip().replace("- ", "")
 
 
+def norm_pdf_quote(s):
+    """Compare exact quote wording across PDF line wraps and apostrophe glyphs."""
+    value = re.sub(r"\\s+", " ", unicodedata.normalize("NFKC", s or "")).strip()
+    return value.replace("- ", "-").replace("\u2019", "'").replace("\u2018", "'")
+
+
 class Links(HTMLParser):
     def __init__(self):
         super().__init__(); self.links = []
@@ -77,7 +83,8 @@ def main():
             assert q, ("missing quote", x["title"])
             page = x.get("quote_page")
             assert page and 1 <= page <= len(doc), ("invalid quote page", x["title"], page)
-            assert q in norm(doc[page - 1].get_text()), ("quote not in cited page", x["title"], q)
+            pdf_text = doc[page - 1].get_text()
+            assert q in norm(pdf_text) or norm_pdf_quote(x["quote"]) in norm_pdf_quote(pdf_text), ("quote not in cited page", x["title"], q)
             pdf_cards += 1
         elif x.get("status"):
             unavailable.append(x["title"])
