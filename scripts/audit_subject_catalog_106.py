@@ -76,8 +76,19 @@ def main():
             q = norm(x.get("quote", ""))
             assert q, ("missing quote", x["title"])
             page = x.get("quote_page")
-            assert page and 1 <= page <= len(doc), ("invalid quote page", x["title"], page)
-            assert q in norm(doc[page - 1].get_text()), ("quote not in cited page", x["title"], q)
+            if page is None:
+                # Abstract-attributed quotes may not cite a numbered page.
+                # Still require a verbatim PDF match; never waive verification.
+                assert any(q in norm(doc[i].get_text()) for i in range(len(doc))), (
+                    "unverified page-free quote", x["title"], q
+                )
+            else:
+                assert isinstance(page, int) and 1 <= page <= len(doc), (
+                    "invalid quote page", x["title"], page
+                )
+                assert q in norm(doc[page - 1].get_text()), (
+                    "quote not in cited page", x["title"], q
+                )
             pdf_cards += 1
         elif x.get("status"):
             unavailable.append(x["title"])
