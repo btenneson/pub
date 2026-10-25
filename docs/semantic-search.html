@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Semantic search — Brian Tenneson Publication Library</title>
+  <link rel="stylesheet" href="/pub/publications.css">
+  <link rel="stylesheet" href="/pub/semantic-search.css">
+</head>
+<body>
+  <main class="semantic-shell">
+    <nav class="toplinks"><a href="/pub/">All publications</a><a href="/pub/archive/">Research archive</a></nav>
+    <h1>Semantic search</h1>
+    <p class="muted">Find related ideas in articles and PDF passages, even when your words differ from the author's. Results are pointers into publications, not proof verification.</p>
+    <form id="semantic-form">
+      <label for="semantic-query">What are you looking for?</label>
+      <div class="semantic-query-row">
+        <input id="semantic-query" type="search" required minlength="2" autocomplete="off" placeholder="e.g. Can cooperating provers escape a search basin?">
+        <button type="submit" id="semantic-go">Search meanings</button>
+      </div>
+      <div class="semantic-filters">
+        <label for="semantic-subject">Subject <select id="semantic-subject"><option value="">All subjects</option></select></label>
+        <label class="semantic-check"><input id="semantic-archive" type="checkbox"> Include archived papers</label>
+      </div>
+    </form>
+    <p class="muted semantic-note">On the first search your browser downloads an embedding model (about 25 MB). There is no paid search API: the search runs locally after the public index and model are loaded. Mathematical notation and scanned pages may not search perfectly.</p>
+    <p id="semantic-status" role="status" aria-live="polite">Ready to search.</p>
+    <div id="semantic-results" aria-live="polite"></div>
+    <footer><a href="/pub/">Return to publication cards</a>. Hidden publications are not indexed. Archive records appear only when selected.</footer>
+  </main>
+  <script type="module" src="/pub/semantic-search.js"></script>
+</body>
+</html>

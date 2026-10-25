@@ -1,0 +1,44 @@
+name: Guard curated library during semantic search rollout
+
+on:
+  pull_request:
+    paths:
+      - 'docs/semantic-*'
+      - 'docs/index.html'
+      - 'docs/archive/index.html'
+      - 'docs/publications.js'
+      - 'docs/search-index.json'
+      - 'docs/**/index.html'
+      - 'scripts/publications.json'
+      - 'scripts/build_publications.py'
+      - 'scripts/check_semantic_rollout.py'
+      - '.github/workflows/semantic_preservation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preserve-existing-library:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout library and immutable history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check the preservation test itself compiles
+        run: python -m py_compile scripts/check_semantic_rollout.py scripts/build_publications.py scripts/build_semantic_index.py
+      - name: Verify every original card and PDF is preserved
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -n "$BASE_SHA" ]; then
+            python scripts/check_semantic_rollout.py "$BASE_SHA"
+          else
+            git fetch origin main
+            python scripts/check_semantic_rollout.py origin/main
+          fi
