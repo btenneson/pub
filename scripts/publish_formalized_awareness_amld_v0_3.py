@@ -71,6 +71,7 @@ def publication_record(digest, pages):
       "quote": ("The passage from a semi-ideal computer (SIC) to an automated theorem prover (ATP), "
         "and then to an automated metalogical decider (AMLD), is not a lexical substitution."),
       "quote_attribution": "Formalized Awareness of AMLD Federations, v0.3 · Abstract",
+      "quote_page": 1,
       "quote_also_on_card": True,
       "status": ("PRELIMINARY RELEASE · ATLAS-repaired and conditionally re-audited v0.3 · 25 October 2026. "
         "Source-level mathematical pass under stated hypotheses; not formally machine-checked "
