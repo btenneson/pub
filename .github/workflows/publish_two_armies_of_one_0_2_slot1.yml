@@ -148,7 +148,7 @@ jobs:
                                    original,count=1)
               assert n==1
               path.write_text(original,encoding='utf-8')
-              assert original.index(block)<original.index('</article>')+10
+              assert original.index('data-title="'+item['title']+'"')<original.index('</article>')+10
           sitemap=root/'docs/sitemap.xml'
           xml=sitemap.read_text(encoding='utf-8')
           line='<url><loc>https://btenneson.github.io/pub/'+pub_id+'/</loc></url>'
