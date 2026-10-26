@@ -17,15 +17,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          git fetch origin main
+          git pull --ff-only origin main
           mkdir -p .build/two_armies_of_one_0_2
           cp incoming_publications/two_armies_of_one_0_2/source.tex .build/two_armies_of_one_0_2/source.tex
-          cp incoming_publications/two_armies_of_one_0_2/ledger.tex .build/two_armies_of_one_0_2/ledger.tex
-      - name: Compile both PDFs with bundled TeXLive
+          cp incoming_publications/two_armies_of_one_0_2/ledger.tex .build/two_armies_of_one_0_2/ATLAS_Repair_Ledger_Transcript.txt
+      - name: Compile repaired paper PDF with bundled TeXLive
         uses: xu-cheng/latex-action@v4
         with:
-          root_file: |
-            source.tex
-            ledger.tex
+          root_file: source.tex
           working_directory: .build/two_armies_of_one_0_2
       - name: Validate compiler output
         shell: bash
@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           python -m pip install -q pymupdf==1.26.4
           test -s .build/two_armies_of_one_0_2/source.pdf
-          test -s .build/two_armies_of_one_0_2/ledger.pdf
+          test -s .build/two_armies_of_one_0_2/ATLAS_Repair_Ledger_Transcript.txt
 
       - name: Publish files, add card 1, and rebuild reviewed catalog
         shell: bash
@@ -61,8 +61,7 @@ jobs:
           shutil.copyfile(build/'source.pdf',dest/pdf_name)
           shutil.copyfile(build/'source.pdf',archive/pdf_name)
           shutil.copyfile(build/'source.tex',dest/'source.tex')
-          shutil.copyfile(build/'ledger.pdf',dest/'ATLAS_Two_Armies_of_One_0_2_Repair_Ledger.pdf')
-          shutil.copyfile(build/'ledger.tex',dest/'ATLAS_Two_Armies_of_One_0_2_Repair_Ledger.tex')
+          shutil.copyfile(build/'ATLAS_Repair_Ledger_Transcript.txt',dest/'ATLAS_Repair_Ledger_Transcript.txt')
           manifest={
             'title':'Two Armies of One: Certified Scout–Probe Rendezvous in Proof Search',
             'version':'0.2','status':'ATLAS-repaired preliminary release',
@@ -76,8 +75,7 @@ jobs:
           with zipfile.ZipFile(dest/pkg_name,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
               for name,original in [
                 (pdf_name,dest/pdf_name),('source.tex',dest/'source.tex'),
-                ('ATLAS_Two_Armies_of_One_0_2_Repair_Ledger.pdf',dest/'ATLAS_Two_Armies_of_One_0_2_Repair_Ledger.pdf'),
-                ('ATLAS_Two_Armies_of_One_0_2_Repair_Ledger.tex',dest/'ATLAS_Two_Armies_of_One_0_2_Repair_Ledger.tex'),
+                ('ATLAS_Repair_Ledger_Transcript.txt',dest/'ATLAS_Repair_Ledger_Transcript.txt'),
                 ('publication_manifest.json',dest/'publication_manifest.json')]:
                   z.write(original,arcname=name)
 
@@ -173,4 +171,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- docs scripts/publications.json cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_2
           git commit -m "Publish Two Armies of One ATLAS-repaired v0.2 as slot 1 [skip ci]"
-          git push
+          git push origin main
