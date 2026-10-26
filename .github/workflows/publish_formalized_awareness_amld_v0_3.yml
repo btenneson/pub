@@ -1,0 +1,45 @@
+name: Publish Formalized Awareness of AMLD Federations v0.3
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_formalized_awareness_amld_v0_3.yml'
+      - 'scripts/publish_formalized_awareness_amld_v0_3.py'
+      - 'incoming_publications/formalized_awareness_amld_federations_v0_3/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-formalized-awareness-amld-v03
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX tools and PDF inspector
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-pictures lmodern poppler-utils
+          python -m pip install -q brotli
+      - name: Validate source, rebuild PDF, publish article at slot 1
+        run: python scripts/publish_formalized_awareness_amld_v0_3.py
+      - name: Commit publication catalog, reader, source, and PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Formalized Awareness of AMLD Federations ATLAS v0.3 in slot 1'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
