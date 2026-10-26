@@ -71,7 +71,11 @@ def main():
   if x.get('figure_image'):
    body+='<figure style="max-width:490px;margin:1.2rem auto;text-align:center"><img loading="lazy" src="'+url(x['figure_image'])+'" alt="'+esc(x.get('figure_alt','Editorial illustration'))+'" style="display:block;width:100%;height:auto;border-radius:6px"><figcaption style="font-size:.88rem;color:var(--muted);margin:.45rem 0">'+esc(x.get('figure_caption',''))+'</figcaption></figure>'
   target=x.get('pdf') or x.get('text')
-  if target:body+='<iframe class="reader-frame" src="'+url(target)+'" title="'+esc(x['title'])+' — document reader"></iframe>'
+  if target:
+   reader_src=url(target)
+   if x['id']=='cs.LO_Logic_in_Computer_Science/formalized_awareness_amld_federations_v0_3':
+    reader_src='/pub/pdf-reader.html?file='+quote(reader_src,safe='')
+   body+='<iframe class="reader-frame" src="'+reader_src+'" title="'+esc(x['title'])+' — document reader"></iframe>'
   else:body+='<main><p class="status">'+esc(x.get('status','Document unavailable.'))+'</p></main>'
   if x['id'] in CUSTOM_READER_PAGES:
    if not (folder/'index.html').is_file():raise FileNotFoundError('Reviewed custom reader missing: '+x['id'])
