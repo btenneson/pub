@@ -82,6 +82,7 @@ def publication_record(digest, pages):
     }
 
 def insert_first_card(path, record):
+    sys.path.insert(0, str(ROOT))
     import scripts.build_publications as builder
     html = path.read_text(encoding="utf-8")
     needle = f'/pub/{SLUG}/'
