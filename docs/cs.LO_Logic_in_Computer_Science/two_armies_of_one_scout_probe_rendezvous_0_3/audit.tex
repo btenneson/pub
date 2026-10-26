@@ -1,0 +1,62 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,amsthm}
+\usepackage[margin=.89in,headheight=14pt]{geometry}
+\usepackage{xcolor,booktabs,tabularx,array,enumitem,fancyhdr,hyperref,tcolorbox}
+\definecolor{navy}{HTML}{183047}\definecolor{teal}{HTML}{13746E}\definecolor{pale}{HTML}{F0F6F6}
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal,pdftitle={ATLAS Re-audit of Two Armies of One v0.3},pdfauthor={ATLAS-style mathematical review; ChatGPT}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small\sffamily\bfseries ATLAS / FRESH RE-AUDIT}\fancyhead[R]{\small\sffamily v0.3 / 26 OCT 2026}\fancyfoot[L]{\scriptsize Paper-level mathematical audit, not proof-assistant certification}\fancyfoot[R]{\thepage}
+\begin{document}
+{\sffamily\bfseries\color{teal} SOURCE-SPECIFIC THEOREM REVIEW}\par
+{\LARGE\bfseries\color{navy} ATLAS: Re-Audit After Repair}\vspace{4pt}\par
+{\large \emph{Two Armies of One: Certified Scout--Probe Rendezvous in Proof Search}}\par
+Version 0.3 $\cdot$ 26 October 2026 $\cdot$ published predecessor v0.2\par
+\begin{tcolorbox}[colback=pale,colframe=teal,boxrule=.6pt]
+\textbf{Disposition: PAPER-LEVEL PASS, UNDER THE EXPLICIT HYPOTHESES.}\par
+The two specification defects identified in the v0.2 audit are corrected in v0.3. Its formal mathematical statements are defensible as conditional theorems in a fully checked, MP-only certificate grammar. The protocol is not proved faster, a useful early encounter is not guaranteed, and no full proof-assistant formalization or institutional external review is claimed.
+\end{tcolorbox}
+\textbf{Materials checked.} The complete v0.3 LaTeX source, its compiled nine-page PDF, comparison with v0.2 and the 26 October independent-style audit report, and a finite illustrative test program containing positive and negative certificate controls. Re-audit checks the new text, not only the original repair ledger. This report uses ``ATLAS'' as the requested audit role; it is assistant-performed review.
+\section*{1. What was repaired and why}
+\begin{enumerate}[leftmargin=*,itemsep=3pt]
+\item \textbf{Verifier closure (material).} Original v0.2 stipulated sound terminating checking but did not require an otherwise valid graft to be accepted. New Definition 2.1 defines correct finite MP proof DAGs and an \emph{iff} checker, with explicit subproof heredity, opening of a cut occurrence, and substitution/graft closure. Thus Theorem 3.1 has the hypothesis its proof needs.
+\item \textbf{Proof-specific compatibility (material).} Original Theorem 4.2 identified $H\vdash L$ with eventual fixed-Scout meeting without quantifying over acceptable Probe receipts. Repaired Theorem 4.2 first gives the exact criterion $\exists\pi\in E_P(L)\,\mathsf{Comp}(\pi,\rho_L)$; the simpler $H\vdash L$ iff is stated only with formula completeness \emph{and uniform compatibility}. Certificate completeness supports a separate existence-of-compatible-proof formulation.
+\item \textbf{DAG opening and several obligations.} Proposition 6.3 expressly relies on hereditary extraction and opening; Proposition 8.2 requires jointly compatible finite discharge receipts and suitable Probe fairness. This prevents importing an arbitrary accepted certificate into an incompatible proof scope.
+\item \textbf{Chronology and provenance.} The first-settlement time is $s_T=+\infty$ if the unassisted branch never settles. The manuscript names its checks as internal paper-level review and uses the requested author name form \texttt{<Brian Tenneson>} in both typeset credit and PDF metadata.
+\end{enumerate}
+\section*{2. Theorem-by-theorem disposition}
+\small
+\renewcommand{\arraystretch}{1.26}
+\begin{tabularx}{\linewidth}{@{}p{.27\linewidth}p{.13\linewidth}X@{}}
+\toprule
+\textbf{Result} & \textbf{Audit} & \textbf{Reason}\\\midrule
+Thm. 3.1 / proof graft & PASS & With the explicit full local MP grammar, fresh-copy insertion preserves the DAG order, authorized leaves and ordered MP ports; the checker accepts the resulting valid proof.\\
+Return-decoder corollary & PASS & Explicitly conditional on a separately validated translation and original checker. No implicit cross-calculus proof is claimed.\\
+Thm. 4.2 / fixed Scout & PASS & The proof-relative $E_P(L)$ criterion is exact under continuing fair matching; the corollary to $H\vdash L$ has the required uniform compatibility and formula-coverage hypotheses.\\
+Thm. 5.3 / route-changing Scout & PASS & A chosen finite compatible witness is eventually recorded and tested under exhaustive certificate enumeration and persistent, continuing fair search.\\
+Prop. 6.2 / $\mathsf{Mid}$ discovery & PASS & The finite syntactic filter is terminating; this is a direct instance of Theorem 5.3.\\
+Prop. 6.3 / internal DAG cut & PASS & Extraction and opening are declared checker-closed operations; the specified ancestor and descendant conditions exactly give a target-free proper witness.\\
+Prop. 8.2 / finite discharge & PASS & Finite repeated grafting works for jointly compatible certificates; certificate-complete search finds the chosen witnesses.\\
+Antichain readiness & PASS & Inclusion-minimal supports preserve the disjunctive readiness predicate for a fixed family only, with shared-context compatibility.\\
+\bottomrule
+\end{tabularx}
+\normalsize\renewcommand{\arraystretch}{1}
+\section*{3. Adversarial counterchecks}
+\textbf{Bounded verifier obstruction.} For $H=\{p,p\to\ell,\ell\to t\}$, a sound verifier capped at one MP step accepts separately the prefix $H\vdash\ell$ and suffix $H,\ell\vdash t$ but rejects the two-MP splice. The new checker hypothesis explicitly rules this out. It is a countermodel to the \emph{old} weak verifier assumptions, not to new Theorem 3.1.
+
+\textbf{Stranded Scout.} The valuation $p=t=\mathrm{true}$, $q=\mathrm{false}$ satisfies $\{p,p\to t,q\to t\}$ and falsifies $q$; the fixed Scout's route through $q$ cannot be discharged despite $H\vdash t$.
+
+\textbf{Three midpoint controls.} A target-first derived $L=t\land(q\to q)$ is rejected by the target-free proof ancestry test; a genuine $p\to\ell\to t$ cut can be found after independent settlement; and a closed $q\to q$ bridge from $H=\{t\}$ can be structurally legal yet logically inessential. All three examples support \emph{limited} claims and do not imply an advantage.
+
+\textbf{Finite illustrative execution.} A small standalone program checked 10 cases: accepted one-step forward and conditional proofs, accepted their two-step graft with a full local checker, reproduced rejection of the graft by the sound one-MP-cap checker, and rejected swapped MP ports, incorrect conclusions, unresolved open assumptions, and backward/cyclic dependency indices. Those tests only illustrate the finite rules; they do not machine-verify arbitrary quantified theorems.
+\section*{4. Remaining scope boundaries}
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+\item A proof of $T$ yields at best the degenerate cut $L=T$ without more assumptions. Existence of a \emph{genuine} target-free intermediate proof occurrence needs the additional witness required in Proposition 6.3.
+\item Fairness gives eventual encounter under unbounded execution, not an effective universal time bound or a proof that first rendezvous beats direct settlement.
+\item $\mathsf{Mid}$ is decidable for a supplied finite proof triple. Deciding whether \emph{some} eligible triple exists for a formula is not established.
+\item Translation from an MP-only presentation back to a different first-order calculus depends on the external decoder's correctness, not established here.
+\item Real AMLD instances, machine-checker integration, charged runtime benchmarking, and empirical speedup remain unperformed.
+\end{enumerate}
+\section*{5. Release gate and disposition}
+\textbf{Mathematical paper-level release gate: PASS for version 0.3 as a preliminary, internally re-audited research note.} This means the known overclaims are corrected and the conditional results have arguments matching their hypotheses. It does \emph{not} mean independently certified mathematics, novelty certification, completeness of all conceivable audits, or proof-assistant checking. Retain the site label ``ATLAS-REPAIRED PRELIMINARY RELEASE'' rather than ``FORMALLY CERTIFIED.'' Preserve published v0.2 as a historical predecessor and expose v0.3 as the current corrected edition.
+\end{document}
