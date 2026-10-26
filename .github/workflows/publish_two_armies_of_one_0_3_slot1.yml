@@ -1,0 +1,176 @@
+name: Publish Two Armies of One ATLAS-repaired v0.3 in slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_two_armies_of_one_0_3_slot1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare version 0.3
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git pull --ff-only origin main
+          mkdir -p .build/two_armies_of_one_v03
+          cp incoming_publications/two_armies_of_one_0_3/source.tex .build/two_armies_of_one_v03/source.tex
+          cp incoming_publications/two_armies_of_one_0_3/audit.tex .build/two_armies_of_one_v03/audit.tex
+          cp incoming_publications/two_armies_of_one_0_3/microcheck.py .build/two_armies_of_one_v03/microcheck.py
+          python .build/two_armies_of_one_v03/microcheck.py
+      - name: Compile manuscript and re-audit with TeX Live
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: |
+            source.tex
+            audit.tex
+          working_directory: .build/two_armies_of_one_v03
+      - name: Verify and publish without reordering existing cards
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -q pymupdf==1.26.4
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, hashlib, html, json, re, shutil, zipfile
+          root=Path('.')
+          build=root/'.build/two_armies_of_one_v03'
+          pub_id='cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_3'
+          old_id='cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_2'
+          title='Two Armies of One: Certified Scout–Probe Rendezvous in Proof Search'
+          pdf_name='Two_Armies_of_One_Scout_Probe_Rendezvous_0_3_ATLAS_Repaired.pdf'
+          audit_pdf='ATLAS_Two_Armies_of_One_v0_3_Reaudit.pdf'
+          zip_name='Two_Armies_of_One_0_3_ATLAS_Repaired_Reaudited_Complete.zip'
+          quote='There are two armies of one: one Scout and one Probe. Their meeting point need not be specified in advance.'
+          pdf=fitz.open(build/'source.pdf')
+          audit=fitz.open(build/'audit.pdf')
+          assert len(pdf)==9,(len(pdf),'manuscript pages')
+          assert len(audit)==3,(len(audit),'audit pages')
+          norm=lambda s:re.sub(r'\s+',' ',s).strip()
+          assert quote in norm(pdf[1].get_text()),'PDF quote missing from page 2'
+          whole=' '.join(p.get_text() for p in pdf)
+          for term in ['Certified composition under graft closure','Fixed-Scout rendezvous: exact compatibility criterion',
+                       'Witness-filtered eventual rendezvous','Exact finite discharge']:
+              assert term.lower() in norm(whole).lower(),term
+          assert '<Brian Tenneson>' in (pdf.metadata.get('author') or '')
+
+          dest=root/'docs'/pub_id
+          archive=root/pub_id
+          dest.mkdir(parents=True,exist_ok=True)
+          archive.mkdir(parents=True,exist_ok=True)
+          shutil.copyfile(build/'source.pdf',dest/pdf_name)
+          shutil.copyfile(build/'source.pdf',archive/pdf_name)
+          shutil.copyfile(build/'source.tex',dest/'source.tex')
+          shutil.copyfile(build/'audit.pdf',dest/audit_pdf)
+          shutil.copyfile(build/'audit.tex',dest/'audit.tex')
+          shutil.copyfile(build/'microcheck.py',dest/'microcheck.py')
+          sha=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
+          manifest={
+            'version':'0.3','title':title,'author':'<Brian Tenneson> (research idea); ChatGPT (exposition and audit)',
+            'pages':len(pdf),'audit_pages':len(audit),
+            'preliminary':True,'paper_level_reaudit':'PASS under stated assumptions',
+            'formal_machine_checked':False,'external_peer_review':False,
+            'pdf_sha256':sha(dest/pdf_name),'tex_sha256':sha(dest/'source.tex'),
+            'audit_sha256':sha(dest/audit_pdf)
+          }
+          (dest/'publication_manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+          with zipfile.ZipFile(dest/zip_name,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for name in [pdf_name,'source.tex',audit_pdf,'audit.tex','microcheck.py','publication_manifest.json']:
+                  z.write(dest/name,arcname=name)
+          cat=root/'scripts/publications.json'
+          data=json.loads(cat.read_text(encoding='utf-8'))
+          old=[x for x in data['items'] if x.get('id')!=pub_id]
+          prev_min=min((x['order'] for x in old if isinstance(x.get('order'),(int,float))),default=0)
+          item={
+            'id':pub_id,'href':pub_id+'/','title':title,
+            'kind':'Research note','subject':'cs.LO_Logic_in_Computer_Science',
+            'authors':'<Brian Tenneson> (research idea); ChatGPT (mathematical exposition and ATLAS-style re-audit)',
+            'pdf':pub_id+'/'+pdf_name,'archive_path':pub_id+'/'+pdf_name,
+            'source':pub_id+'/source.html','source_file':pub_id+'/source.tex',
+            'source_package':pub_id+'/'+zip_name,
+            'card_text':(
+              'Two agents, one backward Scout and one forward Probe, meet only through checked proof certificates. '
+              'Version 0.3 repairs the verifier-grafting and proof-specific compatibility gaps: a sound checker alone '
+              'is not enough, and an arbitrary proof of a bridge lemma need not match a fixed Scout route. '
+              'Conditional fair-search rendezvous results survive; useful early meeting and speedup remain unproved.'
+            ),
+            'quote':quote,'quote_page':2,
+            'quote_attribution':'Two Armies of One, ATLAS-repaired v0.3 · p. 2',
+            'quote_also_on_card':True,
+            'status':(
+              'PRELIMINARY RELEASE — ATLAS-REPAIRED AND RE-AUDITED v0.3 · 26 October 2026. '
+              'Paper-level conditional mathematical PASS. No proof-assistant verification, independent '
+              'external peer review, or demonstrated search advantage.'
+            ),
+            'classification_note':(
+              'Corrected current edition (v0.3), 9 pages, 26 October 2026. '
+              'Fresh assistant ATLAS-style paper-level re-audit: 3 pages. '
+              'Historical predecessor v0.2 remains separately accessible.'
+            ),
+            'pages':9,'sha256':manifest['pdf_sha256'],'order':prev_min-10,
+            'publication_date':'26 October 2026'
+          }
+          data['items']=[item]+old
+          cat.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          PY
+          python scripts/build_publications_106.py
+          python - <<'PY'
+          from pathlib import Path
+          import json, re, sys
+          sys.path.insert(0,'scripts')
+          from build_publications import card, SUBJECTS
+          root=Path('.')
+          pub_id='cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_3'
+          data=json.loads((root/'scripts/publications.json').read_text())
+          assert data['items'][0]['id']==pub_id
+          x=dict(data['items'][0]);code=x['subject'].split('_')[0];x['category']=code+' — '+SUBJECTS[code]
+          snippet=card(x)
+          for path in [root/'docs/index.html',root/'docs/cs.LO_Logic_in_Computer_Science/index.html']:
+              txt=path.read_text(encoding='utf-8')
+              marker='<div class="grid" id="grid">'
+              assert txt.count(marker)==1
+              if 'data-title="'+x['title']+'"' in txt and ('/pub/'+pub_id+'/') in txt:
+                  # The older edition has the same title; dedupe strictly by ID/href.
+                  assert '/pub/'+pub_id+'/' in txt
+              else:
+                  txt=txt.replace(marker,marker+snippet,1)
+              # An older card has same title; confirm ID-based order.
+              assert txt.index('/pub/'+pub_id+'/') < txt.index('/pub/cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_2/')
+              n=len(re.findall(r'<article class="card"',txt))
+              txt,nn=re.subn(r'(<p id="count" role="status">)\d+ publications(</p>)',
+                              lambda m:m.group(1)+str(n)+' publications'+m.group(2),txt,count=1)
+              assert nn==1
+              path.write_text(txt,encoding='utf-8')
+          sitemap=root/'docs/sitemap.xml'
+          xml=sitemap.read_text(encoding='utf-8')
+          line='<url><loc>https://btenneson.github.io/pub/'+pub_id+'/</loc></url>'
+          if line not in xml:
+              xml=xml.replace('</urlset>','  '+line+'\n</urlset>')
+              sitemap.write_text(xml)
+          index=json.loads((root/'docs/search-index.json').read_text())
+          assert index['items'][0]['id']==pub_id
+          for name in ['index.html','source.html','source.tex','Two_Armies_of_One_Scout_Probe_Rendezvous_0_3_ATLAS_Repaired.pdf',
+                       'ATLAS_Two_Armies_of_One_v0_3_Reaudit.pdf','Two_Armies_of_One_0_3_ATLAS_Repaired_Reaudited_Complete.zip']:
+              assert (root/'docs'/pub_id/name).is_file(),name
+          print('Certified publication cards and source bundle exist; v0.2 retained.')
+          PY
+          python scripts/audit_subject_catalog_106.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- docs scripts/publications.json cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_3
+          git commit -m "Publish corrected Two Armies of One v0.3 at slot 1 [skip ci]"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort || true; exit 1; }
+            if git push origin main; then
+              echo 'Published via fast-forward preserving unrelated repository work.'
+              exit 0
+            fi
+          done
+          exit 1
