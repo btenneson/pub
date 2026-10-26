@@ -171,4 +171,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- docs scripts/publications.json cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_2
           git commit -m "Publish Two Armies of One ATLAS-repaired v0.2 as slot 1 [skip ci]"
-          git push origin main
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort || true; exit 1; }
+            if git push origin main; then
+              echo 'Published with full fast-forward; unrelated remote changes preserved.'
+              exit 0
+            fi
+          done
+          echo 'Push race could not be resolved without force; no force was used.'
+          exit 1
