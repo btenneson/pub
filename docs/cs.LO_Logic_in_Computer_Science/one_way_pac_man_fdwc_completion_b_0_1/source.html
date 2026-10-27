@@ -1,0 +1,289 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>One-Way Pac-Man: Certified Proof Search, BANK Provenance, and Finite-Cost Frontiers — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/one_way_pac_man_fdwc_completion_b_0_1/">Back to publication</a><h1>One-Way Pac-Man: Certified Proof Search, BANK Provenance, and Finite-Cost Frontiers</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/one_way_pac_man_fdwc_completion_b_0_1/source.tex" download>Download source</a><pre>\def\CompletionLabel{ALTERNATIVE B}
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\geometry{left=0.92in,right=0.92in,top=0.84in,bottom=0.84in,headheight=16pt}
+\definecolor{deepblue}{RGB}{33,60,91}
+\definecolor{quietgray}{RGB}{83,90,99}
+\hypersetup{colorlinks=true,linkcolor=deepblue,urlcolor=deepblue,citecolor=deepblue,pdftitle={One-Way Pac-Man: FDWC Completion},pdfauthor={&lt;Brian Tenneson&gt;}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily ONE-WAY PAC-MAN / FDWC}
+\fancyhead[R]{\small\sffamily \CompletionLabel}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\Con}{\operatorname{Con}_{F}}
+\newcommand{\Next}{\operatorname{Next}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\Exit}{E_{P}}
+\newcommand{\Hone}{H_{1}}
+\newcommand{\Dst}{D_{s}}
+\newcommand{\acts}{\mathcal{A}}
+\newcommand{\actsS}{\mathcal{A}_{s}}
+\newcommand{\Paths}{\mathcal{P}}
+\newcommand{\paperdate}{26 October 2026}
+\newcommand{\AuthorTag}{\textless{}Brian Tenneson\textgreater{}}
+\setlist[itemize]{leftmargin=1.35em,topsep=4pt,itemsep=2pt}
+\setlist[enumerate]{leftmargin=1.6em,topsep=4pt,itemsep=3pt}
+\allowdisplaybreaks[2]
+\emergencystretch=2em
+
+\begin{document}
+\begin{center}
+ {\LARGE\bfseries\color{deepblue} One-Way Pac-Man}\\[4pt]
+ {\Large Certified Proof Search, BANK Provenance, and Finite-Cost Frontiers}\\[10pt]
+ {\large \AuthorTag}\\[5pt]
+ {\small FDWC candidate completion B \quad\textbullet\quad \paperdate}\\[4pt]
+ {\small Complete alternative article derived solely from immutable research note W0 (version 0.2)}
+\end{center}
+\vspace{5pt}
+\begin{abstract}
+A one-Pioneer automatic theorem prover searches for one kind of terminal outcome: a checker-accepted derivation of a target formula. Modeling the prover by a fixed graph of complete states makes proof settlement, cost accounting, and source-provenance requirements explicit. This article reconstructs the one-role reduction, conservative BANK invariance, Bellman optimality, the original finite tactic-detour witness, exact regret, and conditional proof-enumeration completeness. It then strengthens the operational side in three ways. First, a chronological BANK ledger supports a finite certificate-expansion construction that removes references to conservatively deposited intermediate premises. Second, a finite countermodel shows why a shorter explicit-premise proof need not improve the full-state settlement horizon after a deposit. Third, an exhaustive, effectively generated finite-cost frontier yields a valid lower bound on settlement distance under local finiteness and complete successor generation; combined with a successful route, this can sometimes determine the exact horizon. These are abstract, assumption-dependent mathematical results. They do not provide an online optimal policy, proof of performance improvement, independent machine verification, or a negative verdict from a timeout.
+\end{abstract}
+\noindent\textbf{Keywords.} automatic theorem proving; proof certificates; chronological lemma BANK; bounded search; exhaustion certificates; single-agent settlement; semidecision.\par
+
+\section{The operational question and immutable starting point}
+A single proof-search controller can be pictured as traversing a maze of computations. The metaphor is useful only when a room is a \emph{complete state}, a corridor is a declared legal action, and an exit carries a checker-accepted proof rather than merely a formula bearing the name of the target. The source W0, \emph{One-Way Pac-Man}, version 0.2, develops this formal reading and gives a finite strategy-detour example. We retain that accepted core and focus on the extra proof obligations created by recording, reusing, and paying for derived lemmas.
+
+W0 attributes the paper to \AuthorTag{} and cites a five-Pioneer parent study. This completion uses \emph{only W0} for mathematical input; the parent entry is retained for historical provenance and has not been examined. All models constructed below are mathematical objects with declared rules, not claims about a specific implemented prover.
+
+\section{Proof and complete-state semantics}
+Fix $F=(x,y,z)$, where $y$ is a formula set and each inference rule $r\in z$ is a partial function $r:y^k\rightharpoonup y$ of finite arity $k$. Set $B\vdash_F\varphi$ when there exists a finite $F$-derivation of $\varphi$ from premises $B$. We assume that derivations have checkable representations and that replacing an occurrence of a derived premise by its finite derivation preserves proof validity. Thus $\Con(B)=\{\varphi:B\vdash_F\varphi\}$ is extensive, monotone, and idempotent.
+
+\begin{definition}[Complete accepted ATP state]
+A state is $X=(S,B,\Pi,\sigma,q)$, with local search data $S$, explicit BANK $B$, proof and deposit provenance $\Pi$, proof-acceptance flag $\sigma\in\{0,1\}$, and complete controller data $q$. The proof-exit class is $\Exit=\{X:\sigma=1\}$. The flag may be set only after the verifier accepts a finite $F$-derivation of the fixed target $T$ from the current explicit premises, with any deposited premises supported by recorded provenance.
+\end{definition}
+
+The protocol declares legal accepted actions $a$ from each state, their successors $\Next(X,a)$, and costs $c(X,a)\in\mathbb N_{&gt;0}$. Checking, bookkeeping, inference, or controller work may count as one action or several; this choice is frozen with the protocol. The entire accepted transition graph is fixed once the protocol is fixed, even while its BANK coordinate changes on particular paths. With $C(\rho)$ the sum of edge costs, define
+\begin{equation}\label{eq:B_H}
+\Hone(X)=\min_{\rho:X\leadsto\Exit}C(\rho),\qquad \min\varnothing=\infty.
+\end{equation}
+The zero-length path is allowed, so every exit has $\Hone=0$. Positive integral costs make a least finite cost attainable whenever any successful route exists. We need not assume finite branching for this existential assertion.
+
+\begin{theorem}[Proof-role reduction]\label{thm:B_role}
+If the accepted action alphabet is restricted to the proof role $P$ and the only allowed exit class is the proof class $\Exit$, then $D_P(X)=\Hone(X)$ for every accepted state, including $\infty$-valued states.
+\end{theorem}
+\begin{proof}The legal successful paths in the two minimizations are identical.\end{proof}
+\begin{corollary}[A globally optimal proof action approaches the proof exit]
+If $X\xrightarrow{a}Y$ is horizon-preserving, $\Hone(X)&lt;\infty$, and $c(X,a)&gt;0$, then $D_P(Y)=D_P(X)-c(X,a)&lt;D_P(X)$.
+\end{corollary}
+\begin{proof}Replace both $D_P$ values with $\Hone$ in the defining horizon-preserving equality.\end{proof}
+The conclusion concerns $D_P$ and $\Hone$, not the distance after restricting the prover&#x27;s inference-selection tactics.
+
+\section{Conservative BANKs as proof-bearing ledgers}
+\begin{definition}[Chronological certified ledger]
+Fix the initial BANK $B_0$. A finite accepted ledger contains entries
+\[
+ (L_i,\pi_i),\qquad i=1,\ldots,k,
+\]
+where $B_i=B_{i-1}\cup\{L_i\}$, and $\pi_i$ is a finite checker-accepted derivation of $L_i$ from explicit premises in $B_{i-1}$. Entries are indexed chronologically, and the provenance identifies whether a premise came from $B_0$ or from an earlier entry. Repeated formula names are permitted but must not create forward dependencies.
+\end{definition}
+
+\begin{theorem}[Conservative BANK invariant]\label{thm:B_bank}
+Every prefix of a chronological certified ledger satisfies $\Con(B_k)=\Con(B_0)$.
+\end{theorem}
+\begin{proof}
+At one stage $L_i\in\Con(B_{i-1})$. By monotonicity and extensivity, $\Con(B_{i-1})\subseteq\Con(B_i)$. By monotonicity and idempotence,
+\[
+\Con(B_i)\subseteq\Con(\Con(B_{i-1}))=\Con(B_{i-1}).
+\]
+The equality propagates inductively.
+\end{proof}
+
+Consequence equality alone is an extensional fact: it does not specify how to construct a certificate from $B_0$ when the accepted proof mentions a later deposited premise. The stored chronological witnesses furnish a stronger, constructive account.
+
+\begin{theorem}[Finite provenance expansion]\label{thm:B_expand}
+Suppose every $\pi_i$ is a valid finite $F$-derivation from $B_{i-1}$, and the proof calculus admits substitution of a proved formula for its later use as a premise. Given any finite accepted proof $\pi$ of $T$ from $B_k$, there exists a finite derivation $\operatorname{Expand}_k(\pi)$ of $T$ using only premises from $B_0$. With finite explicit proof encodings and a computable substitution operation, the expansion can be constructed effectively from the ledger and $\pi$.
+\end{theorem}
+\begin{proof}
+Proceed backwards through ledger entries. At stage $i$, consider the current finite proof from $B_i$. At each premise occurrence explicitly justified by the added entry $L_i$, substitute a copy of the witness $\pi_i$, which itself uses only $B_{i-1}$. If $L_i$ already belongs to $B_{i-1}$, its occurrence may simply remain justified by that older premise; the indexed provenance disambiguates the cases. The substitution assumption preserves validity and yields a finite proof from $B_{i-1}$. Repeat for $i=k,k-1,\ldots,1$. Each step performs finitely many replacements by finite proofs, so it terminates after $k$ stages with a valid proof from $B_0$. The process may increase certificate size greatly, and no general complexity bound is asserted.
+\end{proof}
+
+\begin{remark}[Why the ledger matters]
+A bare assertion that $L_i$ is ``known&#x27;&#x27; does not provide its original-premise proof. The theorem needs actual, valid witnesses and an acyclic chronological dependency structure. It proves the existence (and conditionally the effective production) of an expanded certificate, not that an external checker has been run on that certificate during this manuscript&#x27;s preparation. A trusted checker can check the resulting finite derivation if one is produced.
+\end{remark}
+
+\section{Explicit proof steps and a failure of runtime monotonicity}
+\begin{definition}[Minimum explicit-premise length]
+Let $h_T(B)$ be the minimum number of $F$-rule applications needed to derive $T$ from explicit premises $B$, with $h_T(B)=0$ if $T\in B$ and $h_T(B)=\infty$ if no such derivation exists.
+\end{definition}
+\begin{proposition}[Premise monotonicity]\label{prop:B_mono}
+If $B\subseteq B&#x27;$, then $h_T(B&#x27;)\le h_T(B)$. In particular, under a chronological certified BANK ledger,
+\[
+ \Con(B_i)=\Con(B_0),\qquad h_T(B_{i+1})\le h_T(B_i).
+\]
+\end{proposition}
+\begin{proof}
+Every proof from $B$ is a proof from $B&#x27;$, so taking a minimum over the larger proof family cannot increase its inference count. The closure assertion is Theorem~\ref{thm:B_bank}.
+\end{proof}
+
+\begin{example}[A conservative shortcut]
+Let the only applicable displayed rules be $p\mapsto\ell$ and $\ell\mapsto t$, with initial BANK $\{p\}$. Then $h_t(\{p\})=2$. After certifying and depositing $\ell$, the explicit-premise distance falls to $h_t(\{p,\ell\})=1$, although consequence closure stays fixed. The deposit itself must be charged to the path leading to the enlarged BANK.
+\end{example}
+
+Even after charging the deposit, one might be tempted to claim that the full-state horizon from its successor must be smaller. This is not entailed by the abstract protocol and would be a false generalization.
+
+\begin{proposition}[A conservative deposit can increase the remaining full-state horizon]\label{prop:B_counter}
+There exists a finite one-Pioneer accepted transition system and a unit-cost certified conservative deposit edge $U\to V$ such that
+\[
+ h_t(B_U)=2&gt;1=h_t(B_V),\qquad \Hone(U)=2&lt;4=\Hone(V).
+\]
+\end{proposition}
+\begin{proof}
+Choose formula space $y=\{p,a,\ell,t\}$, target $t$, initial BANK $B_U=\{p\}$, and the four unary rules
+\[
+ p\mapsto a,\qquad a\mapsto t,\qquad p\mapsto\ell,\qquad \ell\mapsto t.
+\]
+At the initial state $U$, the protocol permits exactly two first actions. One applies $p\mapsto a$ for cost $1$ and enters a state with a single remaining inference action $a\mapsto t$ of cost $1$, after which a valid accepted exit is reached. The other action applies $p\mapsto\ell$, checks the one-step certificate, and commits $\ell$ to the BANK in one \emph{declared combined} unit-cost action $U\to V$. This deposits only a derivable lemma and stores the witness in $\Pi_V$.
+
+At $V$, a controller counter initially equal to $0$ requires three successive accepted preparation actions, each of cost $1$ and each incrementing the counter, before the sole enabled inference $\ell\mapsto t$ may be checked and accepted at cost $1$. These preparations change complete states, not formulas or BANK entries. There are no other actions in the graph. Every exit retains the proof log, and no unchecked inference is accepted. Consequently $\Hone(U)=\min\{2,1+4\}=2$ while $\Hone(V)=4$. Formula-level proofs are unchanged: the minimum from $\{p\}$ takes two inferences, whereas $\ell\in B_V$ supports the one-inference derivation of $t$. Every finite route and deposit is licensed by the declared protocol.
+\end{proof}
+
+\begin{remark}[Scope of the countermodel]
+The controller preparation actions are deliberately simple; their only purpose is to demonstrate that premise-set inclusion is not a complete-state horizon comparison. This proposition is not an observation that BANK deposits slow practical provers. It is a logical counterexample to a claim W0 wisely did not make.
+\end{remark}
+
+\section{Shortest-path equations and exact excess cost}
+\begin{theorem}[Bellman optimality and path accounting]\label{thm:B_bell}
+For $X\notin\Exit$ with $\Hone(X)&lt;\infty$,
+\[
+ \Hone(X)=\min_{a\in\acts(X)}\bigl[c(X,a)+\Hone(\Next(X,a))\bigr].
+\]
+For any finite path of cost $b$ from $X$ to $Y$, $\Hone(X)\le b+\Hone(Y)$.
+\end{theorem}
+\begin{proof}
+Decompose an optimal successful route into its first action and remaining suffix, and conversely append an optimal finite continuation to any legal action. For the path inequality, append an optimal continuation from $Y$ if it exists; if it does not, the extended-real inequality holds automatically.
+\end{proof}
+
+\begin{definition}[One-step defect]
+On a legal edge $X\xrightarrow{a}Y$ with finite endpoint horizons let $\delta(X,a,Y)=c(X,a)+\Hone(Y)-\Hone(X)$.
+\end{definition}
+\begin{theorem}[Exact regret identity]\label{thm:B_regret}
+Every successful finite path $\rho=(X_0\to\cdots\to X_m\in\Exit)$ obeys
+\[
+ C(\rho)-\Hone(X_0)=\sum_{i&lt;m}\delta(X_i,a_i,X_{i+1})\ge0.
+\]
+The path is minimum-cost if and only if all its edges have zero defect.
+\end{theorem}
+\begin{proof}
+All suffixes lead to an exit, so their horizons are finite. Bellman inequalities yield $\delta\ge0$. The sum telescopes to $C(\rho)+\Hone(X_m)-\Hone(X_0)$, and the terminal horizon is $0$.
+\end{proof}
+
+The potential identity evaluates a given complete path. It does not supply an effective algorithm for measuring $\delta$: in a general protocol the exact $\Hone$ values may be inaccessible.
+
+\section{The finite strategy-detour witness retained}
+A search strategy can be described by a mask $\actsS(X)\subseteq\acts(X)$, without claiming that this mask is a deterministic or computable scheduler. Write $\Dst(X)$ for the minimum cost of an exit-reaching path using only masked actions, or $\infty$ when there is none. Always $\Hone(X)\le\Dst(X)$.
+
+\begin{theorem}[One prover, one proof exit class, two notions of closeness]\label{thm:B_detour}
+There exists a finite certified one-Pioneer inference protocol with unit action costs, a mask $s$, and a permitted, unrestricted-horizon-preserving edge $X\to Y$ for which
+\[
+ \Hone(X)=2,\quad \Hone(Y)=1,\qquad \Dst(X)=3,\quad\Dst(Y)=4.
+\]
+\end{theorem}
+\begin{proof}
+Take $B_0=\{p\}$, $T=t$, formula alphabet $\{p,a,b,\ell,q_1,q_2,q_3,t\}$, and exactly the following nine unary rules:
+\[
+\begin{gathered}
+ p\mapsto a,\ a\mapsto b,\ b\mapsto t,\\
+ p\mapsto\ell,\ \ell\mapsto t,\ \ell\mapsto q_1,\\
+ q_1\mapsto q_2,\ q_2\mapsto q_3,\ q_3\mapsto t.
+\end{gathered}
+\]
+A complete state stores the full ordered proof prefix from $p$, the current last formula, an unchanged BANK, fixed active-frontier controller data, and an exit bit set exactly upon reaching $t$ with a valid prefix. Every rule application to the current last formula, including its certificate append, is one accepted unit-cost action. The three and only successful proof histories have lengths $3$, $2$, and $5$, respectively:
+\[
+ p\to a\to b\to t,\quad p\to\ell\to t,\quad p\to\ell\to q_1\to q_2\to q_3\to t.
+\]
+Let $X$ be the initial state, $Y$ its successor after $p\mapsto\ell$, and let $s$ disallow $\ell\mapsto t$ at $Y$ but allow every other action. The unrestricted shortest route costs $2$ from $X$ and $1$ from $Y$. With the mask, the shorter $p\to\ell\to t$ route disappears; the best remaining route from $X$ costs $3$ by $a,b$, whereas from $Y$ the four-step $q_1,q_2,q_3,t$ continuation is forced. The edge $X\to Y$ is permitted and globally optimal since $2=1+1$. All distinct proof exits retain their distinct certificate histories.
+\end{proof}
+
+This is a strategy-relative detour, not a contradiction of the proof-role identity $D_P=\Hone$. In particular, it does not show that an actual scheduling program pays cost $3$ or $4$; those are best achievable costs in the masked graph.
+
+\section{Finite-cost frontier exhaustion and horizon certificates}
+A shortest-path value can be finite yet difficult to determine. Under a more explicit effective graph hypothesis, bounded frontiers give a conditional, locally checkable kind of information.
+
+\begin{definition}[Exhaustive cost frontier]
+For an integer $R\ge0$, define the cost ball from $X$ by
+\[
+ \mathcal B_R(X)=\{Y:\text{some finite legal path $X\leadsto Y$ has cost at most $R$}\}.
+\]
+An \emph{exhaustive $R$-exploration} enumerates all legal paths from $X$ of total cost at most $R$, and tests exit membership at every reached endpoint. Its audit record identifies all explored states, complete successor lists for expanded states, edge costs, and exit-test outcomes.
+\end{definition}
+
+\begin{theorem}[Finite frontier theorem]\label{thm:B_cutoff}
+Assume that (i) every state has finitely many legal actions; (ii) for each visited state its \emph{complete} legal action list, successor, and positive integer cost can be effectively computed; and (iii) membership in $\Exit$ is decidable. Then for each fixed $X$ and $R\in\mathbb N$, exhaustive $R$-exploration terminates. It finds an exit if and only if $\Hone(X)\le R$. Consequently, a complete exploration finding no exit establishes the lower bound
+\[
+ \Hone(X)\ge R+1
+\]
+(including the case $\Hone(X)=\infty$).
+\end{theorem}
+\begin{proof}
+Each action costs at least $1$, so a path of total cost at most $R$ has at most $R$ edges. Starting from one state and iterating finite action lists a finite number of times yields finitely many legal action sequences of length at most $R$; effective complete generation enumerates them, rejecting those whose cost exceeds $R$. The procedure therefore terminates, even if the whole graph is infinite. If an exit appears in the exploration, its recorded path witnesses cost at most $R$, so $\Hone(X)\le R$. If $\Hone(X)\le R$, the attained minimum gives a legal successful path within the explored family, so an exit must appear. The lower bound is the contrapositive, using integer cost values.
+\end{proof}
+
+\begin{corollary}[Exact bracketing by a successful path]\label{cor:B_bracket}
+Under the hypotheses of Theorem~\ref{thm:B_cutoff}, suppose a checked legal path of cost $U$ from $X$ reaches an exit, and an exhaustive $R$-exploration finds no exit, where $0\le R&lt;U$. Then
+\[
+ R+1\le \Hone(X)\le U.
+\]
+If $R=U-1$, the horizon is exactly $U$.
+\end{corollary}
+\begin{proof}
+Combine the finite-frontier lower bound with the displayed successful path upper bound; when the two endpoints coincide, equality follows.
+\end{proof}
+
+\begin{example}[A complete finite-budget certificate in the witness]
+For the initial state $X$ of Theorem~\ref{thm:B_detour}, exhaustive cost-$1$ exploration visits $X$ and its one-step successors, but no proof exit. Thus $\Hone(X)\ge2$. The valid two-inference route $p\to\ell\to t$ gives $\Hone(X)\le2$, so $\Hone(X)=2$. This small frontier certificate depends on the assertion that the nine-rule list is \emph{complete}. A solver unable to enumerate every legal first action cannot use a failed search to certify the same lower bound.
+\end{example}
+
+\begin{remark}[What a frontier audit record proves]
+A frontier-exhaustion record is a mathematical justification only relative to a faithful, complete successor generator and reliable exit tests. A list of actions that happened to be tried is not an exhaustive record. Local finiteness is essential to the stated termination argument; the existence of a shortest path alone does not imply a bounded exploration is computationally finite. The theorem certifies a \emph{cost lower bound} under assumptions, never underivability from one finite timeout.
+\end{remark}
+
+\section{Completeness requires fairness, not just a finite frontier}
+\begin{theorem}[Sound-and-fair proof semidecision]\label{thm:B_semi}
+Suppose (i) finite $F$-derivations from $B_0$ can be effectively enumerated; (ii) an effective checker accepts each valid enumerated $T$-proof and rejects invalid ones; (iii) a schedule fairly examines every finite derivation or equivalent valid certificate; (iv) all BANK updates are certified conservative deposits; and (v) proof exits require accepted target certificates from the current BANK. Then
+\[
+\text{eventual proof acceptance}\quad\Longleftrightarrow\quad B_0\vdash_F T.
+\]
+\end{theorem}
+\begin{proof}
+For the forward implication, exit acceptance yields a checked derivation from some $B_k$; by Theorem~\ref{thm:B_bank}, $T\in\Con(B_0)$. For the reverse implication, any valid finite derivation of $T$ from $B_0$ occurs in the effective enumeration, is examined by fairness, and is accepted by checker completeness.
+\end{proof}
+
+The finite-frontier theorem and fair-semidecision theorem answer different questions. Exhausting cost $R$ says no accepted route of cost \emph{at most $R$}; it does not say that no route exists. Fairly enumerating proofs says that if a proof exists the algorithm eventually sees one; it gives no preannounced finite bound on that time and no negative decision when a proof fails to appear.
+
+\section{A verification discipline for complete-state search}
+The following mathematical obligations accompany any claimed use of this framework. Every accepted inference must identify its rule and premise tuple; each conservative BANK deposit must carry a derivation from the earlier BANK; proof exits must name the target and expose acceptance evidence; controller state must contain the data needed to fix the action relation; and cost claims must state which checking and administrative actions were charged. These are conditions on the declared protocol. None is established merely by diagramming a graph of formulas.
+
+The original source separates a single prover from a single physical process running several specialized settlement roles. This completion keeps that distinction: restricting the role set to $P$ changes the allowed exit boundary. It also keeps the source&#x27;s caution about comparison to five-Pioneer systems, which require aligned protocols and costs. Without those details, greater parallelism does not imply a particular runtime improvement.
+
+\section{Conclusion}
+One-Pioneer ATP search has a simple semantic objective---reach a proof exit with an accepted derivation---but its operational geometry has more than one scale. Explicit proofs, full execution routes, and masked tactic paths have different minima. Conservative deposits leave derivability unchanged and can improve minimum explicit-premise proof length; the chronological ledger makes the provenance translation to the original premises explicit. Yet a deposit can lead to a state with a larger remaining execution horizon, as a finite countermodel demonstrates. Bellman accounting measures ideal search, while the finite-frontier theorem gives a narrower effective lower-bound method when the entire local action relation is enumerable. Fair proof search still requires a separate schedule hypothesis. None of these claims elevates a finite missed deadline into a mathematical negative result.
+
+\medskip\noindent\textbf{Provenance and publication status.} FDWC completion B is an unapproved, unpublished alternate manuscript. The only mathematical source is the attached W0. Its historical parent citation is retained below without independent consultation.
+\begin{thebibliography}{9}
+\bibitem{W0} \AuthorTag, \emph{One-Way Pac-Man: The Search Geometry of a Single Automatic Theorem Prover}, research note, version 0.2, 26 October 2026. Immutable source W0 supplied with this completion.
+\bibitem{parent} \AuthorTag, \emph{Five-Way Pac-Man: Cooperative Search Geometry for Automated Metalogical Deciders}, Research Revision 003, 19 September 2026. Bibliographic entry reproduced from W0, not separately consulted.
+\end{thebibliography}
+\end{document}
+</pre></main></body></html>
