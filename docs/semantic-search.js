@@ -148,6 +148,8 @@ function search(meta, vectors, query, embedding) {
   for (let i = 0; i < meta.passages.length; i++) {
     const pass = meta.passages[i];
     const article = meta.publications[pass.a];
+    // Hide the superseded v0.2 article while preserving its archival URL.
+    if (article.href === 'cs.LO_Logic_in_Computer_Science/two_armies_of_one_scout_probe_rendezvous_0_2/') continue;
     if ((!includeArchive.checked && article.archived) ||
         (subject.value && article.subject !== subject.value)) continue;
     const offset = i * dims;
