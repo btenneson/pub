@@ -1,0 +1,45 @@
+name: Publish Two Geometries expository article v0.2 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_two_geometries_atlas_repaired_v0_2_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-two-geometries-expository-slot1
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install LuaLaTeX and publication audit dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-luatex texlive-latex-extra texlive-fonts-recommended lmodern fonts-lmodern poppler-utils
+          python -m pip install pymupdf==1.26.4
+      - name: Compile exact source, rebuild and audit publication slot 1
+        run: python scripts/publish_two_geometries_atlas_repaired_v0_2_slot1.py
+      - name: Remove temporary staging and build artifacts
+        run: |
+          rm -rf incoming_publications/two_geometries_atlas_repaired_v0_2
+          rm -rf .build/two_geometries_atlas_repaired_v0_2
+      - name: Commit verified publication, reader and gallery
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to publish."
+          else
+            git commit -m "Publish Two Geometries v0.2 in slot 1 [skip ci]"
+            git push
+          fi
