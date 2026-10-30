@@ -1,0 +1,260 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.94in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,amsthm,mathtools,booktabs,array,enumitem,tikz,fancyhdr,xcolor}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=black,citecolor=black,pdftitle={Oracle-Attested Mathematical Knowledge - FDWC Completion A - ATLAS Repaired 1.1},pdfauthor={<Brian Tenneson>},pdfsubject={Conditional typed-evidence calculus and blind relay preservation}]{hyperref}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
+\setlist{nosep,topsep=4pt,leftmargin=*}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small Oracle-Attested Knowledge: Completion A}\fancyhead[R]{\small \texttt{<Brian Tenneson>}}\fancyfoot[C]{\thepage}
+\newtheorem{theorem}{Theorem}[section]\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}\newtheorem{corollary}[theorem]{Corollary}\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{example}[theorem]{Example}\newtheorem{remark}[theorem]{Remark}\newtheorem{conjecture}[theorem]{Conjecture}
+\newcommand{\Cert}{\mathsf{Cert}}\newcommand{\Att}{\mathsf{Att}}\newcommand{\Relay}{\mathsf{Relay}}\newcommand{\Auth}{\mathsf{Auth}}\newcommand{\Trust}{\mathsf{Trusted}}\newcommand{\Adm}{\mathsf{Adm}}\newcommand{\Proof}{\mathsf{Proof}}\newcommand{\Msg}{\mathsf{Msg}}\newcommand{\Log}{\mathcal L}\newcommand{\N}{\mathbb N}
+\title{\bfseries Oracle-Attested Mathematical Knowledge\\[3pt]
+\large Completion A: A Typed Evidence Calculus for Blind Relays,\newline Source Deactivation, and Noncomputable Finality}
+\author{\texttt{<Brian Tenneson>}\\\small Mathematical development and manuscript preparation assisted by DATA MIND (OpenAI GPT-6)}
+\date{October 30, 2026\\\small FDWC alternative A, ATLAS-repaired version 1.1; W0 retained as immutable ancestor}
+\begin{document}
+\maketitle
+\begin{center}\small A provenance and AI-assistance statement appears at the end.\end{center}
+\begin{abstract}
+An ideal mathematical truth source answers a halting query, transmits a finite authenticated receipt to a blind relay, and is then deactivated. Can a receiving Pioneer maintain an exact account of what has been proved, attested, delivered, and merely trusted? We give a finite-ledger, typed evidence calculus in which the answer is yes, conditional on explicit reliability, authentication, locally closed storage, and checker hypotheses. We prove termination of the evidence-classification procedure, separation of the proof and testimony gates, persistence of already recorded evidence after source deactivation, and trust-relative soundness. A self-contained halting diagonal argument shows why no uniform all-input truth service can be realized entirely by computable components. We further construct a one-drop proof-horizon sequence and show that its stabilization predicate has exactly halting-oracle Turing degree. The mathematical results are conditional paper-level arguments; neither operational AMLD+0 execution nor independent certificate verification is claimed.
+\end{abstract}
+\noindent\textbf{Status.} Conditional existential construction: \textsc{proved on paper}. AMLD+0 engine execution: \textsc{not run}. Independent checking: \textsc{not performed}. This is not an installation specification or authorization to modify an engine.
+\tableofcontents
+\section{Problem, source boundary, and scope}
+We consider three agents with sharply different roles. A truth source $O_T$ knows a bit answering a mathematical question; a relay $O_R$ copies an authenticated finite statement without deciding the question; and a Pioneer $P^*$ receives and classifies the message. The source can disappear between relay receipt and final delivery. The receiving agent is not thereby given a proof, and a record of an assertion is not the same fact as the assertion's truth.
+
+The immutable source document, denoted $W_0$, is \emph{Oracle-Attested Mathematical Knowledge: Blind Relays, Source Deactivation, Verifier Gates, and Noncomputable Finality}, research note 0.1, dated October 29, 2026. This completion reconstructs its essential protocol and four evidence predicates. Its new definitions and proofs are expressly developments of $W_0$, not conclusions imported from its bibliography. In particular, references cited by $W_0$ were not separately consulted.
+
+``Exact'' will always mean exact \emph{with respect to an explicitly delimited finite accepted ledger}. It will never mean an algorithm that recognizes truth of every arithmetic statement. A soundness claim likewise invokes both sound proof verification and truthfulness of any source whose assertions are accepted on trust.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,node distance=1.5cm,every node/.style={font=\small}]
+\node[draw,rounded corners,minimum width=3.3cm,minimum height=1.0cm,align=center] (o) {$O_T$ (ideal source)\\ supplies $H(e)$};
+\node[draw,rounded corners,right=of o,minimum width=3.1cm,minimum height=1.0cm,align=center] (r) {$O_R$ (blind relay)\\stores and forwards};
+\node[draw,rounded corners,right=of r,minimum width=3.0cm,minimum height=1.0cm,align=center] (p) {$P^*$ (Pioneer)\\classifies receipts};
+\draw[->,thick] (o) -- node[above]{source receipt} (r);
+\draw[->,thick] (r) -- node[above]{relay receipt} (p);
+\node[below=0.55cm of o,align=center] (off) {source deactivated\\after persistent storage};
+\draw[->,dashed] (o) -- (off);
+\end{tikzpicture}
+\caption{A valid execution uses persistence, not continuing oracle availability. Arrows indicate assumed successful transmissions, not automatically guaranteed liveness.}
+\end{figure}
+
+\section{Frozen protocol profile and finite records}
+\begin{definition}[Protocol profile]
+Let
+\[
+M=(\Gamma,F,V,O_T,O_R,P^*,A,\tau,\Log,c).
+\]
+Here $F$ is a fixed effective formal proof calculus; $\Gamma$ is a fixed set of hypotheses; $V(\pi,\Gamma,\varphi)\in\{0,1\}$ is a total decidable proof checker; $O_T$ is an ideal truth interface; $O_R$ is a blind relay; $A$ is a frozen decidable authentication/ancestry/scope policy; $\tau$ is a frozen decidable source-trust policy; $\Log=(\Log_t)_{t\in\N}$ is an append-only sequence of finite, well-typed local accepted-event records; and $c$ assigns each event a finitely encoded nonnegative rational charge. At any fixed finite time the ledger is finite, though no global memory bound is claimed. The immutable initial proof BANK is distinct from the append-only proof-event projection, which starts empty (or with entries already accepted by $V$).
+\end{definition}
+We use the classical halting predicate
+\[
+H(e)=\begin{cases}1,&\text{the machine/input pair coded by $e$ halts};\\0,&\text{otherwise}.\end{cases}
+\]
+The source's semantic contract is that a query $e$ receives the correct bit $H(e)$, encoded as a finite message. This is a stipulated noncomputable service, not an implementation on ordinary hardware. For the registered-sentence interface, assume $F$ has effective arithmetical encodings $\ulcorner H(e)=b\urcorner$ and $\ulcorner F(e,N)\urcorner$ and that $V$ accepts well-formed finite $F$-certificates for those encodings. This is an explicit restriction on admissible instances of the frozen profile, not an amendment to $\Gamma$, $V$, or the proof BANK. An ideal halting-bit oracle receipt is still restricted to $H(e)=b$, even when a later metamathematical analysis discusses other formulas.
+
+\begin{definition}[Typed records and local gates]
+A source receipt is a finite tuple
+\[
+r=(q,e,b,\varphi,s,\sigma,t,a,p,\kappa),\qquad \varphi\equiv ``H(e)=b'',
+\]
+containing a unique query identifier $q$, source identifier $s$, scope $\sigma$, epoch $t$, authentication witness $a$, predecessor pointer $p$, and cost data $\kappa$. The receipt is \emph{source-acceptable} iff the total policy checker $\Auth_A(r)$ returns $1$; scope and syntax are included in this check. A relay receipt carries the same immutable finite source bytes, the relay identity, a predecessor link, and a relay authenticity witness. It is \emph{path-acceptable} if a total validator checks both hops and the content-preserving pointer relation. A payload pointer alone is not a valid substitute for the actual bytes unless a source-independent, terminating local resolver is explicitly included.
+\end{definition}
+\begin{definition}[Locally closed accepted snapshot]
+A receiver snapshot $\Log_t$ is \emph{locally closed} if every record used to support a displayed status has its complete finite payload, finite predecessor chain, origin/relay validation inputs, and proof object (if any) stored in $\Log_t$ or in a specified finite, immutable local companion store. Every reference is resolved by a terminating, source-independent algorithm, all ancestry chains terminate without cycles, and the fixed versions and executable data of $V,A,\tau$ needed for evaluation remain available. The finite roster of registered formulas and all finite witnesses are part of that snapshot. Historical assertions are reported only from this locally closed accepted snapshot; unobserved physical events are outside its scope. This closure does not promise that the snapshot is a complete record of physical reality.
+\end{definition}
+
+An accepted record and a statement of mathematical truth are different data types. The authentication assumption says an accepted receipt has the declared origin and unmodified payload \emph{within the stipulated channel model}. It does not say that the declared origin never lies. If the channel uses cryptography, any cryptographic security required for that statement is part of the assumption, not proved here.
+
+\begin{definition}[Four statuses]
+For a registered, effectively encoded formula $\varphi$ and a locally closed receiver snapshot at time $t$, define
+\begin{align*}
+\Cert_t(\varphi)&\iff \exists\pi\in\Log_t^{\Proof}\;V(\pi,\Gamma,\varphi)=1,\\
+\Att_t(\varphi,O_T)&\iff \exists r\in\Log_t^{\Msg}\;[r\models\text{``asserts $\varphi$''}\wedge \Auth_A(r)],\\
+\Relay_t(\varphi,O_R,O_T)&\iff \exists\text{ path-acceptable }(O_T\to O_R\to P^*)\text{ chain in }\Log_t\\
+&\hspace{38mm}\text{whose source payload asserts }\varphi,\\
+\Adm_t^\tau(\varphi)&\iff \Cert_t(\varphi)\vee\bigl(\Att_t(\varphi,O_T)\wedge\Trust_\tau(O_T,\varphi)\bigr).
+\end{align*}
+The last predicate is the operational \emph{warranted-admission} status called $K_t^\tau$ in $W_0$. The notation $\Adm$ avoids silently asserting a strong philosophical knowledge axiom. Each status also carries its actual witness record, so admission is not reduced to a bare Boolean.
+\end{definition}
+The four statuses need not be disjoint. An arithmetic claim may independently have a valid proof and a source attestation, in which case the log preserves both warrants. The relay predicate is intentionally stronger than bare source attestation: it says the requested two-hop transmission history has been accepted. The inherited $\Adm$ rule does \emph{not} require the relay-path predicate; an accepted origin attestation can support trust-relative admission even if no two-hop chain is documented. This is a deliberate reading of the unchanged $W_0$ admission formula, not an added delivery rule.
+
+\section{Transitions and the verifier firewall}
+The protocol has four kinds of controlled update: source emission, source-to-relay receipt, relay-to-Pioneer delivery, and admission of an independently checked proof. Let $\Log_t^{\Proof}$ and $\Log_t^{\Msg}$ denote disjoint typed projections of the finite event log. Only the \emph{proof admission} rule can append to the former:
+\[
+\frac{\text{finite $\pi$ supplied}\qquad V(\pi,\Gamma,\varphi)=1}
+     {\Log_t^{\Proof}\rightsquigarrow \Log_{t+1}^{\Proof}\cup\{(\pi,\varphi)\}}\tag{P}
+\]
+All message rules append solely to the message/transport projection. In particular, neither an authenticated receipt nor the relay's declaration of confidence is a premise of rule (P). The initial BANK remains frozen throughout. We stipulate $\Log_0^{\Proof}=\varnothing$ (or, equivalently for the invariant, that every initially logged proof was already checked by $V$); this auxiliary log is not the immutable BANK.
+
+\begin{theorem}[Decidable local evidence classification]
+For any finite, locally closed accepted event log $\Log_t$, registered encoded formula $\varphi$, fixed total checker $V$, and fixed decidable locally available policies $A,\tau$, all four statuses above can be computed, and their displayed witnesses can be enumerated.
+\end{theorem}
+\begin{proof}
+Read the finite log and filter by its decidable type tags. Equality of finite formula encodings, source identifiers, and scopes is decidable. Apply $V$ to each candidate proof; apply $\Auth_A$ to each message; check finitely many presented predecessor chains for their prescribed finite link constraints; and evaluate the fixed trust policy. Each subroutine terminates and there are only finitely many stored candidates. The returned results are exact relative to this log. The proof does not assert that unlogged events can be discovered.
+\end{proof}
+
+\begin{theorem}[Evidence noncontamination]
+In every execution following rule (P), each element of $\Log_t^{\Proof}$ has passed $V$. Source emissions, relay delivery, and source deactivation cannot by themselves create a new element of $\Log_t^{\Proof}$.
+\end{theorem}
+\begin{proof}
+Induct on the length of a finite execution. The assertion holds initially because the proof log is empty (or every initial proof-log entry was explicitly verified); the immutable initial BANK is not silently treated as an unchecked entry in that log. A proof-admission transition adds only a checker-accepted object. Every other transition leaves the proof projection unchanged. Hence the invariant holds at every finite stage.
+\end{proof}
+\begin{remark}
+This is a \emph{typed-storage invariant}, not a proof of $V$'s semantic soundness. An unsound checker could accept a bad proof; the invariant would still hold while truth-relative conclusions would fail.
+\end{remark}
+
+\section{Conditional existential construction}
+\begin{theorem}[Blind-relay preservation with a disappeared source]
+Assume the following capabilities for each selected standard input $e$: (i) $O_T$ supplies the correct bit $H(e)$ and an $A$-acceptable finite source receipt, (ii) one successful persistent delivery to $O_R$ occurs, (iii) the relay storage survives the deactivation of $O_T$, (iv) one later authorized content-preserving delivery from $O_R$ to $P^*$ occurs, and (v) the receiving log is locally closed and durable, with all checker code, authentication inputs, and frozen policies locally available and source-independent. Then there is a finite execution in which $O_T$ is deactivated before $P^*$ receives the relayed message, the message chain and the four evidence statuses on the finite registered roster are decidably recorded, the immutable initial BANK is unchanged, and no unverified testimony enters the proof-event ledger.
+\end{theorem}
+\begin{proof}
+Query $O_T$ on $e$ and write its finite receipt $r$. Use (ii) to append the accepted receipt to the relay's persistent storage. Deactivate the source. By (iii), this operation does not erase $r$. Copy $r$ and its source metadata into the relay envelope without calculating $H(e)$, and use (iv) to append the resulting valid relay chain and its complete finite checking data to the locally closed receiver log. By (v) and Theorem 3.1, the receiver can evaluate all four finite statuses and record their witnesses. The proof-projection invariant of Theorem 3.2 excludes new proof-event entries except via $V$; the frozen initial BANK is not updated. Only finitely many finite records and computations are used after the single oracle answer.
+\end{proof}
+\begin{corollary}[Source-deactivation invariance]
+Suppose the locally closed log and companion data are append-only and durable, the checker and frozen policies remain fixed and available, and every old validation witness is still locally resolvable. A fact $\Cert_t$, $\Att_t$, or $\Relay_t$ established by records already accepted at $t$ remains established at a later time $u\ge t$, even if the source disappears after $t$. Under the same frozen $\tau$, a previously valid $\Adm_t^\tau$ remains valid.
+\end{corollary}
+\begin{proof}
+Every earlier witness remains in $\Log_u$. Its checker and policy results are unchanged by the hypotheses, and thus each existential predicate continues to hold. The admission formula is a Boolean combination of persistent predicates with a fixed trust flag.
+\end{proof}
+\begin{remark}[Precise liveness limitation]
+Authentication does not compel packet delivery. If all channels can drop messages forever or the relay erases its buffer before storage, the theorem's delivery steps need not occur. Accordingly the conclusion is existence \emph{conditional on successful transport and persistence}, not universal availability under arbitrary failures.
+\end{remark}
+
+\section{Soundness depends on two separate premises}
+\begin{theorem}[Trust-relative soundness]
+Fix an intended mathematical interpretation. Suppose (a) every $V$-accepted $F$ proof from $\Gamma$ proves a true sentence and (b) every $A$-accepted source assertion admitted through $\tau$ is true in its authorized scope. Then for all registered $\varphi$ and finite $t$,
+\[\Adm_t^\tau(\varphi)\Longrightarrow \varphi\text{ is true}.\]
+\end{theorem}
+\begin{proof}
+If admission uses the proof disjunct, (a) applies. Otherwise an accepted and trusted attestation is present, and (b) applies. This exhausts the disjunction.
+\end{proof}
+\begin{proposition}[Authentication does not imply correctness]
+In the counterfactual class obtained by withdrawing the source-truth contract (condition (b)), the implication $\Att_t(\varphi,O_T)\Rightarrow \varphi$ is invalid, even when every source and relay signature is authentic.
+\end{proposition}
+\begin{proof}
+Choose a code $e_{\infty}$ for an explicitly infinite-looping machine, so $H(e_{\infty})=0$. In this counterfactual \emph{source-unsound} model, the correctly authenticated source emits the well-typed false receipt $H(e_{\infty})=1$. The communication layer preserves exact bytes and genuine origin while the mathematical assertion is false. This is \emph{not} an execution satisfying the base model's truthful-oracle contract; it isolates authentication from source correctness.
+\end{proof}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,every node/.style={font=\small},node distance=12mm]
+\node[draw,rounded corners,minimum width=4.1cm,minimum height=.9cm] (pp) {finite proof $\pi$};
+\node[draw,rounded corners,below=of pp,minimum width=4.1cm,minimum height=.9cm] (rr) {authenticated receipt $r$};
+\node[draw,rounded corners,right=1.8cm of pp,minimum width=4.1cm,minimum height=.9cm] (pv) {$V(\pi,\Gamma,\varphi)=1$};
+\node[draw,rounded corners,right=1.8cm of rr,minimum width=4.1cm,minimum height=.9cm] (pa) {$\Auth_A(r)=1$};
+\node[draw,rounded corners,right=1.4cm of pv,minimum width=2cm,minimum height=.9cm] (ce) {$\Cert$};
+\node[draw,rounded corners,right=1.4cm of pa,minimum width=2cm,minimum height=.9cm] (at) {$\Att$};
+\draw[->] (pp)--(pv);\draw[->] (pv)--(ce);
+\draw[->] (rr)--(pa);\draw[->] (pa)--(at);
+\draw[dashed] ([yshift=-.18cm]ce.south) to[bend right=18] node[below,align=center]{no testimony-to-proof\\rule} ([yshift=.18cm]at.north);
+\end{tikzpicture}
+\caption{The verifier firewall. The message gate can justify a trust-relative admission, but never an $F$-proof entry by itself.}
+\end{figure}
+
+\section{Noncomputability survives forwarding}
+The impossibility result does not rest merely on a citation to an external undecidability theorem: we restate its elementary diagonal core.
+\begin{lemma}[No total computable halting decider]
+There is no total computable $D(e)$ satisfying $D(e)=H(e)$ for every standard machine/input code $e$.
+\end{lemma}
+\begin{proof}
+Suppose such $D$ exists. Let $\langle i,x\rangle$ be an effective code for running machine $i$ on input $x$. Construct a program $Q$ which, on input machine code $x$, loops forever if $D(\langle x,x\rangle)=1$ and halts immediately if $D(\langle x,x\rangle)=0$. Let $q$ be the machine code of $Q$ and execute $Q(q)$. If $D(\langle q,q\rangle)=1$, then $Q(q)$ does not halt; if it is $0$, then $Q(q)$ halts. Both cases contradict correctness of $D$.
+\end{proof}
+\begin{theorem}[No uniform computable oracle replacement]
+No uniform, terminating, entirely computable source--relay--receiver protocol with no noncomputable input or advice can output $H(e)$ correctly on all standard $e$.
+\end{theorem}
+\begin{proof}
+Simulate the computable source, relay, receiver, and their specified terminating communication schedule on input $e$. The output procedure would be a total computable halting decider, contradicting Lemma 6.1. If the schedule is not known to terminate, no all-input \emph{terminating} service has been established in the first place.
+\end{proof}
+\begin{proposition}[Exactly the oracle degree for the uniform service]
+When the only noncomputable primitive is an exact oracle for $H$, and all remaining processing is uniform and computable, a uniform service that returns $H(e)$ on each $e$ has Turing degree $\mathbf 0'$ (the halting degree).
+\end{proposition}
+\begin{proof}
+The entire service is computable relative to $H$, giving the upper reduction. Since the service returns $H$ on arbitrary inputs, one service call computes $H$, giving the reverse reduction.
+\end{proof}
+\begin{remark}
+A single preserved answer $H(e_0)$ is only a finite bit. Its storage does not supply a \emph{uniform} procedure for arbitrary inputs. The degree statement applies to an all-input service, not a source-deactivated one-message archive.
+\end{remark}
+
+\section{A fully specified one-drop horizon specialization}
+Define by bounded simulation, for machine/input code $e$ and integer $k\ge0$,
+\[
+h_e(k)=\begin{cases}2,&\text{$e$ has not halted during the first $k$ simulated steps},\\1,&\text{$e$ has halted during those steps}.
+\end{cases}
+\]
+We use the harmless, computable normalization that a dummy first transition precedes any possible halt, so a halt is never recorded at $k=0$. This models the one-drop specialization described in Section 6 of $W_0$ without claiming to have audited the separately cited Universal Proof Horizons manuscript. Each $h_e(k)$ is computable by finite simulation, the sequence is nonincreasing, and it has at most one strict decrease. It stabilizes: constantly at $2$ for nonhalting $e$, or at $1$ once a halting step has been observed.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,scale=.85,every node/.style={font=\small}]
+\draw[->] (0,0)--(8,0) node[right] {$k$};
+\draw[->] (0,0)--(0,3) node[above] {$h_e(k)$};
+\draw[dashed] (0,2.25)--(7.6,2.25);
+\draw[dashed] (0,1.15)--(7.6,1.15);
+\node[left] at (0,2.25) {$2$}; \node[left] at (0,1.15) {$1$};
+\draw[very thick] (0,2.25)--(4.1,2.25)--(4.1,1.15)--(7.4,1.15);
+\draw[very thick,dotted] (0,2.32)--(7.4,2.32);
+\node[above] at (5.5,2.4) {nonhalting: no drop};
+\node[below] at (5.9,.98) {halting: one drop};
+\node[below] at (4.1,0) {$s$};
+\end{tikzpicture}
+\caption{Finite observations before $s$ do not discriminate a delayed halting event from never halting.}
+\end{figure}
+
+\begin{definition}[Stabilization finality]
+$F(e,N)$ abbreviates $\forall k\ge N\,[h_e(k)=h_e(N)]$. The frozen source receipt grammar permits $H(m)=b$ only: a bare message with asserted payload $F(e,N)$ is \emph{not} automatically an $A$-accepted oracle receipt. Instead the receiver may retain a separately typed, computably derived finality note supported by a legitimate halting-bit receipt, as constructed next. Such a note is testimonial evidence and not a $V$-accepted proof.
+\end{definition}
+\begin{lemma}[A permitted halting receipt for finality]
+There is a total computable code map $(e,N)\mapsto m_{e,N}$ such that
+\[
+F(e,N)\quad\Longleftrightarrow\quad H(m_{e,N})=0.
+\]
+Thus a valid origin receipt asserting $H(m_{e,N})=0$ and a locally checked record of the code map support a \emph{derived} finality note for $F(e,N)$ without broadening the allowed source-message grammar. The derived note does not by itself set $\Att_t(F(e,N),O_T)$, $\Cert_t(F(e,N))$, or $\Adm_t^\tau(F(e,N))$.
+\end{lemma}
+\begin{proof}
+Uniformly construct a machine with code $m_{e,N}$ that computes $h_e(N)$, then inspects $h_e(N+1),h_e(N+2),\dots$ by bounded simulation and halts upon the first inequality. Its program and parameters are effectively encoded from $(e,N)$ by one fixed generator; the receiver validates an annotation by re-running that generator and matching the resulting code, not by solving general program equivalence. The generated machine halts exactly when the horizon changes after stage $N$, which is exactly the negation of $F(e,N)$. Therefore the legitimate bit $H(m_{e,N})=0$ attests to finality when the source-soundness contract holds; locally validating the effective transformation does not verify the nonhalting assertion or manufacture an $F$-proof. An oracle answer $1$ similarly supports a derived note of nonfinality.
+\end{proof}
+
+\begin{theorem}[Degree of one-drop finality]
+The total decision problem $(e,N)\mapsto\mathbf 1[F(e,N)]$ has Turing degree $\mathbf 0'$. In particular, an $H$-oracle can compute a stabilization stage and final value for every $e$, whereas no total computable uniform stabilization-stage selector exists.
+\end{theorem}
+\begin{proof}
+Given $(e,N)$, boundedly compute $h_e(N)$, and form the effective search for a later $k\ge N$ with $h_e(k)\ne h_e(N)$. The existential success of this search is a halting property of an explicitly constructed machine. One $H$-oracle question decides it; negate that answer to decide $F(e,N)$. This gives $F\le_T H$. For the converse, with the convention that no transition occurs in the first zero steps, $h_e(0)=2$. Therefore $F(e,0)$ holds precisely when $e$ never halts. Consequently $H(e)=1-\mathbf 1[F(e,0)]$, yielding $H\le_T F$. To select a stage relative to $H$, test $N=0,1,2,\ldots$ until $F(e,N)$ is true; eventual stabilization guarantees that the search terminates. If a computable selector $N(e)$ existed, the computable value $h_e(N(e))$ would equal $1$ exactly for halting $e$, contradicting Lemma 6.1.
+\end{proof}
+\begin{example}[Two different last-stage histories]
+For a machine that halts after three simulated steps, the horizon values at $k=0,1,2,3,4$ are $2,2,2,1,1$; $F(e,3)$ is true and $F(e,2)$ is false. For a machine looping forever, they are $2,2,2,2,2$ at every stage and $F(e,0)$ is true. The receiver can independently check either displayed finite prefix, but \emph{cannot} infer from a finite prefix of $2$'s that the value will never drop.
+\end{example}
+
+\section{Information and cost ledgers}
+Each accepted event has a finitely represented nonnegative rational charge, recorded alongside its source and parent pointers, so every finite recorded cost sum is effectively calculable. A run's cost may be reported as
+\[
+C_{\mathrm{run}}=C_{\mathrm{query}}+C_{\mathrm{auth}}+C_{\mathrm{radio}}+C_{\mathrm{relay}}+C_{\mathrm{verify}}+C_{\mathrm{ledger}},
+\]
+where each term is the sum of its declared event charges. There is no finite physical cost claimed for deciding a noncomputable predicate; $C_{\mathrm{query}}$ is a model parameter assigned to an ideal operation. Nor may a receiver infer a zero cost merely because the oracle was deactivated before delivery. Accounting and checker access are part of the live local protocol, not free invisible infrastructure.
+
+\begin{proposition}[Proof-status conservativity under testimonial extension]
+Fix $V,\Gamma$ and initial $\Log_t^{\Proof}$. Extend the protocol only with any finite number of authenticated message and relay records, and do not invoke the proof-admission rule. Then for every $\varphi$, the value of $\Cert_t(\varphi)$ is unchanged by that extension.
+\end{proposition}
+\begin{proof}
+No extension step changes $\Log^{\Proof}$, and $V,\Gamma$ are fixed. The existential definition of $\Cert$ therefore inspects exactly the same candidate proofs.
+\end{proof}
+
+\section{Failure cases and the exact boundary of the result}
+Four countertests show why the hypotheses are not stylistic decorations. First, in a counterfactual model \emph{without} the truthful-source assumption, a genuine source could authenticate the false well-typed assertion $H(e_{\infty})=1$ for an explicitly nonhalting code $e_{\infty}$; this invalidates an unconditional inference from authentication to truth. Second, a corrupted predecessor link defeats path acceptance, even if its terminal payload is readable. Third, a fake proof object fails $V$ and never enters the proof BANK. Fourth, successful oracle emission followed by relay memory loss before durable storage defeats deactivation preservation. These countertests are not executions of all the theorem hypotheses: each deliberately removes a particular premise.
+
+A frozen trust policy gives the monotonicity in Corollary 4.2. A future revocation facility, if separately authorized, would require time-indexed admissions $\Adm_t^{\tau_t}$ and a distinct treatment of historical provenance versus current reliance. It would not be legitimate to insert such a changing policy into the frozen profile without saying so.
+
+\begin{conjecture}[Minimal retention description, not settled here]
+For a chosen finite-event protocol, there may exist a smallest independently checkable projection of the relay ledger sufficient to reconstruct the four registered statuses and their evidence witnesses. No minimality or optimal compression theorem is asserted here; a precise encoding, cost model, and equivalence criterion would be required.
+\end{conjecture}
+
+\section{Mathematical conclusion and scope of verification}
+The original existential question has a conditional affirmative answer. A source can contribute one correct answer to a noncomputable query, disappear, and leave a receiver with exact \emph{finite-evidence} classifications, provided that its testimony was durably captured and legitimately relayed. Proof certification remains under a separate total checker. Source identity is a provenance fact, not a semantic proof. Uniformly replacing the oracle with ordinary computation is impossible; the reconstructed one-drop finality question has exactly halting degree.
+
+These statements are completed paper proofs, not certificates of an AMLD+0 run, an independently checked proof object, an oracle installation, or a globally optimal FDWC completion. The ideal source, fixed evidence policies, and frozen initial BANK are untouched.
+
+\section*{Provenance, references, and AI-assistance statement}
+\addcontentsline{toc}{section}{Provenance, references, and AI-assistance statement}
+\noindent\textbf{Primary mathematical source (only source consulted):} \texttt{<Brian Tenneson>}, \emph{Oracle-Attested Mathematical Knowledge: Blind Relays, Source Deactivation, Verifier Gates, and Noncomputable Finality}, October 29, 2026, research note 0.1 (immutable $W_0$ provided as a seven-page PDF). The reference list within $W_0$ mentions \emph{Universal Proof Horizons for a Single ATP}, \emph{AMLD Security 3.1}, and Turing's classical paper. They are retained as bibliographic provenance only; those external works were not consulted or treated as independent premises of the new proofs.
+
+\medskip\noindent\textbf{AI-assistance disclosure.} Mathematical development and manuscript preparation were assisted by DATA MIND (OpenAI GPT-6) under the author's FDWC instructions. Claims were reviewed internally as paper-level arguments, but no external formal proof checker, independent mathematical referee, AMLD+0 federation, or physical truth-oracle device was run. The author's requested attribution, the frozen assumptions, and the distinction between semantic trust and accepted proof have been preserved.
+\end{document}
