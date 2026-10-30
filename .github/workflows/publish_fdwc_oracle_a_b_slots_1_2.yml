@@ -1,0 +1,45 @@
+name: Publish FDWC Oracle Attestation A and B in slots 1 and 2
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_fdwc_oracle_a_b_slots_1_2.yml'
+      - 'scripts/publish_fdwc_oracle_a_b_slots_1_2.py'
+      - 'incoming_publications/oracle_attested_fdwc_1_1/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-fdwc-oracle-a-b-slot12
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX and PDF audit tools
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install pymupdf==1.26.4
+      - name: Publish both repaired papers, abstracts, full FDWC notes, and source
+        run: python scripts/publish_fdwc_oracle_a_b_slots_1_2.py
+      - name: Commit generated public PDFs and card pages
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish FDWC oracle attestation alternatives A and B in slots 1-2'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

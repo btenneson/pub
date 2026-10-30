@@ -8,6 +8,7 @@ SUBJECTS={'cs.LO':'Logic in Computer Science','cs.AI':'Artificial Intelligence',
 DIRECT_PDF_READER='cs.LO_Logic_in_Computer_Science/universal_theorem_geometry_ii_weighted_geodesics_mapquest_heuristics'
 CUSTOM_READER_PAGES={'cs.LO_Logic_in_Computer_Science/camis_theorems_and_theories_volume_i','cs.LO_Logic_in_Computer_Science/frozen_prefix_open_provenance_bc50a_0_1'}
 CSS='''*{box-sizing:border-box} :root{color-scheme:light dark;--bg:#f7f8fa;--panel:#fff;--ink:#18212b;--muted:#536170;--line:#d7dde4;--accent:#245d83;--tint:#eaf3f8} @media(prefers-color-scheme:dark){:root{--bg:#11161b;--panel:#182028;--ink:#eef4f8;--muted:#b6c1cb;--line:#33414c;--accent:#8bcdf7;--tint:#1d3341}}body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.55 system-ui,-apple-system,Segoe UI,sans-serif}a{color:var(--accent)}main{max-width:1180px;margin:auto;padding:24px}h1{font-size:clamp(1.6rem,4vw,2.5rem);line-height:1.2}h2{font-size:1.1rem;line-height:1.4;margin:0 0 .6rem}.muted,.meta,cite{color:var(--muted)}.meta,cite{font-size:.9rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1rem}.card{display:flex;flex-direction:column;padding:1.2rem;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow-wrap:anywhere}.card[hidden]{display:none}.links{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:auto}.links a,.links button{padding:.5rem .7rem;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:650}.links button{cursor:pointer}.links a:hover,.links a:focus-visible,.links button:hover,.links button:focus-visible{background:var(--tint)}blockquote{margin:1rem 0;padding:.75rem 1rem;border-left:3px solid var(--accent);background:var(--tint)}blockquote p{margin:0 0 .4rem}cite{font-style:normal}.controls{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:.6rem;margin:1.5rem 0 1rem}input,select,button{font:inherit;padding:.65rem;min-width:0;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px}.reader-header{padding:1rem 1.5rem;border-bottom:1px solid var(--line);background:var(--panel)}.reader-header h1{font-size:1.3rem;margin:.5rem 0}.reader-header blockquote{margin:.7rem 0;max-width:70rem}.reader-frame{display:block;width:100%;height:80vh;min-height:560px;border:0;background:white}.status{padding:1rem;border:1px solid var(--line);background:var(--tint)}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:1rem}.toplinks{display:flex;gap:1rem;flex-wrap:wrap}footer{margin:2rem 0;color:var(--muted)}@media(max-width:800px){main{padding:16px}.controls{grid-template-columns:1fr 1fr}.controls input{grid-column:1/-1}.reader-header{padding:1rem}}@media(max-width:480px){.controls{grid-template-columns:1fr}}'''
+CSS += '\n.fdwc-note{margin:.75rem 0} details.fdwc-note{border:1px solid var(--line);border-radius:8px;padding:.75rem;background:var(--tint)}details.fdwc-note summary{font-weight:700;cursor:pointer}details.fdwc-note h3{font-size:1rem;margin:.85rem 0 .25rem}details.fdwc-note p{margin:.65rem 0}details.fdwc-note p:last-child{margin-bottom:0}'
 CSS += '\narticle.card:has(a[href="/pub/cs.LO_Logic_in_Computer_Science/atlas_basin_escape_reaudit_v0_2/"]){display:none!important}'
 def esc(s):return html.escape(str(s or ''),quote=True)
 def url(s):return '/pub/'+quote(s,safe='/._-')
@@ -35,7 +36,21 @@ def links(x,reader=False):
  if x.get('essay'):result+='<a href="'+url(x['essay'])+'">Case-study narrative</a>'
  return '<nav class="links" aria-label="Publication links">'+result+'</nav>'
 def card(x):
- return '<article class="card" data-subject="'+esc(x['category'])+'" data-kind="'+esc(x['kind'])+'" data-title="'+esc(x['title'])+'"><h2><a href="'+url(x['href'])+'">'+esc(x['title'])+'</a></h2><div class="meta">'+esc(x['kind']+' · '+x['category']+(' · '+x['publication_date'] if x.get('publication_date') else ''))+'</div>'+('<p>'+esc(x['card_text'])+'</p>' if x.get('card_text') else quote_block(x))+(quote_block(x) if x.get('quote_also_on_card') and x.get('card_text') else '')+('<p class="status">'+esc(x['status'])+'</p>' if x.get('status') else '')+links(x)+'</article>'
+ return '<article class="card" data-subject="'+esc(x['category'])+'" data-kind="'+esc(x['kind'])+'" data-title="'+esc(x['title'])+'"><h2><a href="'+url(x['href'])+'">'+esc(x['title'])+'</a></h2><div class="meta">'+esc(x['kind']+' · '+x['category']+(' · '+x['publication_date'] if x.get('publication_date') else ''))+'</div>'+('<p>'+esc(x['card_text'])+'</p>' if x.get('card_text') else quote_block(x))+fdwc_card(x)+(quote_block(x) if x.get('quote_also_on_card') and x.get('card_text') else '')+('<p class="status">'+esc(x['status'])+'</p>' if x.get('status') else '')+links(x)+'</article>'
+def fdwc_card(x):
+ if not x.get('fdwc_explanation'):return ''
+ chunks=[]
+ for part in x['fdwc_explanation'].split('\n\n'):
+  para=part.strip()
+  if not para:continue
+  if para.startswith('### '):
+   chunks.append('<h3>'+esc(para[4:])+'</h3>')
+  elif para.startswith('**') and para.endswith('**'):
+   chunks.append('<p><strong>'+esc(para[2:-2])+'</strong></p>')
+  else:
+   chunks.append('<p>'+esc(para)+'</p>')
+ return '<details class="fdwc-note"><summary>About Finite Discrete Writing Completion (FDWC) — author's method</summary>'+''.join(chunks)+'</details>'
+
 def write_reviewed_index(path, rendered):
  # Preserve deliberately hand-curated catalog pages; never silently regenerate them.
  if path.is_file():
