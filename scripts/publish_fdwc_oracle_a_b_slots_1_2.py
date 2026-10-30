@@ -91,7 +91,7 @@ def main():
    'quote':p['quote'],'quote_attribution':'FDWC Completion '+p['key']+', v1.1, p. '+str(p['quote_page']),
    'quote_page':p['quote_page'],'quote_also_on_card':True,
    'status':'ATLAS-repaired and re-audited v1.1: conditional paper-level PASS. No independent formal proof checking, external peer review, AMLD+0 engine execution, or physical truth-oracle implementation.',
-   'classification_note':'FDWC Level-1 alternative '+p['key']+', 9 pages, 30 October 2026. This source and PDF correspond to the ATLAS-repaired v1.1 manuscript. Original W0 remains immutable; the companion Level-1 alternative is independently published. The full FDWC method description is on this paper\\'s publication card.',
+   'classification_note':'FDWC Level-1 alternative '+p['key']+', 9 pages, 30 October 2026. This source and PDF correspond to the ATLAS-repaired v1.1 manuscript. Original W0 remains immutable; the companion Level-1 alternative is independently published. The full FDWC method description is on this publication card.',
    'publication_date':'30 October 2026','pages':9,'sha256':sha,
    'order':min_order-2+i
   }
