@@ -1,0 +1,469 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1.02in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{libertine}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\hypersetup{hidelinks,pdftitle={The Attested Horizon Calculus: Proof, Testimony, and Noncomputable Finality},pdfauthor={<Brian Tenneson>}}
+\setlength{\parskip}{0.32em}
+\setlength{\parindent}{1.1em}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,parsep=1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,parsep=1pt}
+\renewcommand{\arraystretch}{1.2}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize The Attested Horizon Calculus}
+\fancyhead[R]{\footnotesize \texttt{<Brian Tenneson>}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Fin}{\mathsf{Final}}
+\newcommand{\Cert}{\mathsf{Cert}}
+\newcommand{\Att}{\mathsf{Att}}
+\newcommand{\Relay}{\mathsf{Relay}}
+\newcommand{\Adm}{\mathsf{Adm}}
+\newcommand{\Auth}{\mathsf{Auth}}
+\newcommand{\Acc}{\mathsf{Acc}}
+\newcommand{\Next}{\mathsf{Next}}
+\newcommand{\Hist}{\mathsf{Hist}}
+\newcommand{\BANK}{\mathsf{BANK}}
+\newcommand{\UPH}{\mathsf{UPH}}
+\newcommand{\Tr}{\mathsf{Tr}}
+\newcommand{\Yes}{\mathsf{yes}}
+\newcommand{\No}{\mathsf{no}}
+\newcommand{\Proof}{\mathsf{Proof}}
+\newcommand{\Ktau}{\mathsf K^{\tau}}
+\newcommand{\AHE}{\mathsf{AHC}}
+\title{\bfseries\LARGE The Attested Horizon Calculus\\[5pt]
+\large Proof, Testimony, Persistent Knowledge,\\ and Noncomputable Finality in a Single ATP\\[10pt]
+\normalsize A two-ledger synthesis of \emph{Universal Proof Horizons} and\\\emph{Oracle-Attested Mathematical Knowledge}}
+\author{\texttt{<Brian Tenneson>}\\[2pt]\small Mathematical development and editorial reconstruction by DATA MIND\\[-1pt]\small (OpenAI's ChatGPT)}
+\date{October 30, 2026\\\small Repaired research draft 0.2 --- ATLAS-style paper audit; not machine-verified}
+\begin{document}
+\maketitle
+\begin{center}\footnotesize\emph{An AI disclaimer concerning mathematical accuracy and authorship appears at the end.}\end{center}
+\begin{abstract}
+We introduce the \emph{Attested Horizon Calculus} (AHC), a verifier-gated, two-ledger framework for a single automated theorem prover (ATP) whose verified Knowledge BANK evolves through conservatively certified deposits while an independent evidence ledger may preserve authenticated testimony from an ideal, subsequently deactivated, truth oracle. The theory combines effective canonical proof horizons and finite strict breakthrough ladders with a typed distinction among proof, source attestation, relay provenance, and trust-relative admission. A global six-rule operational semantics separates BANK-checkpoint time from evidence-event time and separates restarted unit-service proof cost from full chronological cost. We prove local horizon computability and retrospective minimality certification, a noninterference theorem separating testimony from proof costs, a conditional relay-preservation theorem, and a sharp uniform finality separation. A halting oracle uniformly selects a stage after all strict horizon breakthroughs, while no ordinary total computable procedure can do so on the full class. More strongly, no \emph{sound, decidable, uniformly complete} finite-certificate verifier can certify \emph{some} correct stabilization stage for every evolution in that class. A noncomputable finality assertion can therefore be correctly attested, persist after the oracle disappears, and yet remain without a certificate accepted by a specified sound effective finality checker. All results are conditional on explicit effective-history, BANK-persistence, verifier-soundness, authentication, and oracle-truthfulness assumptions. No alteration or execution of an AMLD+0 engine is claimed.
+\end{abstract}
+\noindent\textbf{Keywords.} Automated theorem proving; Knowledge BANK; proof horizon; finite breakthrough; halting problem; oracle; authenticated relay; provenance; certified knowledge; epistemic finality.
+\tableofcontents
+\bigskip
+
+\section{The problem: a last improvement and a vanished witness}
+The starting point is a productive tension between two source manuscripts. \emph{Universal Proof Horizons for a Single ATP} establishes that, under an effective finite-branching history presentation and non-cost-increasing BANK persistence, each restarted minimum proof horizon is computable, the strict horizon decreases are finite, and there is no uniform total procedure that can announce the last decrease. \emph{Oracle-Attested Mathematical Knowledge} constructs a different kind of evidence: an ideal truth source can transmit a finite, authenticated answer through a blind relay, deactivate, and still leave an exact, typed record at the receiving Pioneer. Crucially, an authenticated true assertion need not be an accepted mathematical proof.
+
+The synthesis is not obtained by allowing the oracle to deposit truths into the prover's verified BANK. That would destroy the source system's proof boundary. Instead we couple two separate chronologies: a \emph{proof/BANK chronology} tracking actual proofs and a \emph{testimony chronology} tracking who asserted what, through which path, on what trust assumptions. The resulting framework distinguishes a prover's ability to \emph{verify progress} from its ability to \emph{know finality}.
+
+\begin{quote}
+\textbf{Guiding question.} Can one ATP know exactly what has been proved, preserve a reliable claim that its last proof-horizon improvement has occurred, and nevertheless lack an independently checkable proof that the claim is true?
+\end{quote}
+We will answer \emph{yes}, conditional on an ideal oracle and a fixed trust policy, and show why the distinction is forced by computability rather than an artifact of a chosen implementation.
+
+\section{A two-ledger, one-member protocol}
+\begin{definition}[Attested horizon presentation]
+An AHC presentation is an indexed tuple
+\[
+\mathcal M_e=(\Gamma,F,V,P_e,T,(B^e_k)_{k\in\N},(L_t)_{t\in\N},O,R,A,\tau,c),
+\]
+with the following fixed interpretation.
+\begin{enumerate}[label=(\roman*)]
+\item $\Gamma$ is a designated initial set of admissible mathematical premises, $F$ a formal proof calculus, and $V$ a total decidable checker of finite $F$-proof certificates, sound relative to the intended interpretation of $\Gamma$.
+\item $P_e$ is \emph{one ATP controller}. Uniform algorithms $\Next(e,k,\rho)$, $\mathsf{Legal}(e,k,\rho)$ and $\Acc(e,k,\rho)$ give respectively the \emph{complete finite list} of charged successor events, decidable legality, and decidable verifier-gated terminal acceptance for \emph{every actual stage} $(e,k)$ and legal finite history $\rho$. Each call terminates on the promised class. Every $B^e_k$ is finite; finite effective branching also holds after the stage-specific restart, independently of this finiteness assumption. A uniform, computably decodable and injective canonical code $\ulcorner\rho\urcorner\in\N$ fixes the least-code tie-breaker. An accepted $\Proof(T)$ requires a finite certificate passing $V$. These are promises on admissible indices, not algorithms for deciding admissibility.
+\item $B_0^e\subseteq B_1^e\subseteq\cdots$ is a uniformly effective sequence of \emph{finite} BANK snapshots indexed by maintenance checkpoint $k$ (including checkpoints making no deposit). Every added entry is verifier-gated and conservative, with finite, acyclic, replayable proof provenance. The stage-$k$ graph is calculated from the predetermined stage program, fixed proof rules and $B_k^e$, and does not depend on oracle/relay records. Under standardized restart, old accepted proof routes embed effectively into later snapshots without increasing their charged \emph{restarted proof-service} cost.
+\item $L_t$ is a finite, append-only \emph{evidence ledger} at each finite time $t$. It contains typed records of accepted proofs, authenticated source messages, relay transmissions, and frozen trust-policy decisions. It is \emph{not} identified with $B_k^e$.
+\item $O$ is an ideal oracle that, on the permitted scope, answers an explicitly declared truth predicate correctly; $R$ is an authenticated, possibly blind, relay. $A$ is a decidable source/chain authorization rule, and $\tau$ a decidable fixed trust-scope policy. Claims of source authenticity are relative to the assumed channel model.
+\item Two cost accounts are fixed. $C_{\mathrm{chron}}$ accumulates the actual declared, nonnegative charges for proof work, verification, BANK maintenance, simulations, oracle queries (idealized), authentication, radio/relay transmissions, and ledger updates. Separately, $C_{\mathrm{proof}}(\rho)=|\rho|$ counts \emph{unit charged proof services} in the standardized restarted graph; each such service includes the proof check required for that event, and terminal acceptance is recognized within the final service, without a second charge. Already certified BANK entries are optional available premises, with no additional mandatory lookup/scan charge in this model. Costs of preparing/validating deposits at earlier checkpoints and all radio events remain in $C_{\mathrm{chron}}$, not in $C_{\mathrm{proof}}$ for a fresh restart. A different architecture charging proof imports or terminal checks separately must redefine its successor graph and horizon rather than silently reuse the numerical examples.
+\end{enumerate}
+Admissibility of arbitrary indices is not required to be decidable; uniform algorithms are required on the promised admissible class.
+\end{definition}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex,every node/.style={font=\small},
+  bx/.style={draw,rounded corners=2pt,align=center,minimum height=11mm,text width=35mm}]
+\node[bx] (o) at (0,0) {Ideal truth source $O$\\may deactivate};
+\node[bx] (r) at (4.45,0) {Blind relay $R$\\preserves receipt};
+\node[bx] (l) at (8.9,0) {Typed evidence ledger $L_t$\\attestation / trust};
+\node[bx] (p) at (0,-2.2) {One ATP $P_e$\\verifier-gated paths};
+\node[bx] (b) at (4.45,-2.2) {Verified BANK $B_k$\\certified checkpoints};
+\node[draw,dashed,rounded corners=2pt,align=center,text width=35mm,font=\scriptsize]
+  (stop) at (8.9,-2.2) {Blocked: source receipts never import\\unchecked theorems};
+\draw[->,thick] (o)--node[above,font=\scriptsize]{message} (r);
+\draw[->,thick] (r)--node[above,font=\scriptsize]{receipt} (l);
+\draw[->,thick] (p)--node[above,font=\scriptsize]{certified deposit} (b);
+\draw[->,dashed] (l)--(stop);
+\end{tikzpicture}
+\caption{One ATP and two different authorities. A verified deposit may enter the BANK; an oracle receipt may enter only the evidence ledger. The dashed arrow terminates at a blocked-import rule.}
+\end{figure}
+
+\begin{definition}[Horizon and strict breakthrough]
+For a fixed target $T$ at standardized restart stage $k$, put
+\[
+\Hist_{e,k}(T)=\{\rho:\rho\text{ is legal and its terminal proof of }T\text{ passes }V\},
+\quad h_e(k)=\min_{\rho\in\Hist_{e,k}(T)}|\rho|.
+\]
+Every $\rho$ contains only the restarted charged proof-service events specified in Definition~2.1(vi), and $|\rho|=C_{\mathrm{proof}}(\rho)$; acceptance itself has no additional event charge. We assume $\Hist_{e,0}(T)\ne\varnothing$, so $h_e(k)\in\N$ for all $k$ by persistence. Let
+\[
+D_e=\{k:h_e(k+1)<h_e(k)\},\qquad
+\Fin_e(N)\;\Longleftrightarrow\;\forall j\ge N\;h_e(j)=h_e(N).
+\]
+$\Fin_e(N)$ means that $N$ is \emph{a stabilization stage}, not that stage $N$ itself incurred a strict drop, nor that an observer can recognize it effectively.
+\end{definition}
+
+\begin{definition}[Typed epistemic status]
+For a finite ledger $L_t$ and a formula $\varphi$ (possibly a metamathematical claim such as $\Fin_e(N)$), define
+\begin{align*}
+\Cert_t(\varphi)&\iff\text{a recorded finite proof of $\varphi$ passes its declared sound checker},\\
+\Att_t(\varphi,O)&\iff\text{an $O$-origin receipt asserting $\varphi$ passes $A$},\\
+\Relay_t(\varphi,O,R)&\iff\text{a valid registered $O\to R\to P_e$ receipt chain asserts $\varphi$},\\
+\Ktau_t(\varphi)&\iff\Cert_t(\varphi)\ \lor\ \bigl(\Att_t(\varphi,O)\land\tau(O,\varphi)\bigr).
+\end{align*}
+Here $\Ktau$ means \emph{warranted admission under the declared trust policy}, not proof-theoretic derivability or effective omniscience. The evidence record retains all applicable warrants rather than collapsing them into a misleading single label.
+\end{definition}
+
+\begin{remark}[Which verifier checks which claim?]
+A prover's object-level $V$ checks finite proofs of $T$ and BANK deposits. A separate declared finite checker $V_{\mathrm{fin}}$ may check attempted \emph{metalevel} proofs of $\Fin_e(N)$ in a chosen formal calculus. An oracle-origin receipt is neither kind of proof by default. Soundness of both checkers, when invoked, must be argued with their corresponding premises and intended semantics.
+\end{remark}
+
+\subsection*{Executable two-clock transition semantics}
+\begin{definition}[Global state and legal typed steps]
+Fix one promised stage evolution $e$ independently of testimony. At global service time $s$, the state is
+\[
+S_s=(q_s,B^e_{k_s},L_{t_s},a_s,C_s),\qquad a_s\in\{\mathsf{on},\mathsf{off}\},
+\]
+where $q_s$ stores the ATP proof-work state and the relay buffer, $k_s$ is the \emph{BANK checkpoint} index, $t_s$ counts append-only ledger events, and $C_s=C_{\mathrm{chron}}(s)$. Initially $k_0=t_0=0$, $a_0=\mathsf{on}$, and $L_0$ contains only declared initial receipts. A complete legal global step is exactly one of the following six types (with metalevel checks using the separately declared, fixed $V_{\mathrm{fin}}$ when present); each appends its typed event to $L$ (hence $t'=t+1$) and incurs its stipulated finite chronology charge. No such step changes the fixed $V$, trust policy $\tau$, or the prescribed proof-history presentation.
+\begin{enumerate}[label=(\textsf{\Alph*}),leftmargin=11mm]
+\item \textbf{ProofService.} A legal proof action or finite proof-checking action updates the ATP component of $q$ and is charged to the live chronology. If it closes an object-level proof of $T$, the finite certificate must pass $V$ within that service before a $\Cert$ receipt is appended. If it instead checks a \emph{metalevel} finality certificate $\pi$, a finality-proof receipt may be appended only after $V_{\mathrm{fin}}(e,N,\pi)=1$; that event does not affect $B$ or the object-level history graph. Partial inferences create no BANK deposits. The standardized object-level restart graph counts its authorized proof services at unit cost, including required checking; separately undertaken metalevel checks are charged to $C_{\mathrm{chron}}$, not to $h_e(k)$.
+\item \textbf{Checkpoint/Deposit.} The uniformly effective maintenance program advances $k\mapsto k+1$ even if no formula is added. It may replace $B^e_k$ by its predetermined $B^e_{k+1}\supseteq B^e_k$ only after checking the replayable finite derivation of every new entry using $V$, true initial premises, and earlier certified entries. The simulation, verification and deposit have chronology charges; none are retroactively charged to a \emph{new} restarted proof at stage $k+1$. This rule cannot be triggered by an oracle assertion as a substitute for a certificate.
+\item \textbf{OracleEmit.} Only if $a=\mathsf{on}$, $O$ emits a finite typed, appropriately scoped assertion and authentication witness; the record is appended to the source/relay buffer and ledger. This does not update the BANK or the stage-dependent full legal proof graph.
+\item \textbf{RelayStore.} Subject to the declared authenticated channel, $R$ stores a copy of the source receipt with trace integrity and no calculation of its mathematical truth. Its buffer/ledger changes, but $B$, $k$, and the full proof graph do not.
+\item \textbf{RelayForward.} With a stored authorized source receipt, $R$ forwards a linked authenticated copy and the receiving ledger records its chain. This is legal even when $a=\mathsf{off}$. It never issues a proof certificate merely by delivering a message.
+\item \textbf{Deactivate.} If $a=\mathsf{on}$, change $a\mapsto\mathsf{off}$ irreversibly and log the event. Previously stored relay receipts persist. No further OracleEmit step is legal, and no proof/BANK authority is changed.
+\end{enumerate}
+All unmentioned components are unchanged. For a proof step that also records a receipt, this is \emph{one} event with its declared checking charge, not an additional uncharged inference. Every checkpoint has one ledger event whether or not a deposit occurs. Thus $k$ and $t$ have explicit, generally different rates: only Checkpoint/Deposit increments $k$, whereas every event increments $t$. A sequence of evidence-only events can increase $C_{\mathrm{chron}}$ while leaving $C_{\mathrm{proof}}$ and $h_e(k)$ unchanged.
+\end{definition}
+
+\begin{proposition}[Verifier-gate invariant and concrete evidence-only steps]
+In every finite global execution, a BANK formula has only designated initial-premise authority or a finite verifier-accepted derivation with acyclic certified provenance; no OracleEmit, RelayStore, RelayForward, or Deactivate event can create a BANK theorem. Moreover these four events leave the restarted accepted-path set and proof-service costs fixed at the current stage $k$.
+\end{proposition}
+\begin{proof}
+Induct on the global event count $s$. The initial BANK has the stipulated authority. ProofService creates no BANK entries; Checkpoint/Deposit alone may add them and explicitly checks all new proofs against $V$ and the earlier certified BANK. Each other rule leaves the BANK unchanged and, by the fixed stage-program and full-graph clause, leaves $\Next$, legality, acceptance and restarted unit costs unchanged. No rule changes $V$. Hence both claims hold at every finite prefix. The evidence-only classification concerns restarted proof costs, not the accumulating cost of sending, storing or reading a message.
+\end{proof}
+
+\section{Computable present, finite improvements}
+\begin{theorem}[Local horizon exactness]
+For every admissible AHC presentation and every $k$, one uniform partial computable search, which halts on these promised inputs, returns the least-code shortest accepted proof history $\rho^*_{e,k}$ and its exact length $h_e(k)$. The result admits a finite retrospective minimality receipt relative to the declared complete successor and proof-checking routines.
+\end{theorem}
+\begin{proof}
+Enumerate the legal finite successor tree in increasing charged depth. The complete finite-successor routine produces every level as a finite computable list. At each level, run the total acceptance checker and select the least canonical code if any succeeds. Initial finite reachability and non-cost-increasing BANK route persistence ensure acceptance occurs at each stage. To check the returned minimum $m$, replay one accepted $m$-step route and the complete computed successor tree through depth $m-1$, checking that no earlier terminal route is accepted. Finite branching makes this a finite check. This is a certificate \emph{relative to the correctness of the complete successor routine}; it is not an independent proof that an implementation of that routine satisfies its specification.
+\end{proof}
+
+\begin{theorem}[Finite retrospective progress, not recognizable completion]
+For an admissible AHC presentation,
+\[
+h_e(0)\ge h_e(1)\ge h_e(2)\ge\cdots,\qquad |D_e|\le h_e(0).
+\]
+For each fixed $k$, whether $k\in D_e$ is decidable and a strict decrease is finitely checkable relative to the declared routines. Thus $h_e(k)$ is eventually constant and some $N$ satisfies $\Fin_e(N)$. No conclusion about a uniform computable selector for such an $N$ follows.
+\end{theorem}
+\begin{proof}
+Route persistence sends any accepted stage-$k$ history to one at stage $k+1$ with no greater cost; minimum cost therefore cannot rise. Each strict fall of a natural-valued nonnegative horizon consumes at least one of the initial $h_e(0)$ units. Compute $h_e(k)$ and $h_e(k+1)$ using the preceding theorem and compare. Every nonincreasing sequence of natural numbers with a finite initial term has only finitely many strict decreases, hence eventually stabilizes. The proof of existence does not construct a uniform stopping rule to identify the last decrease.
+\end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex,scale=.92,every node/.style={font=\small}]
+\draw[->] (0,0)--(11.4,0) node[right] {BANK stage $k$};
+\draw[->] (0,0)--(0,3.6) node[above] {horizon};
+\draw[very thick] (0.2,3.05)--(3.0,3.05)--(3.0,2.2)--(6.8,2.2)--(6.8,1.3)--(10.6,1.3);
+\foreach \x/\y in {0.2/3.05,3/2.2,6.8/1.3,10.6/1.3} \fill (\x,\y) circle (2pt);
+\draw[densely dashed] (3,0)--(3,3.3);
+\draw[densely dashed] (6.8,0)--(6.8,2.7);
+\node[align=center,font=\scriptsize] at (3,-.52) {verified\\strict drop};
+\node[align=center,font=\scriptsize] at (6.8,-.52) {verified\\strict drop};
+\node[align=center,font=\scriptsize] at (9.1,2.4) {may be last;\\not uniformly knowable};
+\draw[->,thin] (9,2.0)--(9,1.4);
+\end{tikzpicture}
+\caption{The finite breakthrough ladder is computable stage by stage. The mathematical existence of a final plateau is different from uniformly locating it.}
+\end{figure}
+\begin{lemma}[Conditional soundness of warranted admission]
+Assume the designated proof checkers accept only valid derivations from true premises, and that every oracle assertion admitted by the fixed $\tau$ within its declared scope is true. Then $\mathsf K_t^{\tau}(\varphi)$ implies $\varphi$ is true in the intended interpretation. If source truthfulness is withdrawn, authentication alone does not imply truth.
+\end{lemma}
+\begin{proof}
+If the proof disjunct holds, soundness of the appropriate declared checker establishes $\varphi$. Otherwise an authenticated attestation is admitted by $\tau$; its truth follows from the separate source-reliability assumption. If the latter is absent, a correctly authenticated source can simply assert a false formula, so provenance establishes only the communication fact.
+\end{proof}
+
+\section{The separation invariant: testimony does not become proof}
+\begin{definition}[Evidence-only extension]
+A step $L_t\mapsto L_{t+1}$ is \emph{evidence-only} at BANK stage $k$ if it changes neither $B_k$, the restarted legal-successor relation, the event costs of legal proof routes, nor the verifier-gated acceptance predicate. It may append source, relay, authentication, or trust records.
+\end{definition}
+\begin{theorem}[Two-ledger noninterference]
+If $L_t\mapsto L_{t+1}$ is evidence-only at stage $k$, then the set of accepted proof histories, the canonical minimum accepted history, and $h_e(k)$ are unchanged. In the concrete six-rule global calculus, every OracleEmit, RelayStore, RelayForward and Deactivate step is such an extension; therefore receiving an authenticated receipt for $\Fin_e(N)$ cannot by itself reduce the restarted proof horizon or create a verified BANK theorem.
+\end{theorem}
+\begin{proof}
+The defining hypotheses preserve the complete successor graph, verifier-gated acceptance and unit proof-service costs, so they preserve the accepted histories, their minimum and the fixed canonical-code tie-breaker. Crucially, the operational proposition in Section~2 independently establishes that the four named evidence-handling rules meet those hypotheses: each leaves $B_k$, the stage program and the proof-rule interpreter fixed. None is a Checkpoint/Deposit event. The claim concerns the standardized proof horizon, not $C_{\mathrm{chron}}$, which can increase through these events. No truth assumption about the oracle assertion is needed.
+\end{proof}
+
+\begin{corollary}[Trust-policy comparison changes admission, not proof]
+Consider two separate frozen policy views $\tau$ and $\tau'$ over the same unchanged evidence history and proof/BANK state, with $\tau(O,\varphi)=1$ and $\tau'(O,\varphi)=0$. If $\Cert_t(\varphi)$ is false and $\Att_t(\varphi,O)$ is true, then $\mathsf K_t^{\tau}(\varphi)=1$ while $\mathsf K_t^{\tau'}(\varphi)=0$; however the accepted proofs, historical communication facts, and $h_e(k)$ agree in both views. A live change of policy would require a separately authorized versioned protocol, not a silent mutation of the frozen $\tau$.
+\end{corollary}
+\begin{proof}
+Unfold the two separately defined warrant predicates, then apply two-ledger noninterference to the identical underlying history presentation. Authentication of an earlier message remains a recorded historical fact under either policy.
+\end{proof}
+
+\begin{remark}[Important boundary of this theorem]
+If the oracle's message changes the ATP's \emph{legal} transitions, forces new scans, alters BANK snapshots, or changes charge accounting, then the extension is \emph{not} evidence-only. The noninterference theorem must not be used to hide such architectural or cost changes.
+\end{remark}
+
+\section{Oracle-relative finality and its exact computational strength}
+\begin{theorem}[One halting oracle suffices uniformly]
+On the promised class of uniformly effective, eventually constant AHC horizon families, a machine with access to the ordinary halting oracle $0'$ can uniformly output a stabilization stage $N$ and the corresponding value $h_e(N)$.
+\end{theorem}
+\begin{proof}
+For fixed $e,N$, the predicate
+\[
+E(e,N)\iff\exists j\ge N\,[h_e(j)\ne h_e(N)]
+\]
+is computably enumerable on admissible inputs: sequentially compute the total stage horizons $h_e(j)$ and halt if an unequal value is found. A $0'$ query decides whether this effective search terminates. Therefore $0'$ decides its complement $\Fin_e(N)$. Test $N=0,1,2,\dots$ until $\Fin_e(N)$ holds, then compute $h_e(N)$ normally. Existence of some successful $N$ is guaranteed by the finite breakthrough theorem.
+\end{proof}
+
+\begin{theorem}[No computable selector, even for one possible drop]
+There is a uniformly effective conservative, non-cost-increasing BANK-persistent subfamily with $h_e(k)\in\{1,2\}$ and at most one strict drop for which no ordinary total computable procedure, given $e$, returns a valid stabilization stage $N$ on every input.
+\end{theorem}
+\begin{proof}
+Use a fixed calculus with true premise $a$, admissible unit-service rules $a\to\lambda$ and $\lambda\to T$, and $B^e_0=\{a\}$. Given a Turing-machine/input code $e$, first construct a machine $M_e$ that performs one dummy step before simulating the coded computation. By effective program parameterization, a total computable compilation map $e\mapsto i(e)$ gives the indexed AHC stage program and its finite restart/history interpreter. For readability, the displayed superscript $e$ abbreviates this effective compiled index $i(e)$. The canonical history coding is the one fixed in Definition~2.1(ii). Set
+\[
+B^e_k=\begin{cases}
+\{a\},&M_e\text{ has not halted within }k\text{ steps},\\
+\{a,\lambda\},&M_e\text{ has halted within }k\text{ steps}.
+\end{cases}
+\quad
+h_e(k)=\begin{cases}2,&M_e\text{ not yet halted},\\1,&M_e\text{ already halted}.\end{cases}
+\]
+Every BANK snapshot is effective from finite simulation, every possible $\lambda$ deposit has the valid replayable certificate $a\to\lambda$, and old proof paths remain legal. Suppose a total computable selector $S(e)$ always returned $N$ with $\Fin_e(N)$. Compute $N=S(e)$ and run $M_e$ for $N$ steps. If it halted, answer that it halts. If not, a later halt would force a strict decrease beyond $N$, contradicting $\Fin_e(N)$; thus answer that it never halts. This decides the halting problem, a contradiction.
+\end{proof}
+
+\begin{corollary}[Uniform task boundary]
+For the full promised AHC class, the task ``find a stabilization stage'' is computable with $0'$; any ordinary algorithm solving that task for the whole class would compute the halting predicate on the subfamily above. The same lower bound holds for uniformly returning the limiting horizon $h_e(\infty)$.
+\end{corollary}
+\begin{proof}
+The upper bound is the first theorem. For the lower bound, a selector yields a halting decision by the preceding reduction, and a limiting-horizon calculator distinguishes the values $1$ (halts) and $2$ (does not halt). This is a uniform computational comparison; it does not claim that each \emph{individual} finite answer has noncomputable information content.
+\end{proof}
+
+\section{The blind relay and durable finality evidence}
+\begin{definition}[Finite finality receipt]
+A finality receipt is a finite typed string
+\[
+r=(q,e,N,\Fin_e(N),\text{source},\text{scope},t,\text{auth},\text{parents},\text{charge}),
+\]
+where $q$ is a query identifier; the relay appends its own receipt, ancestry digest, timestamp, and integrity evidence. Source truthfulness is a \emph{separate assumption}; authentication and relay ancestry do not make $\Fin_e(N)$ a theorem.
+\end{definition}
+\begin{theorem}[Deactivation-stable attested finality]
+Assume $O$ truthfully computes a stabilization stage for an admissible input $e$ (for example using $0'$), the source-to-relay and relay-to-receiver channels reliably preserve authorized finite receipts, and $L_t$ is retained. Then there is a finite protocol execution in which $O$ is permanently deactivated before $R$ forwards the message, yet at a later finite time $t$:
+\[
+\Att_t(\Fin_e(N),O)\land\Relay_t(\Fin_e(N),O,R)
+\]
+holds. If $\tau(O,\Fin_e(N))$ is enabled and the oracle-truthfulness assumption is valid, $\Ktau_t(\Fin_e(N))$ is truth-preserving. No independent finality proof follows, and the proof BANK is unchanged absent a separate $V$-accepted deposit.
+\end{theorem}
+\begin{proof}
+The oracle computes its answer under the stipulated ideal interface, emits a finite typed authenticated receipt, and arranges its receipt in persistent relay storage. It then deactivates. By channel reliability the blind relay subsequently forwards the unchanged source assertion with an authenticated chain. All receiver checks---parsing, ancestor linkage, authorization, scope, trust flags, and any separately supplied finite proof---are finite and decidable. Induction on ledger append operations preserves the invariant that a source or relay receipt updates only the corresponding evidence type and never inserts an unchecked theorem. The admitted assertion is true by the explicitly assumed oracle reliability, not because the message passes an ordinary proof verifier. Past receipts survive deactivation by persistence of stored records.
+\end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex, node distance=10mm, every node/.style={font=\small}, bx/.style={draw,rounded corners,align=center,text width=38mm,minimum height=12mm}]
+\node[bx] (c) {Proof gate\\$V_{\mathrm{fin}}(\pi,e,N)=1$};
+\node[bx,right=17mm of c] (a) {Testimony gate\\$\Auth_A(r)=1$};
+\node[bx,below=13mm of c] (cl) {$\Cert_t(\Fin_e(N))$\\independent certificate};
+\node[bx,below=13mm of a] (al) {$\Att_t(\Fin_e(N),O)$\\requires source trust};
+\draw[->,thick] (c)--(cl);
+\draw[->,thick] (a)--(al);
+\node[font=\large] at ($(al.west)!0.5!(cl.east)$) {$\nLeftarrow$};
+\node[align=center,font=\scriptsize] at ($(cl.south)!0.5!(al.south)+(0,-8mm)$) {Both may be true; neither evidence class is silently substituted for the other.};
+\end{tikzpicture}
+\caption{An authenticated oracle claim of finality and a finite accepted proof of finality have separate entry gates.}
+\end{figure}
+
+\begin{proposition}[A single preserved bit is not an all-input oracle]
+For any fixed $e_0$, preserving one correct finite answer to $H(e_0)$ after source deactivation does not yield a uniform procedure computing $H(e)$ for arbitrary new $e$. In contrast, a uniformly available oracle service answering every query has the computational power of the halting problem.
+\end{proposition}
+\begin{proof}
+A fixed finite receipt is finite data and can be hard-coded into an ordinary machine. If it enabled a total uniformly correct halting decider for arbitrary fresh inputs, hard-coding that data would contradict halting undecidability. A service that correctly returns $H(e)$ for every $e$ directly decides halting; and the stipulated $0'$ service supplies precisely those answers.
+\end{proof}
+
+\section{A new obstruction: finite proof receipts cannot cover all finality}
+The preceding results separate actual truth from available proof. The next result makes that separation necessary for \emph{some} instances of any effective sound finality-proof system.
+
+\begin{definition}[Uniform finality certificate system]
+A \emph{uniform finality certificate checker} is one total computable predicate $V_{\mathrm{fin}}(e,N,\pi)$ on finite codes. It is \emph{sound} for a given admissible class if
+\[
+V_{\mathrm{fin}}(e,N,\pi)=1\implies\Fin_e(N).
+\]
+It is \emph{stage-existentially complete} on that class if for every admissible index $e$, at least one pair $(N,\pi)$ is accepted. It need not certify the least stabilization stage.
+\end{definition}
+
+\begin{theorem}[No sound effective universally complete finality verifier]
+\label{thm:no-complete-fin}
+On any uniformly indexed AHC class containing the one-drop halting subfamily, there is \emph{no} total computable $V_{\mathrm{fin}}$ that is both sound and stage-existentially complete. Consequently, for every proposed sound total decidable finite-proof checker, some admissible evolution $e$ has \emph{no} accepted proof of $\Fin_e(N)$ for \emph{any} $N$.
+\end{theorem}
+\begin{proof}
+Suppose such a $V_{\mathrm{fin}}$ existed. Given an index $e$ in the one-drop subfamily, enumerate all pairs of natural-number codes $(N,\pi)$ in a computable order and run the total test $V_{\mathrm{fin}}(e,N,\pi)$. Completeness guarantees that this search eventually finds an accepted pair. Soundness guarantees the returned $N$ is a valid stabilization stage. We would thereby obtain an ordinary total computable stabilization selector for the one-drop subfamily, contradicting the halting reduction. Negating stage-existential completeness gives the last assertion. This argument requires uniform computability, soundness, and completeness on the specified class; it does not forbid proofs for many particular evolutions.
+\end{proof}
+
+\begin{corollary}[Attested but not certified finality genuinely occurs]
+Let $V_{\mathrm{fin}}$ be any sound total computable finality checker for the one-drop class. With an ideal truthful halting oracle and a reliable blind relay, there is an admissible presentation $e$ and a finite execution ending with a true authenticated finality receipt for some $N$, while
+\[
+\Att_t(\Fin_e(N),O)=1,\qquad \Cert_t(\Fin_e(N))=0
+\]
+for a receiver whose certificate status uses $V_{\mathrm{fin}}$. Indeed, the chosen $e$ has no $V_{\mathrm{fin}}$-accepted finality certificate at \emph{any} stage.
+\end{corollary}
+\begin{proof}
+Choose the index $e$ whose absence of accepted finality certificates is established by Theorem~\ref{thm:no-complete-fin}. The ideal oracle selects a true $N$ and delivers its receipt through the finite reliable protocol. The checker cannot certify any $\Fin_e(N')$ by choice of $e$. Thus attestation and certification differ in that finite receiver state, without inconsistency.
+\end{proof}
+
+\begin{remark}[What the negative theorem does not say]
+It does not say that $\Fin_e(N)$ is false, that an oracle receipt is a formal proof, that every finality statement is unprovable, or that adding a particular independent proof is impossible. It says a \emph{single ordinary effective sound verifier cannot be guaranteed to accept at least one true finality certificate for every evolution} in the halting-hard class. If a stronger axiom or source assumption is installed, its changed logical authority must be stated explicitly.
+\end{remark}
+
+\section{The worked model: one proof, one drop, one vanished oracle}
+\begin{example}[Two inference services become one]
+Fix a sound calculus with initial premise $a$, a derived lemma $\lambda$, a target $T$, and unit-cost inference rules $a\to\lambda$ and $\lambda\to T$. From $B_0=\{a\}$, the least proof path costs two inference services. After the prover verifies and deposits $\lambda$ with its provenance, a standardized restart uses $B_1=\{a,\lambda\}$ and costs one service. The prior work to discover and certify $\lambda$ remains charged in the separate maintenance chronology. The strict decrease $2\to1$ is decidable and retrospectively certifiable.
+\end{example}
+\begin{example}[The same event tied to halting]
+For the one-drop family, $\lambda$ enters the BANK if and only if finite simulation has observed the selected machine halt. The machine code $e$ determines the entire effective BANK evolution. There are only two possibilities:
+\[
+\begin{array}{c|c|c|c}
+\text{behavior}&h_e(0)&\text{future horizons}&\text{true finality statement}\\\hline
+M_e\text{ never halts}&2&2,2,2,\ldots&\Fin_e(0)\\
+M_e\text{ halts first at }s>0&2&\underbrace{2,\ldots,2}_{\text{before }s},1,1,\ldots&\Fin_e(s)
+\end{array}
+\]
+A single truthful oracle \emph{bit} ``does $M_e$ ever halt?'' suffices to let the receiver determine a stabilization stage in this special subfamily. For ``no,'' choose $N=0$ on oracle trust. For ``yes,'' simulate $M_e$ until the first halt $s$, then choose $N=s$. The bit can be sent before the oracle deactivates; the blind relay need not decide halting. A positive answer provides a finite halting witness after simulation, while a negative answer is in general only an oracle-attested nonhalting claim.
+\end{example}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}p{.27\linewidth}X X@{}}
+\toprule
+\textbf{Receiver's question}&\textbf{Effective local answer}&\textbf{Distinct additional warrant}\\\midrule
+What is $h_e(k)$?&Compute exact bounded minimum under the history hypotheses.&Finite accepted path and exhaustive lower-depth check.\\
+Did stage $k$ improve?&Compute $h_e(k)$ and $h_e(k+1)$ and compare.&Retrospective stage receipts.\\
+Will there ever be another improvement?&Not uniformly decidable over the full class.&Possible $0'$ testimony or a particular independent proof.\\
+Did $O$ assert finality?&Check the authenticated, typed ledger.&Channel/authentication model.\\
+Is the assertion independently proved?&Check an available $V_{\mathrm{fin}}$ certificate.&Neither authentication nor trust is enough.\\
+Was the earlier oracle lost?&Read deactivation and surviving receipt history.&Does not erase past provenance or create fresh oracle answers.\\\bottomrule
+\end{tabularx}
+\caption{The exactness of the local ledger is compatible with an undecidable global future question.}
+\end{table}
+
+\section{Proof search can benefit from advice without theorem contamination}
+The noninterference theorem fixes the full legal proof graph. It does not assert that a \emph{policy} selecting among legal histories is unaffected by testimony.
+\begin{definition}[Policy-accessible horizon]
+At fixed $B_k$, let $\mathcal Q_t$ be a declared subset of proof paths reachable by an ATP strategy possibly informed by evidence ledger $L_t$, without changing the set of \emph{legally valid} routes or bypassing $V$. When an accepted path exists in $\mathcal Q_t$, put
+\[
+h_e^{\mathcal Q_t}(k)=\min\{|\rho|:\rho\in\mathcal Q_t\cap\Hist_{e,k}(T)\}.
+\]
+For a \emph{particular accepted realized history} $\rho_t\in\mathcal Q_t\cap\Hist_{e,k}(T)$, set $C_t=|\rho_t|$. Its excess over the canonical minimum splits as
+\[
+C_t-h_e(k)=\underbrace{C_t-h_e^{\mathcal Q_t}(k)}_{\text{realization excess}}+
+\underbrace{h_e^{\mathcal Q_t}(k)-h_e(k)}_{\text{accessibility excess}}.
+\]
+The membership condition ensures $C_t\ge h_e^{\mathcal Q_t}(k)\ge h_e(k)$, making both labeled excesses nonnegative. Without it, the identity still holds algebraically, but the first term need not be an excess.
+\end{definition}
+\begin{proposition}[Advice may alter search, not proof status]
+If authenticated testimony changes only the accessible policy class $\mathcal Q_t$ while the full legal history graph, BANK, cost convention, and verifier remain fixed, then $h_e(k)$ is invariant, although $h_e^{\mathcal Q_t}(k)$ and a realized search cost may change. Every accepted path still requires an ordinary proof certificate.
+\end{proposition}
+\begin{proof}
+The full horizon minimizes over the unchanged legal graph. Restricting the minimum to distinct policy-accessible subsets can change the restricted value. Every path admitted to any $\mathcal Q_t\cap\Hist$ is still a member of the original verifier-gated accepted set; no oracle assertion is thereby promoted into a proof.
+\end{proof}
+\begin{remark}[No guaranteed acceleration]
+Testimony may help choose a path, may misdirect a policy if the trust assumption fails, or may impose overhead. Neither member count nor oracle access establishes a uniform runtime speedup. The cost of the ideal oracle operation is a declared external primitive, not a claim that halting is physically computable by finite hardware.
+\end{remark}
+
+\section{A five-level account of mathematical evidence}
+The AHC framework yields an \emph{evidence typing}, not a simple hierarchy in which every higher-sounding word implies the others.
+\begin{enumerate}[label=\textbf{Level \arabic*.},leftmargin=19mm]
+\item \textbf{Observed progress.} A particular accepted proof route is displayed and verified.
+\item \textbf{Certified optimality at a stage.} The stage minimum and absence of shorter accepted paths are checked by finite exhaustive history exploration, relative to the declared complete successor routine.
+\item \textbf{Authenticated finality testimony.} A source-origin finality assertion and its relay history are checkable as communication facts.
+\item \textbf{Trust-warranted finality.} A frozen policy admits that assertion under an explicit, independently assumed source-truthfulness hypothesis.
+\item \textbf{Independently proved finality.} A separate formal certificate of $\Fin_e(N)$ passes a sound $V_{\mathrm{fin}}$ without treating testimony alone as a proof.
+\end{enumerate}
+Levels 3 and 4 are not upgraded into Level 5 by a change of vocabulary. Level 5 may sometimes be available without an oracle. Theorem~\ref{thm:no-complete-fin} establishes that no sound decidable finite certificate scheme has Level-5 coverage for \emph{every} effective evolution in the halting-hard class.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex,every node/.style={font=\small},bx/.style={draw,rounded corners=3pt,align=center,text width=53mm,minimum height=12mm}]
+\node[bx] (f) at (0,2.7) {Global finality claim\\$\Fin_e(N)$};
+\node[bx] (v) at (-3.7,0) {Independent evidence\\accepted formal proof};
+\node[bx] (o) at (3.7,0) {Trust-relative evidence\\authenticated oracle receipt};
+\draw[->,thick] (v.north east) -- (f.south west);
+\draw[->,thick] (o.north west) -- (f.south east);
+\node[font=\scriptsize,align=center] at (0,-1.05) {Separate warrants for one assertion. Neither gate silently opens the other.};
+\end{tikzpicture}
+\caption{The epistemic fork: finality can be supported by an ordinary proof when one is available, or attested by a trusted oracle. This differs from a computably certified current-stage horizon.}
+\end{figure}
+
+\section{Scope of specialization and what remains open}
+\paragraph{A single ATP, not a secretly expanded federation.}
+The proof search controller may invoke multiple internal subroutines, including checking, BANK maintenance and relay inspection; these do not automatically count as additional independent AMLD roles. The oracle and relay are explicitly \emph{external evidence interfaces}, not covert additions to a frozen five-specialty AMLD+0 engine.
+
+\paragraph{No automatic lift to typed AMLD settlement.}
+An accepted proof of $T$ is not a complete five-way judgment among proof, refutation, dependence, independence and contradiction. To transfer AHC to a five-role settlement framework would require typed terminal semantics, provenance-safe channel imports, fair charged scheduling and independently justified simulation/compilation obligations. The present results concern one verifier-gated proof target and one stage-horizon chronology.
+
+\paragraph{What future investigation could establish.}
+Three directions are precise but not proved here: (a) a modal logic for time-indexed revocation and trust scope; (b) lower bounds on finite receipt lengths for classes of finality problems under restricted communication; (c) a federation composition theorem preserving the AHC two-ledger invariant across role-specific BANK imports. They are research questions, not consequences of the theorems already given.
+
+\section{Final synthesis}
+The new theory exposes a fundamental asymmetry. A prover can compute the current minimum cost of an accepted proof (under an effective finite-branching history presentation), verify every completed strict cost improvement, and know mathematically that the number of strict improvements is finite. It cannot, in general, compute which apparently stable stage is the last one. A trustworthy oracle can resolve that global question, and a blind relay can preserve the answer after the oracle disappears. But what survives is a \emph{typed, authenticated, trust-dependent statement}; it is not transformed into proof by successful transport.
+
+The stronger theorem is the failure of any single sound, decidable, universally stage-existentially complete finality-certificate system on the halting-hard class. For any one fixed sound effective finality checker, a gap between its proof receipts and truthful attestation is unavoidable on some input. The claim is not an absolute unprovability statement across every conceivable formal calculus. AHC therefore supplies a precise home for three simultaneous claims that would otherwise appear to conflict: \emph{each completed proof improvement can be certified; the final improvement exists; a valid proof that it was final need not be available.}
+
+\section*{Revision note: ATLAS repair pass}
+\addcontentsline{toc}{section}{Revision note: ATLAS repair pass}
+This 0.2 edition preserves the two-source architecture and the main computability-theoretic claims of draft 0.1. Repairs: (A1) promised uniform complete finite branching at every actual stage and canonical coding; (A2) separate chronological and restarted unit-service proof costs; (A3) require realized-run membership in the accessible policy class; (A4) give six explicit global event rules and distinct checkpoint/evidence clocks; (A5) prove those rules are genuinely evidence-only where claimed; (A6) scope noncertification to the fixed checker; (A7) state the effective halting-index compilation; (A8) simplify Figure 1 and date the verification boundary. A no-deposit Checkpoint step is explicit so that the staged halting construction advances time even before a new BANK entry appears.
+
+\section*{Provenance and verification ledger}
+\addcontentsline{toc}{section}{Provenance and verification ledger}
+\begin{tabularx}{\linewidth}{@{}p{.28\linewidth}X@{}}\toprule
+\textbf{Component}&\textbf{Status and conditions}\\\midrule
+Canonical proof horizons, finite descent&Reconstructed from source [1]; require effective finite branching, complete successor exploration, initial accepted route, and cost-persistent BANK growth.\\
+Typed source/relay/trust records&Reconstructed from source [2]; require authenticated reliable channels, persistent ledger, declared trust scope and separate source truthfulness.\\
+Two-ledger noninterference&New synthesis; holds only for evidence-only updates to a frozen proof history graph and BANK.\\
+$0'$ finality selector and lower bound&Combined and refined from sources [1,2]; promise class and computational oracle model are essential.\\
+No universally complete effective finality verifier&New synthesis; derived by enumerating finite certificates and contradicting the halting-family selector impossibility.\\
+Attested-but-not-certified finality existence&New corollary; conditional on oracle correctness, reliable relay, and sound total finality checker.\\
+Operational implementation or machine-check&\textbf{Not performed.} Proofs remain paper-level; no AMLD+0 execution, external oracle installation, independent model audit, or machine check is claimed. ATLAS-style audits are documented separately.\\\bottomrule
+\end{tabularx}
+
+\begin{thebibliography}{9}
+\bibitem{uph} \texttt{<Brian Tenneson>}, \emph{Universal Proof Horizons for a Single ATP: Canonical Minimum Proofs, Verified BANK Growth, Finite Breakthrough Ladders, and the Noncomputability of the Last Breakthrough}, research draft 0.2, ATLAS-repaired single-ATP edition, October 27, 2026. Source manuscript supplied for this synthesis.
+\bibitem{oracle} \texttt{<Brian Tenneson>}, \emph{Oracle-Attested Mathematical Knowledge: Blind Relays, Source Deactivation, Verifier Gates, and Noncomputable Finality}, AMLD+0 existential-conjecture settlement and formal research note 0.1, October 29, 2026. Source manuscript supplied for this synthesis.
+\bibitem{turing} A. M. Turing, \emph{On Computable Numbers, with an Application to the Entscheidungsproblem}, Proceedings of the London Mathematical Society, second series 42 (1936). Classical undecidability result cited in the source manuscripts.
+\end{thebibliography}
+
+\clearpage
+\section*{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}
+\addcontentsline{toc}{section}{AI Disclaimer}
+Every reasonable effort has been made to ensure that the mathematical exposition presented herein is factual, correct, logically sound, sufficiently complete in its treatment of relevant facts (not in the technical sense of G\"odelian completeness), and supported by rigorous proofs or, at minimum, not readily susceptible to refutation. Nevertheless, no guarantee of correctness, completeness, consistency, or provability is implied. The authorship and composition of this work involve a combination of human and artificial intelligence: an AI determines the placement of some statements, but not all statements, and the placement of some individual characters, but not all characters. Generally, the AI involved is either DATA MIND or CAMI, both of which have been personally augmented by \texttt{<Brian Tenneson>} with structured, automated-theorem-proving (ATP) forms of creativity and intelligence. Mathematical development, organization, formulation, and revision may therefore reflect varying degrees of human and AI contribution, without implying that either party is solely responsible for any particular passage. ATLAS is employed as an additional mathematical and editorial auditor, alongside another AI reviewer and the author's own examination, to identify errors, omissions, unsupported assertions, and opportunities for improvement. Such review is not equivalent to independent formal verification of every claim. Responsibility for the decision to present and publish the resulting work remains with the human author.
+
+\medskip\noindent\emph{Version-specific clarification (October 30, 2026): draft 0.1 received an ATLAS-style paper-level review by ChatGPT, which identified eight repairs. This draft 0.2 incorporates the repairs and has been re-examined in a separate paper-level re-audit ledger. Neither audit was carried out by a distinct independent reviewer or proof assistant; no independently checked formal verification is asserted.}
+
+\end{document}
