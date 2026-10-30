@@ -49,7 +49,7 @@ def fdwc_card(x):
    chunks.append('<p><strong>'+esc(para[2:-2])+'</strong></p>')
   else:
    chunks.append('<p>'+esc(para)+'</p>')
- return '<details class="fdwc-note"><summary>About Finite Discrete Writing Completion (FDWC) — author's method</summary>'+''.join(chunks)+'</details>'
+ return '<details class="fdwc-note"><summary>About Finite Discrete Writing Completion (FDWC) — author-developed method</summary>'+''.join(chunks)+'</details>'
 
 def write_reviewed_index(path, rendered):
  # Preserve deliberately hand-curated catalog pages; never silently regenerate them.
