@@ -1,0 +1,425 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,tabularx,array,longtable}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\hypersetup{pdftitle={Universal Proof Horizons for a Single ATP},pdfauthor={<Brian Tenneson>}}
+\setlength{\parindent}{1.15em}
+\setlength{\parskip}{0.16em}
+\setlist{nosep,leftmargin=*}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\BANK}{\mathrm{BANK}}
+\newcommand{\ATP}{\mathrm{ATP}}
+\newcommand{\PROVED}{\mathrm{PROVED}}
+\newcommand{\Hist}{\mathrm{Hist}}
+\newcommand{\cost}{\mathrm{cost}}
+\newcommand{\dom}{\mathrm{dom}}
+\newcommand{\bbN}{\mathbb{N}}
+\newcommand{\down}{\mathord\downarrow}
+\newcommand{\upar}{\mathord\uparrow}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Universal Proof Horizons for a Single ATP}
+\rhead{\textless Brian Tenneson\textgreater}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+\title{\bfseries Universal Proof Horizons for a Single ATP\\[0.24em]
+\large Canonical Minimum Proofs, Verified BANK Growth, Finite Breakthrough Ladders,\\
+and the Noncomputability of the Last Breakthrough\\[0.35em]
+\normalsize A One-Member Specialization and Self-Contained Reconstruction\\
+of \emph{Universal Settlement Horizons}}
+\author{\textless Brian Tenneson\textgreater\\[0.3em]
+\small Mathematical reconstruction and editorial assistance by OpenAI's ChatGPT}
+\date{October 27, 2026; revised October 30, 2026\\\small Research Draft 0.3 -- ATLAS-repaired and re-audited edition}
+\begin{document}
+\maketitle
+\begin{center}
+\small\emph{See the \hyperref[sec:ai-disclaimer]{AI disclaimer} that follows this essay.}
+\end{center}
+\vspace{0.3em}
+\begin{abstract}
+A five-role automated metalogical decider (AMLD) can be viewed as a federation of five automated theorem-proving agents, whereas a stand-alone automated theorem prover (ATP) is a one-member federation. We apply this reduction to \emph{Universal Settlement Horizons} (Corrected Research Synthesis 002), replacing typed five-channel settlement by one prover, one accepted-proof target, one verifier, and one growing verified Knowledge BANK. The one-member setting permits a direct, self-contained history compilation and canonical minimum-search construction: for a \emph{uniformly indexed} class of effectively finitely branching, decidable, verifier-gated ATP history systems, a single partial computable functional, uniform on promised admissible indices, returns the least-code minimum-service accepted proof history exactly when one exists. The minimum is relative to the declared legal-history presentation and charged-service metric. A baseline proof of $T$ in $m$ reproducible services yields a canonical bound $h(T)\le m$; a five-role comparison gives a conditional $5m$ scheduling bound, not a general speedup.
+
+Under standardized restarts and effective non-cost-increasing persistence of previous routes, the stage horizons form a total computable nonincreasing sequence of natural numbers whenever the initial horizon is finite. The strict improvement set is finite, and each completed improvement can be checked by bounded exhaustion relative to the declared complete legal-successor routine and proof verifier. Nonetheless no uniform total procedure can name a stage after the last improvement: a single ATP with a conservative BANK can encode halting through horizons constantly $2$ or decreasing once from $2$ to $1$. We isolate precise limits of the specialization: dropping four roles does not prove a fivefold runtime acceleration, singleton proof acceptance is not full five-way metalogical settlement, and monotonicity requires more than inclusion of BANK sets. The main results are proved here from explicitly stated effective-history and persistence hypotheses, without invoking an unfinished five-role compilation theorem.
+\end{abstract}
+
+\section{The reduction from five members to one}
+The source article \emph{Universal Settlement Horizons} [1] studies a five-role AMLD, with prover, refuter, dependence, independence, and contradiction roles and a distinguished target $\mathrm{SETTLED}(T)$. Its canonical minimum-search construction treats finite legal typed settlement histories as accepted terminal witnesses. This paper asks what remains if the federation has just one member: an ATP $P$ equipped with a fixed verifier and a verified Knowledge BANK.
+
+We use \emph{one member} in the architectural sense, not in the sense of a syntactically single tactic or a prover prohibited from internal subroutines. An ATP may search, check, consolidate, and import its own certified lemmas; these are modes of one controller, not additional federation members. Its sole terminal judgment here is the accepted proof target $\PROVED(T)$. To prove $\neg T$ would be a separate target; accepting a proof of $T$ does not, by itself, decide independence or the absence of proofs.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}Y Y@{}}
+\toprule
+\textbf{Source: five-member AMLD} & \textbf{This paper: one-member ATP}\\\midrule
+Five role services $P,R,D,I,C$ & One charged $P$ service per authorized event\\
+Typed $\mathrm{SETTLED}(T)$ & Verifier-accepted $\PROVED(T)$\\
+Shared certified BANK and cross-role imports & Single certified Knowledge BANK and self-import\\
+Five-role round-robin route at most $5m$ & Reproduced singleton route at most $m$\\
+Compiled typed settlement derivations & Directly compiled proof-acceptance histories\\
+Conditional AMLD compilation transfer & Direct one-member compilation lemma\\
+Finite settlement breakthrough ladder & Finite proof-horizon breakthrough ladder\\
+Noncomputable last settlement breakthrough, subject to transfer & Noncomputable last proof breakthrough directly\\
+\bottomrule
+\end{tabularx}
+\end{center}
+The replacement $5m\rightsquigarrow m$ is a route-cost bound under a chosen accounting convention. It does \emph{not} compare optimal costs of two architectures with different legal histories, and it does not turn a worst-case service bound into a wall-clock speedup claim.
+
+\section{A verifier-gated singleton presentation}
+\begin{definition}[Uniformly indexed effective singleton ATP histories]\label{def:system}
+Fix a computable representation of targets $T$, initial BANK snapshots $B$, charged service events and finite histories, together with an injective computable canonical encoding $\operatorname{Enc}(\rho)=\ulcorner\rho\urcorner\in\bbN$ of finite event histories. Assume a total computable decoder $\operatorname{Dec}:\bbN\to\operatorname{FinHist}\cup\{\bot\}$ such that $\operatorname{Dec}(\operatorname{Enc}(\rho))=\rho$. An integer is recognized as a canonical history code exactly when $\operatorname{Dec}(n)\neq\bot$ and $\operatorname{Enc}(\operatorname{Dec}(n))=n$; both that test and parsing finite sequences are decidable. Legal histories are prefix-closed, and each proper extension appends exactly one charged event. Let $p$ be a natural-number \emph{index} for an admissible singleton ATP presentation $P_p[T,B]$ with a fixed initial configuration $q_0(p,T,B)$. One common effective interpreter, given $(p,T,B)$, supplies the following uniform algorithms:
+\begin{enumerate}[label=(\roman*)]
+\item $\operatorname{Init}(p,T,B)$ produces the initial configuration; $\operatorname{Next}(p,T,B,\rho)$ returns the \emph{complete finite list} of legal charged next events for every legal finite history $\rho$ (including the empty history);
+\item $\operatorname{Legal}(p,T,B,\rho)$ decides finite-history legality, and $\operatorname{Acc}(p,T,B,\rho)$ decides whether a legal history's terminal configuration contains a verifier-accepted certificate of $T$;
+\item the declared proof verifier is total on finite certificates, and no accepted event or terminal condition can bypass it; imported BANK premises have finite replayable provenance checked by the relevant declared total verifiers;
+\item each actual executed search, proof-inference, proof-checking, or BANK-update service is represented by a charged event. A declared \emph{atomic verified inference service} may combine one authorized inference with its specified local certificate check into \emph{one} charged event; a separate requested check, when not part of such an event, receives its own charge. Initialization and recognition of an \emph{already verified} terminal condition are uncharged. The examples in Sections~\ref{sec:negative}--\ref{sec:example} use one unit-charge atomic verified inference per displayed arrow, with no additional final-recognition event.
+\end{enumerate}
+On each \emph{admissible} $(p,T,B)$, these algorithms terminate on all inputs needed to explore legal histories and agree on the complete successor relation. We require \emph{uniform} programs for these operations, not separate unencoded algorithms selected noncomputably for each presentation. Deciding whether an arbitrary index is admissible is \emph{not} assumed. Past sunk costs may be excluded only from the separately specified standardized-restart horizon.
+\end{definition}
+
+The program evaluating $\operatorname{Next}$ and $\operatorname{Acc}$ during a metalevel exhaustive calculation may require arbitrarily many computational steps. Those metalevel expenditures are \emph{not} silently identified with the minimum charge on a hypothetical accepted history. Every action actually performed inside an object-level ATP execution must appear as a charged event, subject to the explicit atomic-service convention. The horizon is a mathematical path-length benchmark, not the runtime of the universal search program.
+
+The word \emph{universal} below refers to a single breadth-first search functional on this promised indexed class, not to a representation-independent optimal mathematical proof or a complete ATP solver. The singleton's \emph{legal-history space} includes all permitted choices of proof actions. A particular ATP policy may access only a subset. If the controller is deterministic with just one legal continuation at every point, the history space specializes accordingly. Effective finite branching is a substantive assumption: arbitrary submission of any finite string as an individual zero-cost action need not satisfy it.
+
+\begin{definition}[Accepted histories and service horizon]
+Put
+\[
+\Hist_{P,B}(T)=\{\rho:\rho\text{ is legal and }\mathrm{Acc}_{T,B}(\rho)=1\}.
+\]
+Each $\rho$ has service cost $|\rho|\in\bbN$. When $\Hist_{P,B}(T)\ne\varnothing$, define
+\[
+ h_{P,B}(T)=\min\{|\rho|:\rho\in\Hist_{P,B}(T)\};
+\]
+otherwise the horizon is undefined, written $h_{P,B}(T)\uparrow$. A canonical minimum history $\rho^*_{P,B}(T)$ is the history of least code among those of cost $h_{P,B}(T)$.
+\end{definition}
+
+The metric counts \emph{completed service events}, not individual primitive inferences unless one service is defined to be one inference. It is possible to study other metrics, but the results below then require effective and genuinely finite bounded-cost sublevels or an equivalent executable cost-layer generator.
+
+\begin{lemma}[Finite bounded history search]\label{lem:finite}
+Under Definition \ref{def:system}, one uniform algorithm, given an admissible $(p,T,B)$ and $b\in\bbN$, lists exactly all legal histories of length at most $b$; the list is finite.
+\end{lemma}
+\begin{proof}
+Start with the empty history and recursively apply the common total $\operatorname{Next}(p,T,B,\rho)$ routine at depths $0,\ldots,b-1$. By induction on depth, each level is finite and computable. The union of the first $b+1$ levels is therefore finite and effectively listable. Apply the decidable acceptance test to any listed history when required.
+\end{proof}
+
+\section{MAIN THEOREM 1: a universal singleton proof-horizon operator}
+\begin{theorem}[Canonical minimum accepted-history operator]\label{thm:canonical}
+There is a \emph{single partial computable functional} on admissible presentation indices and inputs,
+\[
+\mathrm{UPH}(p,T,B)=\rho^*_{P_p,B}(T),
+\]
+that halts exactly when $\Hist_{P_p,B}(T)\ne\varnothing$. On halting, it returns a valid verifier-accepted history having minimum service cost and least canonical code among all minimum-cost accepted histories. Consequently the horizon $h_{P_p,B}(T)$ is uniformly partial computable on this accepted-proof domain. No claim is made that admissibility of arbitrary indices is decidable.
+\end{theorem}
+\begin{proof}
+Given $(p,T,B)$, use the \emph{same} effective interpreter for every input. For $b=0,1,2,\ldots$, compute the complete finite list of legal histories of length \emph{exactly} $b$ by filtering the bounded list supplied by Lemma \ref{lem:finite}. Test acceptance of each, retaining their canonical codes. If there are no accepted histories at depth $b$, continue. Otherwise output the accepted history with least code at that depth and halt. All bounded stages terminate. The first successful depth is the minimum cost; the tie breaker is exact because the successful level is finite and exhaustively inspected. If no accepted history exists the outer search continues forever.
+\end{proof}
+
+\begin{corollary}[Run-independent benchmark]
+Any realized accepted history $\rho$ of the same fixed presentation satisfies
+\[
+0\le |\rho|-h_{P,B}(T).
+\]
+The value $h_{P,B}(T)$ does not depend on the heuristic that happened to produce $\rho$; it \emph{does} depend on the legal history system and service cost selected in advance.
+\end{corollary}
+
+\begin{remark}[No total negative decision]
+If the admissible indexed ATP class includes a uniform encoding of proof search for an effectively axiomatized theory with an undecidable theorem set, no total algorithm can decide, for every valid $(p,T,B)$, whether $\mathrm{UPH}(p,T,B)$ halts. Otherwise it would decide theoremhood in that theory. Thus partial computability on positive instances is the appropriate strength.
+\end{remark}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, every node/.style={font=\footnotesize}, x=1cm,y=1cm]
+\node[draw,rounded corners,inner sep=5pt] (a) at (0,0) {$\epsilon$};
+\node[draw,inner sep=4pt] (b) at (-2.2,-1.05) {depth $1$};
+\node[draw,inner sep=4pt] (c) at (2.2,-1.05) {depth $1$};
+\node[draw,inner sep=4pt] (d) at (-2.2,-2.15) {accepted, depth $2$};
+\node[draw,inner sep=4pt] (e) at (2.2,-2.15) {rejected, depth $2$};
+\draw[->] (a)--(b); \draw[->] (a)--(c); \draw[->] (b)--(d); \draw[->] (c)--(e);
+\end{tikzpicture}
+\caption{Schematic bounded exhaustive search: when the first accepted depth is reached, every candidate at that depth is inspected before the least canonical code is selected. This is not a measured ATP trace.}
+\end{figure}
+
+\section{Direct compilation needs no five-role transfer theorem}
+\begin{definition}[Singleton path calculus]
+Fix $P[T,B]$. Introduce an initial token $\mathsf{State}(\epsilon)$; for each legal extension $\rho\mapsto\rho e$ introduce the effectively checkable rule
+\[
+\mathsf{State}(\rho)\longrightarrow\mathsf{State}(\rho e);
+\]
+and introduce a terminal projection
+\[
+\mathsf{State}(\rho)\longrightarrow\PROVED(T)
+\quad\text{when }\mathrm{Acc}_{T,B}(\rho)=1.
+\]
+A \emph{canonical compiled derivation} is the unique linear chain from $\mathsf{State}(\epsilon)$ through its successive prefixes to the terminal token; arbitrary redundant or padded proofs are not included in this canonical calculus. Initialization and final projection have compilation cost zero, while each history extension has unit service cost.
+\end{definition}
+
+\begin{proposition}[Exact singleton history compilation]\label{prop:compile}
+For a singleton presentation as above, a finite canonical compiled derivation of $\PROVED(T)$ exists exactly when an accepted legal singleton history exists. There is a computable bijection between accepted histories and canonical compiled derivations preserving both verifier-acceptance provenance and service cost. Consequently the canonical minimum compiled cost equals $h_{P,B}(T)$, and its least-code history can be selected using Theorem \ref{thm:canonical}.
+\end{proposition}
+\begin{proof}
+Map an accepted history $e_1,\ldots,e_m$ to the prescribed linear derivation with successive states $\mathsf{State}(\epsilon),\mathsf{State}(e_1),\ldots,\mathsf{State}(e_1\cdots e_m)$ and terminal projection. Each extension is legal by hypothesis; the projection is valid exactly because acceptance is decidable and verifier-gated. Conversely, read the event labels off the unique linear chain of a valid canonical derivation. Legality of every extension and terminal verification imply an accepted history. These translations are inverse, effective, and cost preserving because exactly $m$ extension events carry unit cost.
+\end{proof}
+
+\begin{remark}[Proof-code costs versus service costs]\label{rem:cost}
+The preceding theorem minimizes among canonical valid paths. It never asserts that \emph{every} integer code has service cost equal to its decoded path length. Definition~\ref{def:system} ensures that canonical code-image membership, decoding, and finite-history legality are decidable. Write $\ell_2(n)=1+\lfloor\log_2(\max\{1,n\})\rfloor$ and, for a fixed admissible presentation, define a total cost on \emph{all} integers by
+\[
+ c_{P,T,B}(n)=
+ \begin{cases}
+ |\rho|,&n=\operatorname{Enc}(\rho),\;\rho\text{ legal},\;\operatorname{Dec}(n)=\rho,\\
+ \ell_2(n),&\text{otherwise}.
+ \end{cases}
+\]
+The valid-code part of $\{n:c(n)\le b\}$ is the image of the finite bounded-history tree in Lemma~\ref{lem:finite}; the invalid-code part is confined to the finite decidable set $\{n:\ell_2(n)\le b\}$. The union is therefore finite and effectively enumerable, and membership is decidable using the total decoder, encoder, and legality test. This establishes the stated effectively proper total cost extension; it does \emph{not} identify binary syntax size with the service count of valid histories.
+\end{remark}
+
+The construction proves the history-to-derivation bridge directly in the one-member case. It does not prove the source article's more demanding \emph{typed five-channel} AMLD compilation theorem, whose certificate environments and foreign-channel provenance must remain distinct.
+
+\section{MAIN THEOREM 2: the one-member baseline bound}
+\begin{definition}[Reproducible baseline trace]
+Let $P^*$ be a stand-alone ATP whose accepted proof of $T$ uses $m$ local transitions. A \emph{unit-service reproduction} in $P[T,B]$ is a legal accepted history that simulates that trace in at most one charged singleton service per local transition, with no extra charged startup or terminal events. The simulation must preserve proof verification and all required baseline information; it may not assume unavailable BANK items.
+\end{definition}
+
+\begin{theorem}[Canonical $m$-service bound]\label{thm:baseline}
+If a stand-alone accepted $m$-transition proof has a unit-service reproduction in $P[T,B]$, then
+\[
+\boxed{h_{P,B}(T)\le m.}
+\]
+More generally, under a fixed total charged administrative overhead $K_{\rm admin}$ and a metric counting that overhead, the corresponding bound is $m+K_{\rm admin}$.
+\end{theorem}
+\begin{proof}
+The reproduction is an admissible accepted history of service cost at most $m$. The minimum over all accepted histories cannot exceed the cost of this witness. Add the declared fixed administrative cost if that is the metric being minimized.
+\end{proof}
+
+\begin{definition}[Singleton route gain]
+For a particular baseline embedding $\rho_{\mathrm{base}}$ of cost $m$ (or more generally $C(\rho_{\mathrm{base}})$), put
+\[
+G_P(T;\rho_{\mathrm{base}})=C(\rho_{\mathrm{base}})-h_{P,B}(T)\ge0.
+\]
+A positive $G_P$ says that the legal singleton history system admits a cheaper accepted route than the chosen baseline trace. It does not identify a cause: the benefit could come from a different proof search path or from certified BANK premises.
+\end{definition}
+
+\begin{proposition}[Conditional projection and no general fivefold speed claim]\label{prop:projection}
+Suppose a five-role AMLD execution has only prover-relevant terminal behavior, no necessary cross-role imports, and a projection deleting non-$P$ service events that leaves a legal accepted singleton history with unchanged prover transitions. If that AMLD history uses $m$ prover services, the projected singleton history costs $m$ under the singleton service metric. Conversely, assume a fixed five-role schedule provides at least one usable $P$ opportunity in each block of at most five charged role services; required non-$P$ slots have legal filler actions; neither fillers nor other roles interfere with the embedded $P$ trace or force additional charged actions; and the terminal verifier-accepted $P$ proof is recognized as a valid AMLD settlement certificate without extra charged service. Then an accepted singleton $m$-step history supplies an AMLD settlement history of service cost at most $5m$ (or $5m+K$ if a separately declared fixed overhead $K$ is charged). Neither implication orders the \emph{optimal} five-role and singleton horizons without additional mutual simulation and cost assumptions.
+\end{proposition}
+\begin{proof}
+For the first assertion, remove the nonprover events by the stipulated legal projection and count the remaining events. For the reverse assertion, place the $m$ singleton steps in the available prover opportunities. By assumption each prover opportunity occurs within a block of at most five charged services, all intervening actions are legal and noninterfering, and terminal proof acceptance transfers to settlement. This yields a history with at most $5m$ charged services, plus any explicitly stipulated fixed overhead. The resulting inequalities concern constructed witnesses in different history spaces; one-way embeddings do not supply an inverse inequality between their minima.
+\end{proof}
+
+In particular, a five-role federation may find a shorter legal settlement certificate through another role or a cross-role BANK deposit. A one-member prover might find a better proof path on its own. Neither behavior is forced by the numerical member count.
+
+\section{Growing a single certified Knowledge BANK}
+\begin{definition}[Verified BANK evolution and standardized restart]\label{def:bank}
+Let
+\[
+B_0\subseteq B_1\subseteq B_2\subseteq\cdots
+\]
+be an effective sequence of finite or effectively presented verifier-accepted BANK entries, with old records and their provenance retained. Deposits must be conservative relative to the designated proof environment and carry replayable certificates, not new unproved axioms. A finite certificate for each deposit may depend only on fixed accepted initial premises and earlier certified entries: its finite provenance graph must be acyclic and verifier-checkable. The stage map $k\mapsto B_k$ and the restarted successor and acceptance routines must be uniformly effective for the stage-computability claims below. At stage $k$, $P[B_k]$ means the \emph{same} ATP with fixed non-BANK initialization, fixed action and verifier rules, and BANK $B_k$ offered as optional premises. The original maintenance chronology charges all actual simulation, inference, certificate checks, and deposits that produce a snapshot. A standardized restart then \emph{takes the resulting verified snapshot as a given input}; its remaining target-horizon counts \emph{only newly executed services after that restart}, including any needed new check not already discharged by an atomic event or an inherited accepted certificate. Previously charged maintenance is not erased from the overall accounting, merely excluded from this conditional remaining-cost comparison.
+\end{definition}
+
+\begin{definition}[Non-cost-increasing persistence]\label{def:persist}
+The restarted family is non-cost-increasing BANK-persistent if for every $j\le k$ an effectively specified route map
+\[
+\iota_{j,k}:\Hist_{P,B_j}(T)\longrightarrow\Hist_{P,B_k}(T)
+\]
+preserves accepted proof provenance and satisfies $|\iota_{j,k}(\rho)|\le |\rho|$. It is enough to specify consecutive embeddings $\iota_{k,k+1}$ and use their composition. Exact optional-import replay with unchanged service events is a sufficient condition. BANK inclusion alone does not imply persistence: automatic imports, reindexed actions, compulsory scans, or changed costs can invalidate an old route or increase its cost.
+\end{definition}
+
+\begin{proposition}[Monotone singleton horizons]\label{prop:mono}
+If $h_{P,B_k}(T)$ is defined and the family is non-cost-increasing BANK-persistent, then $h_{P,B_{k+1}}(T)$ is defined and
+\[
+h_{P,B_{k+1}}(T)\le h_{P,B_k}(T).
+\]
+\end{proposition}
+\begin{proof}
+Apply $\iota_{k,k+1}$ to a minimum-cost accepted history at stage $k$. Its image is accepted at stage $k+1$ and costs no more. Taking the minimum at stage $k+1$ proves the inequality.
+\end{proof}
+
+\begin{remark}[BANK inclusion need not lower the horizon]\label{rem:counterexample}
+Here is an explicit reason persistence is necessary. Take a fixed history policy with rule $a\to T$ and an optional verified lemma $\lambda$ (derivable from $a$); let $B_0=\{a\}$ and $B_1=\{a,\lambda\}$. Suppose a \emph{fixed} controller rule mandates one charged ``scan imported $\lambda$'' service at the start of any restart whose BANK contains $\lambda$, before any inference may occur. At stage $0$ the target takes one service; at stage $1$ it takes two (scan, then inference). Both stage systems are finite-branching and sound, and the same conditional rule is used at every stage, but $h_0(T)=1<h_1(T)=2$. The old route fails to persist at unchanged cost. BANK inclusion is therefore insufficient without the route-persistence hypothesis.
+\end{remark}
+
+\section{MAIN THEOREM 3: the singleton finite breakthrough ladder}
+\begin{definition}[Strict singleton breakthrough]
+Write $h_k(T)=h_{P,B_k}(T)$ and
+\[
+D_T=\{k\in\bbN:h_{k+1}(T)<h_k(T)\}.
+\]
+An index in $D_T$ is a strict \emph{proof-horizon breakthrough}. A BANK deposit without a strict decrease is a verified knowledge event, but not a strict breakthrough for this target under this metric.
+\end{definition}
+
+\begin{theorem}[Finite, retrospectively checkable proof breakthroughs]\label{thm:ladder}
+Assume the restarted singleton systems form a uniformly indexed effective stage family as in Definitions \ref{def:system} and \ref{def:bank}, are non-cost-increasing BANK-persistent, and $\Hist_{P,B_0}(T)\ne\varnothing$. Then:
+\begin{enumerate}[label=(\roman*)]
+\item $k\mapsto h_k(T)$ is total computable, with $h_0(T)\ge h_1(T)\ge\cdots$;
+\item $D_T$ is finite, $h_k(T)$ is eventually constant, and if $h_\infty(T)$ is its eventual value then
+\[
+|D_T|\le h_0(T)-h_\infty(T)\le h_0(T);
+\]
+\item a canonical minimum accepted proof history $\rho_k^*$ is effectively recoverable at each stage;
+\item membership of each given $k$ in $D_T$ is decidable. Moreover, the two attained minima have finite replayable bounded-search certificates that can be checked independently \emph{relative to the declared complete successor routine and proof verifier}.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Proposition \ref{prop:mono} preserves finite reachability and proves monotonicity. Uniform effective presentation allows Theorem \ref{thm:canonical} to run at every stage; because every stage has an accepted history, each computation halts, uniformly in $k$. The algorithm outputs both $h_k$ and $\rho_k^*$. Every strict drop decreases a natural number by at least one, so at most $h_0-h_\infty$ such drops occur, and an infinite nonincreasing natural-number sequence eventually stabilizes. To decide whether $k\in D_T$, compute $h_k$ and $h_{k+1}$ and compare them. To verify minimality at a particular stage, provide an accepted history at the asserted cost and a finite exhaustive successor tree through all smaller depths, with rejection of every earlier terminal candidate. A checker can replay the tree and compare every listed successor set against the declared $\operatorname{Next}$ routine, then replay acceptance tests. The checks are finite by Lemma \ref{lem:finite}; independently checking \emph{completeness of the routine itself} requires a separate trusted specification or formal proof and is not claimed here.
+\end{proof}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[x=0.62cm,y=0.42cm,>=Stealth,every node/.style={font=\footnotesize}]
+\draw[->] (0,0)--(9.8,0) node[right] {$k$};
+\draw[->] (0,0)--(0,6.8) node[above] {$h_k(T)$};
+\draw[thick] (0.25,5.4)--(2.1,5.4)--(2.1,3.5)--(5.1,3.5)--(5.1,1.7)--(9.2,1.7);
+\foreach \x/\y in {1/5.4,3/3.5,7/1.7}{\fill (\x,\y) circle (2pt);}
+\node[anchor=east] at (0,5.4) {$3$};\node[anchor=east] at (0,3.5) {$2$};\node[anchor=east] at (0,1.7) {$1$};
+\node[below] at (2.1,0) {$k_1$}; \node[below] at (5.1,0) {$k_2$};
+\end{tikzpicture}
+\caption{Schematic finite breakthrough ladder: finitely many strict drops can occur even when the BANK continues accumulating verified lemmas. The drop stages need not be computably predictable.}
+\end{figure}
+
+\begin{corollary}[Unbounded verified accumulation can coexist with bounded strict improvement]
+A singleton ATP can add infinitely many certified BANK entries while a fixed initially finitely provable target undergoes only finitely many strict decreases of its natural-valued restarted proof horizon. The theorem bounds strict decreases, not BANK size, discovery activity, or improvements for other targets.
+\end{corollary}
+\begin{proof}
+For existence, take the fixed rule $a\to T$ with initial BANK $\{a\}$ and target $T$, so the remaining target horizon is $1$. At successive stages deposit the distinct propositional tautologies $\theta_n=(p_n\lor\neg p_n)$, each with a finite certificate from a fixed sound propositional verifier. The target-history rule remains $a\to T$, and the added tautologies are optional and provide no new zero-step acceptance of $T$. Thus every stage horizon remains $1$, although the finite BANK has unboundedly many distinct certified entries. Charge generation and verification of each $\theta_n$ to the intervening maintenance chronology.
+\end{proof}
+
+\section{MAIN THEOREM 4: no universal last-breakthrough detector}\label{sec:negative}
+\begin{theorem}[Singleton last-breakthrough noncomputability]\label{thm:negative}
+There is no total computable functional which, from an index for \emph{every} uniformly effective, conservative, cost-persistent one-ATP BANK evolution with a fixed target of finite initial proof horizon, always returns a stage $N$ such that
+\[
+h_{k+1}(T)=h_k(T)\qquad\text{for all }k\ge N.
+\]
+This failure occurs already in a uniformly computable family with horizons in $\{1,2\}$ and at most one strict breakthrough.
+\end{theorem}
+\begin{proof}
+Use a proof environment with the three formulas $a,\lambda,T$, the only relevant inference rules
+\[
+a\longrightarrow\lambda,\qquad\lambda\longrightarrow T,
+\]
+and unit cost per atomic verified inference event (inference together with its local verifier check, as in Definition~\ref{def:system}). Let $B_0=\{a\}$. From $\{a\}$ the least proof of $T$ needs two inference events; from $\{a,\lambda\}$ it needs one. The deposit of $\lambda$ is conservative because the one-step certificate $a\to\lambda$ is available and verifier-checkable.
+
+Given an arbitrary Turing program and input $(e,x)$, uniformly construct a program $M_{e,x}$ that performs an initial dummy transition before simulating $e(x)$. Thus $M_{e,x}$ never halts at step zero and halts at some finite positive step exactly when $e(x)$ halts. One ATP maintains the BANK while carrying out the charged bounded simulation of $M_{e,x}$. Define $B_0^{e,x}=\{a\}$ and, for $k\ge1$, set
+\[
+B_k^{e,x}=\begin{cases}
+\{a\},&M_{e,x}\text{ has not halted within }k\text{ steps},\\
+\{a,\lambda\},&M_{e,x}\text{ has halted within }k\text{ steps}.
+\end{cases}
+\]
+If $\lambda$ first appears, attach the fixed valid one-step proof as its certificate. The stage-$k$ update is uniformly computable from $(e,x,k)$: each stage performs only a finite simulation and finishes its verifications before the snapshot is exposed. Simulation, certificate generation, and deposit verification are charged in the maintenance chronology. The controller is a single ATP with an internal maintenance mode, not a federation with another prover. Each restart may ignore added premises, so the old proof route remains legal at unchanged unit-inference cost. The terminal certificate is already locally verified upon completion of its last atomic inference; recognizing $\PROVED(T)$ requires no further charged event. In this three-formula presentation there are no other target-producing rules or initial proofs of $T$, so the displayed lower bounds are exact. In particular,
+\[
+h_k(T)=\begin{cases}
+2,&M_{e,x}\text{ has not halted within }k\text{ steps},\\
+1,&M_{e,x}\text{ has halted within }k\text{ steps}.
+\end{cases}
+\]
+The BANK-maintenance work is not cost-free; it is charged to the ongoing chronology and excluded only from the \emph{remaining} target proof cost at standardized restart, exactly as declared in Definition \ref{def:bank}.
+
+Suppose a total functional $L$ produced a correct stabilization stage from an index of every such evolution. By effective program parameterization, from $(e,x)$ compute an admissible index $i(e,x)$ for the entire staged ATP presentation and BANK evolution. Compute $N=L(i(e,x))$ and simulate $M_{e,x}$ for $N$ steps. If it halts, answer \emph{halts}. Otherwise a later halt at step $t>N$ would cause the strict drop from stage $t-1$ to $t$, with $t-1\ge N$, contradicting the guarantee of $L$. Therefore answer \emph{does not halt}. Because $M_{e,x}$ halts exactly when $e(x)$ halts, this procedure would decide the ordinary halting problem, impossible [4,5].
+\end{proof}
+
+\begin{corollary}[Even the limiting horizon is not uniformly computable]
+There is no total computable algorithm returning $h_\infty(T)$ for every uniformly indexed singleton BANK evolution covered by Theorem \ref{thm:negative}.
+\end{corollary}
+\begin{proof}
+In the constructed family, $h_\infty(T)=1$ exactly if $e(x)$ halts, and $h_\infty(T)=2$ otherwise. Such an algorithm would decide halting.
+\end{proof}
+
+\begin{corollary}[Past knowledge is not future completion knowledge]
+In the setting of Theorem \ref{thm:ladder}, every individual completed strict breakthrough is decidable and finitely certifiable; nevertheless there is no \emph{uniform} procedure announcing a final no-further-breakthrough stage for all singleton evolutions in the class of Theorem \ref{thm:negative}. For a specially restricted evolution, a stabilization stage may of course be provable by separate arguments.
+\end{corollary}
+
+\section{An explicit one-ATP example}\label{sec:example}
+Consider one ATP with axioms $a$ and $b$ and the following legal unit-charge atomic verified-inference rules
+\[
+a\longrightarrow u,\quad u\longrightarrow v,\quad v\longrightarrow T,
+\qquad b\longrightarrow w,\quad w\longrightarrow T.
+\]
+Its initial BANK contains only $a$ and $b$. The cheapest legal proof is $b\to w\to T$, so $h_0(T)=2$, even though the first chain has length $3$. Suppose the prover later certifies and retains $w$ after performing $b\to w$. At a standardized restart $B_1=\{a,b,w\}$, the optimum is $w\to T$, giving $h_1(T)=1$. The proof certificate deposited for $w$ is replayable; no new axiom was added. Further deposits of unrelated theorems may be verified indefinitely while $h_k(T)$ stays $1$.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=Stealth, node distance=1.25cm and 1.35cm, every node/.style={font=\footnotesize}]
+\node[draw,circle,inner sep=3pt] (b) {$b$};
+\node[draw,circle,inner sep=3pt,right=of b] (w) {$w$};
+\node[draw,circle,inner sep=3pt,right=of w] (t) {$T$};
+\draw[->,thick] (b)--node[above]{service 1}(w);
+\draw[->,thick] (w)--node[above]{service 2}(t);
+\node[below=0.7cm of w] (label) {After $w$ is certified in $B_1$, the remaining restart path has cost $1$.};
+\end{tikzpicture}
+\caption{BANK persistence changes the starting snapshot, not the historical cost of the earlier certificate.}
+\end{figure}
+
+This illustrates three distinctions. First, the canonical horizon optimizes over \emph{all legal histories}, not just the currently favored tactic. Second, the one-step improvement is a reduction in \emph{remaining} cost from a richer BANK; it does not retrospectively erase the work of proving $w$. Third, the observed singleton improvement does not require another federation member, although a federation could generate similar improvements through shared deposits.
+
+\section{One-member induction and policy-relative proof-path excess}
+Global accepted-state induction in the singleton setting is ordinary induction on the sequence of finite verified service events. If each event preserves invariant $I$ and $I$ holds initially, then $I$ holds at all finite prefixes. Provenance soundness may likewise be shown by induction on a finite dependency DAG, using the validity of each BANK certificate relative to earlier accepted premises. Neither form is a new foundational induction axiom.
+
+For a fixed restarted state, let $h_k(T)$ be the minimum over all legal accepted paths. Let $h_k^{\mathcal Q}(T)$ denote the minimum over paths accessible to some specified policy class $\mathcal Q$, assuming an accepted accessible path exists. If one realized accepted run has cost $C_k(T)$ and lies in that class, then
+\[
+C_k(T)-h_k(T)=
+\underbrace{\bigl(C_k(T)-h_k^{\mathcal Q}(T)\bigr)}_{\text{realization excess}}
++\underbrace{\bigl(h_k^{\mathcal Q}(T)-h_k(T)\bigr)}_{\text{accessibility excess}}.
+\]
+Both terms are nonnegative. This is an algebraic decomposition, not by itself an assertion that the policy-accessible minimum is computable or efficiently discoverable. Under the unit-step metric, the full horizon is also a shortest-path distance from the standardized restart state to the accepted-proof target in the effective history graph.
+
+\section{Dependency ledger and limitations}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}p{0.22\linewidth}Y p{0.24\linewidth}@{}}
+\toprule
+\textbf{Result} & \textbf{What is established here} & \textbf{Required condition}\\\midrule
+Theorem \ref{thm:canonical} & Direct least-cost accepted-history search & Uniform indexed successor and acceptance routines; finite branching\\
+Proposition \ref{prop:compile} & Direct singleton compiled-history equivalence & Canonical path calculus and charged extension metric\\
+Theorem \ref{thm:baseline} & $h(T)\le m$ from a reproducible baseline trace & One service per baseline transition; zero charged administration\\
+Proposition \ref{prop:mono} & Monotonicity under BANK growth & Non-cost-increasing route persistence\\
+Theorem \ref{thm:ladder} & Total stage horizons; finite strict ladder; conditional checks & Uniform stage effectivity; initially accepted route; trusted successor routine\\
+Theorem \ref{thm:negative} & No uniform final breakthrough stage even for one ATP & Normalized halting reduction; uniform stage indices\\
+Five-role AMLD comparison & Projection/embedding implications only & Legal filler services; terminal transfer; bounded scheduler gaps\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The proofs of the main singleton results are self-contained apart from standard Turing undecidability, conditional on the declared indexed history semantics and verifier contracts. The source article's citations to the unfinished Universal Proof-Horizon preview and the five-role AMLD settlement compilation are conceptual provenance rather than load-bearing dependencies for our \emph{direct singleton construction}. The formal choice of finite effective branches is narrower than arbitrary recursively enumerable or infinitely branching ATPs; replacing it by general effectively proper proof-code costs is possible, but requires those hypotheses explicitly. This revision does not certify an actual implementation, an independently verified complete successor routine, or the execution of an experimental ATP run. The proof arguments are conventional mathematical proofs, not independently machine-checked formal certificates.
+
+The following distinctions must not be suppressed:
+\begin{enumerate}[label=(\arabic*)]
+\item \textbf{Proof versus metalogical settlement.} The terminal set contains accepted proofs of $T$ only. Dependence, independence, contradiction, and refutation channels are not silently treated as equivalent to proof acceptance.
+\item \textbf{Horizon versus resource use.} Minimum charged service count is not automatically minimum wall-clock time, energy, memory, or search overhead. The universal enumerator itself can be infeasible.
+\item \textbf{BANK growth versus monotonicity.} Inclusion $B_k\subseteq B_{k+1}$ alone does not preserve optimum cost if old traces become illegal or more expensive.
+\item \textbf{Restart versus live continuation.} Theorems compare the same frozen non-BANK controller initialized with different BANK snapshots. They do not assert monotone instantaneous remaining time for arbitrary live states.
+\item \textbf{Finite descent versus knowing completion.} Every concrete horizon drop is checkable in hindsight, relative to the trusted exhaustive-history specification, but no uniform total detector computes a final safe stage for all effective evolutions.
+\item \textbf{One member versus one algorithmic strategy.} A one-member ATP can implement several internal procedures without adding independent federation roles; all authorized computation and verification actions are still accounted for.
+\end{enumerate}
+
+\section{Conclusions}
+Passing from the source article's five-role AMLD to one ATP does more than replace the coefficient $5$ by $1$. It removes typed cross-channel settlement and exposes a direct and independently provable structure: a single verified search chronology, a canonical partial proof-horizon operator, an exact baseline trace bound, and a nonincreasing sequence of restarted minima under persistent Knowledge BANK growth. The finiteness of the strict breakthrough ladder is therefore not a phenomenon peculiar to cooperation. Nor is the impossibility of a uniform final-breakthrough announcement: both already occur in the smallest federation, one prover.
+
+Cooperation may change which certificates are found, what information reaches the BANK, and the legal history space over which a horizon is minimized. It is \emph{not} required for canonical finite-horizon optimization or for the logical gap between recognizing an accomplished breakthrough and knowing that no further breakthrough will ever occur.
+
+\begin{thebibliography}{9}
+\bibitem{USH} \textless Brian Tenneson\textgreater, \emph{Universal Settlement Horizons: Canonical Minimum AMLD Certificates, Finite Breakthrough Ladders, and the Noncomputability of the Last Breakthrough}, Corrected Research Synthesis 002, September 18, 2026. \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_settlement_horizons_002/}.
+\bibitem{UPH} \textless Brian Tenneson\textgreater, \emph{The Universal Proof-Horizon Operator: From MIU and the $n$th Well-Formed Formula to ZFC, Predator, and Automated Logical Deciders}, Version 1.1, September 13, 2026, preview manuscript. \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/universal_proof_horizon_operator_v1_1/}.
+\bibitem{Depths} \textless Brian Tenneson\textgreater, \emph{Depths of Induction: ML-Guided Proof Search, Cooperative AMLDs, and Formalized Self-Awareness}, Version 48, September 17, 2026. \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/depths_of_induction_v48/}.
+\bibitem{Turing} A. M. Turing, ``On Computable Numbers, with an Application to the Entscheidungsproblem,'' \emph{Proceedings of the London Mathematical Society}, second series, vol. 42, 1936.
+\bibitem{Rogers} H. Rogers Jr., \emph{Theory of Recursive Functions and Effective Computability}, MIT Press, 1987.
+\end{thebibliography}
+
+
+\clearpage
+\phantomsection\label{sec:ai-disclaimer}
+\section*{Disclaimer on Mathematical Accuracy, Authorship,\\ and Artificial Intelligence}
+Every reasonable effort has been made to ensure that the mathematical exposition presented herein is factual, correct, logically sound, sufficiently complete in its treatment of relevant facts (not in the technical sense of G\"odelian completeness), and supported by rigorous proofs or, at minimum, not readily susceptible to refutation. Nevertheless, no guarantee of correctness, completeness, consistency, or provability is implied. The authorship and composition of this work involve a combination of human and artificial intelligence: an AI determines the placement of some statements, but not all statements, and the placement of some individual characters, but not all characters. Generally, the AI involved is either DATA MIND or CAMI, both of which have been personally augmented by \textless{}Brian Tenneson\textgreater{} with structured, automated-theorem-proving (ATP) forms of creativity and intelligence. Mathematical development, organization, formulation, and revision may therefore reflect varying degrees of human and AI contribution, without implying that either party is solely responsible for any particular passage. ATLAS is employed as an additional mathematical and editorial auditor, alongside another AI reviewer and the author's own examination, to identify errors, omissions, unsupported assertions, and opportunities for improvement. Such review is not equivalent to independent formal verification of every claim. Responsibility for the decision to present and publish the resulting work remains with the human author.
+
+\end{document}

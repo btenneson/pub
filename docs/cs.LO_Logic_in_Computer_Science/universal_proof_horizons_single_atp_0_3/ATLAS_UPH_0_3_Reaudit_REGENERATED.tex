@@ -1,0 +1,91 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{booktabs,tabularx,array,longtable,enumitem,needspace}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\hypersetup{pdftitle={ATLAS Repair and Re-Audit of Universal Proof Horizons 0.3},pdfauthor={ATLAS audit mode, OpenAI's ChatGPT}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{1.5pt}
+\setlist[enumerate]{nosep,leftmargin=1.5em}
+\setlist[itemize]{nosep,leftmargin=1.5em}
+\pagestyle{fancy}\fancyhf{}\lhead{ATLAS repair and mathematical re-audit}\rhead{UPH single ATP 0.3}\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+\newcommand{\PASS}{\textbf{PASS}}
+\begin{document}
+{\LARGE\bfseries ATLAS Repair and Re-Audit}\par
+{\large Universal Proof Horizons for a Single ATP}\par
+\textbf{Manuscript author:} \textless Brian Tenneson\textgreater\qquad
+\textbf{Audit date:} October 30, 2026\par
+\textbf{Repaired version:} Research Draft 0.3 (13 pages)\par
+\vspace{4pt}\hrule\vspace{8pt}
+
+\textbf{Re-audit verdict: PASS for internal mathematical coherence, subject to the explicit formal model and trust assumptions.}
+
+The substantive conclusions of the original draft survive the targeted repairs. In this re-audit, the earlier two high-priority findings (service accounting and canonical integer-code recognition) are \emph{resolved in the revised written specification}. No new proof-invalidating defect was identified in the central constructions. This is a critical mathematical review and a successful LaTeX/PDF production check, \emph{not} a mechanized proof, an independent soundness proof for an ATP implementation, or a guarantee that every conceivable error has been excluded.
+
+\section*{1. Traceable repair ledger}
+\renewcommand{\arraystretch}{1.07}
+\begin{tabularx}{\linewidth}{@{}p{0.14\linewidth}p{0.59\linewidth}p{0.18\linewidth}@{}}
+\toprule
+\textbf{Finding} & \textbf{Repair in draft 0.3} & \textbf{Disposition}\\\midrule
+A1: service cost & Definition 2.1 now permits one charge for an \emph{atomic verified inference} including its local check. Separately performed verification is charged separately. Theorem 8.1 and Section 9 explicitly use this convention; terminal recognition of a completed accepted proof incurs no extra event. & \PASS\\
+A2: code recognition & Definition 2.1 now requires total decoding $\operatorname{Dec}$, a computable injective $\operatorname{Enc}$ and an exact decidable canonical-code membership test. Remark 4.3 supplies the corresponding total, effectively proper cost function on $\mathbb N$. & \PASS\\
+Stage accounting & Definition 6.1 distinguishes paid BANK maintenance from the newly charged services at each standardized restart. The remaining-cost horizon is not confused with cumulative historical spending. & \PASS\\
+Clarifications & Explicit promise-class uniformity; different notation for baseline versus canonical optimum; better description of metalevel search cost; precise Section 10 heading; opening pointer typo repaired. & \PASS\\
+Visual exposition & Three labelled black-and-white schematic diagrams added to illustrate bounded search, a finite horizon ladder, and the restarted proof path. & \PASS\\
+\bottomrule
+\end{tabularx}
+
+\needspace{6\baselineskip}\section*{2. Mathematical re-audit by dependency}
+\begin{longtable}{@{}p{0.27\linewidth}p{0.12\linewidth}p{0.54\linewidth}@{}}
+\toprule\textbf{Assertion} & \textbf{Status} & \textbf{Independent recheck}\\\midrule
+\endfirsthead
+\toprule\textbf{Assertion} & \textbf{Status} & \textbf{Independent recheck}\\\midrule
+\endhead
+Definition 2.1 / Lemma 2.3 & \PASS & Complete, terminating finite successor lists produce finitely many histories at every bounded service depth; the added prefix-closure premise resolves the path convention.\\
+Theorem 3.1 & \PASS & Uniform breadth-first search yields a partial computable least-depth accepted history. Finite enumeration of the first successful level makes the least-code tie-breaker effective. Domain claim is restricted to promised admissible indices.\\
+Proposition 4.2 & \PASS & Canonical chains and accepted event histories are inverse computable descriptions, each extension having unit cost. Nothing is inferred about arbitrary padded proofs.\\
+Remark 4.3 & \PASS & The repaired decoder makes the valid-code branch decidable; valid bounded-cost histories form an effectively enumerable finite set, while invalid bounded-binary-length integers form another. This proves total computability and effective properness of the displayed cost extension.\\
+Theorem 5.2 & \PASS & A legal accepted history of cost at most $m$ immediately bounds the minimum by $m$. Fixed charged overhead adds $K_{\mathrm{admin}}$ when stipulated.\\
+Proposition 5.4 & \PASS & Both projection and the $5m$ comparison are witnessed by strong, explicit noninterference, filler-service, scheduling and terminal-recognition hypotheses; no unconditional fivefold improvement is claimed.\\
+Proposition 6.3 & \PASS & A cost-nonincreasing successful-route image from stage $k$ to $k+1$ directly supplies the monotonicity witness. BANK inclusion alone is insufficient, as shown by the forced-scan counterexample.\\
+Theorem 7.2 & \PASS & Every stage has a successful history by persistence from stage zero. Hence uniformly applied partial breadth-first search terminates at every stage. Monotone natural numbers have finitely many strict decreases, each decidable from two terminating computations.\\
+Corollary 7.3 & \PASS & Optional, certified tautology deposits can increase BANK size indefinitely without creating any zero-cost accepted target or reducing the one-service target route.\\
+Theorem 8.1 & \PASS & Verified inference costs exactly one event in the stated example. The stage-$k$ BANK update is computable by bounded simulation; a first halt at $t\ge1$ creates the sole drop from $t-1$ to $t$. A putative stabilization bound $N$ would decide whether the simulated program halts by time $N$.\\
+Corollaries 8.2--8.3 & \PASS & The limiting horizon equals $1$ precisely on halting instances, and $2$ otherwise; pointwise identification of completed drops does not imply a uniform final-stage announcement.\\
+Section 10 identity & \PASS & The realized-cost gap splits algebraically into realization excess and policy-accessibility excess; both are nonnegative under the stated existence assumptions.\\
+\bottomrule
+\end{longtable}
+
+\section*{3. Focused sanity checks}
+The two-rule example $a\to\lambda\to T$ was also checked with a small, independently written breadth-first enumeration over states consisting of known formulas. It returned minimum costs $2$ from $\{a\}$ and $1$ from $\{a,\lambda\}$. Bounded test traces had the following values:
+\begin{center}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Case & $h_0$ & $h_1$ & $h_2$ & $h_3$ & $h_4$\\\midrule
+Never halts & 2 & 2 & 2 & 2 & 2\\
+First halt at stage 1 & 2 & 1 & 1 & 1 & 1\\
+First halt at stage 3 & 2 & 2 & 2 & 1 & 1\\
+\bottomrule
+\end{tabular}
+\end{center}
+The exercise is consistent with the reduction and catches elementary indexing errors. It does \emph{not} verify the reduction for every Turing program; that general conclusion follows from the written proof, conditional on the standard undecidability of halting.
+
+\section*{4. Non-negotiable limits of the clearance}
+\begin{enumerate}
+\item \textbf{Relative optimality only.} The horizon is minimum charged service length over the explicitly represented legal histories; it is not a representation-independent shortest mathematical proof or a guaranteed wall-clock-optimal ATP method.
+\item \textbf{Trusted operational semantics.} Exhaustive minimum certificates are reproducible relative to the declared complete successor and acceptance routines. This audit has not established that such routines are complete against a separately specified implementation or real-world operational semantics.
+\item \textbf{No five-role equivalence.} The one-ATP construction accepts proofs of $T$, not every metalogical result of a five-role AMLD. The $5m$ statement is a conditional scheduling construction.
+\item \textbf{Restart, not total cost savings.} Proof-horizon drops after BANK growth do not reimburse the historical computation used to discover and verify deposits.
+\item \textbf{No external formalization.} No Lean, Coq, Metamath, or independent prover certificate was produced for the manuscript as a whole; the small computational sanity check is not formal proof verification.
+\end{enumerate}
+
+\section*{5. Final disposition}
+\textbf{ATLAS re-audit status: REPAIRS ACCEPTED; INTERNAL MATHEMATICAL AUDIT PASSED, conditional on the stated assumptions.}
+
+The revised paper's central four results have coherent proofs in the promised effective, finitely branching, verifier-gated singleton-history setting. The corrected presentation now specifies the exact cost model needed for the $2\to1$ reduction and the decoder needed for the effectively proper code-cost extension. Its principal positive and negative conclusions remain intact. Further mechanized formalization or inspection of a concrete ATP implementation would constitute a separate, stronger certification undertaking.
+
+\vspace{2pt}\hrule\vspace{2pt}
+{\footnotesize Audit performed using the research draft 0.2 source manuscript, its earlier ATLAS audit, and the generated 0.3 LaTeX/PDF; the cited external articles were not independently re-reviewed. Original draft 0.2 was not overwritten. Nothing has been published to a public repository.}
+\end{document}
