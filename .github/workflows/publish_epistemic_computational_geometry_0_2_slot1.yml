@@ -1,0 +1,45 @@
+name: Publish Epistemic and Computational Geometry v0.2 at slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_epistemic_computational_geometry_0_2_slot1.yml'
+      - 'scripts/publish_epistemic_computational_geometry_0_2_slot1.py'
+      - 'incoming_publications/epistemic_computational_geometry_0_2/source.tex'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-epistemic-computational-geometry-0-2-slot1
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX and PDF inspection tools
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern poppler-utils
+      - name: Compile, verify, and publish selected ATLAS-repaired article
+        run: python scripts/publish_epistemic_computational_geometry_0_2_slot1.py
+      - name: Commit publication and regenerated slot-1 library
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/publications.json docs
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Epistemic and Computational Geometry v0.2 at slot 1'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
