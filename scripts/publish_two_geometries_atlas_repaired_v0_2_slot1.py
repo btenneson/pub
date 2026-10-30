@@ -109,6 +109,13 @@ def main():
     }
 
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
+    # Repair the sole pre-existing absent quote-page citation. The quoted
+    # sentence is on p. 2 of the existing 15-page Completion C PDF.
+    for item in data["items"]:
+        if item["id"] == "cs.LO_Logic_in_Computer_Science/completion_c_epistemic_conservation_0_2":
+            assert item.get("quote") == "A retrospective archive can be correct today but insufficient to validate tomorrow's message."
+            if not item.get("quote_page"):
+                item["quote_page"] = 2
     old = [x for x in data["items"] if x["id"] != SLUG]
     record["order"] = min(
         (x["order"] for x in old if isinstance(x.get("order"), (int, float))),
