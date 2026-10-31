@@ -1,0 +1,577 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.92in,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,longtable,tabularx,enumitem,microtype,needspace}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{fancyhdr,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black,pdfauthor={Brian Tenneson},pdftitle={The Cost of Re-Certifying a Geodesic}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{4pt plus 1pt minus 1pt}
+\setlength{\emergencystretch}{3em}
+\pagestyle{fancy}\fancyhf{}\lhead{\small The Cost of Re-Certifying a Geodesic}\rhead{\small Tenneson}\cfoot{\thepage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\BANK}{\mathrm{BANK}}\newcommand{\Sig}{\Sigma}\newcommand{\Len}{\operatorname{Len}}\newcommand{\Succ}{\operatorname{Succ}}\newcommand{\dist}{\operatorname{dist}}\newcommand{\calF}{\mathcal F}\newcommand{\RR}{\mathbb R}\newcommand{\NN}{\mathbb N}\newcommand{\cert}{\mathsf{cert}}\newcommand{\post}{\mathsf{post}}\newcommand{\pre}{\mathsf{pre}}
+\newcommand{\sourcelabel}{\textbf{Source-derived.}\ }
+
+\title{\textbf{The Cost of Re-Certifying a Geodesic}\\[3pt]\large Portable Evidence, BANK Shocks, and Decision Latency in Multiresolution Omnicartography\\[7pt]\normalsize A Level-1 FDWC Mathematical Multiarticle --- Version 2 (Retrospective Citations)}
+\author{\textless{}Brian Tenneson\textgreater{}\\\small Mathematical synthesis and manuscript development assisted by OpenAI's ChatGPT}
+\date{October 31, 2026\\\small Immutable ancestral source: \emph{Geodesic Continuation and Multiresolution Omnicartography}, Version 4}
+\begin{document}
+\maketitle
+\begin{center}\small\textbf{Version 2: retrospective citation and attribution edition (October 31, 2026).} The mathematical development of the Level-1 multiarticle originated from the immutable Version 4 manuscript ($W_0$) and internal deductions. For this Version 2 editorial review, external prior art was consulted solely to evaluate attribution and priority. Every theorem, lemma, proposition and corollary is individually classified below. ``Candidate for distinctiveness'' denotes a provisional, non-exhaustively checked research formulation, not a verified originality claim.\end{center}
+\medskip
+\noindent\textbf{AI DISCLOSURE.} The disclaimer on mathematical accuracy, authorship, and artificial intelligence is on the final page (page \pageref{sec:disclaimer}).
+\begin{abstract}
+A cartographer that has identified a geodesic in an automated metalogical decider (AMLD) faces a second problem: verified additions to the common BANK may shorten the remaining route, invalidate a local optimal-move certificate, or make recalculation worthwhile. These are different phenomena. This article develops their exact mathematical relationship using a sequence of nonnegatively weighted Pioneer graphs, verifier-checkable lower potentials, upper certificates carried by executable settlement paths, and explicit latency charges. The central result is an \emph{update-local no-replanning certificate}: if an old verified route remains executable at post-update cost $P$, a verified lower potential establishes $L\leq H_{\post}(x)$, and a compulsory sequential replanning step costs $c>P-L$, then executing the old route is strictly faster than every policy that performs that step first, even when the old route has ceased to be geodesic. The proof does not require knowing the exact new settlement horizon. Complementary results establish exact relative-shortcut conditions for preservation of the best first move, an interval certificate that transfers across updates, and a conservation identity expressing the total new slack of an old geodesic as the decrease in settlement horizon minus any decrease in its own edge costs. The interaction yields an evidence-based distinction between mathematical obsolescence and operational obsolescence. All theorems are conditional on declared finite or attained-path models; oracle information remains advisory unless independently verified. An internal completion comparison, six bounded consequence levels, a result-by-result prior-art audit, limitations, and an AI/provenance ledger are included. No independent mechanized proof verification or historical-novelty certification is claimed.
+\end{abstract}
+\tableofcontents
+\newpage
+
+\section{The problem created by a useful BANK deposit}
+\label{sec:question}
+In the ancestral paper $W_0$~\cite{W0}, the Pioneer travels through a graph of permissible formal states, the Omnicartographer supplies information about the distance to verifier-accepted settlement, and the trusted BANK can enlarge the choices available. The most immediate navigation question is whether a proposed first move lies on a shortest path. A later, more operational question is whether a previously justified instruction should be discarded after new verified information arrives.
+
+It is possible for an old move to remain legal but cease to be geodesic. It is also possible for a fresh geodesic to exist but cost too much real computation to discover before execution. Conversely, a stale instruction may remain uniquely optimal even though the cartographer's earlier \emph{proof of optimality} no longer works. The present multiarticle takes this three-way separation as its central object:
+\begin{enumerate}[label=(\roman*),leftmargin=2.4em]
+\item \emph{Geometric status:} whether the chosen move or full route still minimizes graph cost;
+\item \emph{Epistemic status:} whether current evidence certifies a claim about that move or route;
+\item \emph{Operational status:} whether the price of obtaining fresher guidance is worth paying.
+\end{enumerate}
+The synthesis is not an assertion that all real ATPs are finite graphs or that their shortest-path horizons are computable. Rather, it establishes results for a declared class of snapshots, certificates, and cost models, and identifies exactly where an ordinary computable verifier can check the evidence.
+
+\section{Inherited core, boundary conventions, and repair obligations}
+\label{sec:inherit}
+\begin{definition}[Pioneer snapshot]
+A \emph{snapshot} is a directed weighted state graph $G=(V,E,w)$ with $w:E\to\RR_{\geq0}$, together with a settlement set $\Sig\subseteq V$ and a declared verifier that accepts each trusted transition or deposit. Define
+\[
+H(x)=\inf_{\pi:x\leadsto\Sig}\Len(\pi),\quad \inf\varnothing=+\infty.
+\]
+A settlement path is \emph{attained} if its length equals $H(x)$. All paths and certificates called \emph{executable} use only transitions that the declared verifier accepts.
+\end{definition}
+
+The following facts are inherited mathematical material from $W_0$ (which itself acknowledges their standard shortest-path antecedents). Their inclusion establishes the conventions used in the sequel, not a new priority claim.
+\begin{proposition}[Inherited settlement identities]\label{prop:inherit}
+For $x\notin\Sig$ with finite $H(x)$,
+\[
+H(x)=\inf_{x\to y}\{w(x,y)+H(y)\}.
+\]
+If $H(y)<\infty$ and a shortest path from $y$ is attained, a legal edge $x\to y$ begins a geodesic precisely when $H(x)=w(x,y)+H(y)$. At such states define $Q_x(y)=w(x,y)+H(y)$ and $S(x,y)=Q_x(y)-H(x)\geq0$ (possibly $+\infty$). For a uniquely best successor $a$, the uniform symmetric-error rule $\varepsilon<\Delta(x)/2$ correctly identifies it whenever $\Delta(x):=\inf_{z\neq a}(Q_x(z)-Q_x(a))>0$.
+\end{proposition}
+\begin{proof}
+Every nonempty path to settlement begins with one legal edge; taking path infima in both directions proves the recurrence. Prepending an attained minimizing suffix yields the geodesic equivalence. For each rival $z$, estimates with errors of magnitude at most $\varepsilon$ satisfy $\widehat Q_x(z)-\widehat Q_x(a)\geq Q_x(z)-Q_x(a)-2\varepsilon\geq\Delta(x)-2\varepsilon>0$.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Established / inherited}. Bellman recurrence, shortest-path optimality, and the half-gap comparison are inherited from $W_0$ and established shortest-path/heuristic-search reasoning. \cite{W0,Bellman1958,Hart1968}.}\par
+
+
+\begin{remark}[Inherited exceptional cases]\label{rem:bounds}
+No outgoing-edge Bellman identity is asserted at a settlement state: its zero-length settlement path needs no first edge. When $H(x)=\infty$ we do not form $S(x,y)=Q_x(y)-H(x)$, because $+\infty-(+\infty)$ is undefined. A unique minimizer of infinitely many successor costs can have $\Delta(x)=0$. A geodesic-prefix extension claim requires an attained minimizing suffix. These repairs and qualifications already occur in $W_0$ and are retained.
+\end{remark}
+
+\begin{proposition}[Inherited advance certificate]\label{prop:advance}
+Suppose the possible successors of $x$ have independently certified bounds $L(y)\leq H(y)\leq U(y)$. Then $a$ is the uniquely cheapest successor if
+\[
+w(x,a)+U(a)<w(x,z)+L(z)\qquad\text{for every rival }z.
+\]
+For a finite successor set with a unique optimum and monotone certified bounds converging to the true (possibly infinite) horizons, this inequality eventually holds at some finite resolution, assuming $H(x)<\infty$.
+\end{proposition}
+\begin{proof}
+For each rival the true continuation costs lie between the displayed upper and lower numbers. For eventual separation, choose a finite number strictly between the optimal value and each rival's larger value; when the rival value is infinite, choose any number larger than the finite optimum. Monotone convergence eventually separates each pair and a finite maximum of the required resolutions handles all rivals.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Established / inherited}. Certified upper-versus-lower separation is an elementary consequence of admissible search bounds, specialized in $W_0$ to Pioneer successors. \cite{W0,Hart1968,GoldbergHarrelson2005}.}\par
+
+
+\paragraph{Limits retained from $W_0$.} The four conversational AMLD+++0 results recorded on October 31, 2026 were: an explicit finite layered-DAG family with exponentially many paths but polynomial exact distance computation; a conditional static, single-decision latency threshold; monotone horizons under verifier-approved BANK expansion together with possible changes of optimal first move; and finite-graph computability of exact shortest paths without a genuine oracle. This article neither upgrades those to unrestricted ATP results nor asserts an independent solver execution. The oracle-separation clause for infinite graphs and the two empirical frequency conjectures remain unsettled within $W_0$'s record.
+
+\section{Two snapshots and the quantity a deposit can change}
+\label{sec:shock}
+\begin{definition}[Monotone BANK expansion]\label{def:expansion}
+Write $G_0=(V_0,E_0,w_0,\Sig_0)$ and $G_1=(V_1,E_1,w_1,\Sig_1)$, and assume identified old states persist, $V_0\subseteq V_1$, $E_0\subseteq E_1$, $w_1(e)\leq w_0(e)$ for $e\in E_0$, and $\Sig_0\subseteq\Sig_1$. Each newly available transition and any trusted new settlement claim must pass the declared verifier. The maps $H_0,H_1$ are defined by the corresponding path infima. No decrease in cost is interpreted as retroactively refunding already paid execution time.
+\end{definition}
+\begin{lemma}[Horizon monotonicity and route portability]\label{lem:mono}
+If $H_0(v)<\infty$ for an old state $v$, then $H_1(v)\leq H_0(v)<\infty$. Every old settlement path $\pi$ remains executable in snapshot 1, with length $\Len_1(\pi)\leq\Len_0(\pi)$.
+\end{lemma}
+\begin{proof}
+Each old path has the same vertex-edge sequence in the expanded graph; its edges remain legal and no edge becomes more expensive. Its final state remains in the settlement set. Taking infima over the enlarged path collection proves the inequality.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Established consequence in this model}. Monotonicity follows from inclusion of paths and is closely related to dynamic shortest-path planning; the BANK interpretation is a specialization. \cite{KoenigLikhachev2002,KoenigLikhachevFurcy2004}.}\par
+
+\begin{definition}[Settlement shock]\label{def:shock}
+For any old state with finite $H_0(v)$ define the nonnegative \emph{horizon shock}
+\[
+\delta(v):=H_0(v)-H_1(v)\geq0.
+\]
+For an old edge $e=(u,v)$ put $\tau(e):=w_0(e)-w_1(e)\geq0$. A shock records the benefit of the enlarged geometry; $\tau$ separately records savings on edges that were already available.
+\end{definition}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,semithick, every node/.style={font=\small}, x=1.14cm,y=0.84cm]
+\node[draw,circle,inner sep=2pt] (x) at (0,0) {$x$};
+\node[draw,circle,inner sep=2pt] (a) at (2,1) {$a$};
+\node[draw,circle,inner sep=2pt] (b) at (2,-1) {$b$};
+\node[draw,circle,inner sep=2pt] (t) at (5,1) {$t$};
+\node[draw,circle,inner sep=2pt] (c) at (3.6,-1) {$c$};
+\draw[->] (x)--node[above] {$1$}(a);\draw[->] (x)--node[below] {$1$}(b);
+\draw[->] (a)--node[above] {$1$}(t);\draw[->] (b)--node[left,pos=.58] {$3$}(t);
+\draw[->,densely dashed] (b)--node[below] {$0$}(c);\draw[->,densely dashed] (c)--node[right] {$0$}(t);
+\node[align=left,anchor=west] at (5.7,0) {Solid: old transitions\\Dashed: verifier-approved additions\\Old winner: $a$ (cost $2$)\\New winner: $b$ (cost $1$)};
+\end{tikzpicture}
+\caption{An inherited type of example rebuilt for the present analysis: old transitions remain legal but a new verified shortcut reverses the optimal first move. Dashed transitions are additions, not replacements of existing edge weights.}\label{fig:shortcut}
+\end{figure}
+
+\begin{proposition}[Consecutive-shock accounting]\label{prop:telescoping}
+For a chain of monotone snapshots $G_0\preceq\cdots\preceq G_m$ and a state $v$ with $H_0(v)<\infty$, define $d_j(v)=H_j(v)-H_{j+1}(v)$. Then
+\[
+H_0(v)-H_m(v)=\sum_{j=0}^{m-1}d_j(v),\qquad d_j(v)\geq0.
+\]
+If certified bounds $d_j(v)\leq D_j$ are available, the total shock is at most $\sum_jD_j$.
+\end{proposition}
+\begin{proof}
+Every horizon is finite by Lemma~\ref{lem:mono}; monotonicity makes the terms nonnegative and the sum telescopes. Summing the certified upper bounds gives the last conclusion.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Elementary identity}. The additivity is a telescoping identity, not a claim of new shortest-path theory; its BANK-shock notation is manuscript-specific. \cite{Bellman1958,KoenigLikhachevFurcy2004}.}\par
+
+
+\section{What a verifier can actually check}
+\label{sec:evidence}
+A horizon number reported by an oracle is not automatically a certificate. A usable lower bound must be justified by a checkable mathematical invariant; a usable upper bound can be exhibited by an accepted route. The next definitions make both sides explicit for a finite graph, without assuming an oracle can be trusted as a mathematical authority.
+
+\begin{definition}[Potential certificate and route certificate]\label{def:potential}
+On a finite snapshot, a \emph{lower potential certificate} is a function $p:V\to\RR_{\geq0}$ with
+\[
+p(s)=0\quad(s\in\Sig),\qquad p(u)\leq w(u,v)+p(v)\quad((u,v)\in E).
+\]
+An \emph{upper route certificate} for $x$ is an explicitly listed verifier-accepted path $\pi:x\leadsto\Sig$ of total weight $P=\Len(\pi)$. When the graph weights and potential values are supplied as rationals, all checks are finite exact rational comparisons.
+\end{definition}
+\begin{lemma}[Soundness of paired evidence]\label{lem:duality}
+A lower potential and an upper settlement route satisfy
+\[
+\boxed{p(x)\leq H(x)\leq P.}
+\]
+Conversely, on any finite graph the zero function is a valid lower potential; when every state reaches settlement, the exact horizon function $p=H$ itself is a valid lower potential.
+\end{lemma}
+\begin{proof}
+For any path $x=v_0\to\cdots\to v_k=s\in\Sig$, sum the potential inequalities to obtain $p(x)\leq\sum_iw(v_i,v_{i+1})+p(s)=\Len(\pi)$. Infimizing over paths yields $p(x)\leq H(x)$, even if no path exists. A specific path yields $H(x)\leq P$. When all states have finite horizons, the Bellman inequality $H(u)\leq w(u,v)+H(v)$ holds on every edge, and $H(s)=0$ on settlement states, so $p=H$ is feasible. When some states are unreachable, assigning $p=0$ to all vertices is always feasible and suffices for the weaker existence assertion; exact horizons on reachable states can be used only with care at edges pointing into unreachable states.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Established graph-potential principle}. Feasible potentials furnish lower distance bounds by edgewise inequalities; an explicit route gives an upper bound. \cite{GoldbergHarrelson2005,Hart1968}.}\par
+
+
+\begin{remark}[A boundary deliberately not overstated]\label{rem:potential}
+A potential $p$ being verifiable is a finite \emph{certificate of a lower bound}, not an automatic certificate of the whole exact distance map, and does not by itself enumerate all proof histories. A separately listed route gives an upper bound only for its starting state. Soundness of ``verifier accepted'' is conditional on the declared verifier policy; the present theorem does not prove the underlying formal system consistent.
+\end{remark}
+
+\begin{theorem}[Incremental potential portability]\label{thm:potportable}
+Assume a finite expansion $G_0\preceq G_1$ and an old valid lower potential $p_0$. Let $\widetilde p:V_1\to\RR_{\geq0}$ extend $p_0$ on old vertices. It is a valid post-update potential if and only if it satisfies (a) $\widetilde p(s)=0$ for every new settlement state and (b) the potential inequality for every new edge and every old edge whose weight was decreased. If old weights remain unchanged, all previously checked old-edge inequalities can be reused without recomputation.
+\end{theorem}
+\begin{proof}
+By definition a valid potential must satisfy terminal constraints and edge inequalities over the new snapshot. Old settlement equalities persist, and every old-edge inequality with unchanged weight remains true because $\widetilde p$ agrees with $p_0$ on its endpoints. Thus precisely the listed new or altered constraints remain to be checked. Necessity follows because each belongs to the new certificate definition.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Candidate for distinctiveness --- specialized interface}. Checking only newly introduced or reduced-weight constraints is an immediate finite-constraint argument, related to incremental shortest-path reuse; the verifier-gated BANK-certificate interface is the proposed specialization, not a newly invented general invariant-maintenance theorem. \cite{KoenigLikhachev2002,KoenigLikhachevFurcy2004,Necula1997}.}\par
+
+\begin{corollary}[Fusion of certified lower information]\label{cor:potmax}
+For any two valid lower potentials $p,q$ on the same graph, $r(v)=\max\{p(v),q(v)\}$ is also a valid lower potential. For finitely many valid potentials, their pointwise maximum is valid. The shorter of two separately verified settlement paths from $x$ is a valid upper-route certificate.
+\end{corollary}
+\begin{proof}
+At settlements both potentials vanish. For every edge $u\to v$, $p(u)\leq w+p(v)$ and $q(u)\leq w+q(v)$, hence $\max(p(u),q(u))\leq w+\max(p(v),q(v))$. Path validity is preserved by selecting one of the already verified paths.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Direct prior-art match}. The pointwise maximum of two feasible potentials was explicitly stated by Goldberg and Harrelson as Lemma 2.2 (not Lemma 2.1); this corollary is NOT claimed as an original theorem. \cite[Lemma~2.2]{GoldbergHarrelson2005}.}\par
+
+
+\begin{remark}[Evidence reuse is not result reuse]
+Theorem~\ref{thm:potportable} distinguishes a new shortcut that invalidates an old lower potential from a new shortcut that invalidates the \emph{old optimal route}. The old route remains a correct \emph{upper} certificate by Lemma~\ref{lem:mono}, even when its \emph{optimality} no longer holds. A lower certificate must be rechecked against the changed inequalities. This asymmetry is central to the latency result below.
+\end{remark}
+
+\section{Exact and robust first-move portability}
+\label{sec:first}
+\begin{definition}[Local relative shortening]
+Fix an old nonterminal state $x$ with a finite old and new continuation cost for each member of a finite set $C$ of successors that remain legal. Write $q_t(y)=w_t(x,y)+H_t(y)$ and
+\[
+\eta(y):=q_0(y)-q_1(y)\geq0\qquad (y\in C).
+\]
+The number $\eta(y)$ includes both the drop in downstream horizon and any cost decrease of the first edge.
+\end{definition}
+
+\begin{theorem}[Relative-shortcut identity]\label{thm:relative}
+Suppose $a\in C$ was the uniquely best old successor within $C$, with old pairwise margins $g_0(z)=q_0(z)-q_0(a)>0$. Then
+\[
+q_1(z)-q_1(a)=g_0(z)-\bigl(\eta(z)-\eta(a)\bigr).
+\]
+Consequently $a$ remains the unique optimum within $C$ exactly when
+\[
+\boxed{g_0(z)>\eta(z)-\eta(a)\qquad\text{for every }z\in C\setminus\{a\}.}
+\]
+If additional successors appear at $x$, $a$ is globally uniquely optimal only if it also beats each new successor's true continuation value.
+\end{theorem}
+\begin{proof}
+Substitute $q_1(y)=q_0(y)-\eta(y)$ into $q_1(z)-q_1(a)$ and rearrange. Strict positivity of every resulting difference is equivalent to unique optimality within $C$. Newly appearing successors are not represented by an old margin and must be compared separately.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Elementary identity / specialized use}. The difference-of-decreases calculation is algebraic; its interpretation as a post-BANK first-move persistence test is the present formulation. \cite{Bellman1958,KoenigLikhachevFurcy2004}.}\par
+
+
+\begin{corollary}[Directional-gap shock budget]\label{cor:gapbudget}
+If the old optimal successor has positive gap $\Delta_0(x)$ in the finite unchanged successor set and $0\leq\eta(y)\leq D_y$, then $a$ remains uniquely best whenever $D_z<g_0(z)$ for all $z\neq a$. In particular the simpler bound $\sup_{z\neq a}D_z<\Delta_0(x)$ suffices. A lower bound $\eta(a)\geq A_a$ improves the criterion to $g_0(z)>D_z-A_a$.
+\end{corollary}
+\begin{proof}
+For each rival $\eta(z)-\eta(a)\leq D_z$ or, when the incumbent's saving is bounded below, $\eta(z)-\eta(a)\leq D_z-A_a$. Apply Theorem~\ref{thm:relative}. The uniform condition follows from $g_0(z)\geq\Delta_0(x)$.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Elementary corollary}. This is a sufficient margin bound obtained from the relative-shortcut identity and not a claim to a new error-bound principle. \cite{Hart1968,GoldbergHarrelson2005}.}\par
+
+
+\begin{theorem}[Transfer of an interval separation certificate]\label{thm:intervaltransfer}
+Fix a finite old successor set $C$ containing $a$. Suppose old certified continuation intervals satisfy
+\[
+\ell_y\leq q_0(y)\leq u_y,
+\]
+and each old successor has a certified update-shortening interval $\alpha_y\leq\eta(y)\leq\beta_y$. Then the post-update continuation costs are within
+\[
+\ell_y-\beta_y\leq q_1(y)\leq u_y-\alpha_y.
+\]
+In particular, $a$ is certified uniquely preferable to every other old successor if
+\[
+\boxed{u_a-\alpha_a<\ell_z-\beta_z\quad\text{for all }z\in C\setminus\{a\}.}
+\]
+It is globally certified uniquely best if each newly admitted first move also has a verified post-update lower continuation bound strictly larger than $u_a-\alpha_a$.
+\end{theorem}
+\begin{proof}
+Subtract the shortening interval from the old continuation interval. The strict upper-versus-lower comparison forces $q_1(a)<q_1(z)$ for every old rival. The last condition makes the same comparison for each new rival. No untrusted oracle assertion is used as a premise unless its bound has passed the declared verifier.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Candidate for distinctiveness --- specialized certificate}. Interval subtraction and strict separation are standard order reasoning; the particular pre/post BANK certificate-transfer interface and checks against newly legal first moves are presented as a possible distinctive synthesis. \cite{Hart1968,GoldbergHarrelson2005,KoenigLikhachevFurcy2004}.}\par
+
+\begin{remark}[Why this is only sufficient]
+The shortening intervals can share geometric dependencies. Failure of the displayed inequality means the available interval evidence does not establish unique continuation; it does not mean that $a$ really ceases to be optimal. A purported necessity theorem would require extra independence/realizability hypotheses on the uncertainty set, and is not asserted.
+\end{remark}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[x=.95cm,y=.8cm,>=Stealth,every node/.style={font=\small}]
+\node at (1.65,1.3) {$a:[\ell_a-\beta_a,\ u_a-\alpha_a]$};
+\node at (6.2,1.3) {$z:[\ell_z-\beta_z,\ u_z-\alpha_z]$};
+\draw[line width=2.0pt] (.55,.70)--(2.85,.70);
+\draw (.55,.56)--(.55,.84) (2.85,.56)--(2.85,.84);
+\draw[line width=2.0pt] (5.05,.70)--(7.35,.70);
+\draw (5.05,.56)--(5.05,.84) (7.35,.56)--(7.35,.84);
+\draw[<->] (2.98,.7)--(4.9,.7);
+\node at (3.95,.26) {strict separation};
+\end{tikzpicture}
+\caption{Schematic certificate transfer: the updated incumbent interval is entirely to the left of each rival's interval; the comparison is $u_a-\alpha_a<\ell_z-\beta_z$.}\label{fig:interval}
+\end{figure}
+
+\section{Conservation of shock along an old geodesic}
+\label{sec:conservation}
+The local relative-shortcut formula concerns competition between first moves. A different identity follows the complete \emph{path}. It gives the exact price in optimality paid by keeping a now-obsolete geodesic.
+\begin{theorem}[Geodesic shock conservation]\label{thm:conserve}
+Let $G_0\preceq G_1$, and let $\pi=(x_0,x_1,\ldots,x_k)$ be an attained old geodesic prefix with $H_0(x_i)<\infty$ at all its vertices. For each old edge $e_i=(x_i,x_{i+1})$ define the new slack $S_1(e_i)=w_1(e_i)+H_1(x_{i+1})-H_1(x_i)$. Then
+\[
+\boxed{S_1(e_i)=\delta(x_i)-\delta(x_{i+1})-\tau(e_i)\geq0.}
+\]
+Consequently
+\[
+\boxed{\sum_{i=0}^{k-1}S_1(e_i)=\delta(x_0)-\delta(x_k)-\sum_{i=0}^{k-1}\tau(e_i).}
+\]
+If $x_k\in\Sig_0$, then $H_0(x_k)=H_1(x_k)=0$ and
+\[
+\boxed{\Len_1(\pi)-H_1(x_0)=\delta(x_0)-\sum_i\tau(e_i).}
+\]
+Every displayed quantity is finite under the hypotheses.
+\end{theorem}
+\begin{proof}
+Old geodesicity implies $w_0(e_i)+H_0(x_{i+1})-H_0(x_i)=0$. Insert $w_1(e_i)=w_0(e_i)-\tau(e_i)$ and $H_1(x_j)=H_0(x_j)-\delta(x_j)$ into the new slack expression to obtain the first equality. The new Bellman inequality gives nonnegativity. Sum over $i$; intermediate shocks cancel. When $x_k$ was an old settlement state it remains settled after expansion; the last expression is the telescoped sum of new slacks and equals the excess cost of executing $\pi$ over the new optimum.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Candidate for distinctiveness --- formulation}. The proof telescopes shortest-path slacks (closely related to feasible potentials and reduced costs). The BANK-shock conservation interpretation is a manuscript-specific formulation, not demonstrated to be a historically new identity. \cite{Bellman1958,GoldbergHarrelson2005}.}\par
+
+\begin{corollary}[No-refund law for an obsolete path]\label{cor:refund}
+If old edge weights are unchanged, then along each old geodesic edge $\delta(x_i)\geq\delta(x_{i+1})$, and for a complete old geodesic $\pi$ the post-update excess cost of retaining that path is exactly $\delta(x_0)$. Thus a verified upper bound $D\geq\delta(x_0)$ also bounds the cost of refusing to re-route.
+\end{corollary}
+\begin{proof}
+Set all $\tau(e_i)=0$ in Theorem~\ref{thm:conserve}. Nonnegative edge slacks force the monotone shock profile; the full-path identity gives the exact route regret.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Elementary corollary}. The path-regret formula is the unchanged-edge case of telescoping shock conservation; no independent priority claim is made. \cite{Bellman1958,GoldbergHarrelson2005}.}\par
+
+\begin{corollary}[Interacting shock and edge savings]\label{cor:edge}
+With nonincreasing old edge weights, the shock at the route's start must satisfy $\delta(x_0)\geq\sum_i\tau(e_i)$. The difference is exactly the remaining regret of the old path in the new graph.
+\end{corollary}
+\begin{proof}
+The last boxed expression in Theorem~\ref{thm:conserve} is nonnegative because the new settlement horizon is no greater than the cost of $\pi$.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Elementary corollary}. The sum of decreases in old edge costs is an immediate specialization of the conservation identity; no independent priority claim is made. \cite{Bellman1958,GoldbergHarrelson2005}.}\par
+
+
+\begin{remark}[Branching is still branching]
+If two old routes were both geodesic, a BANK deposit can distribute new slack differently among their edges. The conservation identity applies separately to each retained path; it does not manufacture a unique choice at an intrinsic tie. Choosing between equal-length routes under uncertain future updates needs an extra criterion and is not settled by $W_0$'s Conjecture 14.5.
+\end{remark}
+
+\section{Paying for better guidance: a certificate-based stopping law}
+\label{sec:economics}
+Here the cost of real verification and execution is explicit. A complete old path, not merely an attractive first edge, is crucial.
+\begin{definition}[One-decision latency comparison]\label{def:latmodel}
+Fix a \emph{post-update} static snapshot $G_1$ whose edge weights represent real execution-and-verification time. At state $x$, action \textsc{Go} executes an already verified complete settlement path $\pi$ of cost $P$. Action \textsc{Replan} first performs a compulsory nonoverlapping cartographic/refinement operation of time $c>0$, then chooses any verifier-accepted settlement path in the same snapshot. Replanning is credited no additional future benefit outside this one completion, there is no computation-execution overlap, and the trusted graph cannot change during either comparison. The replan policy may use arbitrarily good information after paying $c$.
+\end{definition}
+\begin{theorem}[Certified no-replanning criterion]\label{thm:latency}
+Suppose a valid post-update lower potential $p$ and a verified upper route $\pi$ from $x$ are available, with $L=p(x)$ and $P=\Len_1(\pi)$. If
+\[
+\boxed{c>P-L,}
+\]
+then \textsc{Go} finishes strictly sooner than \emph{every} \textsc{Replan} policy in the declared one-decision model.
+\end{theorem}
+\begin{proof}
+The immediate plan takes exactly $T_{\mathrm{go}}=P$. By Lemma~\ref{lem:duality}, every settlement path following the replanning charge costs at least $H_1(x)\geq L$. Hence $T_{\mathrm{replan}}\geq c+H_1(x)\geq c+L>P$. This is valid even if the refinements reveal a route that is truly geodesic, and even if the original route is not.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Known cost-benefit principle / specialized certificate}. The planning-versus-execution tradeoff predates this article, notably Shekhar--Dutta and Russell--Wefald; the specific sufficient condition $c>P-L$ using a verified potential and a complete route is developed here for the declared model, without a broad novelty claim. \cite{ShekharDutta1989,RussellWefald1991,Korf1990}.}\par
+
+\begin{remark}[Why strictness is best possible]\label{rem:sharp}
+The strict comparison is sharp for information of the form $L\leq H_1(x)\leq P$. Take a two-route graph with costs $L$ and $P$, $0\leq L\leq P$, and a verified potential attaining the exact horizon $H_1(x)=L$. If a charged refinement costing $c$ discloses the cheaper route, then \textsc{Replan} takes $c+L$, which beats \textsc{Go} for $c<P-L$ and ties it at $c=P-L$. The statement is about a specified \emph{opportunity cost}; it does not prove that every real cartographic procedure can discover that cheaper route in time $c$.
+\end{remark}
+
+\begin{corollary}[Decision from a bounded BANK shock]\label{cor:shockstop}
+Suppose $\pi$ is an old attained geodesic of old length $H_0(x)$ and remains executable after a monotone update. Let $\tau_{\pi}=\sum_{e\in\pi}(w_0(e)-w_1(e))$, and suppose a valid certificate bounds the horizon shock by $\delta(x)\leq D$. Then
+\[
+\Len_1(\pi)-H_1(x)=\delta(x)-\tau_{\pi}\leq D-\tau_{\pi}.
+\]
+If $c>D-\tau_{\pi}$, executing the old path is strictly faster than any policy that first pays $c$ to recompute in the static new snapshot.
+\end{corollary}
+\begin{proof}
+The regret identity is Theorem~\ref{thm:conserve}; the bound follows immediately. Any replanner takes at least $c+H_1(x)$, whereas the retained path takes $H_1(x)$ plus regret strictly smaller than $c$.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Derived corollary}. This substitutes the proved shock/regret bound into the planning-cost comparison; it inherits both the old shortest-path and metareasoning antecedents. \cite{Bellman1958,ShekharDutta1989}.}\par
+
+
+\begin{theorem}[Update-local proof-carrying action rule]\label{thm:main}
+Let $G_0\preceq G_1$ be explicit finite verifier-gated graphs. Suppose an old accepted settlement route $\pi$ from $x$ survives the expansion. Let $p_0$ be an old valid lower potential, and let $\widetilde p$ be an extension that passes the new-edge, decreased-weight and new-settlement checks of Theorem~\ref{thm:potportable}. Optionally combine $\widetilde p$ with any other verified post-update potential by the pointwise maximum to obtain $p_1$. Compute $P=\Len_1(\pi)$ and $L=p_1(x)$. Then:
+\begin{enumerate}[label=(\alph*)]
+\item $L\leq H_1(x)\leq P$ is independently checkable from the post-update graph and listed evidence;
+\item if $c>P-L$, the old route is operationally preferable to \emph{every} one-step-replanning-first policy in the declared sequential model;
+\item this preference does \emph{not} imply that the first edge or the full old route remains geodesic; that separate claim requires Theorem~\ref{thm:relative} or Theorem~\ref{thm:intervaltransfer} (including checks against new first moves).
+\end{enumerate}
+If $p_0$ does not pass the new constraints, the conclusion still holds with \emph{any} newly verified post-update potential $p_1$, but no unsupported claim of certificate portability is made.
+\end{theorem}
+\begin{proof}
+The route survives by Lemma~\ref{lem:mono}. The new local checks establish that $\widetilde p$ is a valid potential; the fusion corollary preserves validity after taking a pointwise maximum. Lemma~\ref{lem:duality} gives (a). Theorem~\ref{thm:latency} gives (b). Counterexamples such as Figure~\ref{fig:shortcut} show that a newly shorter route can change the optimal first edge while the old route remains legal; thus (b) cannot imply geometrical optimality, proving the limitation in (c).
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Candidate for distinctiveness --- integrated rule}. The combined rule joins feasible-potential evidence, incrementally checked BANK changes, an existing accepted route, and an explicit decision-latency charge. Each ingredient has predecessors; historical novelty of this exact synthesis has not been established. \cite{GoldbergHarrelson2005,KoenigLikhachev2002,ShekharDutta1989,RussellWefald1991,Necula1997}.}\par
+
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,thick,node distance=10mm, every node/.style={font=\small}]
+\node[draw,rounded corners,minimum width=4.2cm,align=center] (route) {Old verified settlement route\\still legal, post-cost $P$};
+\node[draw,rounded corners,minimum width=4.2cm,align=center,right=14mm of route] (pot) {Post-update potential passes\\new constraints: $L=p_1(x)$};
+\node[draw,rounded corners,minimum width=4.7cm,align=center,below=12mm of $(route)!0.5!(pot)$] (gap) {Certified regret budget $P-L$};
+\draw[->] (route.south)--(gap.north west);\draw[->] (pot.south)--(gap.north east);
+\node[draw,rounded corners,minimum width=4.7cm,align=center,below=9mm of gap] (decision) {$c>P-L$: execute without replanning\\(static sequential model only)};
+\draw[->] (gap)--(decision);
+\end{tikzpicture}
+\caption{The multiarticle's combined evidence-and-latency rule. It compares complete executable paths, not isolated first-edge recommendations.}\label{fig:decision}
+\end{figure}
+
+\section{A worked BANK deposit with two kinds of obsolescence}
+\label{sec:worked}
+Consider the old graph of Figure~\ref{fig:shortcut}. Its optimal old route is $\pi=(x,a,t)$, of cost $P_0=2$. The old alternative $x\to b\to t$ costs $4$. In the new graph the path $x\to b\to c\to t$ costs $1$, while the old route $\pi$ remains of cost $P_1=2$. Thus
+\[
+H_0(x)=2,\quad H_1(x)=1,\quad\delta(x)=1,\quad\Len_1(\pi)-H_1(x)=1.
+\]
+The winning first move changes from $a$ to $b$, even though the old path remains an accepted settlement path. An exact new lower potential takes $p_1(x)=1$, and the old path supplies the upper route $P_1=2$; therefore the certified uncertainty in final route cost is $P_1-L=1$.
+
+If an additional complete replanning/refinement stage costs $c=1.4$ time units and cannot overlap execution, $T_{\mathrm{go}}=2$, whereas even a perfectly informed replanner needs at least $1.4+1=2.4$. The previously geodesic route is mathematically obsolete yet operationally preferable. If instead $c=0.4$ and a replanner can actually reveal the new route, it can finish in $1.4<2$; in that model recomputation pays. The threshold is not guessed from psychology: it follows from a pair of verified graph-cost bounds.
+
+The example also exposes the evidence distinction. An old exact horizon potential gives $p_0(b)=3$. In the expanded graph any extension satisfying the two new zero-cost edges $b\to c\to t$ would require $p(b)\leq p(c)\leq p(t)=0$, contradicting $p_0(b)=3$. Thus the \emph{old lower certificate} is not portable as-is. The \emph{old upper route} is portable. A corrected, post-update potential restores a useful lower bound, which can then be combined with the old upper route for a decision. This is the promised distinction between failed epistemic reuse and successful operational reuse.
+
+\section{Six bounded levels of cross-consequence development}
+\label{sec:levels}
+This section records a bounded chain of small-in-fan consequences of the interaction of the two internal development paths. The six levels are a selected derivation trace, \emph{not} a claim to have enumerated all consequences at any depth or to have computed an unrestricted closure.
+
+\begin{description}[style=nextline,leftmargin=1.7cm,itemsep=5pt]
+\item[Level $+1$ --- Monotone route retention.] The new BANK cannot invalidate old accepted routes under Definition~\ref{def:expansion}; it can only preserve or lower their costs (Lemma~\ref{lem:mono}).
+\item[Level $+2$ --- Separation of certificate types.] An old route upper bound survives; an old potential lower bound survives only after the changed constraints pass (Theorem~\ref{thm:potportable}).
+\item[Level $+3$ --- Local geodesic portability.] Relative successor shortening, rather than absolute horizon improvement, decides whether the old unique first move remains optimal (Theorem~\ref{thm:relative}).
+\item[Level $+4$ --- Path-wide shock conservation.] Along an old geodesic, local new slacks telescope into an exact total regret identity (Theorem~\ref{thm:conserve}).
+\item[Level $+5$ --- Evidence-price comparison.] A verified lower potential and retained upper path bound the most execution time further guidance could save (Theorem~\ref{thm:latency}).
+\item[Level $+6$ --- Repeated-deposit economy.] Under a chain of monotone BANK expansions, verified bounds on each horizon shock sum (Proposition~\ref{prop:telescoping}); combined with the surviving original route and a final valid lower potential, they yield a checkable no-replan decision without replaying intermediate full maps (Corollary~\ref{cor:shockstop} and Theorem~\ref{thm:main}).
+\end{description}
+
+\begin{corollary}[Sixth-level cumulative stopping criterion]\label{cor:level6}
+Suppose $G_0\preceq\cdots\preceq G_m$, an old geodesic $\pi$ survives, the cumulative old-edge weight decrease along $\pi$ is $\tau_{\pi}$, and certified per-update shock bounds at its start satisfy $H_j(x)-H_{j+1}(x)\leq D_j$. If a new sequential planning operation costs
+\[
+c>\sum_{j=0}^{m-1}D_j-\tau_{\pi},
+\]
+then immediately executing $\pi$ in the final static graph is strictly faster than every policy that first performs that planning operation, provided all complete-path and nonoverlap assumptions of Definition~\ref{def:latmodel} are satisfied.
+\end{corollary}
+\begin{proof}
+By telescoping, $H_0(x)-H_m(x)\leq\sum_jD_j$. The shock conservation identity across the old and final graph gives $\Len_m(\pi)-H_m(x)\leq\sum_jD_j-\tau_{\pi}<c$. Immediate execution costs $\Len_m(\pi)$; every replan-first policy costs at least $c+H_m(x)$.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Derived manuscript consequence}. This is a repeated-update composition of monotonicity, telescoping, and the static stopping inequality, not an independent general new theorem. \cite{Bellman1958,KoenigLikhachevFurcy2004,ShekharDutta1989}.}\par
+
+
+\section{Boundary examples and claims not earned}
+\label{sec:limits}
+\begin{proposition}[A uniquely optimal successor can be uncertifiable by a fixed uniform margin]
+There exists a countably infinite successor family with a uniquely optimal first move $a$ but $\Delta(x)=0$. Consequently no positive uniform-error tolerance alone guarantees identification by the half-gap criterion.
+\end{proposition}
+\begin{proof}
+Take a settlement vertex $t$, an edge $x\to a$ of weight $1$, an edge $a\to t$ of weight $0$, and for every $n\geq1$ a successor $z_n$ with $x\to z_n$ of weight $1+1/n$ and $z_n\to t$ of weight $0$. The unique cheapest successor is $a$, while $\inf_n(Q_x(z_n)-Q_x(a))=\inf_n1/n=0$. For any $\varepsilon>0$, choose $n$ with $1/n<2\varepsilon$; admissible opposite-signed errors can reverse their estimated ordering.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Established type of boundary example}. Uniqueness without a positive infimum gap over infinitely many competitors is an elementary order-theoretic phenomenon; the explicit graph illustrates why the half-gap guarantee needs a positive margin. \cite{Hart1968}.}\par
+
+
+\begin{proposition}[First-edge correctness is not a complete plan]
+Knowing the identity of a uniquely optimal first move is insufficient, by itself, to supply a verified complete route certificate. Hence Theorem~\ref{thm:latency} cannot replace its complete-route premise by knowledge of the first move alone.
+\end{proposition}
+\begin{proof}
+Consider a finite graph with $x\to a$ of cost $0$, with $a$ attached to a nontrivial finite subgraph leading to $t$, and another edge $x\to b$ of cost $100$ followed by $b\to t$ of cost $0$. Choose the subgraph's shortest route from $a$ to have cost $1$, so $a$ is uniquely optimal. An information message containing only the symbol $a$ does not specify which legal edges within this subgraph to execute. Thus the identity of the optimal first move and an explicit certificate listing the rest of the route are logically different data. The theorem's upper-route premise demands the latter.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Elementary information distinction}. A symbol identifying a first edge does not encode a complete executable path; the example documents a logical limitation rather than a priority claim. \cite{Korf1990,ShekharDutta1989}.}\par
+
+
+\begin{proposition}[A changing BANK can defeat an unqualified static stopping claim]
+If execution and computation are allowed to overlap, or future BANK changes may supply an uncharged shortcut, the inequality $c>P-L$ by itself need not compare real wall-clock completion times. Such models lie outside Theorem~\ref{thm:latency}.
+\end{proposition}
+\begin{proof}
+For overlap, let the purported ``replanning'' computation take $c=3$ units but occur entirely during another mandatory three-unit stage shared by both options; its additional wall-clock charge is zero, not three. For a free future shortcut, compare immediate route cost $P=6$ with a changed environment that admits a length-$1$ settlement route after a zero-cost BANK announcement. Either example invalidates the inequality $T_{\mathrm{replan}}\geq c+H_1(x)$ used by the static theorem, so no conclusion follows without its stated assumptions.
+\end{proof}
+\noindent{\footnotesize\textit{Prior-art classification:} \textbf{Established modeling caveat}. Overlapping computation and dynamic replanning invalidate an additive fixed-clock comparison; real-time search and incremental planning already investigate those regimes. \cite{Korf1990,ShekharDutta1989,KoenigLikhachev2002}.}\par
+
+
+\paragraph{Unsettled questions retained rather than silently repaired into theorems.}
+The ancestral empirical directional-gap and non-Pioneer-deposit frequency conjectures still require frozen benchmarks. Selection among multiple geodesics still needs an explicitly declared secondary objective. Infinite-state oracle separations were not established by the prior finite-graph settlement argument. Our finite-graph potential verifier is not itself a general solution to theorem proving. Finally, the interval drift bounds $\alpha_y,\beta_y$ and the shock bounds $D_j$ are hypotheses that must be backed by certificates or algorithms; the present article does not promise inexpensive construction of these bounds for arbitrary AMLD/SIC architectures.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,semithick,x=.93cm,y=.75cm,every node/.style={font=\small}]
+\draw[->] (0,0)--(9.7,0) node[right] {elapsed time};
+\node[anchor=east] at (0,1.9) {Go};
+\node[anchor=east] at (0,.8) {Replan first};
+\draw[line width=4pt] (0.2,1.9)--(5.2,1.9);
+\node[above] at (2.7,2.05) {old verified route $P$};
+\draw[line width=4pt] (0.2,.8)--(2.8,.8);
+\draw[line width=4pt,densely dotted] (2.8,.8)--(7.5,.8);
+\node[below] at (1.5,.65) {charge $c$};
+\node[below] at (5.1,.65) {new route $\geq L$};
+\draw[densely dashed] (5.2,0.1)--(5.2,2.35);
+\node[above] at (7.1,2.05) {$c+L>P$};
+\end{tikzpicture}
+\caption{Two real-time clocks in the nonoverlapping single-decision model. The lengths are illustrative; the comparison is proved by $c+L>P$, not by the drawing.}\label{fig:clocks}
+\end{figure}
+
+\section{Discussion: what the synthesis adds, and what it does not}
+The ancestral article established why an optimal first transition can be identified by a horizon equality and when bounded cartographic error suffices. It also observed that a growing BANK can change the geometry and that cartographic work consumes real time. The present paper makes these two observations interact in a new, precise way: a BANK update changes a geodesic's regret, but the regret need not justify paying for fresh certification. An old mathematical instruction can therefore be \emph{incorrect as an optimality claim} and yet \emph{correct as a latency-minimizing action} among the explicitly priced policies.
+
+The supporting structures are complementary. Relative shortening controls the survival of a \emph{first-move} certificate; a graph potential controls the soundness and incremental reusability of a \emph{lower} certificate; a verifier-accepted path controls an \emph{upper} certificate; pathwise shock conservation quantifies the loss from retaining an old \emph{complete} route; and the economic comparison turns their verified numerical difference into an operational instruction. No one element alone supplies the complete conclusion.
+
+The claims should not be overread. Shortest-path dual potentials and optimality equations are natural ingredients of established graph reasoning and no broad priority is claimed for their isolated use. The value here is the explicitly documented combination and its conditional theorems for the Pioneer/Omnicartographer/BANK setting. This work has not verified new empirical superiority, mathematical global optimality, faster general ATP, a formal escape from undecidability, or semantic consistency of arbitrary self-referential oracles.
+
+
+\section{Result-by-result prior-art and distinctiveness audit}
+\label{sec:priorityaudit}
+This is a \emph{retrospective} comparison against specified external publications, not evidence that those publications were sources used in the original Level-1 mathematical development. ``Established'' means the relevant mathematical mechanism is known; ``elementary'' means the claim is a straightforward consequence of its hypotheses; and ``candidate for distinctiveness'' identifies a specific \emph{formulation or synthesis} for which this selective review did not locate a fully matching presentation. It is \emph{not} an assertion of historical priority. A later discovery of matching prior work should cause the candidate label to be replaced by an explicit attribution. Goldberg--Harrelson's potential-maximum lemma is a particularly close documented match, properly credited as their Lemma~2.2~\cite{GoldbergHarrelson2005}.
+
+\small
+\begin{longtable}{@{}p{.045\linewidth}p{.415\linewidth}p{.44\linewidth}@{}}
+\toprule
+\# & Result in order of appearance & Review status and contextual citations\\
+\midrule
+\endfirsthead
+\toprule
+\# & Result in order of appearance & Review status and contextual citations\\
+\midrule
+\endhead
+1 & Proposition: Inherited settlement identities & Established / inherited. \cite{W0,Bellman1958,Hart1968} \\
+2 & Proposition: Inherited advance certificate & Established / inherited. \cite{W0,Hart1968,GoldbergHarrelson2005} \\
+3 & Lemma: Horizon monotonicity and route portability & Established consequence in this model. \cite{KoenigLikhachev2002,KoenigLikhachevFurcy2004} \\
+4 & Proposition: Consecutive-shock accounting & Elementary identity. \cite{Bellman1958,KoenigLikhachevFurcy2004} \\
+5 & Lemma: Soundness of paired evidence & Established graph-potential principle. \cite{GoldbergHarrelson2005,Hart1968} \\
+6 & Theorem: Incremental potential portability & Candidate for distinctiveness --- specialized interface. \cite{KoenigLikhachev2002,KoenigLikhachevFurcy2004,Necula1997} \\
+7 & Corollary: Fusion of certified lower information & Direct prior-art match. \cite[Lemma~2.2]{GoldbergHarrelson2005} \\
+8 & Theorem: Relative-shortcut identity & Elementary identity / specialized use. \cite{Bellman1958,KoenigLikhachevFurcy2004} \\
+9 & Corollary: Directional-gap shock budget & Elementary corollary. \cite{Hart1968,GoldbergHarrelson2005} \\
+10 & Theorem: Transfer of an interval separation certificate & Candidate for distinctiveness --- specialized certificate. \cite{Hart1968,GoldbergHarrelson2005,KoenigLikhachevFurcy2004} \\
+11 & Theorem: Geodesic shock conservation & Candidate for distinctiveness --- formulation. \cite{Bellman1958,GoldbergHarrelson2005} \\
+12 & Corollary: No-refund law for an obsolete path & Elementary corollary. \cite{Bellman1958,GoldbergHarrelson2005} \\
+13 & Corollary: Interacting shock and edge savings & Elementary corollary. \cite{Bellman1958,GoldbergHarrelson2005} \\
+14 & Theorem: Certified no-replanning criterion & Known cost-benefit principle / specialized certificate. \cite{ShekharDutta1989,RussellWefald1991,Korf1990} \\
+15 & Corollary: Decision from a bounded BANK shock & Derived corollary. \cite{Bellman1958,ShekharDutta1989} \\
+16 & Theorem: Update-local proof-carrying action rule & Candidate for distinctiveness --- integrated rule. \cite{GoldbergHarrelson2005,KoenigLikhachev2002,ShekharDutta1989,RussellWefald1991,Necula1997} \\
+17 & Corollary: Sixth-level cumulative stopping criterion & Derived manuscript consequence. \cite{Bellman1958,KoenigLikhachevFurcy2004,ShekharDutta1989} \\
+18 & Proposition: A uniquely optimal successor can be uncertifiable by a fixed uniform margin & Established type of boundary example. \cite{Hart1968} \\
+19 & Proposition: First-edge correctness is not a complete plan & Elementary information distinction. \cite{Korf1990,ShekharDutta1989} \\
+20 & Proposition: A changing BANK can defeat an unqualified static stopping claim & Established modeling caveat. \cite{Korf1990,ShekharDutta1989,KoenigLikhachev2002} \\
+\bottomrule
+\end{longtable}
+\normalsize
+\noindent\textbf{Interpretation.} No isolated result in this table has been established by this review to be historically unprecedented. The strongest candidates for distinctiveness are the manuscript-specific \emph{certificate portability and interval transfer} interfaces, the \emph{BANK shock conservation interpretation}, and the \emph{update-local proof-carrying action rule}; all depend on established graph-search and decision-theoretic ingredients. The working example and six-level derivation are internal constructions, not historical novelty certificates. No automated literature exhaustiveness, plagiarism test, independent formal proof check, or experimental AMLD performance evaluation has occurred.
+
+\section{Conclusion}
+The replacement for ``always recalculate after BANK changes'' is a pair of independent questions: \emph{Does the old instruction remain mathematically geodesic?} and \emph{Would correcting it be worth the delay?} The first has exact relative-shortcut and interval-transfer criteria. The second has an evidence-based threshold using a post-update lower potential and an executable upper route. The shock conservation identity connects them while showing why their answers can differ. Under the declared static sequential model,
+\[
+\boxed{c>P-L\quad\Longrightarrow\quad\text{execute the verified route first}.}
+\]
+The condition is conditional, inspectable, and compatible with a strict BANK verifier gate. It is also bounded in ambition: it protects a particular decision under stated assumptions, not every possible future of a theorem prover.
+
+\appendix
+\section{FDWC Level-1 revision, provenance, and verification ledger}
+\label{app:ledger}
+\subsection*{Source and immutable scope}
+The sole mathematical starting source for the Level-1 development was the user-supplied \emph{Geodesic Continuation and Multiresolution Omnicartography}, Version 4, October 31, 2026 (23-page PDF), denoted $W_0$. The supplied source was read, not modified. Its author name, the October 31 AMLD+++0-labeled settlement record, its disclosures, and limitations have been preserved by attribution. The original Level-1 mathematical development used no external mathematical source beyond $W_0$. In this retrospective Version 2, external publications were inspected to assess priority and citations; they are not represented as sources used to generate the earlier mathematics.
+
+\subsection*{Internal alternatives and quality rubric}
+For Level-1 development two non-output constructions were explored: \emph{A}, an evidence-portability article centered on post-update shortest-path potentials, relative successor improvement, and geodesic-prefix regret; and \emph{B}, a decision-economics article centered on certified bounds on the value of further cartographic computation and the cost of complete-plan recertification. The final manuscript is a mathematical synthesis, not a sequential reproduction of either draft. The table gives qualitative comparison judgments of the mathematical development, not numerical measurements of a running theorem prover.
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}p{.22\linewidth}X X@{}}\toprule
+Rubric criterion & A: evidence-portability line & B: latency-decision line\\\midrule
+Correctness & Identity and local-check arguments admit direct proofs & Static threshold holds only with complete executable route\\
+Rigor & Explicit graph, potential and update predicates & Explicit sequential no-overlap timing assumptions\\
+Completeness & Strong on local portability, weak on real-time choice & Strong on timing, weak on source of lower certificates\\
+Mathematical depth & Relative-shortcut and path-shock identities & Quantified opportunity cost, exact threshold sharpness\\
+Originality boundary & Integrates W0 BANK updates with evidence checks & Integrates W0 scheduling with path/potential bounds\\
+Explanatory clarity & Local margins and certificate reuse & ``Pay to learn'' versus ``execute now'' comparison\\\bottomrule
+\end{tabularx}
+\end{center}
+The contributions are \emph{incomparable}: A does not determine whether it is worthwhile to recover optimality; B by itself does not supply update-valid lower evidence. Their incompatibility is resolved by restricting the economic theorem to a \emph{verified post-update} lower potential and a \emph{complete, executable} route, without pretending that an old optimality certificate remains valid.
+
+\subsection*{Inheritance, new consequences, and repairs}
+\begin{description}[style=nextline,leftmargin=1.8cm,itemsep=3pt]
+\item[$W_0$ inherited.] Bellman settlement recurrence, geodesic slack, half-gap stability, interval separation, eventual finite-resolution certification, distinction between branching and ignorance, conditional oracle/BANK safety, static scheduling caveats, four qualified AMLD+++0 proof arguments, and seven unresolved/conjectural research questions.
+\item[A-line additions.] Explicit finite lower-potential witnesses; update-local revalidation; exact relative-shortcut identity; interval transfer across BANK updates; pathwise horizon-shock conservation.
+\item[B-line additions.] Verified route/potential latency inequality; sharp boundary example; static single-decision timing model; cumulative shock budget for a retained path.
+\item[New cross-line consequences.] Theorem~\ref{thm:main}, the update-local proof-carrying action rule; Corollary~\ref{cor:shockstop}, use of a horizon-shock bound as a bound on the economic value of replanning; and Corollary~\ref{cor:level6}, a bounded six-level cumulative consequence after repeated deposits.
+\item[Repaired defects and qualifications.] No $\infty-\infty$ slack; Bellman at nonsettlement states; attainment specified for geodesic claims; newly inserted first moves checked separately; old path upper bounds not confused with old potential lower bounds; single first move not confused with complete completion plan; static sequential assumptions required for latency inequality; all oracle information remains advisory until verification.
+\end{description}
+\subsection*{Verification ledger and remaining obligations}
+Proofs were manually re-examined for hypothesis use, algebra, and graph-counterexample consistency within this manuscript. No external proof assistant, independently running ATP, AMLD+++0 engine, third-party referee, or mechanized verifier checked the new theorems. The reported ``six levels'' are a selected bounded dependency chain, not exhaustive theorem-graph mining or certified consequence closure. The historical originality of the combination remains unverified: this Version 2 performs a selective retrospective literature comparison, not an exhaustive novelty or independent plagiarism audit. Remaining obligations include a computational implementation of verified post-update shock bounds, experiments on actual AMLD BANK traces, a formal repeated-decision/overlap model, infinite-state computability bounds, and independent proof checking of all claims.
+
+\section{A small verifier for the proposed evidence interface}
+\label{app:verifier}
+The following pseudocode makes explicit which operations require only finite checking. This does not claim that finding good certificates is inexpensive in arbitrary theorem-proving state spaces.
+\begin{quote}\ttfamily\small
+INPUT: finite post-update graph G, settlement set S, potential p,\par
+\hspace*{1em} accepted edge-sequence pi from x to S, replanning charge c\par
+CHECK: for each s in S, p[s] = 0 and for each v, p[v] >= 0\par
+CHECK: for each edge (u,v), p[u] <= w[u,v] + p[v]\par
+CHECK: all consecutive edges in pi are legal and accepted; last(pi) in S\par
+P := sum of edge weights along pi; L := p[x]\par
+IF c > P-L THEN output VERIFIED NO-REPLAN-FIRST CERTIFICATE\par
+ELSE output NO CONCLUSION (not a recommendation to replan)\par
+\end{quote}
+A previously verified potential may be incrementally checked using Theorem~\ref{thm:potportable}: unchanged old-edge inequalities need not be recomputed, while new/cheaper edges and new settlements must be examined. This is finite inspection when the complete finite graph and its changes are explicit.
+
+\section*{References and scholarly attribution}\addcontentsline{toc}{section}{References and scholarly attribution}
+\begin{thebibliography}{99}\small
+\bibitem{W0} \textless{}Brian Tenneson\textgreater{}, \emph{Geodesic Continuation and Multiresolution Omnicartography: Pioneers, Directional Gaps, Advance Certification, and Oracle Guidance in AMLDs}, Version 4, October 31, 2026, immutable ancestral manuscript supplied with this task. Earlier Version 4 references are not silently recast as original discoveries.
+\bibitem{Bellman1958} R. Bellman, ``On a Routing Problem,'' \emph{Quarterly of Applied Mathematics} \textbf{16} (1958), 87--90. DOI: \url{https://doi.org/10.1090/qam/102435}.
+\bibitem{Hart1968} P. E. Hart, N. J. Nilsson, and B. Raphael, ``A Formal Basis for the Heuristic Determination of Minimum Cost Paths,'' \emph{IEEE Transactions on Systems Science and Cybernetics} \textbf{4}(2) (1968), 100--107. DOI: \url{https://doi.org/10.1109/TSSC.1968.300136}.
+\bibitem{ShekharDutta1989} S. Shekhar and S. Dutta, ``Minimizing Response Times in Real Time Planning and Search,'' \emph{Proceedings of IJCAI-89} (1989), 238--241. \url{https://ijcai.org/proceedings/1989/38}.
+\bibitem{Korf1990} R. E. Korf, ``Real-Time Heuristic Search,'' \emph{Artificial Intelligence} \textbf{42}(2--3) (1990), 189--211. DOI: \url{https://doi.org/10.1016/0004-3702(90)90054-4}.
+\bibitem{RussellWefald1991} S. Russell and E. Wefald, ``Principles of Metareasoning,'' \emph{Artificial Intelligence} \textbf{49}(1--3) (1991), 361--395. DOI: \url{https://doi.org/10.1016/0004-3702(91)90015-C}.
+\bibitem{Necula1997} G. C. Necula, ``Proof-Carrying Code,'' \emph{Proceedings of POPL '97} (1997), 106--119. DOI: \url{https://doi.org/10.1145/263699.263712}.
+\bibitem{KoenigLikhachev2002} S. Koenig and M. Likhachev, ``D* Lite,'' \emph{Proceedings of AAAI-02} (2002), 476--483. \url{https://publications.ri.cmu.edu/d-lite}.
+\bibitem{KoenigLikhachevFurcy2004} S. Koenig, M. Likhachev, and D. Furcy, ``Lifelong Planning A*,'' \emph{Artificial Intelligence} \textbf{155}(1--2) (2004), 93--146. DOI: \url{https://doi.org/10.1016/j.artint.2003.12.001}.
+\bibitem{GoldbergHarrelson2005} A. V. Goldberg and C. Harrelson, ``Computing the Shortest Path: A* Search Meets Graph Theory,'' \emph{Proceedings of the 16th ACM--SIAM Symposium on Discrete Algorithms (SODA)} (2005). An earlier technical-report version explicitly states feasibility of the pointwise maximum of two potentials as Lemma 2.2. Publisher record: \url{https://www.microsoft.com/en-us/research/publication/computing-the-shortest-path-a-search-meets-graph-theory-2/}.
+\end{thebibliography}
+
+\noindent{\footnotesize \textbf{Citation methodology and scope.} Sources [2]--[10] were checked retrospectively on October 31, 2026 using accessible publisher, author, or research-institution records. The direct potential-max precedent is Goldberg--Harrelson Lemma 2.2. References attached to candidate-classified results are \emph{related antecedents}, not a representation that an exact named theorem was independently found in each cited article. The absence of an identified duplicate is not a proof of novelty.}
+
+\clearpage
+\section*{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}\label{sec:disclaimer}
+\addcontentsline{toc}{section}{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}
+Every reasonable effort has been made to make the mathematical exposition factually correct, logically sound, sufficiently precise, and supported by complete arguments where claimed. Nevertheless, no guarantee of correctness, completeness, consistency, or provability is implied. The authorship and composition of this work involve a combination of human direction and artificial intelligence: AI contributed wording, organization, mathematical development, and character-level composition under the human author's stated research objectives and source restrictions. Mathematical seeds, directions, supervision, and publication decisions are attributed to \textless{}Brian Tenneson\textgreater{}; assistance from OpenAI's ChatGPT is disclosed and should not be mistaken for autonomous authorship by a formally verified engine.
+
+The ancestral Version 4 manuscript uses the label AMLD+++0 for a three-pass ChatGPT-conducted settlement analysis dated October 31, 2026; its four qualified proofs remain a source record, not certificates issued by a separately observed AMLD+++0 execution. In this completion, ``forward writer,'' ``backward scout,'' and two internal alternative constructions denote methods of drafting and mathematical obligation review; they are not evidence of independently deployed software agents, independent ATLAS auditing, or mechanically certified proof checking. The proofs, finite examples, and certificate conditions in the article have been examined here but have not been independently machine verified or peer reviewed. The external references newly added in Version 2 were consulted retrospectively for scholarly attribution; they were not used as extra sources for the original Level-1 mathematics. ``Candidate for distinctiveness'' does not imply established originality. Classical antecedents, including feasible shortest-path potentials, potential maxima, incremental replanning, planning--execution tradeoffs, and proof-carrying verification, are expressly credited to prior authors. Responsibility for any decision to publish remains with the human author. The original Version 4 file and the original Level-1 multiarticle remain unchanged; this separately edited Version 2 has not been published to any repository.
+\end{document}

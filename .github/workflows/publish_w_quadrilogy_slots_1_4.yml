@@ -1,0 +1,39 @@
+name: Publish W0-W3 quadrilogy in library slots 1-4
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_w_quadrilogy_slots_1_4.yml'
+      - 'incoming_publications/w_quadrilogy_20261031/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-w-quadrilogy-20261031
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install PDF compilation and verification dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended lmodern
+          python -m pip install --quiet pymupdf==1.26.4
+      - name: Compile, audit, and publish four separate research papers
+        run: python scripts/publish_w_quadrilogy_slots_1_4.py
+      - name: Commit completed library release and generated site
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No publication changes found."
+          else
+            git commit -m "Publish W0-W3 in consecutive library slots [skip ci]"
+            git push origin HEAD:main
+          fi
