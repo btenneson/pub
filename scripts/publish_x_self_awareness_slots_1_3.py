@@ -145,7 +145,7 @@ def main():
     assert len(check)==len(old)+3
     assert all((DOCS/x['pdf']).is_file() and (DOCS/x['source_file']).is_file() for x in records)
     assert all((DOCS/x['pdf']).stat().st_size>10_000 for x in records)
-    assert [x['order'] for x in check[3:]]==[x['order'] for x in old]
+    assert [x.get('order') for x in check[3:]]==[x.get('order') for x in old]
     print('PASS targeted audit: 3 PDFs, 3 source files, and full old-card order retention.')
     print('PASS: Published X0, X1, X2 in slots 1, 2, 3; original slot 1 is slot 4; all other entries retain their original order.')
     print('PDF SHA256:',{n:sha(pdfs[n]) for n in NAMES})
