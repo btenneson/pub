@@ -1,0 +1,616 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.94in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,decorations.pathreplacing}
+\usepackage{enumitem}
+\usepackage{fancyhdr,graphicx,caption,needspace}
+\usepackage{xcolor}
+\newcommand{\PriorArtNote}[1]{%
+\par\smallskip\noindent\begin{minipage}{\linewidth}\small\color{black!85}%
+\textbf{X-edition prior-art attribution.} #1\end{minipage}\par\smallskip}
+\newcommand{\CitationEditionNotice}[1]{%
+\par\medskip\noindent\fcolorbox{black!35}{black!3}{\begin{minipage}{0.95\linewidth}\small
+\textbf{Citation-added edition #1 (October 31, 2026).} This edition preserves the original mathematical arguments and adds retrospective prior-art citations, explicit priority limitations, and a scholarly bibliography. References to external works here are editorial comparisons, \emph{not} a claim that the source manuscript originally used or first discovered them. \textbf{No historical novelty or independent proof verification is certified.}
+\end{minipage}}\par\medskip}
+
+
+
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{0.40em}
+\setlength{\parindent}{1.1em}
+\setlength{\emergencystretch}{2em}
+\captionsetup{font=small,labelfont=bf}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small The Horizon of Certified Memory}
+\fancyhead[R]{\small X2 cited edition (from W2)}
+\fancyfoot[C]{\thepage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}[theorem]{Open problem}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Nzero}{\mathbb{N}_0}
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\calU}{\mathcal{U}}
+\newcommand{\off}{\mathsf{OFF}}
+\newcommand{\cert}{\mathsf{cert}}
+\newcommand{\ATP}{\mathsf{ATP}}
+\newcommand{\Prv}{\mathsf{Pr}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\eqk}[1]{\equiv_{#1}}
+\newcommand{\eqinf}{\equiv_{\infty}}
+\newcommand{\B}{\{0,1\}}
+\newcommand{\authorname}{\textless Brian Tenneson\textgreater}
+\title{\bfseries The Horizon of Certified Memory\\[0.33em]
+\large Evidence Budgets, Time-Limited Forgetting, and Contextual Reflection}
+\author{\authorname}
+\date{X2: cited edition of W2, October 31, 2026\\Underlying FDWC$^2$ research exposition W2: version 0.1, October 30, 2026}
+\begin{document}
+\maketitle
+\CitationEditionNotice{X2}
+\noindent\textit{Formal Self-Awareness Trilogy --- Part III of III; publication-preparation repair, October 31, 2026.}\par\smallskip
+\par\noindent\emph{See the AI disclaimer that follows this essay.}\par\medskip
+
+\begin{abstract}
+The coarsest exact history quotient does not, by itself, determine the number of metadata bits needed to remember a proof history, nor does it explain whether memory may be discarded as a verification deadline approaches. This paper studies those questions in finite, deterministic, certificate-observing systems inspired by the Level-1 multiarticle \emph{The Evidence Geometry of Formal Self-Awareness} (W1). It introduces a finite-horizon observational geometry, proves that earliest distinguishing continuation length induces an ultrametric on fully observable history classes, and derives an exact fixed-length descriptor bound: preserving every experiment of length at most $h$ requires and suffices to have $\lceil\log_2|Q/\equiv_h|\rceil$ bits in a zero-overhead, shared-decoder model. A layered construction shows that these descriptors can support exact \emph{online} observations and costs while safely shedding information as the remaining horizon decreases. A task-portfolio theorem calculates the additional bits required when independent evidence obligations are added. Finally, a compositional interface theorem identifies when a locally sound compression remains sound when an external checker is attached. Explicit examples separate limited observation from permanent equivalence, bit count from provenance authenticity, and local adequacy from contextual adequacy. All minimality statements are model-relative; neither real checker cost nor the physical compression of proof certificates is claimed to be optimized.
+\end{abstract}
+\noindent\textbf{Status and sources.} This is one Level-2 research exposition, not a revision of W1 and not two emitted alternative manuscripts. The original W2 used W1 and its immutable ancestor W0 as mathematical sources only; X2 adds retrospective external prior-art review and citations. Results are proved on paper, not machine checked, and historical originality is not established by these paper-level proofs; this X2 edition supplies a targeted prior-art comparison. A provenance, comparison, repair, and verification ledger appears in Appendix~\ref{app:ledger}. Neither W0 nor W1 has been modified or published by this task.
+\clearpage
+\phantomsection
+\pdfbookmark[1]{Contents}{x2contents}
+\tableofcontents
+\clearpage
+
+\section{A new problem after the least-safe-forgetting theorem}
+\PriorArtNote{W1 itself adapts future-behavior equivalence, a long-established method \cite{nerode,milner}; the surrounding historical questions about predictive state representations are also familiar \cite{shalizi}. This paper's distinctive emphasis is the evidence-checking interpretation, not invention of state minimization.}
+W0, \emph{Formal Self-Awareness in Semi-Ideal Computers}, distinguished a machine's name, an emitted self-description, a proof, and a justified self-description. Its reflection sequence has the form
+\begin{equation}\label{eq:theta}
+\theta_0^M=\ATP(\langle M\rangle),\qquad
+\theta_{k+1}^M=\Prv(\langle M\rangle,\ulcorner\theta_k^M\urcorner).
+\end{equation}
+In W1, an accepted certificate of $\theta_{k+1}$ was carefully distinguished from a checked predecessor certificate for $\theta_k$. W1 additionally considered the history records a verifier must preserve in order to make these linked claims recoverable. Its deterministic \emph{reflective residual theorem} identifies when two complete history states can be merged without changing \emph{any} future certified observation or the costs explicitly carried by its transition model.
+
+A new issue appears once that exact answer is available: a current application might need to distinguish histories only for the next five verification actions, only for a particular certificate, or only while an external checker is disconnected. A designer may have a fixed number of bits for a history identifier and a fixed horizon before that identifier expires. The relevant question is now:
+\begin{quote}
+\emph{How much of the past must be encoded to support a specified set of future proof and certificate experiments, how does that obligation decay with time, and when does a new verifying context make the encoding inadequate?}
+\end{quote}
+This is an information-and-interface question, not the problem solved in W1 with a different title. We derive three interacting mathematical objects: \emph{horizon classes}, \emph{descriptor budgets}, and \emph{context-dependent tests}. Their interaction will yield two operational distinctions: a history descriptor may be safe for a temporary remaining horizon without being a lawful perpetual quotient, and a locally safe quotient may fail when an external verifier is permitted to inspect a previously hidden interface.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ b/.style={draw,rounded corners=2pt,text width=37mm,minimum height=13mm,align=center}]
+\node[b] (w0) at (0,0) {W0: formal self-theory\\and reflective claims};
+\node[b] (w1) at (5.1,0) {W1: exact future\\residual equivalence};
+\node[b] (w2) at (10.2,0) {W2: bounded duties\\and memory budgets};
+\draw[->,thick](w0)--(w1); \draw[->,thick](w1)--(w2);
+\node[b] (code) at (5.1,-2.0) {Time-indexed codes\\and safe shedding};
+\node[b] (ctx) at (10.2,-2.0) {New checking contexts\\and exposed interfaces};
+\draw[->](w2)--(ctx);\draw[->](w1)--(code);
+\draw[<->](code)--(ctx);
+\end{tikzpicture}
+\caption{The new object of study is the \emph{obligation-dependent memory interface}. A perpetual exact quotient is a limiting case, not the starting and ending answer.}\label{fig:ancestry}
+\end{figure}
+
+\section{The inherited formal boundary and the new operational contract}
+\PriorArtNote{Finite-state equivalence and model-relative observation contracts follow familiar automata semantics \cite{nerode,milner}. The fixed model, shared decoder, and uncharged certificate store are deliberate restrictions, not a general result about physical memory or proof size.}
+\begin{definition}[Declared history monitor; inherited from W1]\label{def:monitor}
+A finite deterministic certificate-observing monitor is
+\[
+\mathcal H=(Q,A,\delta,c,O),
+\]
+where $Q$ is a \emph{nonempty finite} set of record-complete history states, $A$ is a \emph{finite} publicly known action alphabet, $\delta:Q\times A\rightharpoonup Q$ is a partial deterministic transition, $c(q,a)\in\Nzero$ is the cost of an enabled step, and $O:Q\to\Omega$ is an observation map. A legal action word $w=a_1\cdots a_\ell$ determines the successive states $q_0=q$ and $q_i=\delta(q_{i-1},a_i)$. Its \emph{residual record} is
+\[
+\R_q(w)=\bigl(O(q_0),c(q_0,a_1),O(q_1),\ldots,c(q_{\ell-1},a_\ell),O(q_\ell)\bigr),
+\]
+if all steps exist, and is $\off$ otherwise. The empty word has record $(O(q))$. Off is distinct from every successful record.
+\end{definition}
+
+The intended $O$ can report whether linked, independently checked certificate records for the sentences in \eqref{eq:theta} are available, their types and identifiers where promised, and any claimed semantic attestation. We do \emph{not} equate a certificate of $\theta_{k+1}$ with a certificate of $\theta_k$; W1's witness-completeness hypothesis remains necessary whenever cumulative certified reflection is claimed. Also, recording ``accepted'' in $O$ is an interface assertion: authenticity and checker correctness require their own trust assumptions. An ordinary semi-ideal computer (SIC) provides stage output and halting data but not automatically this record-complete monitor layer.
+
+\begin{definition}[Bounded future equivalence]\label{def:bounded}
+For $h\in\Nzero$ put
+\[
+q\eqk{h}q'\quad\Longleftrightarrow\quad \R_q(w)=\R_{q'}(w)\text{ for every }w\in A^*,\ |w|\le h.
+\]
+Let $P_h=Q/\eqk{h}$, $K_h=|P_h|$, and $\eqinf=\bigcap_{h\ge0}\eqk{h}$. Thus $P_\infty=Q/\eqinf$ and $K_\infty=|P_\infty|$. For $q,q'$ we use $[q]_h$ for the $P_h$-class.
+\end{definition}
+
+These are W1's residual partitions, intentionally \emph{reused but not re-proved as novel}. W1 established the following recurrence, which is the main inherited lemma used below:
+\begin{equation}\label{eq:rec}
+q\eqk{h+1}q'\ \Longleftrightarrow\ O(q)=O(q')\ \text{and for each }a\in A:
+\begin{cases}
+\text{$a$ is disabled at both states},\quad\text{or}\\
+\text{$a$ is enabled at both, $c(q,a)=c(q',a)$, and }\\
+\delta(q,a)\eqk{h}\delta(q',a).
+\end{cases}
+\end{equation}
+The alternatives are made separately for each $a$; an action enabled at just one state fails the test. Therefore $P_{h+1}$ refines $P_h$. For $N=|Q|$, W1's finite-state stabilization theorem yields $P_{N-1}=P_\infty$, even if some earlier consecutive rounds have already stabilized.
+
+\begin{remark}[Exact scope of the new bounds]\label{rem:scope}
+Throughout, a \emph{bit bound} measures the length of a fixed-length binary identifier for one of the \emph{already defined states of a fixed known model}. An encoder/decoder, transition tables, checker code, and any certificate store they consult are assumed shared and are \emph{not charged} by this quantity. This idealization is essential. The number of bits needed to store or independently validate complete proof evidence is generally a different question.
+\end{remark}
+
+\section{A geometry of how long histories look the same}
+\PriorArtNote{Behavioral distances and distinguishing-word ultrametrics have explicit prior art \cite{bonchi,ilchev}. The metric proof here specializes a standard nested-equivalence pattern to proof-certificate observations; it is \emph{not claimed to introduce ultrametric automata geometry}.}
+The full quotient $P_\infty$ records permanent observational identity, but its earlier approximations carry quantitative information. One can ask how far into the future a verifier must look before two histories become distinguishable.
+
+\begin{definition}[Separation depth and observability distance]\label{def:depth}
+For $q,q'\in Q$, define the \emph{separation depth}
+\[
+ s(q,q')=\min\{h\in\Nzero:q\not\eqk{h}q'\},
+\]
+with $s(q,q')=\infty$ when no finite experiment distinguishes them. Define
+\[
+ d(q,q')=\begin{cases}2^{-s(q,q')},&s(q,q')<\infty,\\0,&s(q,q')=\infty.\end{cases}
+\]
+The parameter $s$ counts actions in the \emph{shortest distinguishing test}, not primitive proof inferences and not the accumulated charged action cost.
+\end{definition}
+
+\begin{theorem}[Ultrametric geometry of certified histories]\label{thm:ultra}
+For every finite monitor, $d$ is a pseudoultrametric on $Q$:
+\[
+ d(q,r)\le\max\{d(q,p),d(p,r)\} \qquad(q,p,r\in Q).
+\]
+Moreover, $d(q,q')=0$ exactly when $q\eqinf q'$. Consequently $d$ induces a genuine ultrametric on $P_\infty$, and for each finite $h$ the strict ball
+\[
+ \{q':d(q,q')<2^{-h}\}
+\]
+is exactly $[q]_h$ (viewed as a subset of $Q$). If $q\not\eqinf q'$, then $s(q,q')\le N-1$.
+\end{theorem}
+\begin{proof}
+Each $\eqk{h}$ is an equivalence relation: it is equality of the functions $w\mapsto\R_q(w)$ restricted to words of length at most $h$. If both $q\eqk{h}p$ and $p\eqk{h}r$, then $q\eqk{h}r$. Hence any finite word distinguishing $q$ from $r$ must have length no less than the lesser of the minimum lengths distinguishing $q,p$ and $p,r$; formally
+\[
+ s(q,r)\ge\min\{s(q,p),s(p,r)\},
+\]
+using the usual convention for $\infty$. Applying $x\mapsto2^{-x}$ with $2^{-\infty}=0$ gives the strong triangle inequality. Symmetry and vanishing on the diagonal are immediate. The zero-distance criterion is precisely the definition of $\eqinf$, so $d$ separates its equivalence classes. Finally, $d(q,q')<2^{-h}$ means either $s=\infty$ or $s>h$, which is equivalent to $q\eqk{h}q'$. For the last assertion use the inherited stabilization $P_{N-1}=P_\infty$: if a pair is distinguishable at all, it is distinguished by some word of length at most $N-1$.
+\end{proof}
+
+\begin{corollary}[Short disproofs of mistaken identifications]\label{cor:witness}
+For finite $Q$, whenever an encoder incorrectly identifies two $P_\infty$-inequivalent states, there exists a finite action word of length at most $N-1$ whose legal status, certificate observations, or charged step costs distinguish them. Such a word is a \emph{model-relative separating witness}; it is not an external proof-assistant certificate of the model's factual correctness.
+\end{corollary}
+\begin{proof}
+Use Theorem~\ref{thm:ultra}'s bound and retain the word witnessing the first unequal residual record.
+\end{proof}
+
+The geometry says something more than ``different classes'': nearby history classes are those that no short public experiment can tell apart. A tiny nonzero distance may express a long delay before a distinguishing certificate becomes visible; it does not measure similarity of raw syntax, probability, semantic truth, or wall-clock computation time.
+
+\section{The exact evidence-budget horizon}
+\PriorArtNote{The $\lceil\log_2 K_h\rceil$ code bound follows the elementary counting of distinguishable classes under a free shared decoder; predictive-state minimization provides a broad conceptual analogue \cite{shalizi}, and future-equivalence classes have classical antecedents \cite{nerode}. No new compression-theoretic lower bound is asserted for real proof artifacts.}
+We now convert the partitions into a counting statement about permissible historical metadata. The key is to freeze both the promised experiments and the accounting model.
+
+\begin{definition}[Fixed-horizon descriptor]\label{def:descriptor}
+For $h\in\Nzero$ and $b\in\Nzero$, an \emph{exact $b$-bit $h$-descriptor} consists of an encoder $e:Q\to\B^b$ and a single decoder
+\[
+ D:\B^b\times\{w\in A^*:|w|\le h\}\longrightarrow \{\text{residual records}\}\cup\{\off\}
+\]
+such that $D(e(q),w)=\R_q(w)$ for every $q$ and every permitted word. For $h=\infty$ allow all finite words. No efficiency, space for $D$, or cryptographic security is asserted. The special case $b=0$ permits one empty codeword.
+\end{definition}
+
+\begin{theorem}[Finite-horizon evidence-budget theorem]\label{thm:bits}
+For every finite monitor and every $h\in\Nzero\cup\{\infty\}$, an exact $b$-bit $h$-descriptor exists if and only if
+\begin{equation}\label{eq:mainbits}
+ 2^b\ge K_h.
+\end{equation}
+Therefore the smallest admissible fixed code length is
+\[
+ b_h=\lceil\log_2 K_h\rceil.
+\]
+The statement is relative to the declared action, observation, and exact-cost interface and to the free shared-decoder convention of Remark~\ref{rem:scope}.
+\end{theorem}
+\begin{proof}
+If $e(q)=e(q')$, the decoder produces the same result for each word of length at most $h$. Thus $q\eqk{h}q'$. Each encoder fiber is contained in one $P_h$-class, so at least $K_h$ distinct codewords are necessary. As $b$ bits represent at most $2^b$ words, \eqref{eq:mainbits} is necessary. Conversely, assign a different binary word to each of the $K_h$ classes, padding to length $b$. On input that word and a permitted action sequence, the decoder chooses any class representative and computes its residual record; this is independent of representative by the definition of $P_h$. Hence the code is sufficient. The argument also covers all finite action words when $h=\infty$.
+\end{proof}
+
+\begin{definition}[Evidence-capacity frontier]\label{def:frontier}
+For a bit capacity $b$, define
+\[
+ H(b)=\sup\bigl\{h\in\Nzero:K_h\le2^b\bigr\},
+\]
+with $H(b)=-1$ if the set is empty, and $H(b)=\infty$ when it is unbounded. This means the greatest number of future actions for which \emph{all} residual experiments can be answered with a fixed $b$-bit identifier in this model.
+\end{definition}
+
+\begin{corollary}[Sharp capacity threshold]\label{cor:capacity}
+For a finite monitor, $H(b)=\infty$ if and only if $2^b\ge K_\infty$. Otherwise $H(b)$ is finite (or $-1$). If $H(b)=h<\infty$, a $b$-bit code can exactly answer all tests of length at most $h$, but no $b$-bit code can answer all tests of length at most $h+1$.
+\end{corollary}
+\begin{proof}
+The sequence $K_h$ is nondecreasing and stabilizes at $K_\infty$. Theorem~\ref{thm:bits} converts each cardinality inequality into exact achievability or impossibility.
+\end{proof}
+
+\begin{remark}[What is and is not minimized]
+Theorem~\ref{thm:bits} answers the \emph{fixed-length class-identifier} problem left open in W1 at one deliberately narrow level. It does not settle W1's broader problem of shortest complete certified-history encoding: a decoder may hide an arbitrarily large lookup table, and real verifiers may demand proof bytes, authenticity metadata, or reconstruction work. Variable-length, amortized, self-delimiting, and independently decodable protocols require different accounting rules.
+\end{remark}
+
+\section{A machine that forgets safely as its deadline approaches}
+\PriorArtNote{This is an explicit finite-horizon transition specialization of standard observational equivalence/refinement techniques \cite{nerode,milner}. Its mathematical value within W2 is exposing a public countdown and decreasing obligations; general priority remains unassessed.}
+An $h$-descriptor in Theorem~\ref{thm:bits} is a snapshot from which a decoder can answer bounded queries. It is \emph{not} automatically a perpetual machine state. A $P_h$-class may contain states whose successors lie in different $P_h$-classes. There is, however, a particularly useful way to implement these temporary codes \emph{online}: make the remaining horizon a public part of the state and decrease it after every action.
+
+\begin{definition}[Countdown residual machine]\label{def:countdown}
+Fix a natural number $h$. Form the layered state space
+\[
+ Q^{\downarrow h}=\coprod_{r=0}^{h}\bigl(\{r\}\times P_r\bigr).
+\]
+At layer $r$, the observation of $(r,[q]_r)$ is $O(q)$. If $r>0$, action $a$ is enabled exactly when enabled at $q$, incurs cost $c(q,a)$, and transitions to
+\begin{equation}\label{eq:layerupdate}
+ (r-1,[\delta(q,a)]_{r-1}).
+\end{equation}
+At layer $0$, no further action is promised. The public counter $r$ is assumed known and not charged to the history identifier; if it must be stored, that storage must be counted separately.
+\end{definition}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ b/.style={draw,rounded corners=2pt,text width=29mm,minimum height=13mm,align=center,inner sep=2pt}]
+\node[b] (a) at (0,0) {$h,[q]_h$\\$b_h$ bits};
+\node[b] (b) at (4.0,0) {$h-1,[q_1]_{h-1}$\\$b_{h-1}$ bits};
+\node[b] (c) at (8.0,0) {$h-2,[q_2]_{h-2}$\\$b_{h-2}$ bits};
+\node[b] (d) at (12.0,0) {$0,[q_h]_0$\\$b_0$ bits};
+\draw[->,thick] (a)--node[above,font=\scriptsize]{$a_1,c_1$}(b);
+\draw[->,thick] (b)--node[above,font=\scriptsize]{$a_2,c_2$}(c);
+\draw[->,thick,dashed] (c)--node[above,font=\scriptsize]{$\cdots$}(d);
+\node[align=center,text width=13cm,font=\small] at (6,-1.35)
+{After each checked action, a coarser identifier may suffice.};
+\end{tikzpicture}
+\caption{Time-indexed safe forgetting. After a certified action is consumed, the required future tests shorten; the class may be replaced by a coarser one. The disappearing obligations, not a magical compression routine, justify the memory shedding.}\label{fig:countdown}
+\end{figure}
+
+\begin{theorem}[Exact online countdown and safe shedding]\label{thm:countdown}
+The machine in Definition~\ref{def:countdown} is well defined. Initialized at $(h,[q]_h)$, it exactly reproduces the original monitor's enabledness, observations, and per-step costs for every action sequence of length at most $h$, including intermediate observations. At each remaining horizon $r$, the history identifier may be represented with $b_r=\lceil\log_2 K_r\rceil$ bits, where
+\[
+ b_h\ge b_{h-1}\ge\cdots\ge b_0.
+\]
+Moreover, if an online interface at layer $r$ is required to answer \emph{all} words of length at most $r$ from every original state, it cannot use fewer than $b_r$ fixed identifier bits, subject to the same shared-decoder convention.
+\end{theorem}
+\begin{proof}
+If $q\eqk{r}q'$ with $r\ge1$, recurrence \eqref{eq:rec} gives equality of current observations, equal enabled actions and costs, and $\delta(q,a)\eqk{r-1}\delta(q',a)$ for any enabled action. Thus every part of the prescribed transition is independent of the representative, proving well-definedness. An induction on the length of the executed word shows that after $i\le h$ steps the layered state is $(h-i,[q_i]_{h-i})$, its observation agrees with $O(q_i)$, and the next charged action agrees whenever $i<h$. This proves exactness of every promised finite prefix. Refinement of $P_r$ means $K_{r-1}\le K_r$, so the bit budgets cannot increase as $r$ decreases. The last assertion follows from the necessary half of Theorem~\ref{thm:bits}: an online interface that answers every permitted residual test determines an $r$-descriptor, so its identifier must distinguish all $P_r$-classes.
+\end{proof}
+
+\begin{proposition}[Temporary agreement need not be stable congruence]\label{prop:noncong}
+For some finite monitors and finite $h$, $P_h$ is not a congruence for indefinitely iterating the original transition $\delta$ within the \emph{same} partition. In particular, one can have $q\eqk{h}q'$ but $\delta(q,a)\not\eqk{h}\delta(q',a)$ for an enabled action $a$.
+\end{proposition}
+\begin{proof}
+Consider two length-$h+1$ chains with unit-cost action $a$; give every state the same observation except the terminal state of one chain, where a second certificate is recorded. The two initial states agree under every test of length at most $h$ but differ after $h+1$ steps. Their respective successors are distinguishable by the $h$-step word $a^h$. The same construction is explicitly analyzed in Section~\ref{sec:example} with $h=6$.
+\end{proof}
+
+The countdown theorem is the first main synthesis beyond W1: \emph{permanent state minimization} and \emph{deadline-limited safe forgetting} are mathematically different, with distinct encoders and distinct transition rules. The proof also prevents a common false conclusion: $P_h$ is an exact state-space quotient for the next $h$ steps \emph{only when the interface tracks and spends the remaining horizon}.
+
+\section{Adding evidence obligations: the incremental price of a new task}
+\PriorArtNote{The portfolio-class bounds and conditional additional-bit formula are finite counting facts for joined partitions; compare classical state minimization and predictive-state abstractions \cite{nerode,shalizi}. Their certificate-obligation vocabulary is application-specific.}
+An ATP is not always asked to preserve every detail of an observation/cost trace. One investigator might ask whether a specific linked $\cert_k$ receipt can be reached, another might need the charged minimum cost, and a third might require an exact sequence of verifier identities. Once the promised tasks are frozen, there is a general exact counting theorem.
+
+\begin{definition}[Evidence task family]\label{def:tasks}
+An \emph{evidence task} on $Q$ is a specified function $t:Q\to V_t$ whose result can be determined from the declared future-history model. A \emph{task portfolio} $\calT$ is a collection of such functions. Its \emph{profile} and equivalence are
+\[
+\Phi_{\calT}(q)=(t(q))_{t\in\calT},\qquad
+q\sim_{\calT}q'\iff \Phi_{\calT}(q)=\Phi_{\calT}(q').
+\]
+For example, $t_w(q)=\R_q(w)$ for a specified word $w$, or $t_{k,h}(q)$ can be the minimum charged cost of reaching an accepted linked $\cert_k$ in at most $h$ enabled actions (with $\infty$ when impossible). Define $m_{\calT}=|Q/\sim_{\calT}|$.
+\end{definition}
+
+\begin{lemma}[Task-profile descriptor]\label{lem:task}
+With free shared decoding, the minimum fixed-length binary descriptor for all tasks in $\calT$ has $\lceil\log_2 m_{\calT}\rceil$ bits.
+\end{lemma}
+\begin{proof}
+Two states with the same code must give the same result for every task, hence be in the same $\sim_{\calT}$-class. Conversely, a class index suffices to recover every value of $\Phi_{\calT}$. Count classes as in Theorem~\ref{thm:bits}.
+\end{proof}
+
+\begin{theorem}[Task-portfolio composition and incremental metadata]\label{thm:portfolio}
+Let $\calT$ and $\calU$ be task portfolios on finite $Q$. Put
+\[
+ m_{\calT}=|Q/\sim_{\calT}|,\quad m_{\calU}=|Q/\sim_{\calU}|,
+\quad m_{\calT\cup\calU}=|Q/\sim_{\calT\cup\calU}|.
+\]
+Then
+\begin{equation}\label{eq:portfolio-bound}
+\max\{m_{\calT},m_{\calU}\}\le m_{\calT\cup\calU}\le m_{\calT}m_{\calU},
+\qquad
+\sim_{\calT\cup\calU}=\sim_{\calT}\cap\sim_{\calU}.
+\end{equation}
+Now freeze an existing \emph{class-index} code for $\calT$. The least number of \emph{additional fixed bits} needed to answer all tasks in $\calU$ while retaining that existing code is
+\begin{equation}\label{eq:incremental}
+ \Delta(\calU\mid\calT)=\left\lceil \log_2
+ \max_{B\in Q/\sim_{\calT}}\bigl|\{\Phi_{\calU}(q):q\in B\}\bigr| \right\rceil.
+\end{equation}
+A decoder may use the existing $\calT$-class identifier to interpret the additional bits. These formulas are exact for the declared static task model, not for encrypted, streaming, or computationally constrained storage.
+\end{theorem}
+\begin{proof}
+A pair of states agrees on all tasks in the union if and only if it agrees on each portfolio separately, proving the equivalence identity. Each combined profile maps to a profile of each constituent, proving the lower bound on class counts. A combined profile is an attained pair of one $\calT$-profile and one $\calU$-profile; at most $m_{\calT}m_{\calU}$ such pairs exist, giving the upper bound.
+
+For the incremental formula, fix a block $B$ of the existing $\calT$-partition. Inside $B$, any two different $\calU$-profiles need different supplemental codewords, since the original code cannot distinguish their states. If $r_B$ distinct $\calU$-profiles occur, at least $r_B$ supplemental words are required. A uniform $d$-bit supplement must therefore satisfy $2^d\ge\max_Br_B$. Conversely, for each existing block, enumerate its $r_B$ occurring $\calU$-profiles and use a local index with $d=\lceil\log_2\max_Br_B\rceil$ bits. The decoder reads the original block identifier first, then the block-specific supplemental index, and retrieves both profiles. This proves exactness.
+\end{proof}
+
+\begin{example}[Overlapping rather than additive evidence]\label{ex:overlap}
+Let $Q=\{0,1,\ldots,7\}$. Portfolio $\calT$ reports $\lfloor q/2\rfloor$, so has four classes and requires two bits. Portfolio $\calU$ reports $q\bmod4$, also with four classes and two bits. Together the reported pair uniquely determines each $q$, so the joint task needs only three bits, not four. Within each fixed $\calT$-block $\{2i,2i+1\}$ there are two distinct $\calU$-profiles, and \eqref{eq:incremental} gives one additional bit. The saving is due to overlap in the information carried by two different questions, not a shorter proof certificate.
+\end{example}
+
+\begin{remark}[A different meaning of least safe forgetting]
+A portfolio of \emph{only} reachability queries may merge histories that full trace equality separates. A cost-only portfolio can differ again from a verifier-identity portfolio. Therefore no absolute ``minimum metadata'' is meaningful until it is specified \emph{which questions} the compressed history must continue to answer.
+\end{remark}
+
+\section{Context can invalidate a locally perfect quotient}
+\PriorArtNote{Semantic equivalence relative to the chosen environment and compositional congruence are established principles in program/process semantics \cite{scott,milner}. W2 describes a specialized verifier-facing channel; it does not claim discovery of contextual equivalence.}
+A history may be adequate under one interface and inadequate after it is coupled to a further proof checker. This issue is more than simply asking additional static questions: the checker may react to information exposed by a component while future actions are occurring.
+
+\begin{definition}[Checker-facing channel and companion]\label{def:companion}
+Let $\mathcal H=(Q,A,\delta,c,O)$ be a monitor, and $t:Q\to B$ a declared \emph{boundary signal} to a companion with state set $S$. The companion has functions
+\[
+ \eta:S\times B\to\Omega_E,\qquad
+ \gamma:S\times B\times A\to S,\qquad
+ c_E:S\times B\times A\to\Nzero.
+\]
+For simplicity $\gamma,c_E$ are total, and the companion cannot independently disable actions. Define a coupled system on $Q\times S$, enabling action $a$ exactly when it is enabled in the base monitor, with
+\begin{align*}
+ O^\times(q,s)&=(O(q),\eta(s,t(q))),\\
+ \delta^\times((q,s),a)&=(\delta(q,a),\gamma(s,t(q),a)),\\
+ c^\times((q,s),a)&=c(q,a)+c_E(s,t(q),a).
+\end{align*}
+All of these quantities are declared; if they involve verifier execution cost, that cost must actually appear in $c_E$ to be within the theorem.
+\end{definition}
+
+\begin{theorem}[Contextual safety of an exposed interface]\label{thm:context}
+Suppose $E$ is an exact observation-, enabledness-, transition-, and cost-preserving congruence on $Q$; the inherited $\eqinf$ is one such choice. If the boundary signal $t$ is constant on every $E$-class, then for any fixed companion state $s$,
+\[
+ qE q'\quad\Longrightarrow\quad (q,s)\equiv^\times_{\infty}(q',s),
+\]
+where the right side refers to all residual experiments in the coupled system. Consequently replacing $q$ by its $E$-class is safe for \emph{every} companion of the declared form. If $t$ is not constant on $E$-classes, this conclusion is not guaranteed: some companions distinguish formerly equivalent histories immediately.
+\end{theorem}
+\begin{proof}
+Assume $qE q'$ and take the same companion state $s$. Because $E$ preserves the base observation and $t(q)=t(q')$, the coupled current observations agree. Enabled actions agree by the congruence property. For each enabled action $a$, both base costs agree, both companion costs have identical arguments, and thus the coupled costs agree. Base successors are again $E$-equivalent; the companions reach the \emph{same} successor state because their arguments to $\gamma$ match. Induction on the action-word length therefore gives equality of all coupled residual records. For the final caution, suppose two $E$-equivalent states emit different boundary signals. Choose a one-state companion with $\eta$ revealing $t$ (and any constant transition and zero cost). The current coupled observations then differ, so the paired states fail even zero-step equivalence.
+\end{proof}
+
+\begin{example}[A hidden certificate identifier exposed by coupling]\label{ex:unsafe}
+Let $Q=\{u,v\}$, with identical local observations, identical zero-cost self-loops for one action, and no other actions. Locally $u\eqinf v$, so $P_\infty$ has one class. Suppose a checker-facing channel supplies a bit $t(u)=0$, $t(v)=1$, interpreted as which recorded proof identifier may be queried. A one-state partner that shows this bit in its observation distinguishes $(u,s)$ and $(v,s)$ at once. The original quotient was correct for its declared \emph{local} tests; it was never certified for this newly exposed channel.
+\end{example}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ st/.style={draw,circle,minimum size=10mm},
+ b/.style={draw,rounded corners=2pt,text width=27mm,minimum height=11mm,align=center}]
+\node[st] (u) at (0,1) {$u$};
+\node[st] (v) at (0,-1) {$v$};
+\node[b] (ck) at (5.2,0) {Outside\\checker};
+\node[align=left,text width=36mm] (out) at (10,0) {Different\\external outcomes};
+\draw[->] (u) to[bend left=14] node[above,font=\scriptsize] {$t=0$} (ck);
+\draw[->] (v) to[bend right=14] node[below,font=\scriptsize] {$t=1$} (ck);
+\draw[dashed,rounded corners] (-.9,-1.7) rectangle (.9,1.7);
+\node[align=center,font=\scriptsize] at (0,-2.2) {Same local residual class};
+\draw[->] (ck)--(out);
+\end{tikzpicture}
+\caption{An observation-safe local quotient need not be safe for a new outside checker. All boundary information consumed by the checker must be included in the preservation interface or shown constant on equivalence classes.}\label{fig:context}
+\end{figure}
+
+This theorem supplies a precise answer to one new form of W1's provenance concern. Equality of all \emph{declared local} futures can be an excellent compression criterion, yet a new environment may make previously irrelevant historical distinctions relevant. The failure is not a contradiction of W1: the observation vocabulary and permitted continuations have changed.
+
+\section{The sixteen-state witness revisited as a budget problem}
+\PriorArtNote{The two delayed chains and their refinement counts were already constructed in W1; see the immutable W1 \cite{tennesonW1}. Turning counts into free-decoder bit lengths is a direct application of the partition-counting result, not a new universal storage lower bound.}\label{sec:example}
+W1 supplied a sixteen-state deterministic monitor whose two roots agree through six successive refinement rounds but differ on a seventh action. W2 uses that inherited example for a \emph{new exact analysis of memory budgets and deadline-dependent operations}.
+
+\begin{definition}[Two delayed evidence chains]\label{def:chains}
+Let $Q=\{q_i^b:0\le i\le7,\ b\in\{0,1\}\}$ and $A=\{a\}$. For $i<7$, define $\delta(q_i^b,a)=q_{i+1}^b$ and $c(q_i^b,a)=1$. At $i=7$, $a$ is disabled. Every state has observation $\{\cert_0\}$, except $q_7^1$, which has $\{\cert_0,\cert_1\}$. The symbols denote available accepted linked receipts in a \emph{stipulated} monitor; the example does not claim a machine implementation or independent verifier run.
+\end{definition}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\scriptsize,
+ n/.style={draw,circle,minimum size=7mm,inner sep=0pt}]
+\foreach \i in {0,...,7} {
+\node[n] (a\i) at (1.36*\i,1.5) {$q_{\i}^{0}$};
+\node[n] (b\i) at (1.36*\i,0) {$q_{\i}^{1}$};}
+\foreach \i in {0,...,6}{\pgfmathtruncatemacro{\j}{\i+1}
+\draw[->] (a\i)--(a\j); \draw[->] (b\i)--(b\j);}
+\node[anchor=west,font=\scriptsize] at (10.2,1.5) {$\{\cert_0\}$};
+\node[anchor=west,font=\scriptsize] at (10.2,0) {$\{\cert_0,\cert_1\}$};
+\node[align=center,text width=13cm,font=\small] at (5.4,-1)
+{Seven unit-cost actions are required to distinguish the two roots.};
+\end{tikzpicture}
+\caption{A delayed certified-reflection distinction. The nodes and distinguishing delay are inherited from W1; the bit-capacity and countdown calculations below are new Level-2 uses of the construction.}\label{fig:chains}
+\end{figure}
+
+\begin{theorem}[Exact budget profile of the delayed chains]\label{thm:chainprofile}
+For the monitor in Definition~\ref{def:chains},
+\[
+ (K_0,K_1,\ldots,K_8)=(2,4,6,8,10,12,14,16,16),
+\]
+and hence
+\[
+ (b_0,b_1,\ldots,b_8)=(1,2,3,3,4,4,4,4,4).
+\]
+The capacity frontier of Definition~\ref{def:frontier} is
+\[
+ H(0)=-1,\quad H(1)=0,\quad H(2)=1,\quad H(3)=3,
+ \quad H(b)=\infty\ (b\ge4).
+\]
+The root histories satisfy $s(q_0^0,q_0^1)=7$ and $d(q_0^0,q_0^1)=2^{-7}$. Starting with seven actions remaining, a countdown descriptor needs at most four history-identifier bits, and the required per-layer budgets can drop along the run. No three-bit initial descriptor can preserve every seven-action residual experiment from \emph{all sixteen states}.
+\end{theorem}
+\begin{proof}
+At depth zero, the unusual terminal observation at $q_7^1$ gives exactly two classes. For $1\le h\le7$, look at the signature of a state through at most $h$ enabled steps. The number of actions until action $a$ first becomes disabled separates progressively more of the two chains from the right, and the distinctive $\cert_1$ at $q_7^1$ propagates left by one position in each round. More explicitly, if the signatures at depth $h-1$ distinguish the first $h$ rightmost positions of the two chains appropriately, the recurrence \eqref{eq:rec} uses the enabledness and the successor's previous class to separate two further blocks at depth $h$. Starting from two blocks gives $K_h=2+2h$ for $0\le h\le7$; thereafter all sixteen states are separated. (The actual canonical class-signature recurrence, rather than the informal description of propagation, determines the partition.) Apply $b_h=\lceil\log_2K_h\rceil$ to obtain the displayed bit sequence. Monotonicity and stabilization give the capacity values. The two roots have identical successful records through six $a$ actions, while $a^7$ ends in differently observed terminal states, proving the separation depth. Theorem~\ref{thm:countdown} gives the online countdown and Theorem~\ref{thm:bits} gives the three-bit impossibility at horizon seven, since $K_7=16>8$.
+\end{proof}
+
+\begin{table}[htbp]\centering\small
+\begin{tabular}{c|rrrrrrrrr}
+\toprule
+Remaining horizon $h$ &0&1&2&3&4&5&6&7&8\\\midrule
+Residual classes $K_h$ &2&4&6&8&10&12&14&16&16\\
+Minimum identifier bits $b_h$ &1&2&3&3&4&4&4&4&4\\\bottomrule
+\end{tabular}
+\caption{A verified consequence of the inherited sixteen-state transition definition. Class counts and bit counts are not synonymously ``amounts of proof''; their meaning depends on the free-decoder convention.}
+\end{table}
+
+\begin{remark}[An important nonimplication]\label{rem:six}
+By round six the bit count is already four, which is also sufficient for \emph{unbounded} exact coding in this example. Nevertheless the \emph{particular} six-round partition $P_6$ is not a permanent congruence and still merges the two roots. Adequate capacity does not mean that an arbitrary code using that capacity preserves the intended evidence. One must actually choose the right partition or descriptor.
+\end{remark}
+
+\section{A self-referential certificate instance and two distinct demands}
+\PriorArtNote{Formal provability and self-reference have classical antecedents \cite{godel,lob}; accepted certificate checking has extensive prior art \cite{necula,besson}. The toy example demonstrates the present model's interface distinctions, not a verified implementation.}
+The abstraction matters only insofar as it can represent meaningful proof questions. A small formal self-identification example connects the paper back to the inherited $xyz$/SIC foundation.
+
+\begin{example}[From a formal proof to an interface obligation]\label{ex:self}
+Fix a tagged mathematical prover $K$, a formal specification premise $a$, and the two well-formed self-descriptive sentences
+\[
+ p=\theta_0^K=\ATP(\langle K\rangle),\qquad
+ r=\theta_1^K=\Prv(\langle K\rangle,\ulcorner p\urcorner).
+\]
+Use only the declared unary proof rules $a\mapsto p$ and $p\mapsto r$. A rule-driven SIC starting with $\{a\}$ can emit $p$ at stage two and $r$ at stage three. A proof checker may accept the corresponding finite derivations from $a$. To count \emph{linked certified level two}, a monitor must expose a checked $r$-event \emph{and} a dereferenceable accepted $p$-event, joined by a valid predecessor reference. This is inherited from W1; the present work instead asks which future tasks the interface must support.
+
+Let $t_1$ ask whether linked $\cert_1$ is present now, $t_2$ ask whether a particular accepted predecessor identifier can be retrieved after one action, and $t_3$ ask for the accumulated charged cost of retrieving both. The three functions need not induce the same history partition. Two states can agree on $t_1$ but disagree on $t_2$ because one forgot the predecessor identifier; states can agree on both boolean answers yet disagree on $t_3$ because a certificate store has different lookup costs. Theorem~\ref{thm:portfolio} computes the fixed-length class-ID price of preserving a declared portfolio, while Theorem~\ref{thm:context} tells when a newly connected verifier can safely use that descriptor.
+\end{example}
+
+\begin{proposition}[Certification truth cannot be purchased by a descriptor]\label{prop:trust}
+Within the present model, even an exact unbounded descriptor does not by itself prove that the tag $\langle K\rangle$ denotes the intended implementation, that a claimed certificate was genuinely checked, or that the axioms are semantically correct.
+\end{proposition}
+\begin{proof}
+The descriptor theorem reconstructs the function $q\mapsto\R_q(w)$ of a \emph{specified monitor}. Changing the interpretation of the symbol $\ATP$, falsifying a checker-acceptance flag, or replacing the physical record-generation process can leave the abstract state names and residual function unchanged. None of the descriptor hypotheses constrains those external interpretations. Therefore authenticity and semantic truth do not follow from the counting theorem.
+\end{proof}
+
+The distinction is central: a shorter identifier can preserve \emph{access to claimed evidence} in a stipulated interface, but it does not create reliable proof evidence where none exists.
+
+\section{Limits and research directions opened by the synthesis}
+\PriorArtNote{The strongest open task here is to charge the complete proof/checker/metadata system and prove a nontrivial tradeoff; none of the current class-index results resolves that task. The earlier literature on compact certificates \cite{besson} shows why this distinction is important.}
+The mathematical advances of this paper are exact but intentionally bounded. Finite $Q$ and finite $A$ make all partitions, bit capacities, and class encodings well defined and computable in principle. The exact counting bound is not a runtime bound, and the ultrametric is not a wall-clock complexity measure. The companion theorem covers a deliberately specified deterministic coupling, not every distributed ATP or adversarial scheduler.
+
+\begin{problem}[Charged, self-contained evidence storage]
+What bounds replace Theorem~\ref{thm:bits} when the decoder, checker, proof receipts, authenticity metadata, and storage accesses must all be included in the representation cost? Specify whether the target is worst-case bits, amortized bits, update time, or independent replayability. The present code-length equality does not answer any of these stronger questions.
+\end{problem}
+\begin{problem}[Adaptive and branching evidence]
+For a nondeterministic or fairly scheduled prover, can one define a useful finite-horizon evidence capacity preserving both \emph{may}-certificate and \emph{must}-certificate properties and charged scheduler costs? A simple list of deterministic action-word residuals does not encode the fairness quantifiers.
+\end{problem}
+\begin{problem}[Evidence portability under changing contexts]
+Given a family of possible future checker couplings, can the least fixed interface $t$ sufficient for all companions be characterized without requiring that every historical bit be transmitted? A restricted companion class may allow substantially more compression than unrestricted revelation of $t$.
+\end{problem}
+\begin{problem}[Computation cost versus information bits]
+Does there exist a natural family of formally presented self-describing ATP monitors for which reducing $b_h$ forces a provable increase in decoding or certificate-reconstruction work? No resource trade-off of this kind has been established here.
+\end{problem}
+\begin{problem}[Unbounded state and transfinite horizon]
+For countably infinite monitors, finite-horizon partitions may have infinitely many classes, defeating finite fixed-length coding. What effective representations or restricted task families recover a useful information frontier? Extending the finite horizon index beyond natural numbers requires new semantics and is not licensed by the present proofs.
+\end{problem}
+
+\section{Conclusion}
+W1 located the least safe forgetting relation for a fixed, full, deterministic certified-history interface. The new question is not merely to identify that quotient again, but to determine \emph{what memory is needed for which promised future, for how long, and in whose checking context}. For finite monitors, shortest distinguishing continuations yield an ultrametric geometry, and future-horizon partitions determine sharp fixed-length identifier budgets. A countdown construction makes those partitions executable as a time-limited online machine with monotonically decreasing metadata requirements. Task portfolio composition then quantifies the additional cost of new evidence obligations, while the contextual safety theorem explains why local compression need not survive a newly exposed verifier channel.
+
+None of this shows that self-awareness is consciousness, that a compact identifier authenticates a proof, or that actual ATP implementations achieve the idealized bound. What it does establish is a coherent mathematical connection between \emph{reflection, time, finite information, and the right to forget}---a connection that only becomes visible after W1's exact history-residual result has been made available.
+
+\appendix
+\section{Level-2 research, provenance, comparison, repair, and verification ledger}\label{app:ledger}
+\subsection*{Immutable ancestry and permitted source basis}
+\begin{description}[leftmargin=2.2cm,style=nextline]
+\item[W0] \emph{Formal Self-Awareness in Semi-Ideal Computers: Self-Theories, Reflection Depth, Simulation, and Certified Histories}; expanded research draft 0.1 (October 28, 2026), author \authorname. Source of $xyz$ derivability, SICs, faithful tags, formal self-theories, the reflection sequence, certificate/semantic separation, and the importance of recorded histories. The 19-page source PDF is unchanged.
+\item[W1] \emph{The Evidence Geometry of Formal Self-Awareness: Certified Reflection, Residual Histories, and the Least Safe Forgetting}; Level-1 FDWC multiarticle version 0.2 (October 30, 2026), author \authorname. Immediate source for witness-complete linked reflection, deterministic residual monitors, $P_h$ refinement, exact-cost preservation, transfer qualifications, and the sixteen-state delayed-distinction witness. The 17-page source PDF is unchanged.
+\item[W2] \emph{The Horizon of Certified Memory: Evidence Budgets, Time-Limited Forgetting, and Contextual Reflection}; this Level-2 paper. Only W0 and W1 were used as mathematical sources during W2 drafting. X2 retrospectively adds external citations and a related-work comparison; no claim of first discovery is made.
+\end{description}
+
+\subsection*{Internal research directions and comparison rubric}
+Two distinct internal developments were considered without issuing them as separate manuscripts. Direction A studied finite-horizon observational geometry, shortest separating continuations, and exact bit budgets. Direction B studied changes in obligation: timed renewal, evidence-portfolio combinations, and checker-facing contextual composition. A common six-part rubric was applied on a qualitative, model-relative basis: (1) correctness and explicit assumptions, (2) proof rigor, (3) mathematical originality relative to W1, (4) deductive depth, (5) explanatory clarity, and (6) future research potential. A numerical score was not assigned because no independent calibration was available.
+
+\begin{center}\small
+\begin{tabularx}{\textwidth}{@{}p{22mm}X X@{}}\toprule
+Aspect & Direction A & Direction B\\\midrule
+Strongest contribution & Separation-depth ultrametric and class-count lower/upper bound & Time-layered exact update, marginal evidence bits, safe external coupling\\
+Strength relative to W1 & Turns equivalence into a quantitative horizon/capacity statement & Makes the interface/obligation itself a mathematical variable\\
+Limitation & Free decoder makes the bit bound narrower than physical compression & Companion theorem assumes deterministic, explicitly exposed channels\\
+Interaction selected & $P_h$ class counts supply minimal layered code sizes & Portfolio and context results say when those class sizes must change\\\bottomrule
+\end{tabularx}
+\end{center}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ b/.style={draw,rounded corners=2pt,text width=38mm,minimum height=13mm,align=center}]
+\node[b] (w0) at (0,0) {W0\\Self-theory and reflection};
+\node[b] (w1) at (5.2,0) {W1\\Receipts and exact histories};
+\node[b] (w2) at (10.4,0) {W2\\Horizon codes and context};
+\draw[->] (w0)--node[above,font=\scriptsize]{base}(w1);
+\draw[->] (w1)--node[above,font=\scriptsize]{next}(w2);
+\end{tikzpicture}
+\caption{The W0 $\to$ W1 $\to$ W2 provenance chain. Earlier articles remain the unchanged mathematical ancestry; W2 studies a new interface-budget question.}
+\end{figure}
+The synthesis selects \emph{obligation-dependent memory} as the central architecture, not merely the union of independent articles. Its joint result is the exact, time-indexed relationship between remaining verified observations and metadata capacity, extended to changing evidence tasks and checking contexts. The two strands are not interchangeable: a bit lower bound is not a semantic trust certificate, and an interface theorem alone does not supply an optimal code.
+
+\subsection*{Contribution and repair register}
+\begin{enumerate}[leftmargin=*,itemsep=.25em]
+\item \textbf{Inherited, not new:} The definition of residual experiments, the $P_h$ recurrence, full residual congruence, linked certified reflection and finite stabilization are imported from W1. The self-reflection sentences and formal SIC motivation originate in W0.
+\item \textbf{New relative to W1:} The separation-depth pseudoultrametric and its exact $P_h$ balls (Theorem~\ref{thm:ultra}); the sharp free-decoder $b_h$ bound and capacity frontier (Theorem~\ref{thm:bits}, Corollary~\ref{cor:capacity}); the countdown machine and safe layer-wise forgetting (Theorem~\ref{thm:countdown}); the incremental portfolio-bit formula (Theorem~\ref{thm:portfolio}); and safe checker coupling under boundary-signal congruence (Theorem~\ref{thm:context}).
+\item \textbf{Repair of a possible overclaim:} ``Minimum metadata bits'' is not equated with minimum physical certificate storage. All exact bit equalities explicitly grant a fixed shared decoder and do not charge its tables, proof receipts, or execution.
+\item \textbf{Repair of a possible quotient error:} $P_h$ is generally not a stationary transition congruence. The countdown construction deliberately changes to $P_{h-1}$ after one action.
+\item \textbf{Repair of an interface error:} A locally exact quotient need not be exact after adding a verifier. The boundary signal must be constant on the chosen congruence class, or the equivalence must be refined.
+\item \textbf{Repair of an authenticity error:} A bit string labelling an accepted receipt is not by itself an accepted proof, independent verifier record, or demonstration of the tag's semantic correctness.
+\item \textbf{Remaining incompatibility:} The deterministic finite-history results do not subsume W0/W1's nondeterministic fairness, infinite reflection, or real implementation questions; these are intentionally not merged into unproved stronger theorems.
+\end{enumerate}
+
+\subsection*{Paper-level verification checklist}
+\begin{center}\small
+\begin{tabularx}{\textwidth}{@{}p{37mm}X@{}}\toprule
+Statement & Audit route and limitation\\\midrule
+Ultrametric and depth bound & Transitivity of $\equiv_h$; inherited $P_{N-1}=P_\infty$. No semantic proof of monitor correctness.\\
+Sharp code length & Pigeonhole lower bound and explicit class-index coding. Decoder cost uncharged.\\
+Countdown operation & W1 recurrence shows $[q]_r\mapsto[\delta(q,a)]_{r-1}$ is well-defined. Public horizon counter uncharged.\\
+Portfolio formula & Distinct conditional profiles within each old block need distinct supplemental codewords; local indices achieve the maximum.\\
+Companion safety & Induction on action words using congruence and the boundary-signal hypothesis. No fairness or concurrency.\\
+Sixteen-state profile & Exact finite signature recurrence and elementary $K_h$ enumeration; the construction is inherited from W1.\\
+External proof assistant / independent reviewer & Not run; all theorems are manuscript-level arguments.\\
+Historical originality / empirical speedup & X2 adds a targeted prior-art examination; no ATP performance measurement, full novelty survey, or independent review.\\\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Constructive refinement and descriptor pseudocode}\label{app:alg}
+The following finite-state procedure implements the mathematical recurrence. Class identifiers are canonical only up to bijective renaming; no claim about optimal runtime or checker overhead is intended.
+\begin{verbatim}
+class[q] = intern(O[q])                 # depth 0, P_0
+save_partition(0, class)
+for r = 1, 2, ..., |Q|-1:
+    sig[q] = (O[q], tuple(
+        OFF if delta(q,a) undefined
+        else (cost(q,a), class[delta(q,a)])
+        for a in A))
+    nextclass[q] = intern(sig[q])
+    save_partition(r, nextclass)
+    if same_partition(nextclass, class):
+        break                         # exact permanent partition
+    class = nextclass
+
+# To support exactly h future actions online:
+# start with an index for [q]_{P_h}
+# after action a at remaining horizon r>0,
+# replace it by an index for [delta(q,a)]_{P_(r-1)}.
+\end{verbatim}
+For an independently checked finite model, each alleged refinement count can be verified by explicit signature enumeration. That computation would verify \emph{this finite model's partition table}, not the correctness of a real proof verifier or the entire mathematical article.
+
+\section{X2: editorial bibliography and explicit non-originality ledger}
+\label{app:attributionX2}
+\noindent\textbf{Retrospective attribution.} W2 was written using W0 and W1; X2 adds verified bibliographic references and distinguishes applications from historically prior mathematical ideas.
+\begin{enumerate}[leftmargin=*,itemsep=.25em]
+\item \textbf{Established before W2:} future-observation classes and state refinement \cite{nerode}; behavioral equivalence and congruence \cite{milner}; predictive sufficient states \cite{shalizi}; behavioral metrics and distinguishing-word ultrametrics \cite{bonchi,ilchev}; compositional semantic equivalence \cite{scott,milner}; formal proof certificates \cite{necula,besson}.
+\item \textbf{Elementary or inherited consequence, no priority claim:} shortest-distinguishing-length ultrametric; class-count identifier bound $\lceil\log_2 K_h\rceil$ with shared decoder; partition intersections for task portfolios; context safety when exposed signals are invariant; and finite-state delayed-separation examples inherited from W1.
+\item \textbf{Distinctive exposition, originality not certified:} interpretation of bounded classes as deadline-limited storage obligations for linked certified reflection; the time-layered countdown construction; and explicit treatment of new verifier channels that reveal otherwise forgotten proof identifiers.
+\item \textbf{Open, not proved:} a theorem for self-contained, charged certificate storage; minimum authentic evidence bits; a proved checker-time/metadata tradeoff; robust nondeterministic or distributed ATP results.
+\end{enumerate}
+\subsection*{References (historically earlier sources and internal ancestry)}
+\begin{thebibliography}{99}
+\small
+\bibitem{tennesonW0} \textless Brian Tenneson\textgreater, \emph{Formal Self-Awareness in Semi-Ideal Computers: Self-Theories, Reflection Depth, Simulation, and Certified Histories}, expanded draft 0.1, October 28, 2026 (immutable W0).
+\bibitem{tennesonW1} \textless Brian Tenneson\textgreater, \emph{The Evidence Geometry of Formal Self-Awareness: Certified Reflection, Residual Histories, and the Least Safe Forgetting}, FDWC Level-1 multiarticle version 0.2, October 30, 2026 (immutable W1).
+\bibitem{godel} Kurt G{\"o}del, ``{\"U}ber formal unentscheidbare S{\"a}tze der Principia Mathematica und verwandter Systeme I,'' \emph{Monatshefte f{\"u}r Mathematik und Physik} 38 (1931), 173--198. \url{https://doi.org/10.1007/BF01700692}.
+\bibitem{lob} M. H. L{\"o}b, ``Solution of a Problem of Leon Henkin,'' \emph{Journal of Symbolic Logic} 20 (1955), 115--118. \url{https://doi.org/10.2307/2266895}.
+\bibitem{nerode} Anil Nerode, ``Linear Automaton Transformations,'' \emph{Proceedings of the American Mathematical Society} 9 (1958), 541--544. \url{https://doi.org/10.1090/S0002-9939-1958-0135681-9}.
+\bibitem{milner} Robin Milner, \emph{A Calculus of Communicating Systems}, Lecture Notes in Computer Science 92, Springer, 1980. \url{https://doi.org/10.1007/3-540-10235-3}.
+\bibitem{necula} George C. Necula, ``Proof-Carrying Code,'' \emph{Proceedings of POPL 1997}, 106--119. \url{https://doi.org/10.1145/263699.263712}.
+\bibitem{besson} Fr\'{e}d\'{e}ric Besson, Thomas P. Jensen, and David Pichardie, ``Proof-Carrying Code from Certified Abstract Interpretation and Fixpoint Compression,'' \emph{Theoretical Computer Science} 364(3) (2006), 273--291. \url{https://doi.org/10.1016/j.tcs.2006.08.012}.
+\bibitem{shalizi} Cosma R. Shalizi and James P. Crutchfield, ``Computational Mechanics: Pattern and Prediction, Structure and Simplicity,'' \emph{Journal of Statistical Physics} 104 (2001), 817--879. \url{https://doi.org/10.1023/A:1010388907793}.
+\bibitem{bonchi} Filippo Bonchi, Barbara K{\"o}nig, and Daniela Petri{\c s}an, ``Up-to Techniques for Behavioural Metrics via Fibrations,'' \emph{Mathematical Structures in Computer Science} 33 (2023), 182--221. \url{https://doi.org/10.1017/S0960129523000166}.
+\bibitem{ilchev} Atanas Ilchev, Hristo Kiskinov, George Pashev, and Boyan Zlatanov, ``Ultrametric Convergence of Guarded Automata and Applications to Structural Input Validation,'' arXiv:2607.19065 (preprint, July 2026). \url{https://arxiv.org/abs/2607.19065}.
+\bibitem{scott} Dana Scott and Christopher Strachey, \emph{Toward a Mathematical Semantics for Computer Languages}, Oxford University Computing Laboratory, Programming Research Group Monograph PRG-06 (1971). \url{https://www.cs.ox.ac.uk/publications/publication3723-abstract.html}.
+\end{thebibliography}
+\clearpage
+\section*{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}
+\addcontentsline{toc}{section}{AI Disclaimer}
+Every reasonable effort has been made to ensure that the mathematical exposition presented herein is factual, correct, logically sound, sufficiently complete in its treatment of relevant facts (not in the technical sense of G\"odelian completeness), and supported by rigorous proofs or, at minimum, not readily susceptible to refutation. Nevertheless, no guarantee of correctness, completeness, consistency, or provability is implied. The authorship and composition of this work involve a combination of human and artificial intelligence: an AI determines the placement of some statements, but not all statements, and the placement of some individual characters, but not all characters. Generally, the AI involved is either DATA MIND or CAMI, both of which have been personally augmented by \textless Brian Tenneson\textgreater{} with structured, automated-theorem-proving (ATP) forms of creativity and intelligence. Mathematical development, organization, formulation, and revision may therefore reflect varying degrees of human and AI contribution, without implying that either party is solely responsible for any particular passage. ATLAS is employed as an additional mathematical and editorial auditor, alongside another AI reviewer and the author's own examination, to identify errors, omissions, unsupported assertions, and opportunities for improvement. Such review is not equivalent to independent formal verification of every claim. Responsibility for the decision to present and publish the resulting work remains with the human author.
+
+\medskip\noindent\emph{Edition-specific clarification: the present corrections to pagination, diagrams, and disclosure are editorial/layout repairs. An ATLAS manuscript re-audit accompanied the present repairs, but this is not independent external refereeing or machine-checked verification of the mathematical claims. No publication is implied or authorized by this revision.}
+
+\end{document}

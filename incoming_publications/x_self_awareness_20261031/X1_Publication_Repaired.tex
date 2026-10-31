@@ -1,0 +1,632 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.96in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,tabularx,longtable}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,fit}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{needspace}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\newcommand{\PriorArtNote}[1]{%
+\par\smallskip\noindent\begin{minipage}{\linewidth}\small\color{black!85}%
+\textbf{X-edition prior-art attribution.} #1\end{minipage}\par\smallskip}
+\newcommand{\CitationEditionNotice}[1]{%
+\par\medskip\noindent\fcolorbox{black!35}{black!3}{\begin{minipage}{0.95\linewidth}\small
+\textbf{Citation-added edition #1 (October 31, 2026).} This edition preserves the original mathematical arguments and adds retrospective prior-art citations, explicit priority limitations, and a scholarly bibliography. References to external works here are editorial comparisons, \emph{not} a claim that the source manuscript originally used or first discovered them. \textbf{No historical novelty or independent proof verification is certified.}
+\end{minipage}}\par\medskip}
+
+\setlength{\parskip}{0.38em}
+\setlength{\parindent}{1.1em}
+\setlength{\emergencystretch}{2em}
+\captionsetup{font=small,labelfont=bf}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small The Evidence Geometry of Formal Self-Awareness}
+\fancyhead[R]{\small X1 cited edition (from W1)}
+\fancyfoot[C]{\thepage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}[theorem]{Open problem}
+\newcommand{\thmset}{\operatorname{Th}}
+\newcommand{\Self}{\operatorname{Self}}
+\newcommand{\SD}{\operatorname{SD}}
+\newcommand{\Cert}{\mathsf{cert}}
+\newcommand{\Prv}{\mathsf{Pr}}
+\newcommand{\ATP}{\mathsf{ATP}}
+\newcommand{\lev}{\operatorname{lev}}
+\newcommand{\clev}{\operatorname{clev}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\tr}{\operatorname{Trace}}
+\newcommand{\Ob}{\mathcal{O}}
+\newcommand{\ACT}{\mathcal{A}}
+\newcommand{\Nzero}{\mathbb N_0}
+\newcommand{\up}{\uparrow}
+\newcommand{\botx}{\perp}
+\newcommand{\Rinf}{\equiv_{\!\infty}}
+\newcommand{\Rk}[1]{\equiv_{\!#1}}
+\newcommand{\authorname}{\textless Brian Tenneson\textgreater}
+\title{\bfseries The Evidence Geometry of Formal Self-Awareness\\[0.35em]
+\large Certified Reflection, Residual Histories, and the Least Safe Forgetting}
+\author{\authorname}
+\date{X1: cited edition of W1, October 31, 2026\\Underlying FDWC multiarticle W1: version 0.2, October 30, 2026}
+\begin{document}
+\maketitle
+\CitationEditionNotice{X1}
+\noindent\textit{Formal Self-Awareness Trilogy --- Part II of III; publication-preparation repair, October 31, 2026.}\par\smallskip
+\par\noindent\emph{See the AI disclaimer that follows this essay.}\par\medskip
+
+\begin{abstract}
+A semi-ideal computer can emit a sentence about itself without justifying that sentence; it can even verify a derivation of a self-description while retaining too little history to justify later claims about that verification. Starting exclusively from the supplied manuscript \emph{Formal Self-Awareness in Semi-Ideal Computers} (immutable source W0), this article develops an evidence-sensitive theory in which formal reflection, proof receipts, executable continuations, and the cost of future verification are kept separate. It establishes a certified-reflection cumulativity principle under an explicit witness-completeness condition; constructs the coarsest future-complete equivalence for a deterministic, certificate-observing history monitor; proves that its quotient preserves reflective traces and exact minimum accumulated primitive costs; derives a finite-state stabilization bound; and exhibits a sixteen-state counterexample showing that six rounds of consequence refinement need not suffice. A separate transfer theorem identifies the additional certificate and cost interfaces required to lift comparisons of machines to comparisons of their reflective evidence. The results concern declared formal models, not phenomenological consciousness or an implemented ATP. All claims of optimality are relative to a fixed observation vocabulary, action model, and admissible class of exact quotients.
+\end{abstract}
+\noindent\textbf{Status and provenance.} This is one synthesized mathematical article, not separately issued alternative completions. W0 is unchanged. The original W1 was developed without consulting external mathematical sources; this X1 edition subsequently adds prior-art citations for transparency. The manuscript contains paper-level arguments and explicit countermodels, not independently machine-checked proofs or empirical results. A revision and verification ledger is included in Appendix~\ref{app:ledger}.
+\clearpage
+\phantomsection
+\pdfbookmark[1]{Contents}{x1contents}
+\tableofcontents
+\clearpage
+
+\section{The problem: a theorem can survive when its evidence does not}
+\PriorArtNote{The basic notions of self-provability and formal reflection belong to earlier proof theory \cite{godel,lob,feferman}; proof-carrying evidence is a prior research tradition \cite{necula,besson}. The proposed combination here is a \emph{certificate-oriented specialization}, not a claim of inventing either tradition.}
+The originating paper W0 asks when a formally presented ATP can name itself, emit sentences about itself, and iterate assertions of the form ``I prove that I prove ...''. Its technical strength lies in distinguishing naming, operational output, formal derivability, semantic correctness, and a clocked simulation of a semi-ideal computer (SIC). The same paper asks whether reflection survives the compression of mathematical histories. These questions interact: preserving a theorem set is not generally sufficient to preserve what a machine can subsequently \emph{certify about} its earlier proofs.
+
+Here is the sharper question pursued in this multiarticle:
+\begin{quote}
+\emph{Given a declared verifier, self-description syntax, observable proof receipts, possible future actions, and action costs, how much of a reflective history may be forgotten without changing any future certified reflection experiment?}
+\end{quote}
+The question has two possible bad answers. Recording no evidence can cause false identifications. Recording an entire execution may be unnecessarily expensive. This paper supplies a precise intermediate answer for deterministic action-labelled monitors: quotient histories only when all their \emph{residual certified experiments} agree. A second result explains when that quotient transports along certificate-preserving simulations.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth, font=\small,
+ b/.style={draw,rounded corners=2pt,text width=37mm,minimum height=11mm,align=center,inner sep=3pt}]
+\node[b] (m) at (0,0) {Tagged machine\\and output stages};
+\node[b] (p) at (5.1,0) {Self-sentences\\$\theta_0,\theta_1,\ldots$};
+\node[b] (v) at (10.2,0) {Accepted proofs\\and linked receipts};
+\node[b] (h) at (5.1,-2.0) {History monitor\\observations $\Ob$};
+\node[b] (q) at (10.2,-2.0) {Exact future\\quotient $Q/\Rinf$};
+\draw[->,thick] (m)--node[above,font=\scriptsize]{emits}(p);
+\draw[->,thick] (p)--node[above,font=\scriptsize]{checks}(v);
+\draw[->] (p)--(h);
+\draw[->] (v)--(q);
+\draw[->,thick] (h)--node[above,font=\scriptsize]{future tests}(q);
+\end{tikzpicture}
+\caption{A self-ascription, an accepted derivation, and a recoverable receipt are different data. The quotient is allowed to forget only distinctions irrelevant to all declared future tests.}\label{fig:pipeline}
+\end{figure}
+
+\subsection{Scope and internal ancestry}
+W0 was the only mathematical source used during the original W1 drafting process. X1 retrospectively cites and compares external prior art; these works are not being silently promoted to assumptions of the W1 theorems. The two internal completion directions are not supplied as separate manuscripts: one clarifies the hierarchy of \emph{certified} self-claims; the other develops the \emph{minimal future-sufficient history} problem. Their synthesis consists of theorems connecting certified levels with quotient observations, exact hitting costs, and simulation transfer. ``New'' below means new relative to the constructions of W0 and to the separate mathematical directions considered in this completion, not a claim of priority over the mathematical literature.
+
+\section{The inherited logical and operational base}
+\PriorArtNote{Formal consequence, syntactic provability, and machine models predate W0; see \cite{godel,lob,feferman}. The \emph{xyz}/SIC notation and declared reflection conventions are the source manuscript's presentation, not a replacement for standard terminology.}
+\begin{definition}[XYZ calculus and derivability]\label{def:xyz}
+An \emph{xyz calculus} $F=(x,y,z)$ has an alphabet $x$, a set $y$ of well-formed finite strings, and finitary partial inference rules $z$. For premises $\Gamma\subseteq y$, $\Gamma\vdash_F\varphi$ means that a finite legal derivation of $\varphi$ exists. The minimum number of primitive rule applications is $h_F(\Gamma,\varphi)$, or $\infty$ if no such proof exists. Premises have application count zero.
+\end{definition}
+\begin{definition}[SIC and output]\label{def:sic}
+For $Y\subseteq y$, an SIC is $M=(C_M,H_M)$ with
+\[
+ C_M:\mathcal P(Y)\times\mathbb N_{>0}\longrightarrow\mathcal P(Y),\quad
+ H_M:\mathcal P(Y)\times\mathbb N_{>0}\longrightarrow\{0,1\},
+\]
+where $C_M(\Gamma,1)=\Gamma$; the outputs $C_M(\Gamma,m)$ are stage-monotone; halting is persistent; and $H_M(\Gamma,m)=1$ implies $C_M(\Gamma,m+1)=C_M(\Gamma,m)$. Fix a designated input $A_M\subseteq Y$ and set
+\[
+\thmset_M(A_M)=\bigcup_{m\ge1}C_M(A_M,m).
+\]
+\emph{Rule-driven} means that each newly added sentence follows by one legal primitive rule from sentences in the previous stage. Rule-driven output is formally derivable from $A_M$ by induction on stages, but formal derivability alone does not guarantee a self-description is semantically true.
+\end{definition}
+\begin{definition}[Tagging, self-theory, and reflection]\label{def:reflection}
+A tagged presentation specifies a faithfully interpreted closed term $\langle M\rangle$, a designated syntactically recognizable class $\SD_M$ of sentences whose subject is $\langle M\rangle$, and injective quotation $\varphi\mapsto\ulcorner\varphi\urcorner$. With distinguished predicates $\ATP$ and $\Prv$, define
+\[
+\Self_A(M)=\thmset_M(A_M)\cap\SD_M,\qquad
+\theta^M_0=\ATP(\langle M\rangle),\qquad
+\theta^M_{k+1}=\Prv(\langle M\rangle,\ulcorner\theta^M_k\urcorner).
+\]
+Assume all displayed formulas are well formed and belong to $\SD_M$. Then
+\[
+ L(M)=\{k+1:\theta^M_k\in\thmset_M(A_M)\},\quad
+ \lev(M)=\sup L(M)\in\mathbb N_0\cup\{\omega\}.
+\]
+The predicate $\Prv$ refers to declared \emph{operational emission} on $A_M$, rather than silently switching between emission, logical consequence, and verifier acceptance.
+\end{definition}
+\begin{remark}[Exactly what the hierarchy measures]
+Syntactic formation of $\theta_k^M$ is not a proof of it. A stage-one premise can artificially raise $\lev(M)$. Neither $\lev(M)$ nor the correct denotation of $\langle M\rangle$ entails a subjective mental state. In W0, level cumulativity requires the explicit hypothesis
+\[
+\theta^M_{k+1}\in\thmset_M(A_M)\quad\Longrightarrow\quad
+\theta^M_k\in\thmset_M(A_M).
+\]
+We retain this limitation, rather than treating it as automatic.
+\end{remark}
+
+\begin{definition}[Inherited self-theory preorder]
+An \emph{admissible translation} $\tau:L_M\to L_N$ is injective on the relevant syntax, sends $\langle M\rangle$ to $\langle N\rangle$, preserves the distinguished predicates $\ATP,\Prv$, commutes with formula formation and quotation, and sends $\SD_M$ into $\SD_N$. Write $M\preceq_{\mathrm{SA}}N$ when some such $\tau$ satisfies $\tau[\Self_A(M)]\subseteq\Self_A(N)$.
+\end{definition}
+\begin{proposition}[Inherited translation monotonicity]
+Assuming the presentation class is closed under identity and composition of admissible translations, $\preceq_{\mathrm{SA}}$ is a preorder, and
+\[
+ M\preceq_{\mathrm{SA}}N\quad\Longrightarrow\quad L(M)\subseteq L(N),\quad\lev(M)\le\lev(N).
+\]
+\end{proposition}
+\begin{proof}
+Identity and composition preserve each of the stated translation requirements. Induction on $k$ gives $\tau(\theta_k^M)=\theta_k^N$: the base follows from the tag and $\ATP$ clauses; the step uses $\Prv$ and quotation commutation. If $\theta_k^M\in\Self_A(M)$, its translated form therefore lies in $\Self_A(N)$. Taking sets of attained indices and suprema proves the claim. This does not make a bare clocked SIC simulation an admissible self-theory translation.
+\end{proof}
+
+\section{Certificate-backed reflection is a second hierarchy}
+\PriorArtNote{The idea of separately checkable certificates has established antecedents \cite{necula,besson}, while hierarchies of provability are classical \cite{lob,feferman}. Witness-complete linked receipts here are a specialized \emph{definition}; their initial-segment consequence follows from mandatory predecessor links, without a claim of new proof-theoretic priority.}
+A certificate of $\theta_{k+1}$ is not automatically a certificate of $\theta_k$. The former establishes that an assertion about proof output is derivable; the latter establishes the asserted formula itself. To capture this distinction, we introduce a typed evidence record.
+
+\begin{definition}[Certified output event]\label{def:event}
+Fix an independent proof checker $V_F$ for the declared calculus. A \emph{certified event} is a record
+\[
+ e=(\varphi,m,\pi,V_F,\mathsf{accept}),
+\]
+where $\varphi\in C_M(A_M,m)$ and $V_F$ accepts the finite certificate $\pi$ as a derivation $A_M\vdash_F\varphi$. Its content is a \emph{formal derivation claim}. A separate semantic attestation is needed to establish that $\varphi$ correctly describes the actual tagged implementation. A checked $\Prv$ assertion need not contain a checked certificate of the sentence it mentions.
+\end{definition}
+\begin{definition}[Linked reflective evidence]\label{def:linked}
+A \emph{linked certificate record} for $\theta_k^M$ consists of a certified event for that formula and, if $k>0$, a declared link to a certified event for $\theta_{k-1}^M$. A record system is \emph{witness-complete} if every accepted record of $\theta_k^M$, $k>0$, has such an accepted predecessor link, and following links terminates at an accepted record for $\theta_0^M$. Each linked event must refer to the same designated tag and input; merely presenting a matching formula is insufficient. A state reported as witness-complete must expose, as present or dereferenceable accepted records in its own observation interface, every predecessor receipt reachable through these links.
+\end{definition}
+\begin{definition}[Certified level]\label{def:clevel}
+Let $\Cert_M(q)$ be the set of indices $k\in\Nzero$ for which the monitor's state $q$ has an accepted linked record for $\theta_k^M$. Define
+\[
+ L_{\Cert}(q)=\{k+1:k\in\Cert_M(q)\},\qquad
+ \clev(q)=\sup L_{\Cert}(q).
+\]
+For an operational run, $q$ may be a full history state and $\Cert_M(q)$ may grow as new records arrive. Any semantic-truth flag is tracked independently from membership in $\Cert_M(q)$.
+\end{definition}
+\begin{theorem}[Certified cumulativity and descent]\label{thm:descent}
+In a witness-complete record system, if $k\in\Cert_M(q)$, then $\{0,\ldots,k\}\subseteq\Cert_M(q)$. Therefore $L_{\Cert}(q)$ is an initial segment of $\mathbb N_{>0}$ (possibly empty or all of it). Every finite certified level $n$ has a chain of $n$ distinct, checked \emph{formula claims}; it need not require $n$ independently stored uncompressed certificate files.
+\end{theorem}
+\begin{proof}
+From a linked record for $\theta_k$, follow the mandatory predecessor link to a checked record for $\theta_{k-1}$; iterate until index zero. The indices are distinct because the reflection formulas have distinct syntactic structure under injective quotation and distinct $\ATP,\Prv$ symbols. The result concerns distinct \emph{claims}; a shared proof DAG, generator, or reference structure may encode them compactly. No linear bit lower bound is inferred.
+\end{proof}
+\begin{proposition}[Separation from ordinary level]\label{prop:separation}
+There are tagged SIC presentations with $\lev(M)=n$ for any given finite $n$ and no non-premise certified reflection event; there are also rule-driven presentations with a certified level-one event without a certified level-two event.
+\end{proposition}
+\begin{proof}
+For the first case, use W0's stationary finite presentation with $A_M=\{\theta_0,\ldots,\theta_{n-1}\}$ and no accepted checker records. Its operational reflection level is $n$, while its set of non-premise certified events is empty. For the second, take premises $\{a\}$ and the declared rule $a\mapsto\theta_0$, allow the checker to accept that single rule application, and include no rule yielding $\theta_1$. The stage-two event for $\theta_0$ is checked; no stage contains $\theta_1$. Its semantic truth, as always, requires the separate correctness of the tag and $\ATP$ interpretation.
+\end{proof}
+\begin{remark}[Certification and handout are orthogonal]
+A premise can have a zero-step checker receipt. Accordingly, if \emph{non-premise discovery} is the desired property, it must be reported as an additional flag $\theta_k\notin A_M$ and not built invisibly into the definition of certification. The first construction proves only the absence of non-premise events as stated; with a checker accepting premise certificates, it need not have zero certified level. This corrects a tempting but false conflation.
+\end{remark}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ receipt/.style={draw,rounded corners=2pt,text width=25mm,minimum height=10mm,align=center}]
+\node[receipt] (n0) at (0,0) {$\theta_0$ receipt};
+\node[receipt] (n1) at (3.75,0) {$\theta_1$ receipt};
+\node[receipt] (n2) at (7.5,0) {$\theta_2$ receipt};
+\node[receipt] (n3) at (11.25,0) {$\theta_3$ receipt};
+\draw[->,thick] (n1.west)--(n0.east);
+\draw[->,thick] (n2.west)--(n1.east);
+\draw[->,thick] (n3.west)--(n2.east);
+\node[align=center,text width=13cm,font=\small] at (5.625,-1.15)
+{Each higher receipt requires a checked link to the preceding receipt.};
+\end{tikzpicture}
+\caption{Witness-complete reflection is a chain of checked claims, not just a ladder of well-formed formulas. Links are evidence obligations.}\label{fig:links}
+\end{figure}
+
+\section{The history monitor and the cost of forgetting}
+\PriorArtNote{Finite-state observations, transition behavior, and compositional state comparisons have extensive antecedents in automata and process semantics \cite{nerode,milner}. The new issue posed \emph{within this manuscript} is which proof-receipt observations must be exposed.}
+W0 models certified histories and proposes safe history quotients under labeled bisimulation and edge lifting. We now derive a canonical quotient for a \emph{deterministic} certificate-observing monitor. Determinism is important: the result does not assert a coarsest quotient for unrestricted concurrent, nondeterministic, or probabilistic proof search.
+
+\begin{definition}[Deterministic reflective history monitor]\label{def:monitor}
+A \emph{reflective history monitor} is
+\[
+\mathfrak H=(Q,\ACT,\delta,c,\Ob),
+\]
+where $Q$ is a \emph{nonempty} set of record-complete history states, $\ACT$ is a specified finite or countable alphabet of future actions, $\delta:Q\times\ACT\rightharpoonup Q$ is a partial deterministic transition function, $c(q,a)\in\Nzero$ is the primitive cost of an enabled transition, and $\Ob(q)$ is a declared observation drawn from a fixed set $\Omega$. For example $\Ob(q)$ can include certificates for $\theta_k$, semantic attestation status, recorded proof identifiers, and verifier accept/reject status. Whatever is promised to be preserved \emph{must be included} in $\Ob$ or otherwise explicitly tested in continuations. A state need not literally store its entire past if it already contains sufficient data to evaluate $\delta$ and $\Ob$.
+\end{definition}
+\begin{remark}[History rather than just a formula set]
+Two distinct completed histories may have equal output theorem sets and unequal $\Ob$ or $\delta$. This happens when one retains an accepted proof identifier needed by a later audit and the other does not. A bare SIC state in $\mathcal P(Y)$ does not automatically contain these identifiers; $Q$ is an \emph{additional record layer} over a chosen SIC or proof-search presentation, not a redefinition of the SIC axioms.
+\end{remark}
+\begin{definition}[Residual experiment]\label{def:residual}
+For $q\in Q$ and an action word $w=a_1\cdots a_\ell\in\ACT^*$, let $q_0=q$ and $q_i=\delta(q_{i-1},a_i)$ whenever defined. The \emph{residual experiment} is
+\[
+ R_q(w)=\begin{cases}
+ (\Ob(q_0),c(q_0,a_1),\Ob(q_1),\ldots,c(q_{\ell-1},a_\ell),\Ob(q_\ell)),&\text{if every step is enabled},\\
+ \botx,&\text{otherwise}.
+ \end{cases}
+\]
+In particular $R_q(\epsilon)=(\Ob(q))$. Define
+\[
+\begin{aligned}
+ q\Rk{k}q' &\iff R_q(w)=R_{q'}(w)\quad\text{for every }|w|\le k,\\
+ q\Rinf q' &\iff R_q(w)=R_{q'}(w)\quad\text{for every }w\in\ACT^*.
+\end{aligned}
+\]
+These comparisons require equality of action costs \emph{along each enabled trace}. An experiment returning $\botx$ is distinguished from a successful experiment.
+\end{definition}
+\begin{proposition}[Why equality of present self-theory is insufficient]\label{prop:theorynot}
+Equality of current emitted self-theories (or even of currently checked reflection labels) does not imply $q\Rinf q'$.
+\end{proposition}
+\begin{proof}
+Let $\Ob(q)=\Ob(q')=\{\Cert_0\}$. Give both states one enabled action $a$ with equal cost, but let $\Ob(\delta(q,a))=\{\Cert_0\}$ while $\Ob(\delta(q',a))=\{\Cert_0,\Cert_1\}$. Then $R_q(\epsilon)=R_{q'}(\epsilon)$ but $R_q(a)\ne R_{q'}(a)$. The labels are compatible with witness-complete evidence, because the target containing $\Cert_1$ also contains $\Cert_0$.
+\end{proof}
+
+\section{The reflective residual theorem}
+\PriorArtNote{This theorem is an observation-and-cost specialization of the classical future-distinguishability/minimization principle \cite{nerode} and of behavioral-equivalence methodology \cite{milner}. Its exact statement is proved for the paper's monitor, but is \emph{not claimed as a historically novel minimization theorem}.}
+\begin{theorem}[The canonical future-complete quotient]\label{thm:main}
+For every monitor $\mathfrak H$ in Definition~\ref{def:monitor}, the relation $\Rinf$ is an equivalence satisfying all of the following.
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item \textbf{Observation preservation:} $q\Rinf q'$ implies $\Ob(q)=\Ob(q')$.
+\item \textbf{Exact transition congruence:} For every action $a$, it is enabled at $q$ iff enabled at $q'$. If enabled, $c(q,a)=c(q',a)$ and $\delta(q,a)\Rinf\delta(q',a)$.
+\item \textbf{Exact reflective traces:} the quotient $\mathfrak H/{\Rinf}$ has a well-defined deterministic action system and produces the same observation/cost trace for every legal action word as each representative.
+\item \textbf{Coarsest exact quotient:} if an equivalence $E$ on $Q$ also preserves $\Ob$, enabled actions, exact transition costs, and successor $E$-classes, then $E\subseteq\Rinf$. Thus, within this declared class of exact deterministic quotients, $\Rinf$ identifies at least as many states as any admissible $E$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Equality of functions $R_q$ is reflexive, symmetric and transitive. The empty word proves (i). Compare $R_q(a)$ with $R_{q'}(a)$: one is $\botx$ iff the other is; if enabled, the first costs match. For any $w$, equality of $R_q(aw)$ and $R_{q'}(aw)$, after the identical initial observation and action cost, gives equality of the corresponding successor residual experiments. This proves (ii), and it makes the quotient transition, cost, and output independent of the chosen representative, proving (iii) by induction on word length.
+
+For (iv), assume $qEq'$. An induction on $|w|$ uses observation equality at the initial states, the matching enabledness and cost of the next step, and the successor-$E$ property. Hence $R_q(w)=R_{q'}(w)$ for every finite word $w$, so $q\Rinf q'$. This proves inclusion without a cardinality or computability assumption.
+\end{proof}
+\begin{corollary}[Minimal state count, with a precise scope]\label{cor:mincount}
+If $Q$ is finite, the quotient by $\Rinf$ has the fewest states among quotients induced by observation-, action-, and exact-cost-preserving equivalences of $Q$. It does \emph{not} follow that its representation minimizes bits of metadata, description length, proof-checking time, or runtime across all coding schemes.
+\end{corollary}
+\begin{proof}
+For a finite set, $E\subseteq\Rinf$ implies every $E$-class lies in one $\Rinf$-class. Hence $|Q/E|\ge |Q/\Rinf|$. The statement says nothing about binary encodings of these classes or about alternative interfaces.
+\end{proof}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ q/.style={draw,circle,minimum size=10mm},
+ s/.style={draw,rounded corners=2pt,minimum height=9mm,minimum width=29mm}]
+\node[q] (a) at (0,1.6) {$q$};
+\node[q] (b) at (7.2,1.6) {$q'$};
+\node[s] (c) at (0,0) {$\delta(q,a)$};
+\node[s] (d) at (7.2,0) {$\delta(q',a)$};
+\draw[<->,dashed] (a)--node[above]{$\Rinf$}(b);
+\draw[->] (a)--node[left]{$a,c$}(c);
+\draw[->] (b)--node[right]{$a,c$}(d);
+\draw[<->,dashed] (c)--node[below]{$\Rinf$}(d);
+\end{tikzpicture}
+\caption{Residual equivalence is an exact cost-preserving congruence. Merely matching the present observation would not guarantee the bottom dashed arrow.}\label{fig:congruence}
+\end{figure}
+
+\section{Certified horizons survive the canonical quotient}
+\PriorArtNote{Preservation of any explicitly observed property or per-step cost under an exact trace equivalence is inherited from the chosen equivalence definition; compare \cite{nerode,milner}. The special content here is the certified-reflection interpretation of the observations, not a new generic cost-conservation principle.}
+We now combine the certified reflection hierarchy of Section~3 with the monitor geometry of Section~5.
+\begin{definition}[Certified hitting cost]\label{def:hitting}
+Assume the observation language contains a label $\Cert_k$ exactly when a linked accepted record for $\theta_k$ is available. Define
+\[
+ J_k(q)=\inf\left\{\sum_{i=1}^{\ell}c(q_{i-1},a_i):
+ \begin{array}{l}w=a_1\cdots a_\ell\text{ legal from }q,\\ \Cert_k\in\Ob(q_\ell)\end{array}\right\},
+\]
+with $\inf\varnothing=\infty$ and the empty path allowed at cost zero. Define the action-count horizon $D_k(q)$ by replacing the summed costs with $\ell$.
+\end{definition}
+\begin{theorem}[Evidence-and-cost conservation]\label{thm:hitting}
+If $q\Rinf q'$, then for every $k$,
+\[
+ J_k(q)=J_k(q'),\qquad D_k(q)=D_k(q'),
+\]
+and their certified reflection observations agree at every matched finite future stage. The same statements hold when either state is replaced by its quotient class in $Q/\Rinf$.
+\end{theorem}
+\begin{proof}
+Theorem~\ref{thm:main} identifies exactly the legal words and their entire cost-and-observation traces. For any such word, its terminal observation contains $\Cert_k$ from $q$ iff it does from $q'$, with the same cumulative cost and length. Thus the two sets of attainable certified-hit costs and lengths coincide, including the empty path. Taking infima yields both equalities. The quotient reproduces those exact traces by Theorem~\ref{thm:main}(iii).
+\end{proof}
+\begin{corollary}[Certified level is a quotient invariant]\label{cor:level}
+If the monitor is witness-complete and $\Ob$ contains precisely its accepted linked reflection labels, then $q\mapsto\clev(q)$ is constant on every $\Rinf$-class. If the observation additionally records whether the associated $\theta_k$ is a non-premise discovery and whether a semantic attestation is accepted, those properties are quotient invariants too.
+\end{corollary}
+\begin{proof}
+Equivalent states have equal present observations. Apply the definition of $\clev$ and the indicated flags.
+\end{proof}
+\begin{remark}[What cost equality does not include]
+The cost $c$ must actually charge what is claimed to be preserved. If verifier runtime, BANK lookup, certificate reconstruction, storage, or scheduler overhead is omitted from $c$, then Theorem~\ref{thm:hitting} does not preserve those uncharged costs. Likewise, matching an identifier labelled ``accepted'' does not establish that its originating physical execution actually occurred; provenance authenticity depends on the specified trust and recording mechanism.
+\end{remark}
+
+\section{Six bounded consequence levels and an exact finite closure test}
+\PriorArtNote{Iterated finite-state partition refinement and finite stabilization are standard automata techniques \cite{nerode}. The sixteen-state example illustrates a limitation of a fixed six-round cutoff; it is not an independently established new complexity lower bound.}
+The universal residual condition involves all finite continuation words. For a finite monitor it can nevertheless be characterized by a bounded refinement. This is an effective finite algorithm when the action alphabet is also finite and the transition and observation data are explicitly available. This is an internal consequence of the residual theorem; no unrestricted theorem-consequence closure is claimed.
+\begin{definition}[Finite-depth refinement]\label{def:refine}
+Write $P_k$ for the partition of $Q$ into $\Rk{k}$-classes. Define the signature recursively by
+\[
+ s_0(q)=\Ob(q),\qquad
+ s_{k+1}(q)=\Bigl(\Ob(q),\bigl(\sigma_{k,a}(q)\bigr)_{a\in\ACT}\Bigr),
+\]
+where $\sigma_{k,a}(q)=\mathsf{off}$ if $a$ is disabled at $q$, and otherwise
+$\sigma_{k,a}(q)=(c(q,a),[\delta(q,a)]_{P_k})$. The $a$-component is understood as an indexed family, so the definition remains meaningful for countable $\ACT$. Two states have the same signature exactly when they are in the same $P_{k+1}$-class.
+\end{definition}
+\begin{lemma}[The recursion is exactly the bounded residual test]\label{lem:refine}
+For every $k\ge0$,
+\[
+ q\Rk{k+1}q' \iff
+ \Ob(q)=\Ob(q')\ \text{and for every action $a$,}
+\]
+$a$ has the same enabledness at both states, its costs agree when enabled, and its successor states are $\Rk{k}$-equivalent. Consequently
+\[
+ P_0\succeq P_1\succeq\cdots,\qquad
+ \Rinf=\bigcap_{k\ge0}\Rk{k},
+\]
+where $\succeq$ denotes ``coarser than.''
+\end{lemma}
+\begin{proof}
+A word of length at most $k+1$ is either empty or $aw$ with $|w|\le k$. Comparing the one-action prefix compares enabledness and cost. For enabled prefixes, equality of the remaining traces is precisely the predecessor test at the successor states. Induction on $k$ proves the signature characterization. A test of length at most $k$ is also a test of length at most $k+1$, and every finite word belongs to one of the bounded sets.
+\end{proof}
+\begin{theorem}[Finite-state stabilization certificate]\label{thm:stabilize}
+Suppose $|Q|=N<\infty$. If $P_k=P_{k+1}$ for some $k$, then $P_k=P_\infty$, the partition into $\Rinf$-classes. Furthermore, $P_{N-1}=P_\infty$; hence at most $N-1$ strict refinement rounds can occur after $P_0$. A check that $P_6=P_7$ therefore \emph{certifies} six-round sufficiency for that fixed monitor, but six rounds alone do not.
+\end{theorem}
+\begin{proof}
+The signature operation depends only on the current partition and the fixed labelled transition structure. If applying it to $P_k$ leaves the partition unchanged, applying it again leaves it unchanged, so all later partitions coincide. By Lemma~\ref{lem:refine}, their intersection is then $P_\infty$. Each strict refinement increases the number of blocks by at least one, while any partition of an $N$-element set has at most $N$ blocks and $P_0$ has at least one. Thus at most $N-1$ strict refinements occur. No equality plateau can precede a strict refinement, so stabilization has occurred by $P_{N-1}$.
+\end{proof}
+
+\subsection{Explicit bounded mining at levels +1 through +6}
+The following finite exercise is deliberately declared and reproducible. Let
+\[
+Q=\{q_i^b:b\in\{0,1\},\ 0\le i\le 7\},\qquad \ACT=\{a\},
+\]
+with $\delta(q_i^b,a)=q_{i+1}^b$ at unit cost for $i<7$, and $a$ disabled at $i=7$. Every state initially observes $\{\Cert_0\}$; the unique additional observation is $\Cert_1$ at $q_7^1$. This is compatible with witness-complete reflection. It is a \emph{monitor-level} example, not a claim of a deployed ATP.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth, font=\scriptsize,
+ s/.style={circle,draw,minimum size=7mm,inner sep=0pt}]
+\foreach \i in {0,...,7} {
+  \node[s] (a\i) at (1.36*\i,1.5) {$q_{\i}^{0}$};
+  \node[s] (b\i) at (1.36*\i,0) {$q_{\i}^{1}$};
+}
+\foreach \i in {0,...,6} {\pgfmathtruncatemacro{\j}{\i+1}
+  \draw[->] (a\i)--(a\j); \draw[->] (b\i)--(b\j);}
+\node[anchor=west,font=\scriptsize] at (10.2,1.5) {$\{\Cert_0\}$};
+\node[anchor=west,font=\scriptsize] at (10.2,0) {$\{\Cert_0,\Cert_1\}$};
+\node[align=center,text width=13cm,font=\small] at (5.4,-1.0)
+{Only the seventh action distinguishes the two initial histories.};
+\end{tikzpicture}
+\caption{The sixteen-state seven-action delay example. All edges have cost one and each lane has identical observations until its terminal state.}\label{fig:delay}
+\end{figure}
+
+\begin{proposition}[Six-round failure and exact refinement counts]\label{prop:delay}
+In the preceding monitor the partitions have the following block counts, and the two roots remain indistinguishable for all six successive refinement rounds:
+\[
+\begin{array}{c|rrrrrrrrr}
+ k&0&1&2&3&4&5&6&7&8\\\hline
+ |P_k|&2&4&6&8&10&12&14&16&16
+\end{array}
+\]
+In particular $q_0^0\Rk{6}q_0^1$ but $q_0^0\not\Rinf q_0^1$. Moreover $J_1(q_0^0)=\infty$ and $J_1(q_0^1)=7$.
+\end{proposition}
+\begin{proof}
+The word $a^i$ for $0\le i\le6$ ends in states with observation $\{\Cert_0\}$ in both lanes and unit costs throughout. The word $a^7$ ends in $q_7^0$ and $q_7^1$, whose observations differ. Thus the root distinction occurs only at depth seven. Initially $P_0$ distinguishes the sole state $q_7^1$ from all others, producing two classes. At each successive round, the action-enabledness and unequal next-state classes separate exactly two further groups: the terminal $q_7^0$ and the immediately preceding exceptional-lane state at the first round, followed by the two preceding positions at each later round. Induction gives $|P_k|=2+2k$ for $1\le k\le7$, capped at $16$; the displayed table follows. Only the $b=1$ lane reaches $\Cert_1$ after seven enabled actions, giving the stated hitting costs.
+\end{proof}
+\begin{remark}[Audit of the induction wording]
+The claim of ``two further groups'' describes the net block-count increase, not the creation of two entirely new observation symbols. The explicit signature recurrence in Definition~\ref{def:refine} is the decisive test. More importantly, $P_6$ is a \emph{bounded prediction partition}, not necessarily a lawful time-unbounded quotient: its root class has successors in different $P_6$-classes.
+\end{remark}
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\textwidth}{@{}cXcX@{}}\toprule
+Round & Consequence mined from the fixed monitor & Classes & Distinguishes the two roots?\\\midrule
+$+1$ & Immediate action legality and terminal certificate become visible &4& No\\
+$+2$ & Two-step suffix profiles propagate one stage backward &6& No\\
+$+3$ & Three-step certified suffixes are distinguished &8& No\\
+$+4$ & Four-step suffixes are distinguished &10& No\\
+$+5$ & Five-step suffixes are distinguished &12& No\\
+$+6$ & Six-step suffixes are distinguished, not full futures &14& No\\\bottomrule
+\end{tabularx}
+\caption{Exactly six bounded, low-in-fan (one-action) refinement levels. The seventh counterexample refutes any inference from six rounds alone to complete consequence closure.}\label{tab:six}
+\end{table}
+
+\section{Translation and simulation of reflective evidence}
+\PriorArtNote{Simulation/bisimulation-based preservation has established process-semantic precedents \cite{milner}; independently checkable certificates have precedents \cite{necula}. The proof-translation hypotheses are additional stipulations of this specialized setting.}
+W0 correctly distinguishes clocked SIC simulation from an admissible self-theory translation. We strengthen this distinction at the certificate-monitor interface.
+\begin{definition}[Evidence-preserving monitor map]\label{def:emap}
+Let $\mathfrak H$ and $\mathfrak H'$ have the same actions (or an explicitly fixed injective action translation), and let $\tau$ preserve designated tags, $\ATP$, $\Prv$, and quotation, so $\tau(\theta_k^M)=\theta_k^N$. An \emph{evidence-preserving forward map} $g:Q\to Q'$ satisfies, for every $q$ and enabled $a$:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $\Cert_k\in\Ob(q)$ implies the translated accepted $\Cert_k$ label is in $\Ob'(g(q))$; the same condition applies to every other specifically promised certificate or semantic flag;
+\item the action $a$ is enabled at $g(q)$, $\delta'(g(q),a)=g(\delta(q,a))$, and $c'(g(q),a)\le c(q,a)$.
+\end{enumerate}
+An \emph{exact reflective embedding} strengthens (i) to equality of translated observations, requires both directions of enabledness, and requires equal action costs.
+\end{definition}
+\begin{theorem}[Certified transfer and cost comparison]\label{thm:transfer}
+For an evidence-preserving forward map $g$, every reachable accepted source reflection event has a translated accepted target reflection event along the same action word, with no greater cumulative cost. Consequently, for the corresponding certified hitting costs,
+\[
+ J_k'(g(q))\le J_k(q)\qquad(k\ge0).
+\]
+If $g$ is an exact reflective embedding, every mapped source state has the same residual experiments as its target image (after renaming), and
+\[
+ J_k'(g(q))=J_k(q),\qquad D_k'(g(q))=D_k(q).
+\]
+\end{theorem}
+\begin{proof}
+Induct along each legal source action word. Transition commutation gives the paired target state, preservation of labelled evidence gives the target hit, and the sum of target edge costs is no larger. Thus each source hit is accompanied by a target hit of no greater cost; taking infima (including the empty word) proves the inequality. For an exact embedding, use induction in both directions: every action is enabled at the source exactly when at its image, with equal costs and observations, and successors remain in the image. Hence residual experiments agree for every word, and the sets of hitting costs and lengths coincide.
+\end{proof}
+\begin{corollary}[Clocked SICs need extra evidence structure]\label{cor:clock}
+Suppose $M\preceq_{\mathrm{clk}}N$ via a state injection $f$ and a nondecreasing unbounded clock $\rho$ with $\rho(1)=1$, and suppose the presentations satisfy W0's additional alignment of designated inputs, self-formula membership, translated accepted certificates, and sampled observations. Then each verified source discovery at stage $m$ has a translated verified target discovery by stage $\rho(m)$; in particular
+\[
+ t_N^{V}(k)\le\rho(t_M^{V}(k))
+\]
+whenever $t_M^V(k)<\infty$. No exact equality of first-stage times or cost is entailed unless the stronger exact monitor hypotheses hold.
+\end{corollary}
+\begin{proof}
+At the sampled target stage $\rho(m)$, the clocked SIC equation and the certificate/observation interface transfer the source event. Choosing the earliest source verified stage yields the inequality. The clock may skip target stages and the SIC equations do not track primitive verification costs; hence the stronger conclusions require separate assumptions.
+\end{proof}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ b/.style={draw,rounded corners=2pt,text width=38mm,minimum height=11mm,align=center}]
+\node[b] (a) at (0,1.8) {SIC $M$\\output trajectory};
+\node[b] (b) at (7.5,1.8) {SIC $N$\\clocked trajectory};
+\node[b] (c) at (0,-.2) {Certified monitor\\$\mathfrak H_M$};
+\node[b] (d) at (7.5,-.2) {Certified monitor\\$\mathfrak H_N$};
+\draw[->] (a)--node[above]{$f,\rho$}(b);
+\draw[->] (a)--node[left,font=\scriptsize,align=center]{record and\\check}(c);
+\draw[->] (b)--node[right,font=\scriptsize,align=center]{record and\\check}(d);
+\draw[->,very thick] (c)--node[above]{$g,\tau$}(d);
+\node[align=center,text width=13.5cm,font=\scriptsize] at (3.75,-1.75)
+{The thick lower arrow is an additional hypothesis, not a consequence of the upper arrow.};
+\end{tikzpicture}
+\caption{Clock transport and evidence transport are different mathematical obligations.}\label{fig:transport}
+\end{figure}
+
+\section{A complete small reflective example}
+\PriorArtNote{The tiny rule system is an illustrative construction \emph{within W1}. It does not demonstrate a new general logical theorem or an implemented self-reflective ATP; compare the long-established separation of formal proof and accepted certification \cite{godel,necula}.}
+To connect the abstract results to the XYZ/SIC base without claiming implementation, take a formal language containing a specification token $a$, a faithful tag $\langle K\rangle$, and
+\[
+ p=\theta_0^K=\ATP(\langle K\rangle),\qquad
+ r=\theta_1^K=\Prv(\langle K\rangle,\ulcorner p\urcorner).
+\]
+Let the only relevant primitive rules be $a\mapsto p$ and $p\mapsto r$. At designated input $A_K=\{a\}$, choose a rule-driven SIC with
+\[
+ C_K(A_K,1)=\{a\},\quad C_K(A_K,2)=\{a,p\},\quad
+ C_K(A_K,m)=\{a,p,r\}\quad(m\ge3),\quad H_K=0.
+\]
+On arbitrary $\Gamma\subseteq\{a,p,r\}$, extend $C_K$ by one-step closure at each stage under the two displayed rules. This satisfies the SIC axioms and does not silently infer semantic truth from derivability. A checker accepting two singleton applications establishes formal certificates $\pi_0:a\vdash p$ and $\pi_1:p\vdash r$, whose composition is a derivation of $r$ from $A_K$.
+
+If $\ATP$ is correctly interpreted so that $K$ qualifies as a tagged ATP, then $p$ is semantically correct. Since $p$ appears at stage two, the operational assertion $r$ is also correct under the stipulated semantics of $\Prv$. The checked event $r$ must \emph{link} to the accepted $p$ event before the record system counts it as certified level two. This is a genuinely rule-derived, conditionally truthful example; it is not a demonstration of comprehensive introspection or self-consciousness.
+
+\begin{proposition}[Different proof resources at equal logical capability]\label{prop:bank}
+Suppose a sequence of premise BANKs $B_0\subseteq B_1\subseteq\cdots$ satisfies $B_{i+1}\subseteq\operatorname{Con}_F(B_i)$, where $\operatorname{Con}_F$ denotes finite XYZ consequence. Then $\operatorname{Con}_F(B_i)=\operatorname{Con}_F(B_0)$ for all $i$. Nevertheless neither the checker receipts already stored nor the future certified hitting costs $J_k$ are fixed by this equality.
+\end{proposition}
+\begin{proof}
+Monotonicity gives $\operatorname{Con}_F(B_i)\subseteq\operatorname{Con}_F(B_{i+1})$. The assumption and transitivity/idempotence of finite derivability give the reverse inclusion. Induct on $i$. For the second assertion, two monitors can be given the same consequence set at their initial states but different accepted receipts or different transitions before a receipt is available, as in Proposition~\ref{prop:theorynot} and the delayed example. Thus logical equality does not logically force either operational equality.
+\end{proof}
+
+\section{Boundary cases, counterclaims, and open obligations}
+\PriorArtNote{The boundaries here are essential: generic automata minimization, ordinary proof checking, authenticity guarantees, and psychological consciousness are different tasks \cite{nerode,necula,tegmark}. Statements of possible future research are not established priority claims.}
+\begin{proposition}[No awareness transfer from bare clock simulation]\label{prop:nobare}
+A clocked simulation of unadorned SICs does not imply preservation of reflection level, certified reflection level, or certificate-hitting cost.
+\end{proposition}
+\begin{proof}
+The SIC clocked simulation equations mention only stage outputs, halting bits, and state maps. They impose neither a distinguished tag, a syntactic self-description class, a checker, nor any history monitor. One may equip two copies of the same SIC with inequivalent presentation and evidence interfaces while retaining identity clocked simulation. Therefore none of the asserted evidence conclusions follows without further assumptions.
+\end{proof}
+\begin{remark}[Why this is not the theorem of optimal compression]
+Theorem~\ref{thm:main} determines the largest observation-preserving congruence of a \emph{specified deterministic monitor}. It gives no algorithm for a general infinite-state monitor, no uncomputability breakthrough, no proof of unique historical execution, and no general minimum number of metadata bits. Computing the quotient may be harder than storing the original history. In a nondeterministic setting, ``possible future trace'' and ``all fair futures'' lead to different semantics; a simple deterministic residual equivalence cannot be transported without redesigning the model.
+\end{remark}
+\begin{problem}[Authentic historical provenance]
+What independently checkable record format distinguishes two past executions with the same future accepted proof behavior when the task demands knowledge of \emph{which past really happened}? Any such demand must appear in the chosen observation vocabulary or in a separately trusted provenance mechanism.
+\end{problem}
+\begin{problem}[Compression beyond finite equivalence classes]
+For a fixed family of finite monitors, what data structure encodes $Q/\Rinf$ with the least bits while retaining a practical transition and checker interface? The answer depends on the coding model and is not supplied by the class-count theorem.
+\end{problem}
+\begin{problem}[Nondeterministic fairness]
+For verifier-gated cooperative ATPs with fair or adversarial scheduling, identify an evidence-aware bisimulation preserving both may-certified and must-certified reflection, as well as the costs actually charged to the scheduler.
+\end{problem}
+\begin{problem}[Nondegenerate unbounded certified reflection]
+Does a specified, executable rule-driven ATP with a finitely described faithful self-tag and practical checker realize arbitrarily high \emph{linked certified} reflection levels under a frozen resource policy, without merely importing them as premises? W0's idealized $\omega$ schema does not settle these stronger implementation constraints.
+\end{problem}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ b/.style={draw,rounded corners=2pt,text width=36mm,minimum height=12mm,align=center}]
+\node[b] (logical) at (0,0) {Same present\\theorem set};
+\node[b] (evidence) at (5.2,0) {Same present\\checked receipts};
+\node[b] (future) at (10.4,0) {Same all-future\\experiments};
+\draw[->,thick] (future)--node[above,font=\scriptsize]{implies}(evidence);
+\draw[->,thick] (evidence)--(logical);
+\node[align=center,text width=13cm,font=\scriptsize] at (5.2,-1.0)
+{The middle-to-left implication requires an appropriate observation interface.};
+\end{tikzpicture}
+\caption{Evidence-sensitive equivalence is strictly finer in general than equality of current observations. Even the middle-to-left implication requires an appropriate declared observation interface.}
+\end{figure}
+
+\section{Conclusion}
+The mathematical difficulty in self-description is not merely asking a prover to utter ``I am a prover''. It is identifying which conclusions follow from its language, which depend on the operational semantics of its tag, and which rely on trustworthy evidence carried forward in time. W0 supplied the essential separation of reflection, proof, simulation, and history. The synthesis here adds a precise answer to one bounded but substantive question: for a deterministic, exact-cost, certificate-observing monitor, equality of all residual experiments is \emph{exactly} the coarsest lawful way to merge states while preserving future certified behavior.
+
+The certified-reflection descent theorem shows what a higher reflective receipt must contain; the residual theorem shows what may be forgotten without invalidating future tests of those receipts; the transfer theorem specifies the extra structure required for simulation to preserve them. Six rounds of explicit refinement do produce six levels of consequences, but a seven-action countermodel proves that this is not automatically full closure. These results yield a mathematical account of the \emph{price of forgetting reflective evidence} while keeping clear the boundary between formal self-description and claims about actual awareness.
+
+\clearpage
+\appendix
+\section{Revision, provenance, and verification ledger}\label{app:ledger}
+\subsection*{Immutable source and scope}
+\textbf{W0:} \emph{Formal Self-Awareness in Semi-Ideal Computers: Self-Theories, Reflection Depth, Simulation, and Certified Histories}, expanded research draft 0.1, October 28, 2026, \authorname, supplied as the 19-page PDF for this task. Its file has not been edited. No papers named in its own bibliography were opened, retrieved, or treated as independent sources. The historical claims of W0's references are not independently verified here.
+
+\subsection*{Internal completion and synthesis ledger}
+\renewcommand{\arraystretch}{1.18}
+\begin{longtable}{@{}p{0.20\textwidth}p{0.48\textwidth}p{0.24\textwidth}@{}}\toprule
+Origin & Mathematical content retained or developed & Where integrated\\\midrule\endfirsthead
+\toprule Origin & Mathematical content retained or developed & Where integrated\\\midrule\endhead
+W0 (inherited) & XYZ/SIC axioms; designated operational theorem set; faithful tags and $\SD$; reflection formulas and level; conditional provability soundness; distinct simulation and awareness relations; finite history/cost warnings & \S\S2, 3, 9--10\\
+Completion A (internal) & Accepted proof events; linked witness-complete reflection; certified-level initial segments; explicit distinction between receipt, operational output, non-premise discovery, and semantic attestation & \S3; Theorem~\ref{thm:descent}\\
+Completion B (internal) & Deterministic history monitor; exact residual experiment; canonical congruence; finite-depth partitions and stabilization; countermodel with delayed certification & \S\S4--5, 7\\
+Genuinely joint synthesis & Conservation of linked certified levels and exact hitting costs under the canonical quotient; certificate-aware transfer between monitor presentations; explanation of why mere SIC clock transfer or equal theorem closure is inadequate & \S\S6, 8--9; Theorems~\ref{thm:hitting}, \ref{thm:transfer}\\
+Incomparable contributions & Syntactic/semantic certification cannot replace future-trace geometry; future-trace geometry alone cannot authenticate historical truth or establish a tag's correctness & \S\S3--4, 10\\
+\bottomrule
+\end{longtable}
+\subsection*{Defect and repair register}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Premise versus certificate:} a source machine can prove a self-claim solely because it was initially supplied. \emph{Repair:} classify checked derivations, non-premise discovery, and semantic attestation as separate flags; do not identify level with genuinely derived self-knowledge.
+\item \textbf{Certificate of a provability claim versus predecessor proof:} checking $\theta_{k+1}$ does not by itself check $\theta_k$. \emph{Repair:} impose linked witness completeness for certified descent; report the hypothesis in every relevant theorem.
+\item \textbf{State versus history:} an SIC's accumulated formula set need not retain proof provenance. \emph{Repair:} introduce the explicitly additional record-complete monitor state $Q$.
+\item \textbf{Optimality overclaim:} ``minimum metadata'' and ``minimal quotient'' do not have the same meaning. \emph{Repair:} prove minimality only among exact deterministic equivalence quotients and expressly disclaim bit-optimal encoding.
+\item \textbf{Unbounded closure versus six rounds:} six refinement steps can miss depth-seven information. \emph{Repair:} supply a sixteen-state countermodel and the finite-state stopping certificate $P_6=P_7$.
+\item \textbf{Uncharged verification costs:} a proof of primitive-edge cost equality cannot imply equality of unmodelled overhead. \emph{Repair:} define exact costs as part of the observation-transition interface and qualify every resource claim.
+\item \textbf{Infinite versus finite systems:} the canonical residual exists for arbitrary $Q$, but the finite stabilization algorithm requires finite $Q$. \emph{Repair:} state and prove each claim at its appropriate scope.
+\end{enumerate}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Stealth,font=\small,
+ b/.style={draw,rounded corners=2pt,text width=43mm,minimum height=11mm,align=center}]
+\node[b] (w0) at (5.4,2.0) {W0: immutable source paper};
+\node[b] (a) at (1.9,0) {A: linked certified reflection};
+\node[b] (b) at (8.9,0) {B: residual history geometry};
+\node[draw,rounded corners=2pt,align=center,text width=92mm,minimum height=11mm] (s) at (5.4,-2.0)
+{Unified results: reflection, quotient, cost, and transfer};
+\draw[->] (w0)--(a);\draw[->] (w0)--(b);
+\draw[->] (a)--(s);\draw[->] (b)--(s);
+\end{tikzpicture}
+\caption{Provenance of the synthesized claims. A and B are internal development directions, not separately output manuscripts.}
+\end{figure}
+\subsection*{Paper-level verification ledger}
+\begin{tabularx}{\textwidth}{@{}p{0.32\textwidth}X@{}}\toprule
+Claim & Audit status and obligation\\\midrule
+Certified descent & Paper proof by finite predecessor-chain induction; assumes checked links and distinct quotation formulas.\\
+Residual quotient and minimality & Paper proof by equality of residual functions and induction on action words; exact deterministic actions and costs required.\\
+Hitting cost invariance & Paper proof by equality of attainable traces; only costs included in $c$ covered.\\
+Finite-state stabilization & Paper proof by refinement monotonicity and block count; not asserted for infinite monitors.\\
+Six-round countermodel & Explicit 16-state definition, recursive class-count table, root separation at action seven; finite enumeration can independently reproduce the table.\\
+Transfer theorem & Paper proof by simulation of each legal action word; equality requires converse enabledness and equality of observations and costs.\\
+External proof assistant & \textbf{Not run.} No independent formal proof certificate asserted.\\
+Originality versus prior art & \textbf{Not assessed.} No external mathematical sources authorized or consulted.\\
+Runtime or implementation & \textbf{Not measured.} Abstract existence/representation arguments only.\\\bottomrule
+\end{tabularx}
+
+\section{A reproducible finite-partition pseudocode}
+The following computes the exact $P_k$ partitions in a finite monitor, not general theorem closure. It uses a canonical class identifier for every distinct signature and stops upon equality of partitions. Class identifiers have no intrinsic significance.
+\begin{verbatim}
+class[q] := id(observation[q])       # P_0
+for k = 0,1,2,...:
+    signature[q] := (observation[q],
+        tuple(OFF if delta(q,a) undefined
+              else (cost(q,a), class[delta(q,a)])
+              for a in action_alphabet))
+    next_class := canonical_ids(signature)
+    if same_partition(next_class, class):
+        return class                  # certified P_infinity
+    class := next_class
+\end{verbatim}
+For finite $Q$ the algorithm stabilizes after at most $|Q|-1$ strict refinements, provided the finite action alphabet and all exact observation and transition data are available. An implementation that does not charge the work of evaluating those signatures is not thereby a costed compression algorithm.
+
+
+\section{X1: editorial bibliography and explicit non-originality ledger}
+\label{app:attributionX1}
+\noindent\textbf{Retrospective attribution.} The earlier manuscript W1 remains unaltered. X1 makes visible the substantial prior art for the mathematical tools on which W1's framework rests; citing these works does not imply they were sources during W1's original preparation.
+\begin{enumerate}[leftmargin=*,itemsep=.25em]
+\item \textbf{Established before W1:} Self-reference and provability/reflection theory \cite{godel,lob,feferman}; deterministic future-distinguishability, quotient/minimal-state and refinement principles \cite{nerode}; process behavioral equivalence \cite{milner}; independently checked program/proof certificates \cite{necula,besson}.
+\item \textbf{Application within W1, priority unassessed:} a designated syntactic self-description hierarchy with witness-complete linked receipts, and proof-certificate/cost observations installed into a deterministic residual monitor. The resulting generic quotient, trace-invariance, and stabilization proofs should be read as formal specializations and deductions, \emph{not as general theorems claimed to be newly invented}.
+\item \textbf{Only model-relative claims:} the minimum state count is for fixed observations and exact deterministic quotients; costs are precisely those charged in the defined transitions. Neither minimum physical memory bits nor authenticity of past execution follows.
+\item \textbf{Unresolved and not claimed:} a nontrivial separation between preserving formal theorem output and preserving authentic certified historical evidence, including all storage and checker costs, is a research direction rather than a result of W1.
+\end{enumerate}
+\subsection*{References (historically earlier sources and internal ancestry)}
+\begin{thebibliography}{99}
+\small
+\bibitem{tennesonW0} \textless Brian Tenneson\textgreater, \emph{Formal Self-Awareness in Semi-Ideal Computers: Self-Theories, Reflection Depth, Simulation, and Certified Histories}, expanded draft 0.1, October 28, 2026 (immutable W0).
+\bibitem{godel} Kurt G{\"o}del, ``{\"U}ber formal unentscheidbare S{\"a}tze der Principia Mathematica und verwandter Systeme I,'' \emph{Monatshefte f{\"u}r Mathematik und Physik} 38 (1931), 173--198. \url{https://doi.org/10.1007/BF01700692}.
+\bibitem{lob} M. H. L{\"o}b, ``Solution of a Problem of Leon Henkin,'' \emph{Journal of Symbolic Logic} 20 (1955), 115--118. \url{https://doi.org/10.2307/2266895}.
+\bibitem{feferman} Solomon Feferman, ``Transfinite Recursive Progressions of Axiomatic Theories,'' \emph{Journal of Symbolic Logic} 27 (1962), 259--316. \url{https://doi.org/10.2307/2964649}.
+\bibitem{nerode} Anil Nerode, ``Linear Automaton Transformations,'' \emph{Proceedings of the American Mathematical Society} 9 (1958), 541--544. \url{https://doi.org/10.1090/S0002-9939-1958-0135681-9}.
+\bibitem{milner} Robin Milner, \emph{A Calculus of Communicating Systems}, Lecture Notes in Computer Science 92, Springer, 1980. \url{https://doi.org/10.1007/3-540-10235-3}.
+\bibitem{necula} George C. Necula, ``Proof-Carrying Code,'' \emph{Proceedings of POPL 1997}, 106--119. \url{https://doi.org/10.1145/263699.263712}.
+\bibitem{besson} Fr\'{e}d\'{e}ric Besson, Thomas P. Jensen, and David Pichardie, ``Proof-Carrying Code from Certified Abstract Interpretation and Fixpoint Compression,'' \emph{Theoretical Computer Science} 364(3) (2006), 273--291. \url{https://doi.org/10.1016/j.tcs.2006.08.012}.
+\bibitem{tegmark} Max Tegmark, ``Is the Theory of Everything Merely the Ultimate Ensemble Theory?,'' \emph{Annals of Physics} 270 (1998), 1--51. \url{https://doi.org/10.1006/aphy.1998.5855}.
+\end{thebibliography}
+\clearpage
+\section*{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}
+\addcontentsline{toc}{section}{AI Disclaimer}
+Every reasonable effort has been made to ensure that the mathematical exposition presented herein is factual, correct, logically sound, sufficiently complete in its treatment of relevant facts (not in the technical sense of G\"odelian completeness), and supported by rigorous proofs or, at minimum, not readily susceptible to refutation. Nevertheless, no guarantee of correctness, completeness, consistency, or provability is implied. The authorship and composition of this work involve a combination of human and artificial intelligence: an AI determines the placement of some statements, but not all statements, and the placement of some individual characters, but not all characters. Generally, the AI involved is either DATA MIND or CAMI, both of which have been personally augmented by \textless Brian Tenneson\textgreater{} with structured, automated-theorem-proving (ATP) forms of creativity and intelligence. Mathematical development, organization, formulation, and revision may therefore reflect varying degrees of human and AI contribution, without implying that either party is solely responsible for any particular passage. ATLAS is employed as an additional mathematical and editorial auditor, alongside another AI reviewer and the author's own examination, to identify errors, omissions, unsupported assertions, and opportunities for improvement. Such review is not equivalent to independent formal verification of every claim. Responsibility for the decision to present and publish the resulting work remains with the human author.
+
+\medskip\noindent\emph{Edition-specific clarification: the present corrections to pagination, diagrams, and disclosure are editorial/layout repairs. An ATLAS manuscript re-audit accompanied the present repairs, but this is not independent external refereeing or machine-checked verification of the mathematical claims. No publication is implied or authorized by this revision.}
+
+\end{document}
