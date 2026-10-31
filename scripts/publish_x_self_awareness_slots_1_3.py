@@ -67,7 +67,7 @@ def main():
     for name in NAMES:
         text=(BUILD/(name+'_Publication_Repaired.tex')).read_text(encoding='utf-8')
         assert r'\end{document}' in text and 'See the AI disclaimer that follows this essay.' in text,name
-        assert '<Brian Tenneson>' in text or r'\AuthorExact' in text,name
+        assert 'Brian Tenneson' in text or r'\AuthorExact' in text,name
         pdf=compile_tex(name+'_Publication_Repaired.tex')
         doc=fitz.open(pdf)
         assert len(doc)==PAGES[name],(name,len(doc),PAGES[name])
