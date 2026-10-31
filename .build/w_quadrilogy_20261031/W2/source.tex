@@ -1,0 +1,472 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[margin=0.88in,headheight=16pt,footskip=26pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs,tabularx,array,longtable}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing}
+\usepackage{fancyhdr,lastpage}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=MidnightBlue,citecolor=MidnightBlue,urlcolor=MidnightBlue,
+  pdftitle={Certified Sufficiency and the Frontiers of Repair},pdfauthor={Brian Tenneson},pdfsubject={Finite verifier-gated proof-search, frontier certificates and conditional separation}}
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries\color{MidnightBlue}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.6ex plus .4ex}{.7ex}
+\titlespacing*{\subsection}{0pt}{1.3ex plus .3ex}{.5ex}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.48em}
+\setlist{leftmargin=*,topsep=.25em,itemsep=.18em}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\footnotesize\scshape Certified Sufficiency and Frontiers of Repair}
+\fancyhead[R]{\footnotesize Integrated FDWC$^2$ Research Exposition}
+\fancyfoot[C]{\footnotesize\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{.3pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Cl}{\operatorname{cl}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\Len}{\operatorname{Len}}
+\newcommand{\Rnn}{\mathbb{R}_{\geq0}}
+\newcommand{\sett}{\Sigma}
+\newcommand{\obj}{\mathcal{B}}
+\newcommand{\novel}[1]{\par\begingroup\small\textit{Prior-art/priority note.} #1\par\endgroup}
+\newcommand{\bn}{\textless{}Brian Tenneson\textgreater{}}
+\begin{document}
+\begin{center}
+{\huge\bfseries\color{MidnightBlue} Certified Sufficiency and the Frontiers of Repair}\\[6pt]
+{\large Local Proof Evidence, Nonlocal BANK Shocks, and a Conditional Work Separation}\\[8pt]
+{\normalsize Integrated Level-2 FDWC$^2$ Mathematical Research Exposition\quad |\quad Version 3}\\[11pt]
+{\large\bn}\\[3pt]
+{\small Mathematical direction, research questions, and supervision: \bn}\\
+{\small Mathematical formalization, proofs, synthesis and writing assisted by OpenAI's ChatGPT}\\[5pt]
+{\small October 31, 2026}
+\end{center}
+\vspace{.35em}
+\noindent\textbf{Provenance and scope.} This integrated article revises and unifies \emph{Frontiers of Certified Repair} (W2, version 2) with the subsequent \emph{Certified Sufficiency Separation: Three-Pass Settlement} (version 0.1). The ancestral manuscripts W0 (\emph{Geodesic Continuation and Multiresolution Omnicartography}) and W1 (\emph{The Cost of Re-Certifying a Geodesic}) are retained as historical sources, not rewritten here. The mathematical arguments are finite-state and conditional; outside references are for scholarly context and attribution.\par
+\noindent\textbf{AI DISCLOSURE.} A full statement of AI-assisted authorship, mathematical accuracy limits, originality, and independent verification status appears on the \emph{last page}, following the bibliography and claim-by-claim prior-art table.
+\begin{abstract}
+After a verifier-gated BANK update, a previously certified route may remain executable even though its optimality evidence has become obsolete. The problem is not necessarily to reconstruct the complete updated shortest-settlement-horizon vector, but to obtain enough certified lower-bound evidence for a sound action. We first organize global cap repair as a greatest dominated feasible potential, quantify its backward defect cone, and show that one added edge can alter horizons arbitrarily far away. We then construct region-supported frontier potentials, whose zero-outside convention allows independently checkable partial evidence. The central strengthened result is an exact frontier-distance identity
+\(p_K(x)=\min\{(\Cl_Gb)(x),\dist_G(x,V\setminus K)\}\), which yields the unique inclusion-minimal region satisfying a specified prospective no-replanning threshold. We next build a bounded-outdegree family of finite verifier-gated proof-search graphs in which a sound, region-minimal decision certificate uses \(O(1)\) post-update authenticated vertex-record inspections, whereas explicitly reconstructing all new horizons requires \(\Omega(n)\) such inspections without cached independent leaf records. This is a qualified existential separation, not a lower bound against symbolic or lazily computed global knowledge, and not a claim of empirical ATP speedup. Every named result is annotated for inherited mechanisms, derived consequences, and candidate contributions; no historical priority or independent machine verification is asserted.
+\end{abstract}
+\clearpage
+{\small\tableofcontents}
+\medskip
+\section{From repairing a map to certifying a decision}
+The W0 Pioneer and Omnicartographer describe admissible proof-search states, accepting settlements, and verifier-gated BANK deposits~\cite{W0}. W1 separated an invalidated optimality claim from a still-executable route, and identified a conditional computation-versus-execution decision~\cite{W1}. W2 developed cap repair, affected regions, safe frontier evidence, and a prospective stopping test~\cite{W2}. The subsequent three-pass settlement~\cite{Settlement} identified an exact geometry of the sufficient region and an explicit-map work separation. The present article integrates those deductions in a single chain, retaining the strongest original W2 foundations.
+
+A small update can force extensive global repair without forcing a rational decision-maker to pay for that repair. The mathematical question is therefore
+\begin{quote}\itshape
+What is the smallest inspected region sufficient to justify a specific sound decision, and can the cost of certifying that decision be asymptotically smaller than explicitly rebuilding an updated global horizon vector?
+\end{quote}
+
+Three tasks must not be conflated: (i) \emph{local validation} of the constraints a certificate actually asserts; (ii) \emph{global repair} of a potentially invalidated vector; and (iii) \emph{decision sufficiency} of a checked but potentially weak lower bound. Incremental shortest paths and real-time search supply extensive prior art for (i) and (ii), while metareasoning and proof-carrying planning motivate (iii)~\cite{Bellman,Koenig2004,Ramalingam1996,Russell1991,Mugdan2023,Dold2025}.
+
+\textbf{Claims and originality.} The mathematical theorems in this article are proved under explicitly stated assumptions, but a manuscript-level derivation is not a claim of historical priority. The underlying graph and heuristic mechanisms are established. The distinctive candidate contributions are the \emph{combined verifier-evidence interpretation}, the exact minimal-frontier characterization, and the restricted witness separating inexpensive local certification from explicit global reconstruction. A near-match search in the selected references is not an exhaustive priority investigation.
+
+\section{Finite snapshots and canonical cap repair}
+\begin{definition}[Trusted finite snapshot and horizon]
+A snapshot is \(G=(V,E,w,\sett)\), where \(V\) is finite, \(E\subseteq V\times V\), \(w:E\to\Rnn\), and \(\varnothing\ne\sett\subseteq V\) is the set of accepted settlement states. A trusted interface authenticates the snapshot and, when asked about a vertex, can return its \emph{complete} outgoing-edge record. Let
+\[
+H_G(x)=\inf\{\Len(\pi):\pi:x\rightsquigarrow s,\ s\in\sett\},\qquad\inf\varnothing=+\infty.
+\]
+The empty path has length zero. We distinguish graph-theoretic knowledge of \(G\) from the cost of obtaining authenticated records through a specified access interface.
+\end{definition}
+\begin{definition}[Potential, cap and envelope]
+A feasible lower potential is \(q:V\to\Rnn\) satisfying
+\[
+q(s)=0\quad(s\in\sett),\qquad q(u)\le w(u,v)+q(v)\quad((u,v)\in E).
+\]
+A cap is a finite \(b:V\to\Rnn\) with \(b(s)=0\) for all settlements; it need not itself be feasible. Define the min-plus capped envelope
+\begin{equation}\label{eq:closure}
+(\Cl_Gb)(x)=\min_{\pi:x\rightsquigarrow y}\{\Len(\pi)+b(y)\},
+\end{equation}
+where the endpoint \(y\) is arbitrary, including \(y=x\). For a finite nonnegative-weight graph a minimizing simple path exists.
+\end{definition}
+
+\begin{theorem}[Greatest cap-dominated feasible potential]\label{thm:greatest}
+The envelope \(p^\sharp=\Cl_Gb\) is the pointwise greatest feasible potential bounded above by \(b\). In addition, \(\Cl_G\) is monotone in its cap, contractive, and idempotent:
+\[
+b\le b'\Rightarrow\Cl_Gb\le\Cl_Gb',\quad \Cl_Gb\le b,\quad\Cl_G(\Cl_Gb)=\Cl_Gb.
+\]
+\end{theorem}
+\begin{proof}
+The empty path gives \(p^\sharp\le b\); nonnegative weights give \(p^\sharp\ge0\), and settlement caps force \(p^\sharp=0\) on \(\sett\). Prepending an edge to a minimizing path establishes edge feasibility. If \(q\) is feasible with \(q\le b\), telescoping its inequalities along any path \(x\rightsquigarrow y\) gives \(q(x)\le \Len(\pi)+b(y)\); minimizing proves \(q\le p^\sharp\). Monotonicity follows pathwise, and idempotence follows by applying the greatest-feasible statement to the already feasible \(p^\sharp\).
+\end{proof}
+\novel{\textbf{Established mechanism, W2 formulation.} This is shortest-path/min-plus closure and feasible-potential duality, not a claimed new shortest-path theorem~\cite{Bellman,Dijkstra,Mohri,Goldberg}.}
+
+\begin{corollary}[Exact old cap under monotone BANK update]\label{cor:monotone}
+Let \(G_0,G_1\) have the same finite vertex and settlement sets, let \(G_1\) add edges and/or decrease old edge costs, and assume \(H_0\) is finite everywhere. Then
+\begin{equation}\label{eq:oldnew}\Cl_{G_1}H_0=H_1.\end{equation}
+\end{corollary}
+\begin{proof}
+Every new path option was unavailable or no cheaper before, so \(H_1\le H_0\). Thus \(H_1\) is a feasible potential dominated by the cap, giving \(H_1\le\Cl_{G_1}H_0\). For every \(x\), a new shortest path to a settlement is an admissible envelope candidate ending with cap zero, giving the reverse inequality.
+\end{proof}
+\novel{\textbf{Derived.} Standard monotonicity and the capped envelope; dynamic shortest-path work predates W2~\cite{Ramalingam1996,Koenig2004}. This identity is not a complexity bound.}
+
+\section{Defect propagation and the limits of local repair}
+\begin{definition}[Defect and influence footprint]
+For an edge \(e=(u,v)\), let \(d_b(e)=b(u)-w(u,v)-b(v)\), and let \(D_b=\{(u,v)\in E:d_b(u,v)>0\}\). Write \(T_b\) for the set of tails of edges in \(D_b\). Set
+\[
+\rho_b(x)=b(x)-(\Cl_Gb)(x),\qquad R_b=\{x:\rho_b(x)>0\}.
+\]
+\end{definition}
+\begin{theorem}[Deficit identity and backward influence cone]\label{thm:defect}
+For every \(x\in V\),
+\[
+\rho_b(x)=\max_{\pi:x\rightsquigarrow y}\bigl(b(x)-\Len(\pi)-b(y)\bigr)\ge0,
+\qquad R_b\subseteq\operatorname{Reach}^{-1}(T_b).
+\]
+\end{theorem}
+\begin{proof}
+Subtract the minimum in \eqref{eq:closure} from \(b(x)\), and use the empty path for nonnegativity. If a path witnesses strict decrease, the sum of its successive cap differences minus edge weights is positive. Some edge must have a strictly positive defect. Its tail is reachable from \(x\), giving the containment.
+\end{proof}
+\novel{\textbf{Elementary identity; potentially distinctive repair-cone interpretation.} Dynamic-graph influence regions are established; no exclusive priority is claimed for this terminology~\cite{Mohri,Ramalingam1996,Koenig2004}.}
+
+\begin{corollary}[Forced deficit propagation]\label{cor:propagate}
+For every edge \((u,v)\), \(\rho_b(u)\ge d_b(u,v)+\rho_b(v)\). In particular, \(\rho_b(u)\ge \max\{0,d_b(u,v)\}\).
+\end{corollary}
+\begin{proof}
+Substitute \(\Cl_Gb=b-\rho_b\) into the edge-feasibility inequality and rearrange; use \(\rho_b(u)\ge0\).
+\end{proof}
+\novel{\textbf{Derived algebraic inequality.} No separate historical novelty claim~\cite{Bellman,W2}.}
+
+\begin{theorem}[One edge can force arbitrarily distant repair]\label{thm:nonlocal}
+For every \(n\ge1\) there is a finite graph and a one-edge monotone BANK update for which at least \(n\) old horizon values change, including a vertex whose directed distance \emph{to} the changed edge's tail is \(n-1\).
+\end{theorem}
+\begin{proof}
+Let \(V=\{v_0,\ldots,v_{n-1},t,s\}\) with settlements \(\{t,s\}\). Initially use unit-weight edges \(v_i\to v_{i+1}\) and \(v_{n-1}\to t\), and isolate \(s\). Hence \(H_0(v_i)=n-i\). Add one zero-cost edge \(v_{n-1}\to s\), making \(H_1(v_i)=n-i-1\). Every \(v_i\) changes, and there is a directed path of length \(n-1\) \emph{from \(v_0\) to} the changed edge's tail \(v_{n-1}\); the directed distance in the reverse direction need not be finite.
+\end{proof}
+\novel{\textbf{Established nonlocal effect.} The family illustrates familiar dynamic-shortest-path behavior, not a new general lower bound~\cite{Ramalingam1996,Koenig2004,Roditty2004}.}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=.95,every node/.style={transform shape,font=\small},st/.style={draw,circle,minimum size=7mm,fill=white}]
+\foreach \n/\x in {0/0,1/1.25,2/2.50,3/3.75} {\node[st] (v\n) at (\x,0) {$v_{\n}$};}
+\node at (4.9,0) {$\cdots$};\node[st] (last) at (6.0,0) {$v_{n-1}$};\node[st] (t) at (7.5,.65) {$t$};\node[st] (s) at (7.5,-.75) {$s$};
+\draw[->] (v0)--node[above] {$1$} (v1);\draw[->] (v1)--node[above] {$1$} (v2);\draw[->] (v2)--node[above] {$1$} (v3);
+\draw[->,dotted] (v3)--(last);\draw[->] (last)--node[above,sloped] {$1$} (t);
+\draw[->,dashed,thick,teal] (last)--node[below,sloped] {BANK: $0$} (s);
+\end{tikzpicture}
+\caption{One verified edge addition changes the exact horizon at every predecessor along the chain; checking only the new edge does not itself rebuild all old numerical values.}
+\label{fig:shock}
+\end{figure}
+
+\section{A regional frontier that never overstates what is known}
+\begin{definition}[Zero-outside frontier]\label{def:frontier}
+For any inspected region \(K\subseteq V\), define
+\[
+b_K(v)=\begin{cases}b(v),&v\in K,\\0,&v\notin K,\end{cases}\qquad p_K=\Cl_G b_K,\qquad p_V=\Cl_G b.
+\]
+This is a conservative evidence convention: positive numerical claims are not made at uninspected vertices.
+\end{definition}
+\begin{theorem}[Sound, monotone and maximal supported certificates]\label{thm:frontiers}
+For all \(K\subseteq J\subseteq V\),
+\[
+0=p_{\varnothing}\le p_K\le p_J\le p_V\le H_G.
+\]
+Among feasible potentials \(q\le b\) vanishing outside \(K\), \(p_K\) is pointwise greatest.
+\end{theorem}
+\begin{proof}
+Each \(b_K\) is a cap, hence its envelope is feasible by Theorem~\ref{thm:greatest}. If \(K\subseteq J\), then \(b_K\le b_J\), giving monotonicity. Feasible potentials telescope to a lower bound on every settlement path, so \(p_V\le H_G\). For any feasible \(q\le b\) vanishing outside \(K\), we have \(q\le b_K\), hence \(q\le p_K\) by maximality.
+\end{proof}
+\novel{\textbf{Potentially distinctive supported-evidence formulation.} The math uses standard min-plus closure and consistent heuristics, while the zero-outside verifier interface and supported maximality are specialized to this manuscript~\cite{Hart1968,Mohri,Lauer2025,W2}. No exhaustive priority exclusion.}
+
+\begin{proposition}[First-exit computation and regional checking]\label{prop:regional}
+If \(v\in K\), then \(p_K(v)\) is the minimum of (i) an internal path terminating at \(u\in K\), followed by \(b(u)\), and (ii) an internal path ending at the tail of an edge that exits \(K\), followed by that edge's weight. It is computable from caps on \(K\), edges internal to \(K\), and complete authenticated outgoing-edge lists at all vertices in \(K\). Afterward, checking feasibility at those tails suffices globally.
+\end{proposition}
+\begin{proof}
+A path that exits \(K\) can stop at its first outside vertex for no greater cost, because all later edge weights and terminal caps are nonnegative. This gives the two candidate forms. For \(u\notin K\), \(p_K(u)=0\) and \(0\le w(u,v)+p_K(v)\), so its outgoing inequalities hold automatically. For \(u\in K\), all required constraints are precisely those in the authenticated outgoing lists. Settlement values vanish automatically.
+\end{proof}
+\novel{\textbf{Potentially distinctive regional verifier contract.} First exit and local inequality checking are elementary; proof-carrying verification and planning certificates are established antecedents~\cite{Dijkstra,Necula,Mugdan2023,Dold2025}.}
+
+\begin{theorem}[Internal-anchor witness for exact capped value]\label{thm:anchor}
+Let \(x\in K\). If a regional minimizer for \(p_K(x)\) is a path \(\pi:x\rightsquigarrow u\) entirely within \(K\), followed by the internal cap \(b(u)\), then \(p_K(x)=p_V(x)\). Under Corollary~\ref{cor:monotone} with \(b=H_0\), this also equals the exact new horizon \(H_1(x)\).
+\end{theorem}
+\begin{proof}
+Monotonicity gives \(p_K(x)\le p_V(x)\); the internal minimizing path is also a global capped-envelope candidate, giving \(p_V(x)\le\Len(\pi)+b(u)=p_K(x)\). Apply Corollary~\ref{cor:monotone} for the final claim.
+\end{proof}
+\novel{\textbf{Potentially distinctive sufficient witness, not a new bounding principle.} Matching upper/lower bounds and graph potential certificates are classical~\cite{Hart1968,Mohri,Goldberg}.}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=1,every node/.style={font=\small},st/.style={draw,circle,minimum size=7mm,fill=white}]
+\fill[MidnightBlue!6,rounded corners=7pt] (-.55,-1.25) rectangle (5.1,1.5);
+\node[font=\small\bfseries,MidnightBlue] at (2.18,1.17) {inspected region $K$};
+\node[st] (x) at (0,0) {$x$};\node[st] (a) at (2,0.55) {$a$};\node[st] (u) at (4,.65) {$u$};\node[st] (z) at (3,-.65) {$z$};\node[st] (q) at (6,-.65) {$q$};
+\draw[->] (x)--(a);\draw[->] (a)--node[above] {$\mathrm{internal}$} (u);
+\draw[->] (x)--(z);\draw[->,thick,teal] (z)--node[above] {first exit} (q);
+\node[above,font=\scriptsize] at (u.north) {$b(u)$};\node[below,font=\scriptsize] at (q.south) {$p_K(q)=0$};
+\end{tikzpicture}
+\caption{A frontier competes between a capped internal anchor and a conservative exit with zero evidence beyond the boundary.}
+\label{fig:frontier}
+\end{figure}
+
+\section{An exact geometry of sufficient partial evidence}
+This section integrates the additional three-pass settlement into the main W2 development. The global capped envelope is denoted by \(p_V\), not automatically by the true horizon: the distinction matters whenever the cap is weak.
+\begin{definition}[Distance to the uninspected set]
+For \(A\subseteq V\), define its distance from \(x\) as the minimum of \(\dist_G(x,a)\) over \(a\in A\), setting the value to \(+\infty\) when \(A=\varnothing\). Directed shortest-path distances are used.
+\end{definition}
+\begin{theorem}[Exact frontier-distance identity]\label{thm:identity}
+For every finite nonnegative-weight snapshot, every cap, all \(K\subseteq V\), and all \(x\in V\),
+\begin{equation}\label{eq:identity}
+\boxed{\quad p_K(x)=\min\bigl\{p_V(x),\dist_G(x,V\setminus K)\bigr\}.\quad}
+\end{equation}
+\end{theorem}
+\begin{proof}
+Because \(b_K\le b\), \(p_K(x)\le p_V(x)\). A shortest route from \(x\) to the outside of \(K\), if it exists, ends at a zero-cap vertex and gives \(p_K(x)\le\dist_G(x,V\setminus K)\). For the reverse bound, consider any envelope candidate path. If it stays inside \(K\), its terminal cap is the original \(b\), so its cost is at least \(p_V(x)\). If it visits an outside vertex, its prefix to the first exit has cost at least \(\dist_G(x,V\setminus K)\); nonnegativity makes the full cost at least that much. These alternatives exhaust all candidates, including the empty path and \(x\notin K\).
+\end{proof}
+\novel{\textbf{Derived here from the W2 frontier; priority unverified.} The identity is elementary min-plus path algebra. Its explicit use as a decision-evidence interface is a candidate formulation, not a claim that no analogue exists in shortest-path or heuristic-search work~\cite{Bellman,Mohri,Hart1968,Settlement}.}
+
+\section{A certified choice without completing the map}
+\begin{definition}[Prospective decision budget]\label{def:budget}
+At start state \(x\), suppose a trusted checker accepts a complete currently executable settlement route \(\pi\) with cost \(P=\Len_G(\pi)\). Define the frontier regret budget \(B_K(x)=P-p_K(x)\). Fix a static post-update snapshot. A \emph{Replan-first} policy must pay a compulsory nonoverlapping cost \(c>0\) before executing any route. The decision is assessed only from the moment the certificate is available; earlier inspection cost is sunk but must be counted when choosing an overall evidence-acquisition policy.
+\end{definition}
+\begin{theorem}[Frontier-certified no-replanning rule]\label{thm:stop}
+Under this fixed sequential decision model,
+\begin{equation}\label{eq:stopping}
+\boxed{\qquad c>P-p_K(x)\quad\Longrightarrow\quad\text{execute the verified route now}.\qquad}
+\end{equation}
+More precisely, immediate execution is strictly faster than every policy that first pays the compulsory stage \(c\).
+\end{theorem}
+\begin{proof}
+Immediate execution costs \(P\). Every Replan-first strategy costs at least \(c+H_G(x)\). Frontier soundness gives \(H_G(x)\ge p_K(x)\), so such a strategy costs at least \(c+p_K(x)>P\).
+\end{proof}
+\novel{\textbf{Inherited W1 decision inequality with a W2 frontier input.} The economic threshold belongs to the established metareasoning tradition; the concrete proof-carrying partial-region input is the potentially distinctive integration~\cite{W1,W2,Russell1991,Korf1990,Christen2025}.}
+
+\begin{corollary}[Monotone maturation and irrevocable threshold crossing]\label{cor:maturity}
+If \(K\subseteq J\), then \(B_K(x)\ge B_J(x)\ge P-H_G(x)\). Once \(c>B_K(x)\) is established, every larger inspected region also establishes it. If Theorem~\ref{thm:anchor} applies, the budget is optimal among potentials dominated by \(b\).
+\end{corollary}
+\begin{proof}Subtract the inequalities of Theorem~\ref{thm:frontiers} from \(P\), and apply Theorem~\ref{thm:anchor}.\end{proof}
+\novel{\textbf{Derived.} This is monotonicity and algebra; not a separately original stopping theorem~\cite{W2,Mohri}.}
+
+\begin{theorem}[Unique minimum sufficient frontier region]\label{thm:ball}
+Set \(T=P-c\). If \(T\ge0\) and \(p_V(x)>T\), the threshold \(c>P-p_K(x)\) holds \emph{if and only if} \(K\) contains the directed distance ball
+\begin{equation}\label{eq:ball}
+\boxed{\qquad K_{\min}(x,T)=\{v\in V:\dist_G(x,v)\le T\}.\qquad}
+\end{equation}
+Thus \(K_{\min}\) is the unique inclusion-minimal region in the zero-outside frontier family passing the test. If \(p_V(x)\le T\), no region passes; if \(T<0\), the empty region already passes.
+\end{theorem}
+\begin{proof}
+The decision condition is \(p_K(x)>T\). For \(p_V(x)>T\), Theorem~\ref{thm:identity} makes it equivalent to \(\dist_G(x,V\setminus K)>T\). This is equivalent to having every vertex with distance at most \(T\) inside \(K\). If \(p_V(x)\le T\), no frontier exceeds \(T\). If \(T<0\), \(p_{\varnothing}(x)=0>T\).
+\end{proof}
+\novel{\textbf{Candidate exact sufficiency characterization, derived in the subsequent three-pass settlement.} The distance-ball equivalence itself is an elementary consequence of min-plus path truncation; the precise verifier-threshold interpretation merits more exhaustive comparison with bounded A* search and planning certificates~\cite{Settlement,Hart1968,Mugdan2023}. Historical priority is unverified.}
+
+\begin{remark}[The critical distinction between minimality and acquisition cost]
+Unique inclusion-minimality refers to the \emph{vertex set} for this fixed certificate language, not to shortest bit length, minimal proof size, or minimal cost across all checking systems. The theorem is structural: it does not provide a free procedure for learning the ball or confirming \(p_V(x)>T\). A cost-optimal acquisition problem needs a priced verifier-access model; it can be harder than the set-theoretic characterization. In some graphs, the minimum region already contains most of the graph.
+\end{remark}
+
+\begin{example}[Partial evidence suffices without knowing the exact horizon]
+Suppose a certified route costs \(P=7\), the actual (not necessarily known) horizon is \(H_G(x)=5\), and a checked frontier gives \(p_K(x)=4\). Then \(B_K=3\). For \(c=3.5\), the inequality \(c>3\) proves that immediate execution wins; the agent does not need the exact number 5. For \(c=2.5\), the frontier is inconclusive even though replanning would still be slower in this particular graph.
+\end{example}
+\begin{example}[A weak cap can block every finite inspection]
+If \(H_G(x)=10\), the verified route costs \(P=10\), and \(b\equiv0\), then every \(p_K\equiv0\), even for \(K=V\). When \(c=1\), the threshold never fires. This is a limitation of the evidence cap, not a failure of soundness.
+\end{example}
+\begin{proposition}[Failure to certify is not permission to replan]\label{prop:nonconverse}
+There is no converse to Theorem~\ref{thm:stop}: the inequality \(c\le P-p_K(x)\) does not imply that replanning first is faster.
+\end{proposition}
+\begin{proof}
+Take a graph whose accepted route already has optimal cost \(H_G(x)=P\), but whose feasible lower certificate is weaker, \(p_K(x)=L<P\). Choose any \(0<c\le P-L\). The stopping inequality fails, yet every Replan-first strategy costs at least \(c+P>P\).
+\end{proof}
+\novel{\textbf{Elementary one-sided logical limitation inherited from W1/W2.} It is not a distinctive theorem~\cite{W1,Russell1991}.}
+
+\section{An adversarial limit to exact local reconstruction}
+\begin{theorem}[Finite-radius views do not determine global capped repair]\label{thm:radius}
+For any fixed nonnegative integer \(r\), there are two snapshots with identical forward hop-radius-\(r\) views from a root \(x\) and identical caps on those views, yet with unequal values of the globally repaired cap at \(x\). Therefore an algorithm restricted to just that view cannot always determine the exact root repair.
+\end{theorem}
+\begin{proof}
+Use the chain in Theorem~\ref{thm:nonlocal}, choosing \(n>r+1\) and \(x=v_0\). Compare the graph before and after adding the last zero-cost edge; all outgoing-edge information within forward hop-radius \(r\) of \(x\) is unchanged, while the exact old cap closes to \(H_0(x)=n\) in the first and \(H_1(x)=n-1\) in the second. An algorithm receiving identical viewed information cannot output both values.
+\end{proof}
+\novel{\textbf{Established local indistinguishability style of argument; specialized witness.} This is not an unconditional runtime or communication lower bound~\cite{Roditty2004,Ramalingam1996,W2}.}
+
+The negative and positive results are compatible. A region-limited certificate can become weak (even zero) rather than claiming unjustified global exactness; it remains safe precisely because it does not pretend to know the unseen graph.
+
+\section{A family with less work for certification than for explicit global rebuilding}
+The preceding results show what information suffices. We now prove an asymptotic \emph{incremental authenticated-record} separation against explicitly reconstructing the complete updated horizon vector, with access and output obligations stated rather than tacitly assumed.
+\begin{definition}[Authenticated successor-record access and work]
+A record query for \(v\) returns the complete authenticated list of outgoing edges, weights and successor identifiers from \(v\), with unit query cost; the settled-state set and the newly deposited edge are authenticated separately. The system retains a verified executable route and the complete old horizon vector, but \emph{does not retain an independently addressable cache of the private leaf weights} introduced below. An \emph{explicit complete repair} must output the exact new numerical horizon at every vertex. Its query complexity is measured by post-update record inspections; writing its explicit output is a separate, equally relevant cost. All weights in the construction are small fixed integers, so bit complexity does not conceal growth.
+\end{definition}
+\begin{lemma}[A one-edge BANK family with identical old horizon maps]\label{lem:bits}
+For each \(n\ge2\), there is a bounded-outdegree, finite, verifier-gated graph with a start state \(x\), binary-tree root \(r\), leaves \(z_1,\ldots,z_n\), helper \(h\), and settlements \(s,t\). The edge \(x\to r\) has weight 1 and \(x\to t\) has weight 4. Tree edges have weight zero; every leaf has \(z_i\to t\) of weight 3 and \(z_i\to h\) of weight \(a_i\in\{1,2\}\). Initially \(h\to t\) costs 10 and \(s\) is isolated. Add a single zero-cost BANK edge \(h\to s\). Then, independently of the \(n\) leaf bits,
+\[
+H_0(x)=4,\quad H_0(h)=10,\quad H_0(z_i)=H_0(r)=3,
+\]
+where all internal tree vertices also have old value 3; but after the update,
+\[
+H_1(h)=0,\quad H_1(z_i)=a_i,\quad H_1(x)=1+\min_{1\le i\le n}a_i\in\{2,3\}.
+\]
+\end{lemma}
+\begin{proof}
+Before the update, each leaf's direct path to \(t\) of cost 3 is cheaper than its path via \(h\), of cost at least 11. Zero-weight internal edges propagate value 3 throughout the tree, so the two options from \(x\) both cost 4. After the update, \(h\to s\) costs zero, each leaf's optimal route through \(h\) has cost \(a_i<3\), and the tree minimum propagates to \(x\).
+\end{proof}
+\novel{\textbf{Author-developed toy family, not a historically new general lower-bound method.} Its role is to make independent post-update values invisible to the old horizon vector. It does not establish compression lower bounds against unrestricted data structures~\cite{Settlement,Ramalingam1996}.}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth,scale=.86, every node/.style={font=\small,transform shape}, st/.style={circle,draw=gray!85,fill=white,minimum size=8mm,inner sep=1pt},lab/.style={fill=white,inner sep=.5pt,font=\scriptsize}]
+\node[st] (x) at (0,0) {$x$}; \node[st] (r) at (1.75,0) {$r$};
+\node[st] (a) at (3.3,1.2) {$u$}; \node[st] (b) at (3.3,-1.2) {$v$};
+\node[st] (z1) at (5.3,1.65) {$z_1$}; \node[st] (z2) at (5.3,.55) {$z_2$};
+\node at (5.3,-.45) {$\vdots$}; \node[st] (zn) at (5.3,-1.7) {$z_n$};
+\node[st] (h) at (7.7,-.38) {$h$};\node[st] (t) at (10,1.5) {$t$};\node[st] (s) at (10,-1.6) {$s$};
+\draw[->] (x)--node[lab,above] {1} (r);
+\draw[->] (r)--node[lab,above] {0} (a);\draw[->] (r)--node[lab,below] {0} (b);
+\draw[->] (a)-- (z1);\draw[->] (a)-- (z2);\draw[->,dotted] (b)-- (zn);
+\draw[->] (z1)--node[lab,above] {$a_1$} (h);
+\draw[->] (z2)--node[lab,above] {$a_2$} (h);
+\draw[->] (zn)--node[lab,below] {$a_n$} (h);
+\draw[->] (h)--node[lab,above] {10} (t);
+\draw[->,dashed,very thick,teal] (h)--node[lab,right] {BANK: 0} (s);
+\draw[->,bend left=38] (x) to node[lab,above] {verified direct route: 4} (t);
+\node[font=\scriptsize,align=center] at (6.8,-2.35) {Every leaf also has an edge to $t$ of cost $3$.\\The tree is schematic: internal outdegree remains bounded.};
+\end{tikzpicture}
+\caption{The conditional separation family. All $2^n$ assignments of the leaf weights give the same \emph{old} complete horizon map, while the single new edge makes the $n$ new leaf horizons independent.}
+\label{fig:separation}
+\end{figure}
+
+\begin{theorem}[Certified sufficiency versus explicit-map reconstruction]\label{thm:separation}
+In the authenticated successor-record model above, there exists a family of finite verifier-gated proof-search systems with \(n\) reachable leaf states, a single monotone BANK edge addition, and a previously accepted complete route, such that
+\begin{enumerate}[label=(\alph*)]
+\item a sound \emph{decision-sufficient} certificate is checked with \(O(1)\) post-update authenticated vertex-record inspections;
+\item its inspected vertex region is uniquely inclusion-minimal for the zero-outside frontier stopping criterion; and
+\item any exact algorithm that must output the \emph{explicit entire updated horizon vector}, without cached independent leaf weights, needs \(\Omega(n)\) leaf-record inspections in the worst case.
+\end{enumerate}
+The work separation is unbounded in this declared interface; it does \emph{not} compare against unrestricted symbolic, lazy, or arbitrarily compressed global representations.
+\end{theorem}
+\begin{proof}
+Use Lemma~\ref{lem:bits}. Retain the accepted direct route \(x\to t\), with \(P=4\), and take a compulsory nonoverlapping refinement charge \(c=7/2\). Query only the complete outgoing record of \(x\), which contains \(x\to r\) of weight 1 and \(x\to t\) of weight 4. Set \(K=\{x\}\) and take the old horizon cap \(b=H_0\); then
+\[
+p_K(x)=\min\{b(x),1+0,4+0\}=1,\qquad p_K(v)=0\quad(v\ne x).
+\]
+The complete outgoing inequalities at \(x\) are checked by one record, and all others hold by nonnegativity. The route remains valid after an edge addition. Since \(7/2>4-1=3\), Theorem~\ref{thm:stop} certifies immediate execution using constant local work. Moreover \(T=P-c=1/2\), \(p_V(x)=H_1(x)\ge2>1/2\), and the only vertex within directed distance \(1/2\) of \(x\) is \(x\). Thus Theorem~\ref{thm:ball} proves that \(K\) is the unique minimum region.
+
+For the lower bound, all \(2^n\) assignments of \((a_1,\ldots,a_n)\) give the same old horizon vector, whereas the required new output contains \(H_1(z_i)=a_i\) for every \(i\). If an algorithm omits the record of some leaf \(z_j\), two instances agree on all queried records and all old horizon values but differ only by \(a_j=1\) versus \(a_j=2\). They have different required numerical output at \(z_j\), so the algorithm cannot be correct on both. Consequently at least \(n\) independent leaf inspections are required in the worst case. Writing the explicit vector also costs \(\Omega(n)\) entries. The shared constant deposit-authentication and direct-route checks do not change these asymptotics.
+\end{proof}
+\novel{\textbf{Candidate new model-specific synthesis, not an architecture-independent lower bound.} The indistinguishability argument is standard; what is specialized is the verified route, minimal frontier, retained old horizons, authenticated access model, and output distinction. Related work on dynamic shortest paths and proof-carrying optimal planning must be credited~\cite{Ramalingam1996,Koenig2004,Mugdan2023,Dold2025,Settlement}.}
+
+\begin{remark}[Meaning of a toy theorem prover]
+A finite graph can be interpreted as a deliberately simple automated proof-search machine for a fixed formula: its edges are permitted computational transitions and its settlement states are verifier-accepted terminal proofs. The BANK deposit unlocks one newly verified transition. This interpretation establishes an \emph{existential finite-ATP realization}, not a reduction transferring the record-query lower bound to arbitrary practical ATPs. It does not address undecidable proof search or infinite branching.
+\end{remark}
+
+\section{Verification contract, limitations, and adversarial audit}
+A certificate is only as trustworthy as its closed-world interface. The checker must authenticate (i) the frozen snapshot and settlement set, (ii) the complete outgoing-edge records at inspected tails, (iii) the cap and proposed potential on the region, (iv) the continued validity and cost of the complete route, and (v) the nonoverlap and compulsory-cost hypotheses when applying the stopping test. It may recompute the regional envelope to establish \emph{maximality}; checking inequalities alone only proves \emph{feasibility}.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}p{.32\linewidth}X@{}}
+\toprule
+\textbf{Claim to check}&\textbf{Required evidence / restriction}\\\midrule
+Sound post-update lower bound&Complete authenticated outgoing constraints for inspected vertices and feasible regional potential.\\
+Greatest supported frontier&Regional shortest-path computation or a matching optimality witness, beyond mere inequality checking.\\
+Global capped equality at root&Internal cap-anchored regional minimizer, or a different sufficient global certificate.\\
+Immediate execute-first choice&Complete accepted route, actual cost $P$, verified lower bound $p_K(x)$, and a prospective compulsory $c>P-p_K(x)$.\\
+Asymptotic partial/full separation&Uncached independent leaf records, authenticated successor access, explicit entire numerical output, and bounded common setup cost.\\\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Counterarguments and precise outcomes.}
+\begin{enumerate}[label=\roman*.]
+\item \emph{Missing edge.} An unlisted cheap edge from an inspected vertex can invalidate a claimed potential. Authenticated complete outbound records are necessary, not optional.
+\item \emph{Changed settlements or nonmonotone updates.} Current settlement caps must be reset to zero. The exact-old-to-new identity does not automatically survive edge deletions, weight increases, or new settlements, though the general cap-envelope results apply after appropriately defining the new snapshot.
+\item \emph{Already-spent computation.} The stopping theorem compares future actions after evidence is ready; it does not assert that obtaining the evidence was globally cost-effective. A real controller must pay inspection and checking charges.
+\item \emph{Cached graph or compressed map.} If leaf weights were independently cached, the leaf-query lower bound would not follow. A symbolic expression such as ``for each $z_i$, return its stored $a_i$ when requested'' need not materialize all values. Thus compressed global knowledge may match or outperform the partial method on other metrics.
+\item \emph{No universal speedup.} The result gives neither a bound against every dynamic algorithm nor a benchmark for an implemented AMLD. Verification and decoding costs can erase gains in other interfaces.
+\end{enumerate}
+
+\textbf{Three-pass settlement status.} Pass I proves the exact frontier identity and minimum-region condition. Pass II gives an existential finite-state \(O(1)\)-versus-\(\Omega(n)\) separation for authenticated-record inspections. Pass III rejects the unqualified extension to unrestricted compressed representations. The scope of ``complete knowledge'' is the \emph{explicit updated finite horizon vector}; it is not every true mathematical statement and not logical completeness in the sense of G\"odel.
+
+\section{Research consequences and open problems}
+The integrated theory changes the object to be optimized: instead of optimizing routes alone, it asks how to \emph{acquire, check, and retain} the least costly evidence that can safely change a decision. The minimum-ball theorem resolves a structural version of W2's ``smallest sufficient frontier'' problem; the cost-optimal acquisition variant remains a separate issue.
+\begin{enumerate}[label=\textbf{Q\arabic*.},itemsep=.5em]
+\item \textbf{Priced evidence acquisition.} Given access charges \(a(K,J)\) for expanding a certified region, what is the complexity of finding an acquisition policy with minimum total cost (including checking) that reaches a decisive bound? Under which graph families are exact or approximate policies possible?
+\item \textbf{Compressed-architecture frontier.} Fix a defensible class of symbolic/lazy global-repair methods and an output-query workload. Can one prove a nontrivial separation, counting construction, authentication, answering queries, memory, and verification?
+\item \textbf{Repeated BANK deposits.} Can partial certificates persist under a stream of monotone or adversarial changes with an amortized, soundly accounted verification cost?
+\item \textbf{Real proof-search semantics.} Which actual ATPs offer sound and efficient complete-successor commitments for bounded regions? Can their proof obligations and heuristic estimates be mapped to the finite graph model without leaving hidden edges?
+\item \textbf{Mechanized and empirical audit.} Can a checker independently replay the exact finite constructions and test the economic advantage against an incremental dynamic shortest-path baseline, rather than against a deliberately explicit full-map output alone?
+\end{enumerate}
+
+\section{Conclusion}
+A BANK update may invalidate old numerical evidence over an arbitrarily large region. A complete repaired map is therefore not synonymous with a cheap incremental repair. Nevertheless, region-supported frontier potentials remain sound under a strict zero-outside verification contract. Their exact distance-to-the-uninspected-set identity reveals the unique minimum region needed for a fixed stopping threshold. In an explicitly defined family of finite verifier-gated proof-search systems, that minimal certificate can be checked with constant post-update record work even though an exact explicit global horizon vector requires linear work. This is a proved but carefully delimited existence claim: it is not a new universal method for bypassing noncomputability or outcompeting every compressed knowledge representation. It identifies an exact research boundary between \emph{knowing enough to act} and \emph{reconstructing all finite numerical knowledge in a declared output format}.
+
+\appendix
+\section{Source chain, audit record and provenance}
+\textbf{Ancestral research chain.} W0 introduced the Pioneer/Omnicartographer/BANK formalism~\cite{W0}. W1 developed route validity versus optimality-certificate obsolescence and the sequential stopping inequality~\cite{W1}. W2 version 2 introduced the cap/defect/frontier architecture, its twelve named results and illustrative diagrams~\cite{W2}. The subsequent three-pass settlement introduced the exact frontier-distance identity, a minimum-region characterization and the restricted explicit-map separation~\cite{Settlement}. This integrated article rewrites the exposition into a continuous theorem chain, with substantial original arguments attributed to their prior manuscript position.
+
+\textbf{Proof and evaluation status.} Proofs in this integrated article are mathematical arguments supplied for review, not independently machine-checked theorems. The graph record-access cost model is formal, not benchmarked. The bibliography is an expanded but selective historical screen; it is not an exhaustive originality determination. Authors of external work receive attribution even where the exact textual formulation differs. No claim is made that FDWC, the three-pass review protocol, or an AI writing process is an independently implemented automated verifier.
+
+\section{Claim-by-claim priority and originality ledger}
+\small
+\begin{longtable}{@{}p{.14\linewidth}p{.47\linewidth}p{.32\linewidth}@{}}
+\toprule\textbf{Result}&\textbf{Mathematical content}&\textbf{Status / nearby work}\\\midrule\endfirsthead
+\toprule\textbf{Result}&\textbf{Mathematical content}&\textbf{Status / nearby work}\\\midrule\endhead
+\ref{thm:greatest}&Greatest feasible cap-dominated envelope&Established min-plus mechanism; W2 reformulation~\cite{Bellman,Mohri}.\\
+\ref{cor:monotone}&Exact old horizon closes to new horizon on monotone update&Derived; dynamic shortest paths~\cite{Ramalingam1996,Koenig2004}.\\
+\ref{thm:defect}&Deficit identity; reverse defect-tail cone&Elementary algebra; specialized evidence reading~\cite{Mohri,Ramalingam1996}.\\
+\ref{cor:propagate}&Deficit propagation across an edge&Derived inequality; no priority claim~\cite{W2}.\\
+\ref{thm:nonlocal}&One new edge, arbitrarily distant changes&Known phenomenon, sample witness~\cite{Koenig2004}.\\
+\ref{thm:frontiers}&Safe monotone maximal zero-outside frontiers&Candidate specialized evidence formalism; standard potentials~\cite{Lauer2025}.\\
+\ref{prop:regional}&First-exit formula and complete-outgoing verifier contract&Candidate specialized interface; classic validation~\cite{Necula,Mugdan2023}.\\
+\ref{thm:anchor}&Internal-anchor witness for global capped value&Specialization of matching bounds~\cite{Hart1968}.\\
+\ref{thm:identity}&Exact frontier distance-to-outside identity&New to settlement as formulation; elementary min-plus; priority unverified~\cite{Settlement,Mohri}.\\
+\ref{thm:stop}&Decision: $c>P-p_K(x)$&Inherited stopping inequality; frontier integration~\cite{W1,Russell1991}.\\
+\ref{cor:maturity}&Monotone budget / persistent threshold&Derived from monotonicity~\cite{W2}.\\
+\ref{thm:ball}&Unique minimum region equals distance ball&Candidate exact certification interpretation; prior-art screening incomplete~\cite{Hart1968,Mugdan2023}.\\
+\ref{prop:nonconverse}&Failed sufficient test proves no converse&Elementary logical caution~\cite{W1}.\\
+\ref{thm:radius}&Local-radius indistinguishability of repair&Known adversarial technique~\cite{Roditty2004}.\\
+\ref{lem:bits}&Independent new leaf horizons with identical old map&Toy-model construction; standard adversary style~\cite{Settlement}.\\
+\ref{thm:separation}&$O(1)$ certificate vs $\Omega(n)$ explicit update vector&Conditional, model-specific synthesis; output-sensitive lower bound; historical priority unverified~\cite{Koenig2004,Dold2025}.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\noindent\textbf{Potentially distinctive contributions, stated conservatively.} The evidence-repair interpretation of a min-plus defect cone; the supported-frontier verification contract; internal anchors as witness objects; the exact frontier-distance identity; a unique threshold-ball minimum; and the concrete conditional separation linking a minimal verified decision to explicit global numerical reconstruction. The last three are the manuscript's strongest additions relative to W2 version 2. None is represented as historically unprecedented merely because an exact textual match was not located.
+
+\section{ATLAS-style final publication audit (October 31, 2026)}
+\textbf{Review method and scope.} This is a manuscript-level, AI-assisted adversarial review of the integrated Version 3. The review rechecked the declared finite nonnegative-weight model, all sixteen named lemmas, theorems, corollaries and propositions, their proof dependencies, boundary cases, priority annotations and the restricted authenticated-record work claim. It is \emph{not} an independent formal proof-assistant certificate, external refereeing, exhaustive literature review, or a benchmark of any deployed ATP.
+
+\textbf{Mathematical repairs made in this edition.} The one-edge shock theorem now specifies that an affected predecessor can have directed distance \emph{to} the changed edge's tail as large as $n-1$; the converse directed distance need not exist. The separation family is described as having bounded \emph{outdegree}, rather than bounded undirected degree or bounded total degree: its helper vertex receives $n$ incoming leaf edges. The finite-radius indistinguishability statement explicitly uses \emph{hop-radius}. A claim-ledger entry now uses a proper cross-reference for Corollary~\ref{cor:propagate}. None of these repairs increases the breadth of the asymptotic claim.
+
+\textbf{Retained verification obligations.} The proof of the work separation assumes a trusted frozen-graph interface, authenticated complete outgoing records for inspected vertices, a previously accepted route, a verified old horizon cap, and no independently accessible cache of the private leaf weights. The constant-query claim concerns a \emph{decision certificate}, while the inclusion-minimality assertion is a separate mathematical characterization; it does not claim that minimality itself can be discovered and authenticated in constant time. Inspection charges incurred before the prospective replanning comparison are not erased from a complete evidence-acquisition cost accounting. The old horizon cap must be supported by valid prior evidence rather than an untrusted assertion.
+
+\textbf{Publication verdict.} The repaired integrated article is suitable for dissemination as a \emph{conditional, AI-assisted mathematical research preprint}, with provisional originality classifications and the disclaimer retained. Historical originality, deployed ATP performance, completeness of the model for real prover implementations, and independent machine-checked correctness remain unestablished.
+
+\section{References and retrospective scholarship}
+\begin{thebibliography}{99}\setlength{\itemsep}{.25em}\small
+\bibitem{W0} \bn, \emph{Geodesic Continuation and Multiresolution Omnicartography: Pioneers, Directional Gaps, Advance Certification, and Oracle Guidance in AMLDs}, version 4, October 31, 2026. Ancestral source W0.
+\bibitem{W1} \bn, \emph{The Cost of Re-Certifying a Geodesic: Portable Evidence, BANK Shocks, and Decision Latency in Multiresolution Omnicartography}, FDWC Level-1 multiarticle, version 2, October 31, 2026. Source W1.
+\bibitem{W2} \bn, \emph{Frontiers of Certified Repair: Local Evidence, Nonlocal BANK Shocks, and the Geometry of Safe Partial Knowledge}, FDWC$^2$ W2, version 2 retrospective prior-art edition, October 31, 2026. Direct source of the present integrated edition.
+\bibitem{Settlement} \bn, \emph{Certified Sufficiency Separation: Exactly Enough Mathematical Evidence without Complete Horizon Reconstruction}, three-pass AMLD+++0 settlement, version 0.1, October 31, 2026. Direct source of the additional identity, minimal-region theorem and restricted separation.
+\bibitem{Bellman} R. Bellman, ``On a Routing Problem,'' \emph{Quarterly of Applied Mathematics} \textbf{16} (1958), 87--90. \href{https://doi.org/10.1090/qam/102435}{doi:10.1090/qam/102435}.
+\bibitem{Dijkstra} E. W. Dijkstra, ``A Note on Two Problems in Connexion with Graphs,'' \emph{Numerische Mathematik} \textbf{1} (1959), 269--271. \href{https://doi.org/10.1007/BF01386390}{doi:10.1007/BF01386390}.
+\bibitem{Hart1968} P. E. Hart, N. J. Nilsson, and B. Raphael, ``A Formal Basis for the Heuristic Determination of Minimum Cost Paths,'' \emph{IEEE Transactions on Systems Science and Cybernetics} \textbf{4}(2) (1968), 100--107. \href{https://doi.org/10.1109/TSSC.1968.300136}{doi:10.1109/TSSC.1968.300136}.
+\bibitem{Korf1990} R. E. Korf, ``Real-Time Heuristic Search,'' \emph{Artificial Intelligence} \textbf{42} (1990), 189--211. \href{https://doi.org/10.1016/0004-3702(90)90054-4}{doi:10.1016/0004-3702(90)90054-4}.
+\bibitem{Russell1991} S. Russell and E. Wefald, ``Principles of Metareasoning,'' \emph{Artificial Intelligence} \textbf{49} (1991), 361--395. \href{https://doi.org/10.1016/0004-3702(91)90015-C}{doi:10.1016/0004-3702(91)90015-C}.
+\bibitem{Ramalingam1996} G. Ramalingam and T. Reps, ``An Incremental Algorithm for a Generalization of the Shortest-Path Problem,'' \emph{Journal of Algorithms} \textbf{21}(2) (1996), 267--305. \href{https://doi.org/10.1006/jagm.1996.0046}{doi:10.1006/jagm.1996.0046}.
+\bibitem{Necula} G. C. Necula, ``Proof-Carrying Code,'' \emph{POPL '97}, 106--119. \href{https://doi.org/10.1145/263699.263712}{doi:10.1145/263699.263712}.
+\bibitem{Mohri} M. Mohri, ``Semiring Frameworks and Algorithms for Shortest-Distance Problems,'' \emph{Journal of Automata, Languages and Combinatorics} \textbf{7}(3) (2002), 321--350.
+\bibitem{Koenig2004} S. Koenig, M. Likhachev, and D. Furcy, ``Lifelong Planning A*,'' \emph{Artificial Intelligence} \textbf{155}(1--2) (2004), 93--146. \href{https://doi.org/10.1016/j.artint.2003.12.001}{doi:10.1016/j.artint.2003.12.001}.
+\bibitem{Roditty2004} L. Roditty and U. Zwick, ``On Dynamic Shortest Paths Problems,'' \emph{ESA 2004}, LNCS 3221, 580--591.
+\bibitem{Goldberg} A. V. Goldberg and C. Harrelson, ``Computing the Shortest Path: A* Search Meets Graph Theory,'' \emph{SODA 2005}.
+\bibitem{Mugdan2023} E. Mugdan, R. Christen, and S. Eriksson, ``Optimality Certificates for Classical Planning,'' \emph{ICAPS 2023}, 286--294. \href{https://doi.org/10.1609/icaps.v33i1.27206}{doi:10.1609/icaps.v33i1.27206}.
+\bibitem{Dold2025} S. Dold, M. Helmert, J. Nordstr\"om, G. R\"oger, and T. Schindler, ``Pseudo-Boolean Proof Logging for Optimal Classical Planning,'' \emph{ICAPS 2025}, 54--63. \href{https://doi.org/10.1609/icaps.v35i1.36101}{doi:10.1609/icaps.v35i1.36101}.
+\bibitem{Lauer2025} P. Lauer and D. Fi\v{s}er, ``Potential Heuristics: Weakening Consistency Constraints,'' \emph{ICAPS 2025}, 218--222. \href{https://doi.org/10.1609/icaps.v35i1.36121}{doi:10.1609/icaps.v35i1.36121}.
+\bibitem{Christen2025} R. Christen, F. Pommerening, C. B\"uchner, and M. Helmert, ``A Formalism for Optimal Search with Dynamic Heuristics,'' \emph{ICAPS 2025}, 30--39. \href{https://doi.org/10.1609/icaps.v35i1.36098}{doi:10.1609/icaps.v35i1.36098}.
+\bibitem{Traytel2026} D. Traytel, ``Formalization of Lower-Bound Certificates for Optimal Classical Planning,'' \emph{Archive of Formal Proofs}, June 13, 2026. \url{https://isa-afp.org/entries/Lower_Bound_Certificates_Planning.html}.
+\end{thebibliography}
+
+\clearpage
+\thispagestyle{plain}
+\section*{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}
+Every reasonable effort has been made to prepare a factually faithful, logically sound, and mathematically defensible exposition, with explicit hypotheses, finite and checkable definitions, carefully scoped conclusions, and appropriate recognition of relevant prior art. For purposes of this manuscript, ``complete'' means sufficiently comprehensive coverage of relevant stated facts or, when explicitly specified, a finite numerical horizon vector; it does not mean completeness in G\"odel's technical sense. Proofs are intended to be provable from their assumptions, or at least not easily refutable by evident counterexamples, but neither mathematical correctness, consistency, logical provability, explanatory completeness, nor historical novelty is guaranteed. The results have not been independently machine-verified or empirically validated in a deployed theorem prover. This is a hybrid human--AI work: the research questions, intellectual seeds, direction, oversight, and publication decisions originate with and remain under the supervision of \bn; OpenAI's ChatGPT assisted in definitions, mathematical arguments, counterexamples, prior-art review, synthesis, text, and typesetting, contributing some but not all statements and characters. The AI assistance and the limits of independent verification are disclosed explicitly rather than presented as solely human authorship or as conclusive scholarly certification. Prior-art classifications and originality candidates are provisional and require independent specialist examination. The external literature cited was used for contextual and retrospective verification in preparing the integrated edition, not misrepresented as proof of priority.\par
+\vspace{1.0em}
+\noindent\textbf{End of manuscript.}
+\end{document}

@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Geodesic Continuation and Multiresolution Omnicartography — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/geodesic_continuation_and_multiresolution_omnicartography/">Back to publication</a><h1>Geodesic Continuation and Multiresolution Omnicartography</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/geodesic_continuation_and_multiresolution_omnicartography/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Geodesic Continuation and Multiresolution Omnicartography — Version 4 — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/geodesic_continuation_and_multiresolution_omnicartography/">Back to publication</a><h1>Geodesic Continuation and Multiresolution Omnicartography — Version 4</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/geodesic_continuation_and_multiresolution_omnicartography/source.tex" download>Download source</a><pre>\documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{microtype}
@@ -11,11 +11,17 @@
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage{parskip}
+\usepackage{textcomp}
+\usepackage{needspace}
+\setlength{\headheight}{14pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\parskip}{2pt plus 0.5pt minus 0.4pt}
+\linespread{0.97}
 
 \hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!60!black}
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{Geodesic Continuation and Multiresolution Omnicartography}
+\lhead{\small Geodesic Continuation and Multiresolution Omnicartography}
 \rhead{Tenneson}
 \cfoot{\thepage}
 
@@ -37,20 +43,42 @@
 \newcommand{\eps}{\varepsilon}
 
 \newenvironment{interpretiveformula}{%
-  \begin{center}\begin{minipage}{0.92\textwidth}\small
-  \textbf{Interpretive formula.}\ }{\end{minipage}\end{center}}
+  \begin{center}\begin{minipage}{0.92\linewidth}\small
+  \textbf{Interpretive formula.}\ \raggedright}{\end{minipage}\end{center}}
 
 \newenvironment{interpretation}{%
-  \begin{center}\begin{minipage}{0.92\textwidth}\small
+  \begin{center}\begin{minipage}{0.92\linewidth}\small
   \textbf{Interpretation.}\ }{\end{minipage}\end{center}}
 
-\title{\textbf{Geodesic Continuation and Multiresolution Omnicartography}\\
+
+% Dated settlement-note box is placed immediately after each preserved open question.
+\newcommand{\settlementanswer}[2]{%
+\par\smallskip\noindent
+\fcolorbox{blue!55!black}{blue!3}{%
+\begin{minipage}{0.93\linewidth}
+\small\textbf{OCTOBER 31, 2026 --- AMLD+++0 CONJECTURE SETTLER --- ONE OF FOUR PROOF ARGUMENTS (NO. #2).}\\[3pt]
+#1
+\end{minipage}}\par\smallskip
+}
+
+\title{\textbf{Geodesic Continuation and Multiresolution Omnicartography --- Version 4}\\
 \large Pioneers, Directional Gaps, Advance Certification, and Oracle Guidance in AMLDs}
-\author{Brian Tenneson\\Framework synthesis and formalization assisted by OpenAI&#x27;s ChatGPT}
-\date{September 16, 2026}
+\author{\textless{}Brian Tenneson\textgreater{}\\[4pt]{\small Framework synthesis and formalization assisted by OpenAI&#x27;s ChatGPT}}
+\date{Original: September 16, 2026\\Version 4: ATLAS-repaired publication edition, October 31, 2026}
 
 \begin{document}
 \maketitle
+
+\section*{Version 4: editorial provenance, priority, and settlement declaration}
+\addcontentsline{toc}{section}{Version 4: editorial provenance, priority, and settlement declaration}
+\noindent\textbf{Source and scope.} This October 31, 2026 Version 4 edition is derived from the user&#x27;s 15-page September 16, 2026 PDF, \emph{Geodesic Continuation and Multiresolution Omnicartography}. A separately recovered editable source contained subsequent oracle-containment expansions and an eighth open problem; those additions have \emph{not} been silently substituted for the PDF&#x27;s seven questions. The original seven Section 14 questions remain verbatim, and Section 15 retains the seven proposed conjectures from Version 2. On October 31, 2026, an AMLD+++0-labeled, ChatGPT-conducted three-pass conjecture-settlement analysis supplied four mathematical proof arguments. Version 4 preserves these four qualified answers immediately after their matching Section 14 questions and documents the proof arguments in Section 16. The original source manuscript is not altered or replaced.
+
+\noindent\textbf{Editorial repairs and limits.} Typesetting is rebuilt in LaTeX from available source material, with the PDF as the baseline for the original oracle section and open-problem list. The Bellman identity has been explicitly restricted to non-settlement states so that a zero-length terminal path is not incorrectly required to begin with an outgoing edge. The retrieved source also contains clarifications about infinite successor sets and a nonattained directional gap; these mathematical boundary clarifications are retained. Version 4 also repairs the 14.6 shortcut example and formal boundary cases in Sections 2, 5, and 7, and makes the conditional 14.4 assumptions explicit wherever its answer appears. Other claims have not undergone independent mechanized proof checking.
+
+\noindent\textbf{Prominent notice --- October 31, 2026, AMLD+++0.} \textbf{Four proof arguments were presented today for Conjectures 14.1, 14.4, 14.6, and the finite-graph clause of 14.7.} The 14.4 argument is confined to a static, single-decision sequential model; the 14.6 argument assumes old settlement states remain accepted. The second, infinite-graph/oracle clause of Version 2 Conjecture 14.7 was not analyzed in the settlement response. These are mathematical arguments generated in this conversation under the label \emph{AMLD+++0}, not independently executed verifier certificates. No external AMLD+++0 process, formal proof assistant, or referee has been verified. Conjectures 14.2 and 14.3 are empirically unresolved; 14.5 remains model dependent.
+
+\noindent\textbf{Priority and non-originality.} Shortest-path dynamic programming and Bellman optimality are established~\cite{bellman}; heuristic path search and accuracy-sensitive search are established~\cite{astar,pearl}; planning while acting and metareasoning are established~\cite{korf,russell}; replanning under graph changes is established~\cite{dstar}; and external recommendations guarded by independently checked evidence have precedent~\cite{necula}. These subjects are not claimed as new discoveries. The AMLD-specific Pioneer/Omnicartographer/BANK architecture, its formal notation, and the particular organized research program are presented as the author&#x27;s synthesis, with historical novelty \emph{not} established. The later references are retrospective scholarly context and should not be mistaken for works necessarily consulted during the original 2026 draft.
+
 
 \section*{Opening picture}
 Imagine that it is late, a Pioneer is trying to reach a hospital, and the Pioneer has no map---only the ability to make basic legal moves. An Omnicartographer, however, knows the terrain and can communicate directions to the Pioneer while the journey is underway. For the purposes of this paper, the reader is initially invited to suspend disbelief and allow genuine oracles: sources that may possess information the Pioneer could not obtain by its ordinary local computation alone. Nothing supernatural is required for the motivating picture---an Omnicartographer could simply be someone who has already traversed the terrain and is now radioing directions to someone following behind---but the formal theory also permits stronger oracle access.
@@ -61,8 +89,10 @@ The natural questions are immediate: how much cartographic resolution is require
 
 Nothing in the present paper concerns an actual wounded traveler. The Pioneer is an automated theorem-proving agent inside an automated metalogical decider (AMLD), the ``hospital&#x27;&#x27; is a settlement region, and the target may be as difficult as the Hodge conjecture. The analogy nevertheless captures the central problem precisely: an agent with limited local movement capability must reach a target while an oracle-equipped cartographer attempts, in real time, to determine which next move lies on a geodesic and when that fact can be certified before the move is taken. The formal development begins from that question.
 
+\noindent\textbf{AI DISCLOSURE: See the final page (page \pageref{sec:ai-disclaimer}) for the Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence.}
+
 \begin{abstract}
-This paper develops a discrete theory of geodesic continuation for Pioneers operating inside automated metalogical deciders (AMLDs), with semi-ideal computers (SICs) providing the underlying formal computational framework and an Omnicartographer serving as an oracle-equipped source of cartographic guidance. Oracle access is admitted explicitly rather than hidden inside the computational model. The paper also addresses the apparent paradox problem associated with such access and argues that oracle guidance can be incorporated without requiring a paradoxical computational state.
+This paper develops a discrete theory of geodesic continuation for Pioneers operating inside automated metalogical deciders (AMLDs), with semi-ideal computers (SICs) providing the underlying formal computational framework and an Omnicartographer serving as an oracle-equipped source of cartographic guidance. Oracle access is admitted explicitly rather than hidden inside the computational model. The paper also addresses the apparent paradox problem associated with such access and argues that oracle guidance can be incorporated without requiring a paradoxical computational state, subject to the stated verifier-gate assumptions.
 
 Let $G=(V,E,w)$ be a weighted Pioneer-accessible state graph, let $\Sett\subseteq V$ be a settlement region, and define the intrinsic settlement horizon
 \[
@@ -75,7 +105,7 @@ H(x)=w(x,y)+H(y)
 if and only if the legal transition $x\to y$ can begin a geodesic from $x$ to settlement, under the stated attainment assumptions.
 
 \begin{interpretiveformula}
-minimum distance from here to settlement $=$ cost of the next move $+$ minimum distance remaining afterward.
+The minimum distance from here to settlement equals the cost of the next move plus the minimum distance remaining afterward.
 \end{interpretiveformula}
 
 This gives a coordinate-free meaning to the statement that ``straight ahead is on a geodesic.&#x27;&#x27; Straightness need not be defined by Euclidean appearance or by continuous interpolation; it may instead be defined intrinsically by exact consumption of settlement horizon.
@@ -86,13 +116,13 @@ The paper next studies whether such a move can be certified before it is taken. 
 \]
 If $y^*$ is the uniquely optimal successor, define the directional gap
 \[
-\Gap(x)=\min_{z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr).
+\Gap(x)=\inf_{z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr)\ge 0.
 \]
-If an Omnicartographer estimates all continuation costs with uniform error at most $\eps$, then
+A unique optimum need not have a positive gap when infinitely many competitors accumulate toward it, so the finite-resolution theorem assumes $\Gap(x)&gt;0$. If an Omnicartographer estimates all continuation costs with uniform error at most $\eps$, then
 \[
 \eps&lt;\frac{\Gap(x)}{2}
 \]
-is sufficient to identify the uniquely optimal next move, and the factor $1/2$ is worst-case sharp under symmetric bounded error.
+is sufficient to identify the uniquely optimal next move. The factor $1/2$ is uniformly best possible under symmetric bounded error; when a runner-up attains the gap, equality permits an estimated tie.
 
 A certified interval formulation is also developed. If, at cartographic resolution $r$, the Omnicartographer has
 \[
@@ -119,15 +149,15 @@ The purpose of this section is deliberately modest. SIC and AMLD terminology is 
 A semi-ideal computer (SIC) is represented here only at the level needed for the present paper: a formally specified state-transition system with an admissible state class, a transition relation or weighted transition rule, and a halting or settlement condition. The details of a particular SIC implementation are external to the results below so long as its permitted transitions and costs are well defined.
 \end{definition}
 
-\begin{definition}[AMLD, schematic form]
-An automated metalogical decider (AMLD) is treated as a verifier-gated federation of automated theorem-proving agents sharing a trusted $\BANK$. A typical five-agent decomposition is written
+\begin{definition}[AMLD, schematic use in this paper]
+An automated metalogical decider (AMLD) is treated here as a verifier-gated federation of five automated theorem-proving or metalogical settlement agents sharing a trusted $\BANK$, together with a verifier gate $V$. To avoid silently redefining the more detailed AMLD architecture used elsewhere, write abstractly
 \[
-\mathcal A=(P,R,D,I,C;\BANK,V),
+\mathcal A=(A_1,A_2,A_3,A_4,A_5;\BANK,V).
 \]
-where $P$ seeks proof settlement of the target, $R$ seeks refutation, $D$ and $I$ seek specified metalogical settlement certificates, $C$ monitors contradiction-type settlement, and $V$ is the verifier gate. The present paper focuses on the currently active agent as a \emph{Pioneer}.
+The individual channels may be instantiated as proof, refutation, independence/dependence, contradiction, or other declared settlement modules according to the governing AMLD specification. The present paper requires only that one currently active agent be designated the \emph{Pioneer}, that trusted deposits be verifier-gated, and that the resulting legal transitions and costs be well defined.
 \end{definition}
 
-\begin{definition}[Pioneer-accessible graph]
+\begin{definition}[Pioneer graph]
 Fix a frozen formal environment and a current AMLD/Pioneer configuration. The Pioneer-accessible graph is
 \[
 G=(V,E,w),
@@ -156,9 +186,11 @@ Whenever a theorem below says that a transition ``begins a geodesic,&#x27;&#x27;
 \end{assumption}
 
 \section{Geodesic continuation: when straight ahead is justified}
+\noindent\textit{Prior-art note.} The shortest-path recurrence is an instance of the classical principle of optimality, not a priority claim of this paper~\cite{bellman,astar}.
+
 
 \begin{theorem}[Bellman settlement identity]
-For every state $x$ with at least one legal successor and finite $H(x)$,
+For every state $x\notin\Sett$ with at least one legal successor and finite $H(x)$,
 \[
 H(x)=\inf_{x\to y}\bigl(w(x,y)+H(y)\bigr).
 \]
@@ -166,11 +198,11 @@ If the infimum over successors is attained, then it is a minimum.
 \end{theorem}
 
 \begin{proof}
-Every path from $x$ to settlement begins with some legal edge $x\to y$ and then follows a path from $y$ to settlement. Therefore every such path has cost at least $w(x,y)+H(y)$ for its first successor $y$, giving
+Since $x\notin\Sett$, every path from $x$ to settlement begins with some legal edge $x\to y$ and then follows a path from $y$ to settlement. Therefore every such path has cost at least $w(x,y)+H(y)$ for its first successor $y$, giving
 \[
 H(x)\ge \inf_{x\to y}(w(x,y)+H(y)).
 \]
-Conversely, for every successor $y$ and every $\eta&gt;0$, choose a path from $y$ to settlement of cost at most $H(y)+\eta$. Prepending $x\to y$ gives a path from $x$ of cost at most $w(x,y)+H(y)+\eta$. Taking infima and then $\eta\downarrow0$ gives the reverse inequality.
+Conversely, fix $\eta&gt;0$ and any successor $y$ with $H(y)&lt;\infty$. By the definition of infimum, choose a path from $y$ to settlement of cost at most $H(y)+\eta$. Prepending $x\to y$ gives a path from $x$ of cost at most $w(x,y)+H(y)+\eta$. Successors with $H(y)=\infty$ cannot improve the infimum because $H(x)&lt;\infty$. Taking the infimum over successors and then letting $\eta\downarrow0$ gives the reverse inequality.
 \end{proof}
 
 \begin{interpretiveformula}
@@ -178,7 +210,7 @@ minimum cost from here $=$ best, over all legal next moves, of (cost of that mov
 \end{interpretiveformula}
 
 \begin{theorem}[Geodesic Continuation Theorem]\label{thm:continuation}
-Assume the relevant shortest paths are attained. For a legal transition $x\to y$,
+Assume $H(x)&lt;\infty$ and that a shortest path from $y$ to settlement is attained whenever $H(y)&lt;\infty$. For a legal transition $x\to y$,
 \[
 \boxed{H(x)=w(x,y)+H(y)}
 \]
@@ -206,10 +238,11 @@ If $y$ represents the current forward heading, Theorem~\ref{thm:continuation} is
 \end{interpretation}
 
 \begin{definition}[Geodesic slack]
-For a legal edge $x\to y$, define
+For a legal edge $x\to y$ with $H(x)&lt;\infty$, define the extended nonnegative slack
 \[
-\Slack(x,y):=w(x,y)+H(y)-H(x).
+\Slack(x,y):=w(x,y)+H(y)-H(x)\in[0,+\infty].
 \]
+It may equal $+\infty$ when $H(y)=+\infty$; slack is not defined by this formula when $H(x)=+\infty$, so the undefined expression $\infty-\infty$ never arises.
 \end{definition}
 
 \begin{interpretiveformula}
@@ -223,7 +256,7 @@ For a legal edge $x\to y$, define
 \end{interpretiveformula}
 
 \begin{corollary}[Slack criterion]
-For every legal transition $x\to y$,
+For every legal transition $x\to y$ with $H(x)&lt;\infty$,
 \[
 \Slack(x,y)\ge 0,
 \]
@@ -244,7 +277,7 @@ Suppose
 \[
 x_0\to x_1\to\cdots\to x_k
 \]
-is a finite legal path and every edge has zero geodesic slack. Then
+is a finite legal path with $H(x_i)&lt;\infty$ for all $i$, every edge has zero geodesic slack, and a shortest path from $x_k$ to settlement is attained. Then
 \[
 \boxed{
 H(x_0)=\sum_{i=0}^{k-1}w(x_i,x_{i+1})+H(x_k)
@@ -262,11 +295,11 @@ For each $i$,
 \[
 H(x_i)=w(x_i,x_{i+1})+H(x_{i+1}).
 \]
-Substitution telescopes through the prefix and yields the displayed equality. Appending a shortest path from $x_k$ produces a shortest path from $x_0$.
+Substitution telescopes through the prefix and yields the displayed equality. By the stated attainment hypothesis, a shortest path from $x_k$ exists. Appending it produces a shortest path from $x_0$.
 \end{proof}
 
 \begin{corollary}[Unit-cost intrinsic straightness]
-If every Pioneer move costs one unit, then a transition $x_i\to x_{i+1}$ is geodesically exact exactly when
+If every Pioneer move costs one unit, the relevant settlement horizons are finite, and the shortest suffix is attained, then a transition $x_i\to x_{i+1}$ is geodesically exact exactly when
 \[
 H(x_{i+1})=H(x_i)-1.
 \]
@@ -289,14 +322,14 @@ For a legal successor $y$ of $x$, define
 continuation value $=$ price of taking this next move $+$ shortest remaining trip afterward.
 \end{interpretiveformula}
 
-A successor is geodesically admissible exactly when $\Qval_x(y)=H(x)$. Let
+Call a successor $y$ \emph{continuation-optimal} when $\Qval_x(y)=H(x)$. Under the attainment hypothesis, continuation-optimal successors are exactly those that begin geodesics from $x$ to settlement. Let
 \[
 \mathcal G(x):=\{y:x\to y,\ \Qval_x(y)=H(x)\}
 \]
-be the set of geodesically optimal successors.
+be the set of continuation-optimal successors; under attainment this is the set of geodesically optimal successors.
 
 \begin{proposition}[Unique next direction]
-Assume the minimum continuation value is attained. A successor $y^*$ is the unique geodesically optimal next move if and only if
+Assume $H(x)&lt;\infty$, shortest paths from relevant successors are attained, and the minimum continuation value is attained. A successor $y^*$ is the unique geodesically optimal next move if and only if
 \[
 \Qval_x(y^*)&lt;\Qval_x(z)\qquad\text{for every }z\neq y^*.
 \]
@@ -307,11 +340,11 @@ The chosen road is uniquely optimal exactly when its best possible total trip is
 \end{interpretiveformula}
 
 \begin{definition}[Directional gap]
-If $y^*$ is uniquely optimal, define
+If $H(x)&lt;\infty$ and $y^*$ is uniquely optimal, define, with the convention $\inf\varnothing=+\infty$,
 \[
-\Gap(x):=\min_{z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr)&gt;0,
+\Gap(x):=\inf_{z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr)\in[0,+\infty].
 \]
-with the minimum replaced by an infimum when required.
+When $\Gap(x)&gt;0$, say that $x$ has a \emph{positive directional gap}. In a finite successor set, uniqueness automatically implies a positive directional gap. With infinitely many successors, uniqueness alone does not: competitors may have continuation values decreasing toward the optimum without attaining it.
 \end{definition}
 
 \begin{interpretiveformula}
@@ -324,9 +357,11 @@ with the minimum replaced by an infimum when required.
 \]
 \end{interpretiveformula}
 
-The directional gap measures not distance to the target, but decisiveness of the local navigation problem. A state may be far from settlement and have a large directional gap, making the next move easy to certify; another state may be close to settlement but have nearly tied continuations, making the next move difficult to distinguish.
+The directional gap measures not distance to the target, but decisiveness of the local navigation problem. A state may be far from settlement and have a large directional gap, making the next move easy to certify; another state may be close to settlement but have nearly tied continuations, making the next move difficult to distinguish. A unique optimum with $\Gap(x)=0$ is an important boundary case: the best move exists, but no positive uniform error tolerance can certify it against all competitors by the half-gap argument.
 
 \section{How much cartographic resolution is required?}
+\noindent\textit{Prior-art note.} Error-sensitive heuristic decisions are part of the classical heuristic-search literature~\cite{astar,pearl}. The half-gap inequality below is an elementary comparison estimate specialized here to candidate Pioneer moves, not a claim to have originated the general error-margin principle.
+
 The Omnicartographer need not possess the exact horizon function. It may instead hold estimates or certified intervals that improve with additional real computation.
 
 \begin{definition}[Uniform cartographic error]
@@ -338,13 +373,13 @@ for every legal successor $y$.
 \end{definition}
 
 \begin{theorem}[Sharp Cartographic Resolution Theorem]\label{thm:half-gap}
-Suppose $y^*$ is the uniquely optimal successor at $x$ with directional gap $\Gap(x)&gt;0$. If
+Suppose $y^*$ is the uniquely optimal successor at $x$ with positive directional gap $\Gap(x)&gt;0$. If
 \[
 \boxed{\eps_r&lt;\frac{\Gap(x)}{2}},
 \]
 then $y^*$ is also the unique minimizer of the estimated continuation values $\widehat{\Qval}_{x,r}$.
 
-Moreover, the factor $1/2$ is worst-case sharp under symmetric bounded error: at $\eps=\Gap/2$ an admissible error assignment can create an estimated tie between the best and second-best moves, and for $\eps&gt;\Gap/2$ an admissible error assignment can reverse their estimated order.
+The factor $1/2$ is uniformly best possible under symmetric bounded error. If some runner-up $z$ attains the gap, then at $\eps=\Gap(x)/2$ an admissible error assignment can create an estimated tie, and for larger error can reverse the order. If the infimum gap is not attained, then for every $\eps&gt;\Gap(x)/2$ some sufficiently close competitor admits an error assignment that reverses the estimated order, although equality need not itself produce a tie.
 \end{theorem}
 
 \begin{interpretiveformula}
@@ -371,7 +406,7 @@ Since $\Qval_x(z)-\Qval_x(y^*)\ge\Gap(x)$,
 \]
 Thus $y^*$ remains uniquely optimal in the estimated ordering.
 
-For sharpness, choose a runner-up $z$ attaining the gap. Assign error $+\eps$ to $y^*$ and $-\eps$ to $z$. At $\eps=\Gap/2$ their estimates tie; above that threshold the order reverses.
+For sharpness when the gap is attained, choose a runner-up $z$ with $\Qval_x(z)-\Qval_x(y^*)=\Gap(x)$ and assign error $+\eps$ to $y^*$ and $-\eps$ to $z$. At $\eps=\Gap(x)/2$ their estimates tie; above that threshold the order reverses. If the infimum is not attained and $\eps&gt;\Gap(x)/2$, then $2\eps&gt;\Gap(x)$, so by the definition of infimum there exists a competitor $z$ with $\Qval_x(z)-\Qval_x(y^*)&lt;2\eps$; the same opposite-sign error assignment reverses the estimated order. Thus no larger uniform error threshold can be guaranteed in general.
 \end{proof}
 
 \begin{corollary}[Bit-resolution estimate]
@@ -390,6 +425,8 @@ The number of bits of local cartographic precision grows approximately like $\lo
 \end{interpretiveformula}
 
 \section{Advance certification without exact horizons}
+\noindent\textit{Prior-art note.} Lower-bound admissibility and search pruning are standard heuristic-search concepts~\cite{astar,pearl}; the interval-separation test is a sufficient certificate obtained by comparing upper and lower bounds.
+
 A practical Omnicartographer will often know certified intervals rather than symmetric error bars.
 
 \begin{assumption}[Certified horizon intervals]
@@ -436,32 +473,47 @@ The Omnicartographer can certify a move before it is taken without knowing the e
 \end{interpretation}
 
 \begin{definition}[Required cartographic resolution]
-For a state $x$, define
+Assume the resolution index is discrete, $r\in\mathbb N$. For a state $x$, define
 \[
-r^*(x):=\inf\left\{r:\exists y^*\text{ such that }\overline{\Qval}_r(y^*)&lt;\min_{z\neq y^*}\underline{\Qval}_r(z)\right\}.
+r^*(x):=\min\left\{r\in\mathbb N:\exists y^*\text{ such that }\overline{\Qval}_r(y^*)&lt;\inf_{z\neq y^*}\underline{\Qval}_r(z)\right\},
 \]
+with $r^*(x)=\infty$ if the set is empty. For a continuous resolution parameter one should instead use the corresponding infimum and call it a critical resolution threshold, since the threshold need not itself be attained.
 \end{definition}
 
 \begin{interpretiveformula}
-$r^*(x)$ is the first map resolution at which one road is certified better than every rival road.
+For discrete resolution, $r^*(x)$ is the first map resolution at which one road is certified better than every rival road.
 \end{interpretiveformula}
 
 \begin{theorem}[Eventual Finite-Resolution Certification]\label{thm:eventual}
-Assume $x$ has finitely many legal successors, the true optimum $y^*$ is unique, and for every successor $y$,
+Assume $x$ has finitely many legal successors, $H(x)&lt;\infty$, and the true optimal successor $y^*$ is unique. At every legal successor $y$ let the bounds take values in $[0,+\infty]$ and satisfy
 \[
 L_r(y)\uparrow H(y),\qquad U_r(y)\downarrow H(y)
 \quad\text{as }r\to\infty.
 \]
-Then there exists a finite $r_0$ such that Theorem~\ref{thm:advance}&#x27;s strict separation condition holds for every $r\ge r_0$.
+Then there exists a finite $r_0$ such that Theorem~\ref{thm:advance}&#x27;s strict separation condition holds for every $r\ge r_0$, including when one or more competing successors have infinite settlement horizon.
 \end{theorem}
 
 \begin{interpretiveformula}
-If there really is one best road and the map converges to the truth, then sufficiently high but finite resolution eventually proves which road it is.
+If there is one best reachable road and the certified map bounds converge to the true horizons, a finite cartographic resolution eventually separates that road from every competitor, even from unreachable roads.
 \end{interpretiveformula}
 
 \begin{proof}
-Because the successor set is finite and $y^*$ is uniquely optimal, the minimum positive directional gap $\Gap(x)$ is strictly positive. For each successor, convergence of $L_r$ and $U_r$ implies that eventually the interval width is smaller than $\Gap(x)/3$. Taking the maximum of finitely many such finite indices gives a common $r_0$. For $r\ge r_0$, the upper continuation bound for $y^*$ lies strictly below every competitor&#x27;s lower continuation bound.
+Write $q^*:=w(x,y^*)+H(y^*)=H(x)&lt;\infty$. Since the upper bound at $y^*$ decreases to the finite number $H(y^*)$, its upper continuation value $\overline{\Qval}_r(y^*)$ decreases to $q^*$ and is finite for all sufficiently large $r$.
+
+For each competing successor $z$, uniqueness gives $\Qval_x(z)&gt;q^*$ in the extended real ordering. If $\Qval_x(z)&lt;\infty$, choose a finite threshold $\tau_z$ strictly between $q^*$ and $\Qval_x(z)$. Eventually
+\[
+\overline{\Qval}_r(y^*)&lt;\tau_z&lt;\underline{\Qval}_r(z),
+\]
+because the bounds converge to the corresponding finite horizons. If $\Qval_x(z)=+\infty$, choose $\tau_z=q^*+1$. The lower continuation bounds for $z$ tend to $+\infty$, so the same strict separation eventually holds. There are only finitely many competitors: taking the maximum of their finite thresholds&#x27; resolution indices (and an index making the optimal upper bound finite) gives a common finite $r_0$. Monotonic refinement preserves all strict inequalities for $r\ge r_0$. If there are no competitors, the separation condition is vacuous.
 \end{proof}
+
+\begin{corollary}[Finite-Resolution Geodesic Continuation Theorem]\label{cor:finite-geodesic}
+Under the hypotheses of Theorem~\ref{thm:eventual}, and assuming the relevant shortest paths are attained, there is a finite resolution $r_0$ after which the Omnicartographer can certify before movement that the unique selected edge $x\to y^*$ begins a geodesic from $x$ to settlement.
+\end{corollary}
+
+\begin{interpretiveformula}
+A uniquely best geodesic direction with a positive local separation eventually becomes certifiable from finite map resolution; the Omnicartographer need not first recover the entire geodesic.
+\end{interpretiveformula}
 
 \section{Branching is not ignorance}
 
@@ -497,10 +549,11 @@ This distinction separates ``I cannot tell yet&#x27;&#x27; from ``there really a
 A motivating cultural image comes from the 1998 film \emph{Pi}: as a Go position develops, one character argues that the possibilities become smaller and order emerges. The present framework suggests a precise qualification: fewer possibilities alone do not imply predictability. What matters is whether close competitors are eliminated or sufficiently separated.
 
 \begin{definition}[Candidate-relative directional gap]
-Let $C$ be a set of candidate successors containing a uniquely optimal $y^*$. Define
+Let $C$ be a set of candidate successors containing a uniquely optimal $y^*$ with $H(x)&lt;\infty$. Define
 \[
-\Gap_C(x):=\min_{z\in C,\ z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr).
+\Gap_C(x):=\inf_{z\in C,\ z\neq y^*}\bigl(\Qval_x(z)-\Qval_x(y^*)\bigr),
 \]
+with $\inf\varnothing:=+\infty$. Thus if $C=\{y^*\}$ there is no competitor, and the candidate-relative gap is $+\infty$. For finite nonempty competing sets the infimum is a minimum.
 \end{definition}
 
 \begin{theorem}[Candidate-Elimination Monotonicity]
@@ -519,7 +572,7 @@ Eliminating candidate roads while keeping the true best road cannot make the nea
 \end{interpretiveformula}
 
 \begin{proof}
-The minimum defining $\Gap_{C&#x27;}$ is taken over a subset of the competitors used to define $\Gap_C$. Removing elements from the set over which a minimum is taken cannot decrease the minimum.
+The infimum defining $\Gap_{C&#x27;}$ is taken over a subset of the competitors used to define $\Gap_C$. Taking an infimum over a smaller set cannot decrease its value, including when the smaller set is empty, since $\inf\varnothing=+\infty$.
 \end{proof}
 
 \begin{remark}
@@ -585,6 +638,8 @@ Do not finish the whole map when the next certified instruction is already enoug
 \end{interpretiveformula}
 
 \section{Real-time coordination and minimal-latency guidance}
+\noindent\textit{Prior-art note.} Interleaving planning and execution and deciding when additional computation is worthwhile have a substantial history in real-time heuristic search and metareasoning~\cite{korf,russell}. The pipeline formula is an idealized scheduling model, not an independently established universal optimality result.
+
 The Pioneer and Omnicartographer have different clocks. The Pioneer advances by formal transitions; the Omnicartographer may consume real computation time between or during those transitions.
 
 Let $c_O(x_i)$ be the real time needed, starting from the information then available, to certify the next move at state $x_i$. Let $m_i=m(x_i,x_{i+1})$ be the real execution-and-verification time for that Pioneer transition.
@@ -630,6 +685,8 @@ This proposition is a scheduling model, not a theorem that every AMLD permits on
 \end{remark}
 
 \section{Changing BANK, changing terrain}
+\noindent\textit{Prior-art note.} Efficient replanning after a changing environment is established in incremental search~\cite{dstar}. The monotone horizon inequality follows from preserving old paths while adding choices; the specialization to trusted BANK deposits is the present framework.
+
 In an AMLD, the trusted $\BANK$ may grow while the Pioneer is active. A verified lemma deposited by another agent can alter the accessible continuation geometry. The Omnicartographer must therefore distinguish a frozen-state horizon from a dynamically updated horizon.
 
 Write
@@ -649,22 +706,19 @@ A new verified lemma can make the remaining trip shorter even though it does not
 Therefore an Omnicartographer should invalidate or recompute recommendations whose optimality depended on an older $\BANK$ snapshot whenever a relevant verified deposit changes the accessible geometry.
 
 \section{Oracles and paradox safety}
-The word \emph{oracle} is used literally as a formal permission: the Pioneer may receive information not obtainable by its ordinary local computation. This does not, by itself, create a logical contradiction.
+The word \emph{oracle} is used literally as a formal permission: the Pioneer may receive information not obtainable by its ordinary local computation. This does not, by itself, create a logical contradiction. The distinction between untrusted information and accepted evidence has substantial precedent in proof-checking architectures~\cite{necula}; here it is applied to the AMLD oracle guidance interface.
 
-\begin{theorem}[Oracle access is not intrinsically paradoxical]\label{thm:oracle-safe}
-Let a formal transition system have a trusted state $B$, a verifier gate $V$, and an advisory oracle channel $O$. Suppose oracle outputs are not automatically inserted into $B$ as trusted mathematical facts; instead, any state-changing mathematical deposit must pass the same declared verifier/provenance rules that govern non-oracle deposits. Then adjoining the oracle channel does not by itself make the trusted formal state inconsistent.
+\begin{theorem}[Oracle access is not intrinsically paradoxical]
+Let a formal transition system have a trusted state $B$, a verifier gate $V$, and an advisory oracle channel $O$. Suppose oracle outputs are not automatically inserted into $B$ as trusted mathematical facts; instead, any state-changing mathematical deposit must pass the same declared verifier/provenance rules that govern non-oracle deposits. Then adjoining the oracle channel does not \emph{by itself} make the trusted formal state inconsistent.
 \end{theorem}
-
 \begin{interpretiveformula}
 Extra information is not the same thing as an extra axiom: advice may guide search, but trusted mathematical state changes still require the declared acceptance rule.
 \end{interpretiveformula}
-
 \begin{proof}
 The transition system is extended by an additional input source. By hypothesis, receiving an oracle message does not itself add a formula to the trusted mathematical base. Any trusted deposit remains subject to the pre-existing acceptance relation. Therefore inconsistency of the trusted state cannot follow merely from the existence of the oracle channel; it would have to arise from the acceptance policy, the trusted base, or a verified derivation already capable of introducing the inconsistency. The oracle may change which candidates are tried or in what order, but under the hypothesis it does not bypass the trust boundary.
 \end{proof}
-
 \begin{remark}
-Theorem~\ref{thm:oracle-safe} is intentionally modest. It does not claim that every imaginable self-referential oracle specification is consistent. It establishes the narrower point required by the present paper: oracle-guided navigation is not paradoxical merely because an oracle knows or communicates more than the Pioneer can locally compute.
+This theorem is intentionally modest. It does not claim that every imaginable self-referential oracle specification is consistent. It establishes the narrower point required by the present paper: oracle-guided navigation is not paradoxical merely because an oracle knows or communicates more than the Pioneer can locally compute. General limitations concerning formal truth and reflection are classical, including Tarski&#x27;s work~\cite{tarski}.
 \end{remark}
 
 A second issue arises when the content of an oracle&#x27;s message refers to the future behavior of that same oracle or to an illegal state whose construction depends on preserving the oracle&#x27;s identity. The following handoff schema isolates one class of such concerns.
@@ -672,20 +726,19 @@ A second issue arises when the content of an oracle&#x27;s message refers to the
 \begin{proposition}[Copy-and-handoff safety schema]
 Suppose an oracle $O_1$ emits information at time $t$ whose problematic self-reference, if any, would require $O_1$ itself to remain the relevant acting oracle at a later time $t+k$ with $k&gt;1$. Suppose before that critical time a successor oracle $O_2$ is created with the permitted informational state of $O_1$, $O_1$ is retired, and $O_2$ did not perform the original disclosure. Then any contradiction whose antecedent specifically requires identity between the original disclosing oracle and the later acting oracle is blocked by the handoff.
 \end{proposition}
-
 \begin{interpretiveformula}
 If the paradox requires ``the same oracle that said it&#x27;&#x27; to be the later actor, replace that actor before the critical time; the copied successor remembers the information but is not the original discloser.
 \end{interpretiveformula}
-
 \begin{proof}
 By construction, the later acting oracle is $O_2\neq O_1$. Therefore any paradox condition containing the identity requirement ``later actor $=$ original discloser&#x27;&#x27; is false after handoff. The informational continuity of the copied state does not restore numerical identity of the agents under the stated model.
 \end{proof}
-
 \begin{remark}[Scope of the handoff claim]
-This is a conditional schema, not a universal solution to semantic paradox. If the problematic condition depends only on information content and not on the identity of the disclosing oracle, copying does not remove it. The paper therefore separates the broad non-paradoxicality of oracle-guided search from this more specific identity-sensitive handoff mechanism.
+This is a conditional schema, not a universal solution to semantic paradox. If the problematic condition depends only on information content and not on the identity of the disclosing oracle, copying does not remove it. The paper therefore separates the broad non-paradoxicality of oracle-guided search from this more specific identity-sensitive handoff mechanism. A general semantic-paradox solution is expressly not claimed; compare the infinite-dependency example of Yablo~\cite{yablo}.
 \end{remark}
 
 \section{Relation to rectilinear MAPQUEST and proof-fiber geometry}
+\noindent\textit{Internal provenance.} The preceding rectilinear and SIC material is attributed to earlier Tenneson manuscripts~\cite{recttarget,proofsA,sicfiber,amldcart}. These have not been independently checked for external publication or priority.
+
 Earlier rectilinear MAPQUEST work established that a coordinatewise monotone $L^1$ route has endpoint length determined only by coordinate displacement and that arbitrarily fine subdivision does not reduce that length. Later proof-space work separated such a realizable rectilinear route from the intrinsic geodesic, with
 \[
 d_A(P,Q)\le D_{\mathrm{rect}}(P,Q)
@@ -747,8 +800,7 @@ A uniquely optimal successor with positive directional gap is eventually certifi
 \item \textbf{Candidate elimination.}
 Eliminating competitors while preserving the true optimum cannot decrease the candidate-relative directional gap.
 
-\item \textbf{Oracle safety.}
-Oracle guidance does not itself alter the trusted formal base; verifier-gated search advice is therefore not intrinsically paradoxical.
+\item \textbf{Oracle safety.} Oracle guidance does not itself alter the trusted formal base; verifier-gated search advice is therefore not intrinsically paradoxical.
 \end{enumerate}
 
 \section{Open problems}
@@ -756,19 +808,107 @@ Several questions remain open and appear experimentally approachable.
 
 \begin{enumerate}
 \item \textbf{Computability of useful horizon bounds.} Which AMLD/SIC architectures admit inexpensive certified $L_r,U_r$ bounds strong enough to separate next moves before exhaustive proof search?
+\settlementanswer{\textbf{Answer:} An explicit, finite, verifier-gated layered-DAG family does. For each $n\geq1$, it has $2^n$ settlement paths but only $O(n)$ graph size; dynamic programming computes exact certified $L_r=U_r=H$ in polynomial time, distinguishing a unique next move without enumerating those paths. See the constructive proof in Section~\ref{sec:settle141}.}{14.1}
 
 \item \textbf{Empirical directional-gap distribution.} On natural theorem corpora, how often is $\Gap(x)$ large enough that low-resolution cartography suffices, and where do near-ties dominate?
 
 \item \textbf{Value of shared BANK contributions.} How often do verified deposits by non-Pioneer AMLD agents increase directional gaps, decrease horizons, or change the identity of the optimal Pioneer move?
 
 \item \textbf{Resolution scheduling.} Given a cost model for cartographic computation, when should the Omnicartographer stop refining and allow a merely near-optimal move rather than wait for exact certification?
+\settlementanswer{\textbf{Conditional answer (static single-decision model):} If an entire verifier-safe completion plan is already executable at certified cost at most $H(x)+B$, computation and execution cannot overlap, the terrain is fixed, and refinement has no separately credited future benefit, stop when its next step would cost $c&gt;B$. Indeed $T_{\mathrm{now}}\le H(x)+B&lt;H(x)+c\le T_{\mathrm{refine}}$. A merely recommended first edge is insufficient for this conclusion. See Section~\ref{sec:settle144}.}{14.4}
 
 \item \textbf{Branching policies.} If several next moves are genuinely geodesic, what secondary criterion should choose among them---future expected branching, verifier latency, robustness to BANK changes, or another certified objective?
 
+\Needspace{12\baselineskip}
 \item \textbf{Dynamic geometry.} What strongest guarantees survive when $\BANK$ changes while cartography is in progress?
+\settlementanswer{\textbf{Answer (monotone expansions):} If existing edges remain legal, old costs do not rise, and accepted settlement states remain accepted, then $H_{t+1}(x)\leq H_t(x)$ and every previously legal move remains legal. Nevertheless, adding a verifier-approved shortcut can reverse the unique optimal first move, so old optimality certificates must be rechecked. See Section~\ref{sec:settle146}.}{14.6}
 
+\Needspace{9\baselineskip}
 \item \textbf{Oracle hierarchy.} Which results require genuine oracle strength and which can be realized by ordinary learned, cached, previously traversed, or independently computed cartography?
+\settlementanswer{\textbf{Answer (finite explicit graphs only):} Computing exact settlement horizons and identifying optimal next moves requires no oracle on finite, explicitly represented graphs with nonnegative rational weights and decidable settlement states: reverse-graph shortest-path computation suffices. This proves only the finite-graph clause of Conjecture 14.7; the infinite-graph/oracle-separation clause retained in Section 15 was not settled in this run. See Section~\ref{sec:settle147}.}{14.7}
+
+
 \end{enumerate}
+
+\section{Seven proposed conjectures corresponding to the open problems}
+\label{sec:conjectures}
+These statements originated as conjectural \emph{answers} to the seven open questions preserved verbatim (before their new answer boxes) in Section 14. Numbers 14.1--14.7 refer to the \emph{question numbers}, not to theorem numbering. Some are empirical hypotheses requiring a preregistered test set. Version 4 preserves their Version 2 wording unchanged. Section 16 reports four subsequent proof arguments with explicit scope restrictions, not machine-verified or historically novel results. Established related research on heuristic search, replanning, and rational metareasoning provides non-original conceptual background~\cite{astar,pearl,korf,dstar,russell}.
+
+\begin{description}[style=nextline,leftmargin=2.0em,itemsep=1.0em]
+\item[Conjecture 14.1 --- Computability of useful horizon bounds.] There exists an infinite family of finite, verifier-gated AMLD/SIC state graphs containing exponentially many settlement-reaching paths for which an ordinary polynomial-time algorithm computes certified horizon bounds sufficient to identify a uniquely optimal next Pioneer move without exhaustively enumerating those paths.
+\item[Conjecture 14.2 --- Empirical directional-gap distribution.] On a fixed, preregistered natural-theorem benchmark using a fixed AMLD/SIC implementation, more than half of Pioneer decision states having a uniquely optimal successor satisfy $\Delta(x)&gt;2\varepsilon_4(x)$, so that cartographic resolution four suffices to identify the optimal move. Among states failing this threshold, at least half have $\Delta(x)\le\varepsilon_4(x)$, indicating that near-ties account for a substantial proportion of difficult navigation decisions.
+\item[Conjecture 14.3 --- Value of shared BANK contributions.] In a fixed benchmark of AMLD executions, at least ten percent of verified BANK deposits made by non-Pioneer agents cause a strict reduction in the current Pioneer settlement horizon, a strict increase in its directional gap where defined, or a change in its uniquely optimal next move. Each of these three effects occurs at least once within the benchmark.
+\item[Conjecture 14.4 --- Optimal resolution scheduling.] In a sequential, single-decision latency model where path weights equal execution-and-verification time, continued cartographic refinement is suboptimal whenever the cost of the next refinement step exceeds the certified upper bound on the excess path cost of the currently recommended move. Under these conditions, executing the near-optimal move immediately achieves a smaller total completion time than any policy that first performs another refinement step.
+\item[Conjecture 14.5 --- Optimal geodesic branching policy.] At every finite geodesic branching state, a policy selecting the currently geodesic successor that minimizes worst-case execution-and-verification cost plus remaining settlement horizon over all declared admissible next BANK snapshots achieves the minimum worst-case completion cost among all currently geodesic successors.
+\item[Conjecture 14.6 --- Dynamic geometry under BANK expansion.] If BANK changes only by adding verifier-approved resources, without invalidating existing legal transitions or increasing their costs, every previously legal Pioneer move remains legal and the intrinsic settlement horizon cannot increase. Nevertheless, there exist such BANK expansions that invalidate the previous unique optimality of a certified next move.
+\item[Conjecture 14.7 --- Oracle hierarchy and computational sufficiency.] Ordinary computation is sufficient to calculate exact settlement horizons and certify optimal Pioneer moves in every finite, explicitly represented AMLD/SIC state graph with nonnegative rational transition costs and decidable settlement states. However, there exist computably presented infinite Pioneer-accessible graphs for which no ordinary Turing machine can correctly decide settlement reachability for every state, whereas a Turing machine equipped with a halting oracle can do so.
+\end{description}
+
+\paragraph{Version 4 settlement qualification.} As of October 31, 2026, a ChatGPT-generated AMLD+++0-labeled three-pass review has supplied proof arguments for Conjecture 14.1, Conjecture 14.4 restricted to a static single-decision model, Conjecture 14.6 subject to preservation of prior settlement states, and the \emph{first, finite-graph sentence only} of Conjecture 14.7. The second, infinite-graph sentence of Version 2 Conjecture 14.7 was not included in the shortened submission and was not analyzed. Conjectures 14.2 and 14.3 require a frozen benchmark and measured data; Conjecture 14.5 requires a more exact cost/information model. See Section~\ref{sec:settlement}. These proofs are not formal machine certificates.
+
+
+\section{AMLD+++0 conjecture-settlement record: October 31, 2026}
+\label{sec:settlement}
+\noindent\fcolorbox{blue!55!black}{blue!3}{\begin{minipage}{0.93\linewidth}
+\textbf{DATED SETTLEMENT RECORD: OCTOBER 31, 2026.}\\
+An AI-assisted conjecture-settlement analysis designated \textbf{AMLD+++0} produced four mathematical proof arguments---for 14.1, 14.4, 14.6, and the finite-graph clause of 14.7---over three analytical passes (construction, counterexample examination, and assumption audit). The label identifies the conversational settlement procedure, not a separately verified AMLD+++0 execution. No independent formal verification was performed. Conclusions below are confined to their stated hypotheses.
+\end{minipage}}
+
+\subsection*{Result 14.1: polynomially certified horizon bounds on exponentially many paths}
+\label{sec:settle141}
+\textbf{Disposition: proved by explicit family, within the finite graph model.}
+Fix $n\ge1$. Construct a directed acyclic graph whose vertices are a start $x$, successors $a,b$, a target $t$, and $n$ layers of two vertices each. Include edges $x\to a$, $x\to b$, $a\to$ both vertices of layer 1, every edge from each vertex of layer $i$ to each vertex of layer $i+1$, and each last-layer vertex to $t$. Add $b\to t$.
+Assign cost $1$ to $x\to a$ and each edge of the layered $a$-to-$t$ subgraph, cost $n+4$ to $x\to b$, and cost $0$ to $b\to t$. The layered part contains $2^n$ distinct $a$-to-$t$ paths, each of length $n+1$, using $O(n)$ vertices and edges. Consequently,
+\[
+H(a)=n+1,\qquad Q_x(a)=n+2,\qquad Q_x(b)=n+4.
+\]
+Thus $a$ is uniquely optimal with gap $2$. A topological backward pass computes the exact values $H(v)$ for every vertex in $O(|V|+|E|)$ arithmetic operations, independent of the number of represented paths. Taking certified intervals $L_r(v)=U_r(v)=H(v)$ separates the next moves without path enumeration. The finite transition system can place all trusted deposits behind an explicit verifier gate. Hence an infinite family satisfying Conjecture 14.1 exists.
+
+\textbf{Attribution.} The recurrence and acyclic shortest-path algorithm are classical dynamic programming, not a new complexity theorem~\cite{bellman,astar}. The AMLD/SIC interpretation is the present framework&#x27;s application.
+
+\subsection*{Result 14.4: when further refinement must lose on latency}
+\label{sec:settle144}
+\textbf{Disposition: proved as a conditional stopping theorem for an isolated, static, sequential decision; not proved for the unrestricted first-edge recommendation.}
+Assume that (i) cartographic computation and move execution cannot overlap; (ii) the graph and settlement region remain fixed during the comparison; (iii) an immediately executable verifier-safe plan from the present state has certified total execution cost at most $H(x)+B$; (iv) another refinement step consumes $c&gt;0$ units of real time and no otherwise uncharged future benefit is included in the objective; and (v) execution costs equal the weights defining $H$.
+Then immediate execution satisfies $T_{\rm now}\le H(x)+B$. Any strategy that first completes that next refinement step must spend at least $c$ before a path whose execution cost is no less than $H(x)$, so $T_{\rm refine}\ge c+H(x)$. If $c&gt;B$,
+\[
+T_{\rm now}\le H(x)+B &lt; H(x)+c\le T_{\rm refine}.
+\]
+Thus refinement is strictly worse in this declared model. This does \emph{not} prove the unrestricted conjecture for adaptive future use of refined information, speculative overlap, or a changing BANK. The distinction belongs to rational metareasoning and real-time search~\cite{russell,korf}.
+
+\subsection*{Result 14.6: monotone horizons without stable local optimality}
+\label{sec:settle146}
+\textbf{Disposition: proved under monotone accessibility and preservation of settlement.}
+Let the transition sets satisfy $E_t\subseteq E_{t+1}$, assume the weight of every old edge does not increase, and assume every old settlement state remains a settlement state. Every old settlement-reaching path then survives, with no larger weight. Taking infima gives
+\[
+\boxed{H_{t+1}(x)\le H_t(x)}
+\]
+for all old states $x$, with infinite values allowed. Old legal moves remain legal by inclusion.
+
+The stronger assertion that an old uniquely optimal first move remains optimal is false. Consider an ordinary directed graph (no parallel edges required). Initially it contains $x\to a\to t$ with edge weights $1,1$, and $x\to b\to t$ with weights $1,3$, where $t$ is the settlement vertex. Thus $Q_x(a)=2&lt;Q_x(b)=4$ and $a$ is the unique optimal successor. An expanded, verifier-approved BANK now makes a fresh vertex $c$ and the two new zero-cost edges $b\to c$ and $c\to t$ available, retaining every old vertex, edge, and weight. In the expanded graph, $H(b)=0$, so $Q_x(b)=1&lt;2=Q_x(a)$. Optimality reverses without any old move becoming illegal or costly. The added shortcut has a distinct edge sequence, so the argument does not rely on a second conflicting value of $w(b,t)$. Therefore previously certified next-move recommendations may need revalidation after a BANK deposit, even though settlement horizons are monotone. This is related to classical incremental replanning~\cite{dstar}.
+
+\subsection*{Result 14.7: no oracle is needed for explicit finite shortest paths}
+\label{sec:settle147}
+\textbf{Disposition: proved for the finite-graph clause submitted to the settler only.}
+Let $G=(V,E,w)$ be an explicitly represented finite directed graph with nonnegative rational edge weights and decidable membership in $\Sigma$. Add a fresh sink $s$ and zero-cost edges $z\to s$ for each $z\in\Sigma$. Reverse the augmented graph and compute single-source shortest-path distances from $s$ using any correct nonnegative-weight algorithm. For each original vertex $x$ this distance equals $H(x)=d_G(x,\Sigma)$, or $+\infty$ when settlement is unreachable. Exact rational arithmetic permits exact comparisons. For each legal successor $y$ compute $Q_x(y)=w(x,y)+H(y)$; the minimizers are the optimal next moves for every non-settlement state with a settlement-reaching path. Existence, ties, and non-reachability are decidable by this computation. No oracle is required for these finite, explicit instances~\cite{bellman,astar}.
+
+\textbf{Unsettled remainder:} Version 2&#x27;s Conjecture 14.7 also asserts an infinite-graph separation involving a halting oracle. The last user-submitted Conjecture 14.7 \emph{omitted that sentence}; therefore the AMLD+++0 settlement above covers neither its truth nor its formalization. It remains open within this documented settlement record. The Section 15 wording is deliberately preserved.
+
+\subsection*{Status of the three remaining conjectures}
+\begin{description}[style=nextline,leftmargin=2em,itemsep=.5em]
+\item[14.2 --- Unknown (empirical).] The directional-gap frequency thresholds cannot be derived from the abstract graph axioms. A fixed natural-theorem benchmark and measured error values $\eps_4$ are needed.
+\item[14.3 --- Unknown (empirical).] The three proposed effects of external BANK deposits are geometrically possible, but their claimed frequency (at least ten percent, each effect occurring) cannot be established without a frozen execution corpus.
+\item[14.5 --- Cost-model dependent.] Minimizing the stated worst-case geometric continuation objective is optimal by the definition of the minimum over current geodesic successors. That is not automatically a theorem about actual total elapsed time when certification and cartographic delays differ. The completion-time objective and future BANK information assumptions must be fixed before an unconditional claim is made.
+\end{description}
+
+\subsection*{Three-pass reasoning and audit limitations}
+\textbf{Pass 1:} Direct finite constructions and dynamic-programming proofs were sought. 
+\textbf{Pass 2:} Boundary and adversarial cases were checked, including near-ties, changing BANK, and the difference between geometric cost and elapsed time. 
+\textbf{Pass 3:} Assumptions were made explicit and the shortened submission of Conjecture 14.7 was compared against its longer Version 2 wording. No software execution of a separate solver, proof assistant, or independent verifier is asserted. The date documents when these arguments were generated, not a claim of mathematical priority.
+
+\subsection*{Version 4 ATLAS publication-level repair ledger (October 31, 2026)}
+\noindent\textbf{Mathematical repairs:} (1) Section~\ref{sec:settle146} replaces an ambiguous duplicate-edge shortcut with a fresh-vertex, two-edge construction; (2) Section 14 and Section~\ref{sec:settle144} consistently mark the scheduling result conditional on a complete executable plan, no overlap, and a static cost model; (3) Section 7 assigns $+\infty$ to the infimum over an empty competitor set and treats arbitrary candidate sets using infima; (4) Theorem~\ref{thm:eventual} handles unreachable successors with infinite horizon by a separate diverging-lower-bound argument; and (5) Corollary~\ref{cor:prefix} now expressly requires attainment of a shortest suffix. The related finite-horizon domain restrictions in Sections 2--4 are clarified to avoid undefined extended-real expressions.\par
+\noindent\textbf{Scholarly and presentation checks:} Classical sources are cited in the relevant sections, including Bellman optimality, heuristic search, real-time search, rational metareasoning, and incremental replanning. Their algorithms and general mathematical principles are not claimed as historically original. The unchanged open questions and conjecture wordings were checked against Version 3; dating of the AMLD+++0 arguments and lack of independent machine verification remain explicit. The final-page AI disclaimer closes the document, with a front-of-abstract pointer. These editorial checks do not constitute independent machine-checked proof certification or a comprehensive literature-priority search.\par
 
 \section{Conclusion}
 The motivating question was simple: how much map is required before a Pioneer can be told, in advance and with justification, to keep going straight?
@@ -790,23 +930,29 @@ This yields a compact architecture for theorem navigation: geometry determines t
 
 The resulting program is therefore local rather than omniscient: refine just enough, certify the next move, move, listen again, and repeat until settlement.
 
-\begin{thebibliography}{9}
-\bibitem{recttarget}
-B. Tenneson,
-\emph{Rectilinear Target Distance in MAPQUEST: From Arbitrarily Fine Monotone Steps to a Geometric Distance from $B_0$ to $T$}, corrected and strengthened ATLAS-audited edition, September 2026.
-
-\bibitem{proofsA}
-B. Tenneson,
-\emph{Rectilinear Upper Bounds for Geodesic Distance in $\mathrm{Proofs}(A)$: A Proof-Space Theorem Separating Coordinate Route Length from Intrinsic Difficulty}, with ATLAS continuation, September 2026.
-
-\bibitem{sicfiber}
-B. Tenneson,
-\emph{Semi-Ideal Computers in Proof-Fiber Geometry}, post-audit edition, September 2026.
-
-\bibitem{amldcart}
-B. Tenneson,
-\emph{AMLDs, Cartographers, Pioneers, and Omnicartographers}, post-audit consolidated synthesis, September 2026.
+\phantomsection\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{99}
+\bibitem{recttarget} B. Tenneson, \emph{Rectilinear Target Distance in MAPQUEST: From Arbitrarily Fine Monotone Steps to a Geometric Distance from $B_0$ to $T$}, corrected and strengthened edition, September 2026. User-supplied internal source listed in the original manuscript; bibliographic metadata not independently verified.
+\bibitem{proofsA} B. Tenneson, \emph{Rectilinear Upper Bounds for Geodesic Distance in $\mathrm{Proofs}(A)$: A Proof-Space Theorem Separating Coordinate Route Length from Intrinsic Difficulty}, with ATLAS continuation, September 2026. User-supplied internal source listed in the original manuscript; bibliographic metadata not independently verified.
+\bibitem{sicfiber} B. Tenneson, \emph{Semi-Ideal Computers in Proof-Fiber Geometry}, September 2026. User-supplied internal source listed in the original manuscript; bibliographic metadata not independently verified.
+\bibitem{amldcart} B. Tenneson, \emph{AMLDs, Cartographers, Pioneers, and Omnicartographers}, September 2026. User-supplied internal source listed in the original manuscript; bibliographic metadata not independently verified.
+\bibitem{bellman} R. Bellman, ``On a Routing Problem,&#x27;&#x27; \emph{Quarterly of Applied Mathematics} \textbf{16} (1958), 87--90. \url{https://doi.org/10.1090/qam/102435}.
+\bibitem{astar} P. E. Hart, N. J. Nilsson, and B. Raphael, ``A Formal Basis for the Heuristic Determination of Minimum Cost Paths,&#x27;&#x27; \emph{IEEE Transactions on Systems Science and Cybernetics} \textbf{4}(2) (1968), 100--107. \url{https://doi.org/10.1109/TSSC.1968.300136}.
+\bibitem{pearl} J. Pearl, \emph{Heuristics: Intelligent Search Strategies for Computer Problem Solving}, Addison-Wesley, 1984.
+\bibitem{korf} R. E. Korf, ``Real-Time Heuristic Search,&#x27;&#x27; \emph{Artificial Intelligence} \textbf{42}(2--3) (1990), 189--211. \url{https://doi.org/10.1016/0004-3702(90)90054-4}.
+\bibitem{russell} S. Russell and E. Wefald, ``Principles of Metareasoning,&#x27;&#x27; \emph{Artificial Intelligence} \textbf{49}(1--3) (1991), 361--395. \url{https://doi.org/10.1016/0004-3702(91)90015-C}.
+\bibitem{dstar} S. Koenig and M. Likhachev, ``D* Lite,&#x27;&#x27; in \emph{Proceedings of the 18th National Conference on Artificial Intelligence (AAAI)}, 2002, 476--483. \url{https://publications.ri.cmu.edu/d-lite}.
+\bibitem{necula} G. C. Necula, ``Proof-Carrying Code,&#x27;&#x27; in \emph{Proceedings of POPL &#x27;97}, ACM, 1997, 106--119. \url{https://doi.org/10.1145/263699.263712}.
+\bibitem{tarski} A. Tarski, ``Der Wahrheitsbegriff in den formalisierten Sprachen,&#x27;&#x27; \emph{Studia Philosophica} \textbf{1} (1936), 261--405; English title ``The Concept of Truth in Formalized Languages.&#x27;&#x27;
+\bibitem{yablo} S. Yablo, ``Paradox Without Self-Reference,&#x27;&#x27; \emph{Analysis} \textbf{53}(4) (1993), 251--252. \url{https://doi.org/10.1093/analys/53.4.251}.
 \end{thebibliography}
 
-\end{document}
-</pre></main></body></html>
+\clearpage
+\phantomsection
+\section*{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}\label{sec:ai-disclaimer}
+\addcontentsline{toc}{section}{Disclaimer on Mathematical Accuracy, Authorship, and Artificial Intelligence}
+Every reasonable effort has been made to ensure that the mathematical exposition presented herein is factual, correct, logically sound, sufficiently complete in its treatment of relevant facts (not in the technical sense of G\&quot;odelian completeness), and supported by rigorous proofs or, at minimum, not readily susceptible to refutation. Nevertheless, no guarantee of correctness, completeness, consistency, or provability is implied. The authorship and composition of this work involve a combination of human and artificial intelligence: an AI determines the placement of some statements, but not all statements, and the placement of some individual characters, but not all characters. Generally, the AI involved is either DATA MIND or CAMI, both of which have been personally augmented by \textless{}Brian Tenneson\textgreater{} with structured, automated-theorem-proving (ATP) forms of creativity and intelligence. Mathematical development, organization, formulation, and revision may therefore reflect varying degrees of human and AI contribution, without implying that either party is solely responsible for any particular passage. ATLAS is employed as an additional mathematical and editorial auditor in the broader manuscript program, alongside AI review and the author&#x27;s own examination, to identify errors, omissions, unsupported assertions, and opportunities for improvement. Such review is not equivalent to independent formal verification of every claim. Responsibility for the decision to present and publish the resulting work remains with the human author.
+
+\medskip\noindent\textbf{Version-specific disclosure (October 31, 2026).} ChatGPT (OpenAI) assisted in reconstructing and editing Version 2 and preparing Version 3 and the ATLAS-reviewed publication repairs for this Version 4, preserving all seven original open questions and all seven proposed conjectures and adding dated AMLD+++0-labeled settlement responses. The label AMLD+++0 denotes a conjecture-settlement analysis carried out within this ChatGPT conversation, not an independently confirmed running solver. Four arguments have been presented, with the explicit model restrictions and partial coverage recorded in Section~\ref{sec:settlement}. The designation ATLAS names an AI-assisted editorial/mathematical audit within this conversation. No independent proof checker, formal proof assistant, external referee, or separately running ATLAS, CAMI, or DATA MIND system has been confirmed for this work. Claims of mathematical validity and of historical priority require additional scrutiny. The literature review is selective, and later-added citations do not imply those works were consulted in drafting the original paper. This Version 4 manuscript has not been published by this build; no independent machine-checking of its proofs has been performed.
+
+\end{document}</pre></main></body></html>
