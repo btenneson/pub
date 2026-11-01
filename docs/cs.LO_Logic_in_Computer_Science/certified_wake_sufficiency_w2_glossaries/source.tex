@@ -1,0 +1,499 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{microtype}
+\usepackage[margin=0.83in,top=0.83in,bottom=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,enumitem,multicol}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{needspace}
+\usepackage{titlesec}
+\setlength{\parskip}{0.3em}
+\setlength{\parindent}{1.15em}
+\setlist{topsep=2pt,itemsep=2pt,parsep=1pt}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize Certified Wake Sufficiency and Evidence Frontiers}
+\fancyhead[R]{\footnotesize FDWC\textsuperscript{2} W2 -- ATLAS repaired}
+\fancyfoot[C]{\footnotesize\thepage\ / \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\headheight}{13pt}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{problem}[theorem]{Open problem}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Anc}{\operatorname{Anc}}
+\newcommand{\dep}{\operatorname{dep}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\Core}{\operatorname{Core}}
+\newcommand{\Id}{\operatorname{Id}}
+\newcommand{\Up}{\operatorname{Up}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\bn}{\textnormal{\textsc{BCW}}}
+\newcommand{\authorname}{\textless{}Brian Tenneson\textgreater{}}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries Certified Wake Sufficiency and Evidence Frontiers\par}
+\vspace{4pt}
+{\large Alternative Witnesses, Forced Memory, and Cost-Constrained Trait Preservation in a Singleton ATP\par}
+\vspace{12pt}
+{\normalsize\authorname\par}
+{\small Research conception, direction, and oversight\par}
+{\small DATA MIND (OpenAI GPT-6): AI-assisted mathematical development, proofs, and exposition\par}
+\vspace{8pt}
+{\small Level-2 FDWC research exposition W2 -- 31 October 2026\par}
+{\small ATLAS mathematical and production repairs, revision 1.1\par}
+{\small Conditional finite-model mathematics; no independent formal proof verification or deployed ATP experiment\par}
+\end{center}
+\medskip
+\noindent\fbox{\begin{minipage}{0.963\linewidth}\small\textbf{AI disclaimer notice.} The full AI-assisted authorship, reliability, and verification declaration appears on the final page, after the revision and audit ledger. Every theorem is conditional on the frozen finite evidence and authorization assumptions; the present audit has not independently certified novelty, external prior art, or the underlying W0/W1 manuscripts.\end{minipage}}
+\begin{abstract}
+The Level-1 multiarticle \emph{The Algebra of Certified Dream Surplus} supplies a unique least dependency-complete waking package when the required packet witnesses are fixed. It does not determine which evidence to retain when a post-wake query admits several individually validated, differently priced witnesses. We define a finite certified wake-sufficiency system: a typed acyclic evidence arena, frozen witness alternatives for bounded queries, and additive nonnegative retention charges. We prove a witness-selection normal form and an exact finite minimum-cost expression; construct an exponential antichain of inclusion-minimal sufficient packages; derive the mandatory-evidence core and show that it may be insufficient; characterize exact safe deletion, one-query extension, and shared-ancestry savings; distinguish submodularity of fixed-witness costs from failure of submodularity after optimizing witness choices; and reduce finite Set Cover to budgeted certified waking in a depth-one, positive-integer-cost arena. We relate these results to trait thresholds, nondominated cost--answer frontiers, and conditional revocation repair. This is a snapshot optimization theory, not a theorem about discovering proofs, universal theorem-proving speedups, or unrestricted authorization changes. An ATLAS repair pass has clarified the role of alternative selection, strict budgets and guards, zero-cost ties, complexity edge cases, and the limitations of audit evidence. The original W0 and W1 are unchanged.
+\end{abstract}
+\begin{multicols}{2}
+\small\tableofcontents
+\end{multicols}
+\newpage
+\clearpage
+\section*{Reader's Glossaries: Argot and Notation}
+\addcontentsline{toc}{section}{Reader's Glossaries: Argot and Notation}
+\noindent\emph{Reading key.} The entries below translate the manuscript's specialized vocabulary and principal symbols into plain English. "First found" links to the opening page and section of the first substantive discussion in the body (not the earlier abstract or this glossary). The formal definitions and hypotheses in the article remain authoritative.
+\subsection*{Argot: Specialized Terms}
+\addcontentsline{toc}{subsection}{Argot: Specialized Terms}
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.16}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{.215\linewidth}>{\raggedright\arraybackslash}p{.585\linewidth}>{\raggedright\arraybackslash}p{.14\linewidth}@{}}
+\toprule
+\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endfirsthead
+\multicolumn{3}{@{}l}{\footnotesize \emph{Argot: Specialized Terms (continued)}}\\
+\toprule\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endhead
+\bottomrule\endfoot
+\textbf{Frozen evidence arena} & Finite, already validated and authorized packets with unchanged dependencies for one epoch. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{Bounded query obligation} & A specific question the retained evidence must still be able to warrant. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{Alternative warrant} & One of several individually checked packets that could answer the same precisely defined query. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{Dependency-complete ideal} & Evidence package containing every internal prerequisite of every packet retained. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{Sufficient package} & An eligible ideal that answers every currently required query. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{Witness selection} & Choosing one valid warrant per required query before taking the union of their prerequisites. & \hyperref[gl-first-W2-s3]{\S\,\ref*{gl-first-W2-s3}, p.\,\pageref*{gl-first-W2-s3}} \\
+\textbf{Inclusion-minimal} & A sufficient package from which no packet can be removed while retaining sufficiency. & \hyperref[gl-first-W2-s3]{\S\,\ref*{gl-first-W2-s3}, p.\,\pageref*{gl-first-W2-s3}} \\
+\textbf{Antichain} & A family whose distinct members do not contain one another; it can have exponentially many options. & \hyperref[gl-first-W2-s3]{\S\,\ref*{gl-first-W2-s3}, p.\,\pageref*{gl-first-W2-s3}} \\
+\textbf{Mandatory core} & Packets shared by every sufficient package, though the core itself may fail to answer the questions. & \hyperref[gl-first-W2-s4]{\S\,\ref*{gl-first-W2-s4}, p.\,\pageref*{gl-first-W2-s4}} \\
+\textbf{Safe forgetting} & Deleting a packet and its dependents without losing a required answer in the current package. & \hyperref[gl-first-W2-s5]{\S\,\ref*{gl-first-W2-s5}, p.\,\pageref*{gl-first-W2-s5}} \\
+\textbf{Marginal acquisition} & Additional evidence needed when a new query is added to the obligations. & \hyperref[gl-first-W2-s5]{\S\,\ref*{gl-first-W2-s5}, p.\,\pageref*{gl-first-W2-s5}} \\
+\textbf{Shared-ancestry savings} & Paying for common prerequisites once when they support multiple requested warrants. & \hyperref[gl-first-W2-s6]{\S\,\ref*{gl-first-W2-s6}, p.\,\pageref*{gl-first-W2-s6}} \\
+\textbf{Submodularity} & A diminishing-marginal-cost property for a fixed witness closure; optimization can destroy it. & \hyperref[gl-first-W2-s6]{\S\,\ref*{gl-first-W2-s6}, p.\,\pageref*{gl-first-W2-s6}} \\
+\textbf{Budgeted certified waking} & Decision problem asking whether all queries can be retained below a stated cost bound. & \hyperref[gl-first-W2-s7]{\S\,\ref*{gl-first-W2-s7}, p.\,\pageref*{gl-first-W2-s7}} \\
+\textbf{Set Cover reduction} & A complexity comparison showing that this finite retention problem can encode a known hard problem. & \hyperref[gl-first-W2-s7]{\S\,\ref*{gl-first-W2-s7}, p.\,\pageref*{gl-first-W2-s7}} \\
+\textbf{Trait threshold} & The required set of bounded evidence obligations for a specified trait grade. & \hyperref[gl-first-W2-s8]{\S\,\ref*{gl-first-W2-s8}, p.\,\pageref*{gl-first-W2-s8}} \\
+\textbf{Certified answer frontier} & Retained packages offering nondominated combinations of charges and answer coverage. & \hyperref[gl-first-W2-s8]{\S\,\ref*{gl-first-W2-s8}, p.\,\pageref*{gl-first-W2-s8}} \\
+\textbf{Conditional revocation} & Invalidating specified packets and their dependents while preserving all unrelated frozen validity assumptions. & \hyperref[gl-first-W2-s9]{\S\,\ref*{gl-first-W2-s9}, p.\,\pageref*{gl-first-W2-s9}} \\
+\end{longtable}\endgroup
+\subsection*{Notation: Symbols and Abbreviations}
+\addcontentsline{toc}{subsection}{Notation: Symbols and Abbreviations}
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.16}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{.215\linewidth}>{\raggedright\arraybackslash}p{.585\linewidth}>{\raggedright\arraybackslash}p{.14\linewidth}@{}}
+\toprule
+\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endfirsthead
+\multicolumn{3}{@{}l}{\footnotesize \emph{Notation: Symbols and Abbreviations (continued)}}\\
+\toprule\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endhead
+\bottomrule\endfoot
+\textbf{$A$} & The finite set of previously validated packet identities. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$\operatorname{dep}(v)$} & Exact direct prerequisites for packet $v$. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$p\preceq v$} & Packet $p$ is a prerequisite ancestor of $v$, including equality. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$\downarrow v$} & Packet $v$ together with all its prerequisite ancestors. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$\operatorname{Anc}(Q)$} & Union of all ancestor sets for packets in target collection $Q$. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$U$} & Finite typed universe of bounded query obligations. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$S_L$} & Questions already supported by the existing live evidence base. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$W_\gamma$} & All frozen, validated alternative warrants for query $\gamma$. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$J,\operatorname{Id}(A)$} & A dependency-complete evidence ideal and the family of all such ideals. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$S(J)$} & Questions warranted by the existing live base plus retained package $J$. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$\Gamma$} & The finite group of additional required queries. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$\mathcal F_\Gamma$} & Family of all ideals sufficient to answer $\Gamma$. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$c(v),\operatorname{cost}(J)$} & Nonnegative retention tariff for packet $v$ and total charge for package $J$. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$m(\Gamma)$} & Lowest total declared charge for answering all queries in $\Gamma$. & \hyperref[gl-first-W2-s2]{\S\,\ref*{gl-first-W2-s2}, p.\,\pageref*{gl-first-W2-s2}} \\
+\textbf{$\operatorname{Core}(\Gamma)$} & Intersection of all $\Gamma$-sufficient packages. & \hyperref[gl-first-W2-s4]{\S\,\ref*{gl-first-W2-s4}, p.\,\pageref*{gl-first-W2-s4}} \\
+\textbf{$\operatorname{Up}_J(p)$} & Members of $J$ relying on $p$; all must go when $p$ is forgotten. & \hyperref[gl-first-W2-s5]{\S\,\ref*{gl-first-W2-s5}, p.\,\pageref*{gl-first-W2-s5}} \\
+\textbf{$D_R(J)$} & Remaining package after safely deleting invalidated set $R$ and its dependents. & \hyperref[gl-first-W2-s5]{\S\,\ref*{gl-first-W2-s5}, p.\,\pageref*{gl-first-W2-s5}} \\
+\textbf{$\mathrm{BCW}$} & Abbreviation for the budgeted certified waking decision problem. & \hyperref[gl-first-W2-s7]{\S\,\ref*{gl-first-W2-s7}, p.\,\pageref*{gl-first-W2-s7}} \\
+\textbf{$g_\tau(J)$} & Highest predeclared evidence tier attained by trait $	au$ from package $J$. & \hyperref[gl-first-W2-s8]{\S\,\ref*{gl-first-W2-s8}, p.\,\pageref*{gl-first-W2-s8}} \\
+\textbf{$\Omega$} & Target query pool used for the cost-versus-answer frontier. & \hyperref[gl-first-W2-s8]{\S\,\ref*{gl-first-W2-s8}, p.\,\pageref*{gl-first-W2-s8}} \\
+\end{longtable}\endgroup
+\clearpage
+\section{The question beyond a single fixed certificate}\label{gl-first-W2-s1}
+In the ancestral singleton design W0~\cite{W0}, one automated theorem prover hosts fourteen ordinary dreaming roles $P_1,\dots,P_{14}$ and a distinguished coordinating Player 0. Its internal game admits fresh typed evidence only after an actor-attributed and independently checked victory. Evidence remains dream-local until an authorized waking transaction. A history receipt is not an object proof; successful evaluation is not proof authority.
+
+The immediate ancestor W1~\cite{W1} separates game trajectories, acyclic packet dependencies, and operational post-wake trait tiers. For a frozen, conflict-free single-witness dependency DAG, the least waking package for specified packet nodes $Q$ is their ancestral ideal $\Anc(Q)$ (W1, Theorem 5.5 as reported by this manuscript). But two different proofs may warrant the same bounded mathematical question; several checked historical views may warrant a bounded historical question; and a single authenticated source may support multiple queries through separately checked, typed bridges. Choosing among witnesses becomes part of the mathematical problem.
+
+\begin{quote}\itshape
+Given a finite pool of already validated, current-epoch typed evidence and predeclared post-wake questions, which dependency-complete package preserves the required answers at the lowest incremental retention charge? What evidence is compulsory regardless of witness choice, and what remains true after explicit revocation?
+\end{quote}
+
+We call the resulting object a \emph{witness-selective sufficient ideal}. Its existence does not imply that an ATP discovers any of its candidate witnesses: every potential witness has already been supplied and checked in the stipulated finite arena.
+
+\paragraph{Source and priority boundary.} The identified ancestry is W0 (v0.4.3) and W1 (ATLAS-repaired v1.2). The current repair pass uses the supplied W2 PDF as its only manuscript text; W0 and W1 were \emph{not independently re-examined during this pass}. Finite-set, graph, and complexity arguments are given explicitly, with the standard NP-completeness of Set Cover invoked as conventional background. No independent priority or comprehensive external-literature search is claimed. ``New'' below means newly developed relative to the described W0/W1 manuscript sequence, not established first discovery.
+
+\section{A typed, witness-selective waking system}\label{gl-first-W2-s2}
+\subsection{The currently valid finite arena}
+\begin{definition}[Certified wake-sufficiency system]
+Fix one waking epoch and a finite set $A$ of immutable packet identities. Each packet has passed its declared \textsc{PROOF}, \textsc{AUDIT}, or \textsc{EVAL} checker; formation-checked \textsc{HYPOTHESIS} records may be retained but never alone warrant a proved query. Every $v\in A$ has an exact set of \emph{internal} prerequisites $\dep(v)\subseteq A$. Any prerequisite outside $A$ must be explicitly guaranteed valid in the already available live base $L$ and incurs no additional charge in this model. The directed edges $p\to v$ for $p\in\dep(v)$ form an acyclic graph. Write $p\preceq v$ for reflexive transitive reachability, $\downarrow v=\{p:p\preceq v\}$, and $\Anc(Q)=\bigcup_{q\in Q}\downarrow q$.
+
+Let $U=\bigsqcup_{\tau\in T}U_\tau$ be a disjoint, finite collection of typed bounded query obligations, with $T$ the fourteen operational trait indices of W1. Let $S_L\subseteq U$ be the queries already warranted by the live base. For each $\gamma\in U\setminus S_L$, freeze an explicitly listed set $W_\gamma\subseteq A$ of alternative warrant packets. Membership $w\in W_\gamma$ means that a \emph{separately validated, type-correct, scope-authorized, fixed-version} finite projection of $w$, together with the declared prerequisites, warrants the exact query $\gamma$. Two alternative witnesses must have equivalent warrant meaning for that specific query, not necessarily identical provenance. A checked hypothesis formation does not warrant a proof query.
+
+Assign each $v\in A$ a \emph{nonnegative} additive incremental charge $c(v)\in\mathbb Q_{\ge0}$, and $\cost(J)=\sum_{v\in J}c(v)$. Fix all validators, checking outcomes, bridge signatures, scopes and permissions for the epoch. \emph{Every order ideal in $A$ is authorized}; there are no mutual exclusions, subset-dependent guards, global all-or-nothing constraints, or validity losses from adding other accepted packets.
+\end{definition}
+
+These assumptions are substantive. Real wake transactions may additionally have expiring credentials, negative/absence tests, simultaneous physical limits, or checker behavior changing with other stored packets. Such systems must first be translated to a different validated arena. Additivity concerns a declared retention tariff; it is \emph{not} an implicit end-to-end charge for discovering or checking witnesses.
+
+\begin{definition}[Sufficiency]
+An ideal is a downward-closed $J\subseteq A$; the finite set of all such ideals is $\Id(A)$. Its warranted answers are
+\begin{equation}\label{eq:support}
+S(J)=S_L\cup\{\gamma\in U\setminus S_L:J\cap W_\gamma\ne\varnothing\}.
+\end{equation}
+For $\Gamma\subseteq U\setminus S_L$ let
+\begin{equation}\label{eq:feasible}
+\mathcal F_\Gamma=\{J\in\Id(A):\Gamma\subseteq S(J)\},\qquad
+m(\Gamma)=\begin{cases}\min_{J\in\mathcal F_\Gamma}\cost(J),&\mathcal F_\Gamma\ne\varnothing,\\+\infty,&\mathcal F_\Gamma=\varnothing.\end{cases}
+\end{equation}
+Such a $J$ is called $\Gamma$-sufficient. The supported questions are fixed finite judgments, not future proof-search outcomes.
+\end{definition}
+
+\begin{remark}[Trust boundary]
+Validation of the packet and validation of each authorized query projection are distinct stipulated checks. Seeing the same source through two checked projections does not create two independent primary discoveries. Any purported bridge that bypasses the appropriate query checker falls outside the system.
+\end{remark}
+
+\subsection{An example with provenance}
+An authenticated historical source $h$ may support an H-trait question via audit packet $a_H$ and an E-trait question via another authorized projection $a_E$. Both depend on $h$; a different historical source $h'$ may produce an alternative E-warrant $a_E'$, provided the E-query's scope-equivalence and validation really hold. Figure~\ref{fig:provenance} distinguishes evidence dependencies from typed query-warrant relations.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex, every node/.style={font=\small}, src/.style={draw,rounded corners=2pt,minimum width=1.45cm,minimum height=6.5mm}, pkt/.style={draw,rounded corners=2pt,minimum width=1.6cm,minimum height=7mm}, qry/.style={draw,ellipse,minimum width=1.4cm,minimum height=7mm}, dep/.style={->,thick}, warrant/.style={->,dashed,thick}]
+\node[src] (h) at (0,2.8) {source $h$};
+\node[src] (hp) at (6.1,2.8) {source $h'$};
+\node[pkt] (aH) at (-1.5,1.4) {H-warrant $a_H$};
+\node[pkt] (aE) at (2.0,1.4) {E-warrant $a_E$};
+\node[pkt] (aEp) at (6.1,1.4) {E-warrant $a'_E$};
+\node[qry] (hq) at (-1.5,0) {H-query};
+\node[qry] (eq) at (4.1,0) {E-query};
+\draw[dep] (h) -- (aH); \draw[dep] (h) -- (aE); \draw[dep] (hp) -- (aEp);
+\draw[warrant] (aH) -- (hq); \draw[warrant] (aE) -- (eq); \draw[warrant] (aEp) -- (eq);
+\end{tikzpicture}
+\caption{Solid arrows show exact packet prerequisites; dashed arrows show separately validated query projections. Neither arrow type permits an unchecked cross-type proof-authority cast.}\label{fig:provenance}
+\end{figure}
+
+\section{The witness-selection normal form}\label{gl-first-W2-s3}
+W1 fixes target packet identities before taking their ancestral closure. Here the target is a typed question that may have several admissible packets.
+
+\begin{theorem}[Normal form and exact minimum]\label{thm:normal}
+For a finite certified wake-sufficiency system and $\Gamma\subseteq U\setminus S_L$:
+\begin{enumerate}[label=(\roman*)]
+\item $\mathcal F_\Gamma\ne\varnothing$ if and only if $W_\gamma\ne\varnothing$ for every $\gamma\in\Gamma$.
+\item Every \emph{inclusion-minimal} $J\in\mathcal F_\Gamma$ can be written $J=\Anc(\{f(\gamma):\gamma\in\Gamma\})$ for a choice function $f(\gamma)\in W_\gamma$.
+\item With the convention that the empty choice has empty ancestry and cost zero,
+\begin{equation}\label{eq:minimum}
+m(\Gamma)=\min_{f\in\prod_{\gamma\in\Gamma}W_\gamma}\cost\!\left(\bigcup_{\gamma\in\Gamma}\downarrow f(\gamma)\right).
+\end{equation}
+Interpret the minimum over an empty family of choice functions as $+\infty$. Whenever feasible, at least one minimum-cost ideal is witness-generated, even when charges can be zero.
+\end{enumerate}
+The converse of (ii) is \emph{not} automatic: a choice-generated ideal may have a proper sufficient subideal.
+\end{theorem}
+\begin{proof}
+Every sufficient ideal $J$ contains some $f(\gamma)\in J\cap W_\gamma$ for each $\gamma$. Downward closure therefore gives $J_f:=\bigcup_\gamma\downarrow f(\gamma)\subseteq J$, and $J_f$ remains sufficient. Conversely, any selection of one warrant per query yields a sufficient ideal. This proves (i); if $J$ is inclusion-minimal, $J_f\subseteq J$ forces equality, proving (ii). Nonnegative additivity gives $\cost(J_f)\le\cost(J)$, so minimizing over selections and over all ideals yields the same answer. This proves (iii); for $\Gamma=\varnothing$, $\varnothing$ is the empty witness selection and is cost-minimal. For the caution following (iii), take a chain $a\prec b$ with $W_\gamma=\{a,b\}$: choosing $b$ yields $\{a,b\}$, although $\{a\}$ is sufficient.
+\end{proof}
+
+\begin{corollary}[The fixed-witness case]
+If $W_\gamma=\{w_\gamma\}$ for every $\gamma\in\Gamma$, then $\Anc(\{w_\gamma:\gamma\in\Gamma\})$ is the unique \emph{inclusion-minimal} sufficient ideal and is a minimum-cost ideal. Zero-cost superideals may tie in cost; hence it is not necessarily the unique optimizer.
+\end{corollary}
+\begin{proof}Every sufficient ideal contains every $w_\gamma$ and its ancestors. The common ancestry is itself sufficient.\end{proof}
+
+\begin{example}[Choosing a path rather than both]
+Two independent, individually checked proof packets $a,b$ both warrant a PROOF query $\gamma$, with charges $c(a)=2$ and $c(b)=5$. The sufficient ideals are $\{a\}$, $\{b\}$ and $\{a,b\}$, with $m(\{\gamma\})=2$. Witness choice, rather than just taking ancestry of a prescribed witness, is now optimized.
+\end{example}
+
+\begin{theorem}[Upper-family geometry and exponential branching]\label{thm:antichain}
+For feasible $\Gamma$, $\mathcal F_\Gamma$ is an upward-closed, union-closed family within $\Id(A)$. Its minimal members form an antichain, and every member contains some minimal member. It need not be intersection-closed. There are validated depth-zero arenas with $n$ required queries and exactly $2^n$ distinct inclusion-minimal sufficient ideals, while their mandatory core is empty.
+\end{theorem}
+\begin{proof}
+If $J$ contains a warrant for each query, any larger ideal does too; hence the family is upward-closed and union-closed. Finite descent proves that each member contains a minimal member, and distinct minimal members are incomparable. For failure of intersection closure, take independent $a,b$ as alternative witnesses for a single query: the sufficient ideals $\{a\}$ and $\{b\}$ intersect in the insufficient empty ideal.
+
+For the exponential family, use $2n$ independent packets $a_i,b_i$ and $n$ obligations with $W_{\gamma_i}=\{a_i,b_i\}$, $1\le i\le n$. Inclusion-minimal sufficiency requires exactly one packet from each pair; hence precisely $2^n$ ideals are minimal. Each packet can be avoided by taking its mate, so the intersection of all sufficient ideals is empty.
+\end{proof}
+
+\begin{remark}
+W1's complete stable-guard order-ideal family is closed under both union and intersection. Imposing disjunctive witness obligations filters it to an upper family whose intersection closure may fail. A unique least sufficient package therefore cannot be assumed.
+\end{remark}
+
+\section{What must survive every valid choice?}\label{gl-first-W2-s4}
+\begin{definition}[Mandatory evidence core]
+For feasible $\Gamma$, define $\Core(\Gamma)=\bigcap_{J\in\mathcal F_\Gamma}J$. This is the set of packets forced by \emph{all} sufficient packages without a separate budget cap.
+\end{definition}
+
+\begin{theorem}[Exact forced-core formula]\label{thm:core}
+In the frozen monotone-admission system, for every feasible $\Gamma$,
+\begin{equation}\label{eq:core}
+\boxed{\displaystyle\Core(\Gamma)=\bigcup_{\gamma\in\Gamma}\ \bigcap_{w\in W_\gamma}\downarrow w.}
+\end{equation}
+The core is an order ideal, but need not be sufficient.
+\end{theorem}
+\begin{proof}
+If $p$ is in the right side, some $\gamma$ has $p\preceq w$ for every $w\in W_\gamma$. Every sufficient ideal selects a witness of this query and contains $p$; thus $p$ is in the core. Conversely, if $p$ is not in the right side, for every $\gamma$ there exists $w_\gamma\in W_\gamma$ with $p\not\preceq w_\gamma$. The selection ideal $\bigcup_\gamma\downarrow w_\gamma$ is sufficient by Theorem~\ref{thm:normal} and excludes $p$, so $p$ is not compulsory. Ideals are closed under unions and intersections.\end{proof}
+
+\begin{example}[An insufficient empty core]
+For independent proof warrants $a,b$ with $W_\gamma=\{a,b\}$, the core is $\downarrow a\cap\downarrow b=\varnothing$. Yet every sufficient package must retain $a$ or $b$; the empty core warrants neither.
+\end{example}
+
+\begin{example}[A compulsory shared premise]
+A checked common source $s$ precedes two independently checked warrants $a,b$, where $\dep(a)=\dep(b)=\{s\}$ and $W_\gamma=\{a,b\}$. The core is $\{s\}$; the minimal sufficient ideals are $\{s,a\}$ and $\{s,b\}$. The bare source is compulsory, not sufficient.
+\end{example}
+
+\begin{proposition}[Budgeted and guarded cores differ]\label{prop:budgetcore}
+Adding a cost cap, or restricting authorized ideals using subset-dependent guards, can change which packets are forced among the remaining feasible packages. The original formula \eqref{eq:core} must not be applied unchanged to that restricted family.
+\end{proposition}
+\begin{proof}
+For independent alternative witnesses $a,b$ with $c(a)=1$, $c(b)=2$, the unconstrained core is empty. With budget $B=1$, the only sufficient ideal is $\{a\}$, hence $a$ is budget-forced. For an authorization-guard example without changing costs, declare that only ideals containing $a$ are permitted. Then among guarded sufficient ideals for $W_\gamma=\{a,b\}$, packet $a$ is forced even though it is not in the unguarded core. In either extension the intersection is defined only if the restricted feasible family is nonempty.
+\end{proof}
+
+\begin{corollary}[Polynomial computation of the unbudgeted core]
+For an explicitly encoded DAG and explicitly listed witness sets, feasibility and the compulsory core can be computed in deterministic time polynomial in the arena input length, even though minimum-cost sufficient waking is NP-hard in general.
+\end{corollary}
+\begin{proof}
+Check that each required $W_\gamma$ is nonempty. Compute the ancestor set of each listed witness by graph traversal, intersect those sets for each query, then union across queries as in \eqref{eq:core}. At most polynomially many reachability traversals are performed on the explicit graph. The comparison concerns a different task from minimizing $\cost(J)$.
+\end{proof}
+
+\section{Exact evidence deletion and marginal acquisition}\label{gl-first-W2-s5}
+\begin{definition}[Upward deletion]
+For $p\in J\in\Id(A)$, let $\Up_J(p)=\{v\in J:p\preceq v\}$ and $D_p(J)=J\setminus\Up_J(p)$. For $R\subseteq J$, put $D_R(J)=J\setminus\bigcup_{p\in R}\Up_J(p)$.
+\end{definition}
+
+\begin{theorem}[Exact safe-forgetting criterion]\label{thm:delete}
+For $J\in\mathcal F_\Gamma$ and $p\in J$:
+\begin{enumerate}[label=(\roman*)]
+\item $D_p(J)$ is the unique largest ideal contained in $J$ that excludes $p$.
+\item A $\Gamma$-sufficient subideal of $J$ excluding $p$ exists exactly when
+\begin{equation}\label{eq:delete}
+\forall\gamma\in\Gamma\ \exists w\in J\cap W_\gamma\quad p\not\preceq w.
+\end{equation}
+\item If \eqref{eq:delete} holds, deleting $p$ and all descendants currently in $J$ preserves precisely these frozen obligations. It does not preserve unasked historical evidence or every possible future ATP ability.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+If $v\in D_p(J)$ and $u\preceq v$, then $u\in J$; were $p\preceq u$, transitivity would force $p\preceq v$, a contradiction. Thus $D_p(J)$ is an ideal. Every subideal omitting $p$ must omit its descendants, so it is contained in $D_p(J)$. A query remains warranted after deletion precisely if its old witness set contains some $w$ that is not a descendant of $p$, which is \eqref{eq:delete}.\end{proof}
+
+\begin{corollary}[Relative versus global necessity]
+A packet can be indispensable within the selected package and absent from $\Core(\Gamma)$. If $J=\{a\}$, $W_\gamma=\{a,b\}$ and $a,b$ are independent, $a$ cannot be deleted from $J$ while retaining $\gamma$, although the alternative valid package $\{b\}$ excludes $a$.
+\end{corollary}
+
+\begin{theorem}[Exact one-query incremental extension]\label{thm:increment}
+Let $J$ be a valid ideal, and let $\gamma\notin S(J)$ have at least one frozen validated candidate warrant. Suppose existing packets retain validity and additional packets carry the same nonnegative incremental charges. The smallest extra charge to extend $J$ to warrant $\gamma$ is
+\begin{equation}\label{eq:increment}
+\delta_J(\gamma)=\min_{w\in W_\gamma}\cost\bigl((\downarrow w)\setminus J\bigr).
+\end{equation}
+An attaining extension is $J\cup\downarrow w^*$ for a minimizing $w^*$. This step need not be jointly optimal for several new questions.
+\end{theorem}
+\begin{proof}
+Any valid extension $J'\supseteq J$ supporting $\gamma$ contains some $w\in W_\gamma$ and its complete ancestry. Its added charge is at least $\cost((\downarrow w)\setminus J)$; taking the best $w$ proves a lower bound. Adjoining the minimizing ancestry is an ideal attaining that bound.\end{proof}
+
+\begin{example}[Greedy single-query decisions may fail]
+Three independent checked packets $u,v,z$ have charges $1,2,3$. Authorized projections let $u$ warrant $\alpha$, $v$ warrant both $\alpha$ and $\beta$, and $z$ warrant $\beta$. From an empty ledger, the least costly stand-alone witness for $\alpha$ is $u$, after which adding $v$ for $\beta$ costs another $2$, for total $3$. Jointly retaining $v$ alone costs $2$ and supports both obligations.\end{example}
+
+\section{The economics of shared certified prerequisites}\label{gl-first-W2-s6}
+For a fixed finite packet target set $Q\subseteq A$ define $f(Q)=\cost(\Anc(Q))$.
+\begin{theorem}[Shared-ancestry identity and submodularity]\label{thm:submod}
+For finite $Q,R\subseteq A$ and $v\in A$,
+\begin{align}
+f(Q\cup R)&=f(Q)+f(R)-\cost\bigl(\Anc(Q)\cap\Anc(R)\bigr),\label{eq:union}\\
+f(Q\cup\{v\})-f(Q)&=\cost\bigl((\downarrow v)\setminus\Anc(Q)\bigr).\label{eq:marginal}
+\end{align}
+Moreover $f$ is monotone and submodular: if $Q\subseteq R$, then
+\[
+f(Q\cup\{v\})-f(Q)\ \ge\ f(R\cup\{v\})-f(R).
+\]
+\end{theorem}
+\begin{proof}
+The ancestry of a union is the union of the ancestries. Additive weighted inclusion--exclusion yields \eqref{eq:union}; isolating previously unretained ancestors yields \eqref{eq:marginal}. Since $\Anc(Q)\subseteq\Anc(R)$, we have $(\downarrow v)\setminus\Anc(R)\subseteq(\downarrow v)\setminus\Anc(Q)$. Nonnegative costs prove the marginal inequality and monotonicity.\end{proof}
+
+\begin{proposition}[Optimized obligation cost is not generally submodular]\label{prop:nonsub}
+Even with three independent unit-cost packets and no prerequisites, the optimized query cost $m$ can violate submodularity. On feasible families, $m$ is monotone and subadditive.
+\end{proposition}
+\begin{proof}
+Let independent packets $x,y,z$ warrant respectively $\{\alpha,\beta\}$, $\{\beta,\chi\}$ and $\{\alpha,\chi\}$ through independently checked projections. Then
+\[
+m(\{\alpha,\beta\})=m(\{\beta,\chi\})=m(\{\beta\})=1,
+\qquad m(\{\alpha,\beta,\chi\})=2.
+\]
+Writing $S=\{\alpha,\beta\}$ and $T=\{\beta,\chi\}$, submodularity would require $1+1\ge2+1$, which is false. Monotonicity follows because requiring more queries cannot enlarge the feasible family. For feasible $S,T$, let $J_S,J_T$ be minimum-cost ideals. Their union satisfies $S\cup T$ and costs at most $\cost(J_S)+\cost(J_T)$, proving $m(S\cup T)\le m(S)+m(T)$.\end{proof}
+
+\begin{remark}[Distinct optimization domains]
+The submodularity of $f$ concerns chosen \emph{packet identities}. The failure for $m$ concerns optimizing over \emph{query-witness alternatives}. Neither property implies that a myopic packet scheduler optimally selects witnesses for several obligations, and neither proves empirical proof-search speedups.\end{remark}
+
+\section{A finite complexity barrier}\label{gl-first-W2-s7}
+\begin{definition}[Budgeted certified waking, \bn]
+Input: an explicitly listed acyclic typed evidence arena, exact dependency edges and warrant lists $W_\gamma$, positive integer packet costs in binary, a finite required set $\Gamma$, and a nonnegative integer budget $B$ in binary. All checker judgments and projections are prevalidated input promises of the abstract model. Question: does there exist an ideal $J$ supporting $\Gamma$ with $\cost(J)\le B$?
+\end{definition}
+
+\begin{theorem}[Set Cover reduction and conditional NP-completeness]\label{thm:NP}
+Finite Set Cover has a polynomial-time many-one reduction to \bn{} using only a depth-one dependency DAG, positive integer packet charges, and fixed nonconflicting checked AUDIT projections. Thus, using the standard NP-completeness of finite Set Cover, \bn{} is NP-complete in its explicit encoding. No part of the reduction requires a proof checker to solve Set Cover.
+\end{theorem}
+\begin{proof}
+Take a Set Cover instance with finite universe $X=\{1,\dots,n\}$, subsets $C_1,\dots,C_m\subseteq X$, and integer $k\ge0$. Let $r=\sum_{j=1}^m|C_j|$ be the number of incidences and set $M=r+1$. Introduce a source packet $s_j$ of charge $M$ for each $C_j$. For every incidence $i\in C_j$, introduce a bridge packet $b_{ij}$ of charge $1$ whose sole dependency is $s_j$. Its fixed checked AUDIT query projection warrants $\gamma_i$; set $W_{\gamma_i}=\{b_{ij}:i\in C_j\}$. Edges are only $s_j\to b_{ij}$, so the graph has depth one. Let $\Gamma=\{\gamma_i:i\in X\}$ and $B=kM+r$.
+
+If at most $k$ sets cover $X$, retain their source packets and one bridge packet for every universe element, together with required ancestors. The charge is at most $kM+n\le kM+r=B$, since a cover of nonempty $X$ requires every element to appear in at least one incidence. For $X=\varnothing$, the empty ideal is already sufficient and has zero cost, so the same implication holds. Conversely, suppose a sufficient ideal $J$ costs at most $B$ and contains $t$ source packets. Then
+\[
+tM\le\cost(J)\le kM+r<(k+1)M,
+\]
+which implies $t\le k$. Each required query is warranted by some retained $b_{ij}$; ideal closure forces its $s_j$. Those $t$ sets cover $X$. If some $i\in X$ has no incidence, then $W_{\gamma_i}=\varnothing$ and the constructed instance is correctly infeasible. The construction has $m+r$ packets and $r$ edges and is polynomial in the incidence-list input length; the integer $M$ and budget have polynomial-length binary encodings.
+
+Finally, \bn{} lies in NP: a proposed $J$ can be checked in polynomial time for exact predecessor closure, all required witness intersections, and the binary integer cost bound. Standard NP-completeness of Set Cover yields the claimed classification.\end{proof}
+
+\begin{remark}
+The reduction can be instantiated using checked finite membership/audit receipts, not object-theory theorem proofs. The hardness is \emph{combinatorial retention selection} within the finite interface, not proof verification, proof generation, or every waking architecture. Set Cover's background classification has not been claimed as a new result.
+\end{remark}
+
+\section{Trait thresholds and the finite answer frontier}\label{gl-first-W2-s8}
+\begin{definition}[Trait thresholds]
+For each $\tau\in T$, fix nested finite obligations
+\[
+E_{\tau,0}\subseteq E_{\tau,1}\subseteq\cdots\subseteq E_{\tau,d_\tau}\subseteq U_\tau,
+\qquad E_{\tau,0}\subseteq S_L.
+\]
+Define $g_\tau(J)=\max\{k:E_{\tau,k}\subseteq S(J)\}$. For threshold vector $h=(h_\tau)_{\tau\in T}$ with $0\le h_\tau\le d_\tau$, let
+\[
+\Gamma_h=\left(\bigcup_{\tau\in T}E_{\tau,h_\tau}\right)\setminus S_L.
+\]
+The disjoint union of query tags preserves trait and type distinctions.
+\end{definition}
+
+\begin{theorem}[Exact simultaneous trait criterion]
+An ideal $J$ has $g_\tau(J)\ge h_\tau$ for every $\tau$ if and only if $J\in\mathcal F_{\Gamma_h}$. Consequently, its minimal declared retention charge is $m(\Gamma_h)$, given by \eqref{eq:minimum}. If any required non-live query lacks a validated witness, the vector is unattainable within this arena.
+\end{theorem}
+\begin{proof}
+By nesting, $g_\tau(J)\ge h_\tau$ exactly when $E_{\tau,h_\tau}\subseteq S(J)$. Conjoin these inclusions and remove the already live $S_L$. The result is precisely $\Gamma_h\subseteq S(J)$. The minimum and infeasibility conclusions follow from Theorem~\ref{thm:normal}.\end{proof}
+
+\begin{definition}[Certified answer frontier]
+Fix a finite target query pool $\Omega\subseteq U\setminus S_L$. Associate to every ideal $J$ the pair $(\cost(J),S(J)\cap\Omega)$. An attainable pair $(c',Q')$ dominates $(c,Q)$ when $c'\le c$, $Q'\supseteq Q$, and at least one relation is strict. The \emph{certified answer frontier} consists of attainable, nondominated pairs, identifying duplicate pairs only once.
+\end{definition}
+
+\begin{theorem}[Finite frontier completeness]\label{thm:frontier}
+The frontier is nonempty and has at most $2^{|A|}$ distinct pairs. For any $B\ge0$ and any monotone utility $u:2^\Omega\to\mathbb R$, some utility-maximizing budget-feasible ideal has a nondominated pair. The same holds for utilities monotone in the declared trait-grade vector, provided $\Omega$ includes all non-live tier obligations relevant to those grades. No polynomial-time frontier enumeration is asserted.
+\end{theorem}
+\begin{proof}
+The empty ideal is attainable, so the finite set of ideals yields at least one nondominated pair and no more than $2^{|A|}$ pairs. Because $c\ge0$ and $B\ge0$, the empty ideal is budget-feasible. Choose a budget-feasible utility maximizer first with \emph{minimum cost} among such maximizers, and then with \emph{largest answer-set cardinality} among the remaining ties. If another attainable pair dominated it, the dominating ideal would also satisfy the budget and, by monotonicity, have no smaller utility; it would also be an optimizer. Strictly lower cost contradicts the first tie-break, while equal cost and strictly more answers contradicts the second. For trait utilities, when $\Omega$ contains every tier-relevant non-live query, answer-set inclusion cannot reduce any declared grade; the same tie-break proof applies. Without that coverage assumption the implication is unjustified.\end{proof}
+
+\begin{example}[A four-point frontier]
+Two independent checked warrant nodes $a,b$ cost $2,3$ and support respectively $\alpha,\beta$. For $\Omega=\{\alpha,\beta\}$ the attainable pairs are $(0,\varnothing)$, $(2,\{\alpha\})$, $(3,\{\beta\})$, and $(5,\{\alpha,\beta\})$. None dominates another because each strict answer gain requires an increased charge.
+\end{example}
+
+\section{Revocation and the necessity of rebuilding the arena}\label{gl-first-W2-s9}
+\begin{definition}[Frozen invalidation]
+Let $R\subseteq A$ consist of packets newly rejected by explicit current-version revalidation. Assume every packet with no ancestor in $R$ preserves its prior validator result, scope, permissions and meaning, the live base $S_L$ remains warranted, and no new global constraint appears. Define
+\begin{equation}\label{eq:survive}
+A^-=\{v\in A:(\downarrow v)\cap R=\varnothing\}
+=A\setminus\bigcup_{r\in R}\{v\in A:r\preceq v\},\qquad W^-_\gamma=W_\gamma\cap A^-.
+\end{equation}
+The signed dependency list is never modified merely by deleting invalid ancestors.
+\end{definition}
+
+\begin{theorem}[Exact conditional revocation repair]\label{thm:revoke}
+Under the frozen invalidation assumptions, $A^-$ is an ideal of $A$, and $\Gamma$ remains attainable in the surviving arena precisely when $W_\gamma\cap A^-\ne\varnothing$ for all $\gamma\in\Gamma$. For an old committed ideal $J$, its largest surviving subideal is
+\[
+J\cap A^-=D_{R\cap J}(J).
+\]
+If that subideal loses a query, a surviving alternative witness outside $J$ can restore it through a \emph{newly checked, authorized atomic transaction}; no automatic resurrection or global knowledge preservation is implied.
+\end{theorem}
+\begin{proof}
+For $v\in A^-$ and $p\preceq v$, $\downarrow p\subseteq\downarrow v$, so $p\in A^-$. Thus $A^-$ is an ideal and the restricted witness arena retains the positive frozen hypotheses. Apply Theorem~\ref{thm:normal}(i). The intersection $J\cap A^-$ removes exactly those nodes in $J$ with an ancestor in $R$. If $v\in J$ has a revoked ancestor $r$, closure of $J$ ensures $r\in J$; therefore the removed set is exactly $\bigcup_{r\in R\cap J}\Up_J(r)$. Every surviving subideal must be inside $J\cap A^-$. A sufficient replacement package need not be contained in the original $J$; its authorization must be rechecked at the new epoch.\end{proof}
+
+\begin{example}[Surviving substitute]
+Suppose a historical source receipt $s$ depends on a now-revoked key, warrant $a$ depends on $s$, and independent warrant $b$ is scope-equivalent for the same query. The old package $J=\{s,a\}$ loses its warrant when $s$ becomes invalid. If $b$ is still validated and authorized, a new transaction can choose $\{b\}$. This does not restore the old key's authority or preserve unasked queries.
+\end{example}
+
+\section{Where the framework stops}\label{gl-first-W2-s10}
+\paragraph{Validity versus utility.} The support map $S(J)$ contains prevalidated finite answers, not predictions of future proof-search time, held-out intuition, or self-soundness. A perfect retention optimizer does not guarantee improved theorem proving or empirical intelligence.
+
+\paragraph{Query-relative sufficiency.} Witness equivalence is equivalence \emph{for the named query and checker version}. A coarse query might fail to distinguish historically distinct sources. If preserving their separate provenance matters, it must be an explicit obligation; calling $m(\Gamma)$ ``minimum memory'' without naming $\Gamma$ and its validation contract is incomplete.
+
+\paragraph{Dynamic authorization.} A live Player 0 may face moving resources, expiry, negative guards, checker upgrades and strategic conditions that determine which witnesses are produced. A static snapshot theorem cannot make all possible proofs available, turn an absence receipt into monotone evidence, or prove that recomputing the snapshot optimum at every turn is globally optimal.
+
+\begin{problem}[Adaptive certified sufficiency]
+Characterize explicitly versioned finite update rules that permit incremental repair of the sufficient-package frontier as authorizations, checked warrants and query requirements change. Specify which stored validation receipts can safely be reused and which require recomputation.
+\end{problem}
+
+\begin{problem}[Tractable structured fragments]
+Find substantive structural restrictions on witness incidence and packet dependencies admitting polynomial-time exact retention optimization, with full cost accounting. W1's unique-witness case is an elementary tractable fragment; depth one alone does not suffice by Theorem~\ref{thm:NP}.
+\end{problem}
+
+\begin{conjecture}[Empirically useful selective waking]
+For some explicitly fixed, nontrivial singleton-ATP task distribution, a legal, fully charged, prevalidated policy selecting witnesses using a certified answer frontier achieves strictly greater expected held-out post-wake proof-search utility than at least one well-defined equal-access baseline under a matched total resource budget. This is experimental and algorithm-specific; it is not entailed by the finite theorems and does not claim universal optimality.
+\end{conjecture}
+
+\section{Conclusion}\label{gl-first-W2-s11}
+The transition from W1 to W2 is from ``what is the ancestry of this selected certificate?'' to ``which certified witnesses ought we select to answer these named questions at a declared cost?'' W1 contributes typed admission, exact dependencies, guarded waking, and operational trait obligations. W2 elevates alternative, already checked warrants to first-class mathematical objects. Within that frozen model the results give an exact selection normal form, exponential branching, a compulsory core that can be insufficient, sound finite deletion and marginal extension, shared-evidence economies, a non-submodular optimized query cost, depth-one budget hardness, explicit trait thresholds, and a finite answer frontier with conditional revocation repair.
+
+These results are \emph{conditional finite combinatorics}; neither a new general proof-search algorithm nor a measured proof-speedup follows. The remaining research tasks concern changed evidence, actual full-system charges, and blind empirical comparisons with equal-access baselines.
+
+\appendix
+\section{Level-2 provenance, comparison, revision and verification ledger}\label{gl-first-W2-s12}
+\subsection{Exact ancestry and source handling}
+\textbf{W0, immutable ancestral source:} \emph{Cooperative GBG+ Dreaming in a Singleton ATP: Player-0 Coordination, Certified Synergy, and Multi-Trait Waking}, version 0.4.3, 31 October 2026, credited to \authorname{} with AI assistance~\cite{W0}. The present manuscript attributes to it the singleton Player-0 setup, fourteen roles, checked victory, typed certificates and wake gating. This W2 repair does not modify W0.
+
+\textbf{W1, immutable immediate source:} \emph{The Algebra of Certified Dream Surplus}, Level-1 FDWC unified multiarticle W1, ATLAS-repaired version 1.2, 31 October 2026~\cite{W1}. W2 attributes to W1 the fixed positive envelope, accepted DAG, least ancestor closure, exact packet identity, versioned bridges, and predeclared trait obligations. This repair does not modify W1.
+
+\textbf{Source limitation:} only the supplied 16-page W2 PDF was attached to this repair request; its W0 and W1 descriptions and cross-references therefore remain reported ancestry, \emph{not independently reverified cross-document claims}. The original editable W2 \LaTeX{} source was not supplied. This replacement source is a reconstruction that preserves and repairs the mathematical content rather than a bytewise patch to the original source.
+
+\subsection{Development-path comparison}
+The W2 manuscript describes two internal Level-2 research paths, not separately published. The \emph{witness-geometry} path considers the family of sufficient ideals, minimality, mandatory evidence, deletion and shared costs. The \emph{resource/ability} path considers budgets, tier obligations, revocation and frontier computation. The declared comparison rubric consists of correctness under hypotheses, rigor and type/epoch discipline, distinguishability from W1, mathematical depth, explanatory clarity, and potential for future research. The resulting synthesis keeps their joint \emph{frozen-model} limitations instead of presenting dynamic conclusions as proved.
+
+\subsection{Contribution status}
+\Needspace{15\baselineskip}
+\begin{longtable}{@{}p{0.22\linewidth}p{0.72\linewidth}@{}}
+\toprule
+Origin/status & Mathematical content and qualification\\\midrule
+Inherited as described & Actor-checked victory, typed packet claims, exact dependencies, acyclic ideal closure, fixed-witness ancestry and trait tiers.\\
+Defined in W2 & Frozen warrant alternatives $W_\gamma$, sufficient ideals $\mathcal F_\Gamma$, optimized charge $m(\Gamma)$, compulsory core and answer frontier.\\
+Derived in W2 & Selection normal form and costs; exponential antichains; forced-core identity; safe deletion and incremental extension; shared-cost submodularity and its optimized failure.\\
+Derived in W2 & Explicit depth-one Set Cover reduction (with conventional Set Cover hardness assumed); trait thresholds, finite nondominated frontier and conditional invalidation.\\
+Clarified in this repair & Nonminimal witness-generated packages; guarded/budgeted core counterexamples; polynomial forced-core computation; explicit empty-universe/isolated-element handling; frontier tie-break proof.\\
+Unproved/experimental & Actual end-to-end gain, universal priority, robust dynamic authorization, and any implementation-specific improvement in held-out proof search.\\\bottomrule
+\end{longtable}
+
+\subsection{ATLAS repair log and audit boundaries}
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+\item \textbf{Authority hygiene.} Every query projection must be a separately validated, authorized, versioned finite judgment; hypothesis formation cannot substitute for a proof.
+\item \textbf{Prerequisite accounting.} Internal edges are exact, complete and acyclic; omitted external prerequisites must already be valid in the live base.
+\item \textbf{Witness minimality.} Theorem~\ref{thm:normal} now explicitly distinguishes ``every minimal ideal is witness-generated'' from the false converse. Zero-cost ties are not misreported as a unique optimizer.
+\item \textbf{Forced evidence.} Theorem~\ref{thm:core} assumes a feasible, unrestricted ideal family. Proposition~\ref{prop:budgetcore} now supplies \emph{both} budget and guard counterexamples; the polynomial-time core calculation is distinguished from NP-hard optimization.
+\item \textbf{Cost semantics.} Every displayed charge is an incremental additive tariff, not the cost of discovering candidates, checking witnesses, reconstructing state or running future search.
+\item \textbf{Greedy and submodular claims.} The one-query extension is exact relative to its fixed starting ideal; the two-query example refutes joint greedy optimality. Fixed packet-ancestry costs are submodular, optimized answer-obligation costs need not be.
+\item \textbf{Finite complexity.} The Set Cover reduction explicitly handles empty universes, uncovered elements, binary encoding and the assumption $k\ge0$. It does not transfer NP-hardness to the underlying soundness checkers.
+\item \textbf{Frontier proof.} The monotone-utility result now gives explicit lexicographic tie-breaking, and states the coverage hypothesis needed for trait-grade utility.
+\item \textbf{Revocation.} Only rejected roots and their descendants leave the arena; stability of unaffected certificates and the live base is a hypothesis, not inferred from old validations.
+\item \textbf{Production and originality.} Source reconstructed and typeset from the supplied PDF; original preserved. No independent external literature search, proof assistant certification, W0/W1 cross-document review or deployed experiment has been performed.
+\end{enumerate}
+
+\subsection{Outstanding verification and research obligations}
+An independent formal proof check, comprehensive prior-art review, and verification against the actual W0 and W1 source documents remain outside this pass. Further research needs full costs of witness construction and checking, safe verifier upgrades and signature revocations, tractable incidence structures, realistic Player-0 witness discovery, and blinded equal-access experiments. ``No remaining problems'' should therefore mean \emph{no outstanding defect found by the stated finite-paper audit}, not a guarantee of mathematical or empirical infallibility.
+
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{9}
+\bibitem{W0}\authorname{}, with AI-assisted mathematical development by DATA MIND, \emph{Cooperative GBG+ Dreaming in a Singleton ATP: Player-0 Coordination, Certified Synergy, and Multi-Trait Waking}, manuscript version 0.4.3, 31 October 2026. Designated immutable W0.
+\bibitem{W1}\authorname{}, with AI-assisted mathematical development by DATA MIND, \emph{The Algebra of Certified Dream Surplus: Fair Cooperative Games, Evidence Dependencies, and Traitwise Waking in a Singleton ATP}, Level-1 FDWC unified multiarticle W1, ATLAS-repaired version 1.2, 31 October 2026. Designated immutable W1.
+\end{thebibliography}
+
+\clearpage
+\section*{AI Disclaimer and Authorship Declaration}\addcontentsline{toc}{section}{AI Disclaimer and Authorship Declaration}
+This mathematical research exposition is an AI-assisted hybrid work undertaken under the research conception, seed ideas, direction, evaluation priorities, and authorial oversight of \authorname{}. DATA MIND (OpenAI GPT-6) contributed finite mathematical models, theorem candidates, arguments, counterexamples, expository organization, internal critique, repairs, and reconstructed \LaTeX{} drafting. Every effort has been directed toward factual accuracy, logical soundness, and completeness in the limited sense of covering relevant facts, assumptions, and qualifications; ``complete'' does not mean formal completeness in G\"odel's sense. Statements are intended to be provable under the stated hypotheses, or at least not easily refutable, but neither the author nor AI guarantees correctness, consistency, provability, priority, originality, or the absence of hidden hypotheses. Internal auditing, computational spot checks, PDF compilation and layout inspection are not independent proof certification or peer review. AI contributed some mathematical statements and characters, not all of the work's seeds, research decisions, or authorship. W0 and W1 were left unchanged. No independent external mathematical source was used to extend the user's manuscript ancestry, no unrestricted theorem-proving improvement is asserted, and no deployed dreaming experiment has been conducted.
+
+\end{document}

@@ -1,0 +1,41 @@
+name: Publish certified dreaming W0-W3 glossaries
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_certified_dreaming_glossaries.yml'
+      - 'scripts/publish_certified_dreaming_glossaries.py'
+      - 'docs/cs.LO_Logic_in_Computer_Science/**/source.tex'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install LaTeX and PDF inspection dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y latexmk texlive-latex-extra texlive-pictures texlive-fonts-recommended texlive-science
+          python -m pip install pymupdf==1.26.4
+      - name: Compile, validate, publish and audit W0–W3
+        run: python scripts/publish_certified_dreaming_glossaries.py
+      - name: Commit the four PDFs, separate sources, readers and contiguous catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/publications.json docs
+          if git diff --cached --quiet; then
+            echo "No publication changes to commit."
+            exit 0
+          fi
+          git commit -m "Publish W0-W3 certified dreaming glossaries in slots 1-4"
+          git push origin HEAD:main

@@ -1,0 +1,1109 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[margin=0.87in,headheight=16pt,footskip=25pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,tabularx,array,enumitem,longtable}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric}
+\usepackage{xcolor,fancyhdr,lastpage,hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black,pdftitle={Cooperative GBG+ Dreaming in a Singleton ATP: Player-0 Coordination, Certified Synergy, and Multi-Trait Waking},pdfauthor={Brian Tenneson}}
+\pagestyle{fancy}\fancyhf{}\lhead{Cooperative GBG+ Dreaming in a Singleton ATP}\rhead{Research manuscript 0.4.3}\cfoot{\thepage\ / \pageref{LastPage}}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{conjecture}[definition]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{example}[definition]{Example}
+\newtheorem{remark}[definition]{Remark}
+\newcommand{\Cn}{\operatorname{Cn}}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\W}{\operatorname{Wake}}
+\newcommand{\Val}{\operatorname{Valid}}
+\newcommand{\Adm}{\operatorname{Admit}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Grade}{\operatorname{grade}}
+\newcommand{\Q}{\mathcal Q}
+\newcommand{\E}{\mathcal E}
+\newcommand{\B}{\mathcal B}
+\newcommand{\R}{\mathcal R}
+\newcommand{\G}{\mathcal G}
+\newcommand{\s}{\mathsf}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,parsep=0pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\emergencystretch=2em
+\title{\textbf{Cooperative GBG+ Dreaming in a Singleton ATP}\\[4pt]\large Player-0 Coordination, Certified Synergy, and Multi-Trait Waking}
+\author{\textless{}Brian Tenneson\textgreater{}\\[-1pt]\small Research conception, direction, and oversight\\[2pt]\small DATA MIND (OpenAI GPT-6): AI-assisted formal development and exposition}
+\date{Research manuscript 0.4.3 --- 31 October 2026\\\small New proposal; not a machine-checked result or an executed autonomous ATP experiment}
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\begin{minipage}{.93\linewidth}\small\textbf{AI disclaimer notice.} A full declaration of AI assistance, authorial direction, mathematical reliability, and verification limitations appears on the final page, immediately after the references. This manuscript reports conditional mathematical results for a specified model, not a tested implementation; operational grades do not measure consciousness or general intelligence.\end{minipage}}
+\end{center}
+
+\begin{abstract}
+We propose a \emph{singleton cooperative dreaming game} for one automated theorem prover (ATP), whose Player~0 coordinates a finite family of ordinary GBG+ players and is itself subject to auditable evidence. Game play is operationally equivalent to dreaming, while opening, waking review, and commit are distinguished phases. The research question is broader than reflection alone: mathematical knowledge, historical and epistemic awareness, reflective awareness, intuition, conjecture formation, strategy, coalition insight, memory, study, and resource control may each change through a dream. We introduce a finite extensible ontology of \emph{traits}, separate (i) a player's first-order trait surplus from (ii) that player's reflective evidence \emph{about} its trait activity, and retain both even for Player~0. Upon waking, an atomic, version-checked transaction may promote only dependency-complete, type-appropriate certificates, historical receipts, or bounded experimental evidence. A vector of declared per-trait operational grades replaces the erroneous idea that all improvements can be added to one reflection number. We prove frozen-copy preservation, conditional type-safe waking, per-trait nondecrease under stable evidence, an exact criterion for simultaneous advancement, and a noncompensation principle prohibiting intuition or event receipts alone from proving logical reflection claims. We extend a finite four-player coalition witness to show distinct, certified gains in mathematical, historical, epistemic, reflective and bounded heuristic-test abilities; these are deliberately constructed possibilities, not empirical ATP performance measurements. We identify countermodels to automatic growth, unrestricted self-soundness, and guaranteed cost-adjusted synergy, and give a reproducible multi-axis experiment design. Version 0.3 defined proof-search intuition as budgeted, partial-information action forecasting and supplied a Brier-score protocol, a qualified held-out confidence theorem, counterexamples to automatic transfer, and input/output/falsification contracts for the original twelve traits. Version 0.4 adds exact role contracts for every ordinary player, reachable-goal victory, immediate within-dream surplus transfer before the next turn, and learning as the verified retention of newly acquired evidence; it incorporates the separately attributed intuition--proof reversal, creativity, and bounded counterfactual-imagination protocols. Version 0.4.1 fixes the full singleton roster at $r=14$ ordinary dreaming players plus distinguished Player~0, and states an explicit nonstarvation theorem for infinite legal play; finite sessions and surplus victories remain separate questions. Version 0.4.2 repaired goal semantics, the surplus-admission algorithm, and the four-role reflective witness. Version 0.4.3 aligns actor-attributed victory with surplus credit, fixes deterministic dependency rejection, distinguishes illustrative from full costs, and compares recent cooperative proof systems. The proposed synthesis is not a claim to have invented blackboard cooperation, machine reflection, proof checking, metareasoning, or dynamic memory.
+\end{abstract}
+\begingroup\setlength{\parskip}{0pt}\tableofcontents\endgroup
+\clearpage
+\section*{Reader's Glossaries: Argot and Notation}
+\addcontentsline{toc}{section}{Reader's Glossaries: Argot and Notation}
+\noindent\emph{Reading key.} The entries below translate the manuscript's specialized vocabulary and principal symbols into plain English. "First found" links to the opening page and section of the first substantive discussion in the body (not the earlier abstract or this glossary). The formal definitions and hypotheses in the article remain authoritative.
+\subsection*{Argot: Specialized Terms}
+\addcontentsline{toc}{subsection}{Argot: Specialized Terms}
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.16}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{.215\linewidth}>{\raggedright\arraybackslash}p{.585\linewidth}>{\raggedright\arraybackslash}p{.14\linewidth}@{}}
+\toprule
+\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endfirsthead
+\multicolumn{3}{@{}l}{\footnotesize \emph{Argot: Specialized Terms (continued)}}\\
+\toprule\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endhead
+\bottomrule\endfoot
+\textbf{Singleton ATP} & One automated theorem prover hosts every internal role; the roles are not separate provers. & \hyperref[gl-first-W0-s1]{\S\,\ref*{gl-first-W0-s1}, p.\,\pageref*{gl-first-W0-s1}} \\
+\textbf{GBG+ dreaming} & The specified cooperative game while the machine is in its DreamPlay phase; not a claim about human sleep. & \hyperref[gl-first-W0-s2]{\S\,\ref*{gl-first-W0-s2}, p.\,\pageref*{gl-first-W0-s2}} \\
+\textbf{Player 0} & The internal coordinator who schedules, routes and audits work, but cannot declare an unproved claim true. & \hyperref[gl-first-W0-s1]{\S\,\ref*{gl-first-W0-s1}, p.\,\pageref*{gl-first-W0-s1}} \\
+\textbf{Ordinary dreaming player} & A specialized role with its own permitted actions, goal, checker and possible reward. & \hyperref[gl-first-W0-s1]{\S\,\ref*{gl-first-W0-s1}, p.\,\pageref*{gl-first-W0-s1}} \\
+\textbf{Frozen checkpoint} & The unchanging, versioned starting state copied when a dream opens; protects the live state from dream-time edits. & \hyperref[gl-first-W0-s2]{\S\,\ref*{gl-first-W0-s2}, p.\,\pageref*{gl-first-W0-s2}} \\
+\textbf{Player contract} & The predeclared rules describing what a role can observe, do, accomplish, charge and record. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{Reached victory} & An actual, authenticated, goal-achieving move by the credited actor; merely imagining a path is insufficient. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{Dream-local surplus} & Fresh, checked information admitted inside the dream and available to authorized later turns. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{Two-stage admission} & First check and retain a winning reward inside the dream; later separately authorize its promotion when waking. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{Nonstarvation} & A scheduling guarantee of repeated opportunities for players, not a guarantee of wins or useful learning. & \hyperref[gl-first-W0-s4]{\S\,\ref*{gl-first-W0-s4}, p.\,\pageref*{gl-first-W0-s4}} \\
+\textbf{Reflective surplus} & Evidence about a player's own activity or the system's history, distinct from the original mathematical result. & \hyperref[gl-first-W0-s5]{\S\,\ref*{gl-first-W0-s5}, p.\,\pageref*{gl-first-W0-s5}} \\
+\textbf{Trait ontology} & The typed list of ability dimensions; knowledge, intuition and memory need not share one numerical scale. & \hyperref[gl-first-W0-s6]{\S\,\ref*{gl-first-W0-s6}, p.\,\pageref*{gl-first-W0-s6}} \\
+\textbf{Evidence modes} & Separate statuses for formal proof, historical/audit record, bounded evaluation and hypothesis formation. & \hyperref[gl-first-W0-s6]{\S\,\ref*{gl-first-W0-s6}, p.\,\pageref*{gl-first-W0-s6}} \\
+\textbf{Operational intuition} & Budgeted, partial-information forecasting about proof-search choices, scored against checked outcomes. & \hyperref[gl-first-W0-s7]{\S\,\ref*{gl-first-W0-s7}, p.\,\pageref*{gl-first-W0-s7}} \\
+\textbf{Wake gate} & The version-checked, dependency-complete transaction governing what becomes live ATP evidence. & \hyperref[gl-first-W0-s10]{\S\,\ref*{gl-first-W0-s10}, p.\,\pageref*{gl-first-W0-s10}} \\
+\textbf{Noncompensation} & A gain in one evidence type does not automatically satisfy an obligation requiring a different type. & \hyperref[gl-first-W0-s8]{\S\,\ref*{gl-first-W0-s8}, p.\,\pageref*{gl-first-W0-s8}} \\
+\textbf{Trait grade} & A level reached by satisfying predeclared, nested test or evidence obligations in a single trait. & \hyperref[gl-first-W0-s8]{\S\,\ref*{gl-first-W0-s8}, p.\,\pageref*{gl-first-W0-s8}} \\
+\textbf{Certified synergy witness} & A finite constructed example in which cooperation supports several separately checked results; not measured speedup. & \hyperref[gl-first-W0-s12]{\S\,\ref*{gl-first-W0-s12}, p.\,\pageref*{gl-first-W0-s12}} \\
+\end{longtable}\endgroup
+\subsection*{Notation: Symbols and Abbreviations}
+\addcontentsline{toc}{subsection}{Notation: Symbols and Abbreviations}
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.16}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{.215\linewidth}>{\raggedright\arraybackslash}p{.585\linewidth}>{\raggedright\arraybackslash}p{.14\linewidth}@{}}
+\toprule
+\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endfirsthead
+\multicolumn{3}{@{}l}{\footnotesize \emph{Notation: Symbols and Abbreviations (continued)}}\\
+\toprule\textbf{Entry} & \textbf{Meaning and why it matters} & \textbf{First found} \\
+\midrule\endhead
+\bottomrule\endfoot
+\textbf{$P_0$} & The distinguished coordinating role, itself subject to auditing. & \hyperref[gl-first-W0-s1]{\S\,\ref*{gl-first-W0-s1}, p.\,\pageref*{gl-first-W0-s1}} \\
+\textbf{$P_i$} & Ordinary role with index $i$; the full model has $i=1,\ldots,14$. & \hyperref[gl-first-W0-s1]{\S\,\ref*{gl-first-W0-s1}, p.\,\pageref*{gl-first-W0-s1}} \\
+\textbf{$m,n,r$} & Counts of federations, ATP hosts and ordinary players; here $m=n=1$, $r=14$. & \hyperref[gl-first-W0-s1]{\S\,\ref*{gl-first-W0-s1}, p.\,\pageref*{gl-first-W0-s1}} \\
+\textbf{$S_e$} & The frozen starting checkpoint for waking epoch $e$. & \hyperref[gl-first-W0-s2]{\S\,\ref*{gl-first-W0-s2}, p.\,\pageref*{gl-first-W0-s2}} \\
+\textbf{$\mathsf{PC}_i$} & The tuple specifying player $i$'s action, validation, reward and access contract. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{$G_i$} & The set of goal states fixed in advance for player $i$. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{$\mathsf{Win}_i$} & Predicate that records a genuinely reached, actor-attributed, witnessed victory. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{$D_t$} & Shared accepted dream-local evidence at the beginning of turn $t$. & \hyperref[gl-first-W0-s3]{\S\,\ref*{gl-first-W0-s3}, p.\,\pageref*{gl-first-W0-s3}} \\
+\textbf{$\widehat\Delta_i^D$} & Player $i$'s candidate dream-surplus ledger (not yet an authorized live update). & \hyperref[gl-first-W0-s5]{\S\,\ref*{gl-first-W0-s5}, p.\,\pageref*{gl-first-W0-s5}} \\
+\textbf{$\Delta_i^{\mathrm{wake}}$} & Certified portion of a player's surplus eligible for waking promotion. & \hyperref[gl-first-W0-s5]{\S\,\ref*{gl-first-W0-s5}, p.\,\pageref*{gl-first-W0-s5}} \\
+\textbf{$s(t)$} & The ordinary player scheduled on dream turn $t$. & \hyperref[gl-first-W0-s4]{\S\,\ref*{gl-first-W0-s4}, p.\,\pageref*{gl-first-W0-s4}} \\
+\textbf{$N_i(T)$} & Number of times player $i$ was scheduled in the first $T$ turns. & \hyperref[gl-first-W0-s4]{\S\,\ref*{gl-first-W0-s4}, p.\,\pageref*{gl-first-W0-s4}} \\
+\textbf{$\mathcal T$} & Finite, extensible registry of distinct trait dimensions. & \hyperref[gl-first-W0-s6]{\S\,\ref*{gl-first-W0-s6}, p.\,\pageref*{gl-first-W0-s6}} \\
+\textbf{$\Theta_\tau$} & Operational test and evaluation contract for trait $	au$. & \hyperref[gl-first-W0-s7]{\S\,\ref*{gl-first-W0-s7}, p.\,\pageref*{gl-first-W0-s7}} \\
+\textbf{$g_{i,\tau}^e$} & Player $i$'s certified grade in trait $	au$ at epoch $e$. & \hyperref[gl-first-W0-s8]{\S\,\ref*{gl-first-W0-s8}, p.\,\pageref*{gl-first-W0-s8}} \\
+\textbf{$E_{i,\tau,k}$} & The evidence obligations required to reach level $k$ for a particular player and trait. & \hyperref[gl-first-W0-s8]{\S\,\ref*{gl-first-W0-s8}, p.\,\pageref*{gl-first-W0-s8}} \\
+\textbf{$\mathsf{PROOF},\mathsf{AUDIT},\mathsf{EVAL}$} & Three distinct packet/checking modes; passing one does not grant the authority of another. & \hyperref[gl-first-W0-s6]{\S\,\ref*{gl-first-W0-s6}, p.\,\pageref*{gl-first-W0-s6}} \\
+\end{longtable}\endgroup
+\clearpage
+
+\section{The question and the distinction that makes it precise}\label{gl-first-W0-s1}
+We study one ATP, not five. The intended full game has $m=1$ federation, $n=1$ ATP host, exactly $r=14$ ordinary internal dreaming players $P_1,\ldots,P_{14}$, and one additional distinguished coordinator $P_0$. Thus there are fifteen player roles, but only one ATP. The theorems also admit smaller restricted subgames with $r\geq3$ for controlled examples; those subgames do not silently establish the participation of all fourteen in the full game. The minimal base roles are $P_1$ (Knowledge), $P_2$ (Historical Awareness), and $P_3$ (Reflection). A full registered roster may additionally assign Epistemic Awareness, Intuition, Imagination, Creativity, Conjecture, Strategy, Gestalt, Memory, Study, Resource Judgment, and Provenance to separate ordinary players. All fourteen named ordinary roles are registered in the full game; in a declared restricted subgame additional roles may be omitted. They have individually declared contracts and are not extra ATPs. Player 0 is an active participant whose control decisions are themselves auditable; its scheduling receipts belong to its own reflective surplus. Player 0 is \emph{not} the proof checker and has no independent power to certify a false claim.
+
+The proposal extends the existing GBG+ dreaming vocabulary in the ancestral manuscripts \cite{tenneson-five,tenneson-singleton}: (i) all participating players collect candidate reflection about what happened in their own and the joint game; (ii) a waking protocol decides what certified, reusable reflective competence can enter the live ATP. A claim about a past action, a checked theorem, a historical possession claim, a reflective ability, and an unrestricted self-soundness assertion are not interchangeable.
+
+\begin{center}
+\begin{tikzpicture}[>=Latex,font=\small,
+  reg/.style={draw,rounded corners,align=center,minimum height=7mm,inner sep=4pt},
+  arr/.style={-Latex,thick}]
+\node[reg] (live) at (0,2.8) {\textbf{Live ATP} $M_e$\\accepted BANKs and reflection profile};
+\node[reg] (snap) at (0,1.55) {Immutable snapshot $S_e$\\begin dream / freeze epoch};
+\node[reg] (p0) at (0,.25) {$P_0$: GBG+ scheduler\\authorization and control receipts};
+\node[reg] (p1) at (-3,-1.25) {$P_1$: Knowledge\\$\widehat\Delta_1$};
+\node[reg] (p2) at (0,-1.25) {$P_2$: Historical\\$\widehat\Delta_2$};
+\node[reg] (p3) at (3,-1.25) {$P_3$: Reflection\\$\widehat\Delta_3$};
+\node[reg] (gate) at (0,-2.75) {\textbf{Wake gate}: external verification + dependency closure\\atomic authorized promotion of $\Delta_i^{\rm wake}$, $i=0,\ldots,r$};
+\draw[arr] (live)--(snap);\draw[arr] (snap)--(p0);
+\foreach \x in {p1,p2,p3}{\draw[arr] (p0)--(\x);\draw[arr] (\x)--(gate);}
+\draw[arr] (p0.east) .. controls (5,.4) and (5,-2.65) .. (gate.east);
+\draw[arr,dashed] (gate.west) .. controls (-5,-3.05) and (-5,2.8) .. (live.west);
+\node[font=\scriptsize,align=center] at (0,-3.55) {Only $P_1,P_2,P_3$ are drawn; $P_4,\ldots,P_{14}$ follow the same control rules. Dashed return is waking promotion.};
+\end{tikzpicture}
+\end{center}
+
+\section{Typed evidence and an operational dreaming biconditional}\label{gl-first-W0-s2}
+Fix a decidable proof-checking interface $V^K$ for proof certificates in a declared calculus $F$, and separate typed checkers $V^H,V^R,V^0$ for authenticated historical records, finite reflective claims about known traces, and Player-0 scheduling/authorization records. These checkers need not decide the truth of arbitrary formulas. Their trust base, versions, and authorization keys are explicitly part of the protocol. Object-theory derivability is $\Cn_F$; meta-evidence acceptance is a distinct operation.
+
+\begin{definition}[Frozen singleton checkpoint]
+At epoch $e$ the immutable checkpoint is
+\[
+ S_e=(F,\Sigma_e,K_e,H_e,R_e,\mathrm{Auth}_e,(V^i_e)_{i=0}^r,\mathrm{Rules}_e,\mathrm{Version}_e).
+\]
+It includes the authorized object base $\Sigma_e$, accepted Knowledge, historical and reflective records, a versioned verifier family, policy and provenance. A dream uses private writable copies $B_i^D$ and candidate ledgers $\widehat\Delta_i$. New externally authorized axioms require a later \emph{new epoch}; they cannot be smuggled into the frozen basis.
+\end{definition}
+
+\begin{definition}[Dream/play equivalence]
+A legal session has states $\mathrm{Awake}$, $\mathrm{Opening}$, $\mathrm{DreamPlay}$, $\mathrm{WakeReview}$, and $\mathrm{Awake}'$. We decree the operational predicate
+\[
+ \s{Dreaming}(t)\quad\Longleftrightarrow\quad
+ \s{Phase}(t)=\mathrm{DreamPlay}\ \land\ \s{GBG+Enabled}(t).
+ \tag{D/P}
+\]
+Only in $\mathrm{DreamPlay}$ may Players 0 through $r$ perform certified cooperative dream moves. Opening and waking are respectively snapshot preparation and commitment/rejection, not additional dream play. Within this proposed protocol, no game is played outside dreaming and no dreaming occurs without an active game. The biconditional is a model definition, not an empirical theorem about every ATP or human sleep.
+\end{definition}
+
+A legal move $a_t=(i,\mathrm{role},\mathrm{inputs},\mathrm{output},\mathrm{receipt},c_t)$ identifies the active player, checks read permissions and dependencies, charges $c_t\geq0$, and appends an authenticated event. Reads do not confer write authorization. \emph{Playing} includes legitimate evidence-dependent reads, verification attempts, proof reconstruction and substantive control decisions; a pure idle interval is not by itself a dream move.
+
+\begin{definition}[Participating player and complete episode]
+A player is \emph{involved} if it makes at least one legal non-idle move in the dream. A \emph{complete} episode relative to a declared roster $I\subseteq\{0,\ldots,r\}$ includes at least one such move from each $i\in I$ and a terminating wake-review step. Every player on the roster is entitled to submit reflection candidates; every move produces a fresh typed trace-event candidate. Complete episodes need not exist if resources or permissions fail.
+\end{definition}
+
+
+\section{Player contracts, reached victories, and turn-by-turn learning}\label{gl-first-W0-s3}
+\label{sec:victory-learning}
+The earlier model distinguished candidate packets and a waking transaction. We now add a second, earlier admission event: a successful player may deposit a \emph{dream-local, type-checked surplus} before the next player moves. This does not authorize writing to the frozen snapshot or to the live ATP. The definition below is an extension of the earlier state machine, not an assertion that the same action must be re-executed at waking.
+
+\begin{definition}[Typed player contract and complete game instance]
+A \emph{registered ordinary player} has a contract
+\[
+ \mathsf{PC}_i=(\mathsf{Obs}_i,\mathsf{Act}_i,\mathsf{Goal}_i,
+ \mathsf{Judge}_i,\mathsf{Reward}_i,\mathsf{Ledger}_i,
+ \mathsf{Charge}_i,\mathsf{Auth}_i,\mathsf{Update}_i).
+\]
+Its components are respectively a bounded authorized observation map, a decidably described family of legal action schemas, a specified set of \emph{goal states fixed independently of the run}, a typed and checkable success predicate (possibly a finite evaluation rather than formal proof), a rule for constructing a typed surplus packet, the receiving dream-local evidence store, a nonnegative fully charged cost tariff, a permission boundary, and a specified next-state transition. All contract data, checker identities, and versions are frozen at the opening epoch. A contract is \emph{well formed} only when each declared move terminates or has an enforceable finite interruption cap and each ledger packet includes its assumption/provenance dependencies. A trait dimension can exist without an active corresponding player, and one player can legitimately contribute across several dimensions.
+
+Player~0 has an analogous \emph{controller contract}, but its approved moves are scheduling, dependency routing, conflict checks, and budget control. Its predeclared winning goal may be a previously unresolved, authorized coordination obligation satisfied by a replayably checked route/assignment certificate under the available budget. The resulting surplus is an \textsf{AUDIT}-typed coordination receipt, not an object-theory proof or an assertion of infinite fairness. Mere creation of a routine action log does not constitute Player~0 victory unless it fulfills that independently declared goal. Player~0 cannot manufacture a proof by choosing a player. A game instance is the finite coded collection of the frozen checkpoint, the registered contracts, a finite available-work budget, and the within-dream update policy.
+\end{definition}
+
+\begin{definition}[Reachability means victory --- reached, not hypothetical]
+At the opening epoch, each player $i$ has a \emph{fixed, decidable goal predicate} $\mathsf{Goal}_i$ on eligible game states and their typed success witnesses; write $G_i=\{X:\mathsf{Goal}_i(X)=1\}$. The set $G_i$ is determined by the frozen contract \emph{before play} and does not depend on which states happen to be visited. For a legal, authenticated event trace $\pi=(X_0,a_0,X_1,\ldots,a_{t-1},X_t)$, each $a_{t-1}$ carries the identifier of the responsible actor, including $0$ for a substantive Player-0 coordination action. A controller's routine selection is not a goal-solving act for the selected ordinary player. Define the independently checkable predicate $\mathsf{GoalStep}_i(a_{t-1},X_{t-1},X_t,w)$ to mean that actor $i$ performed an authorized, contract-relevant step with a valid goal witness $w$; the checker cannot accept its own unsupported assertions. Put
+\begin{equation}\tag{RV}\label{eq:rv}
+\begin{aligned}
+ \mathsf{Win}_i(\pi,t)\iff{}&\mathsf{LegalPrefix}(\pi,t)\ \land\ \mathsf{Actor}(a_{t-1})=i\\[-1pt]
+ &{}\land\ X_t\in G_i\ \land\ \exists w\,\mathsf{GoalStep}_i(a_{t-1},X_{t-1},X_t,w).
+\end{aligned}
+\end{equation}
+The trace step, actor and witness are authenticated, and the goal predicate is frozen independently of the run. In the ordinary turn protocol, $t$ refers to the checked action by the selected $P_i$; a separate recorded $P_0$ coordination step is assessed against $P_0$'s own contract. This rule credits actual, attributable achievement, not a pre-existing goal state or an unplayed path. Thus \emph{actually attaining the checked goal through an eligible action is victory}; mere modal reachability (existence of an unplayed path) is not. A \emph{surplus victory} additionally requires a new accepted packet under (SV), so re-crediting the same completed goal does not create further learning. A player may record completion even if its proposed packet is a duplicate; no fresh surplus is then credited. An imagination player can check a conditional path claim without thereby reaching the Knowledge player's proof goal. Neither a routine action log nor a speculative route substitutes for the predeclared goal witness. Distinct players may have different goal sets and win on different turns.
+\end{definition}
+
+\begin{definition}[Two-stage admission, immediate surplus, and learning]
+Write $D_t$ for the shared authorized \emph{dream-local} collection of verified, typed records at the start of turn $t$; it is initialized from the frozen checkpoint $S_e$, but is not the live BANK. A legal move by actor $i$ yields a finite candidate family $Q_{i,t}$ with contract-scoped packet types, verifier identities, provenance, dependencies, and canonical unique packet identifiers. An independent check of (RV) occurs \emph{before} awarding victory surplus. All candidates, even on a loss, may leave typed action or failure receipts in the separately maintained audit trace; such receipts are not credited as victory surplus.
+
+If $\neg\mathsf{Win}_i(\pi,t)$, set $W_{i,t}=\varnothing$. Otherwise form the directed dependency graph on $Q_{i,t}$, with an edge $p\to q$ exactly when $q$ cites $p$ as a same-turn candidate dependency. If \emph{any} directed cycle is present, reject the \emph{entire same-turn candidate family} for victory credit, set $W_{i,t}=\varnothing$, and log the failure. This deliberately conservative, deterministic policy does not discard previously accepted $D_t$. If the graph is acyclic, sort candidates topologically with a deterministic tie-break on canonical packet identifiers fixed by the opening protocol. Set $U_0=\varnothing$ and, in that order, define
+\[
+ U_k=\begin{cases}
+ U_{k-1}\cup\{q_k\},&\begin{gathered}
+ \mathrm{Deps}(q_k)\subseteq D_t\cup U_{k-1},\\[-2pt]
+ \mathsf{Judge}_{\mathrm{type}(q_k)}(q_k,D_t\cup U_{k-1})=1,\\[-2pt]
+ q_k\not\equiv_{\mathrm{type}}D_t\cup U_{k-1},\quad \mathsf{EligibleReward}_i(q_k)=1;
+ \end{gathered}\\
+ U_{k-1},&\text{otherwise.}
+ \end{cases}
+ \qquad W_{i,t}:=U_m.\tag{SV}
+\]
+The predicate $\mathsf{EligibleReward}_i$ requires explicit attribution to the winning player's frozen reward contract, not merely the existence of a convenient valid packet. A missing or rejected prerequisite is never silently treated as accepted: its dependents fail the first test unless that prerequisite was already in $D_t$. The relation $q\equiv_{\mathrm{type}}D$ means equality under frozen type-preserving equivalence, not an unannounced cross-type coercion. Each accepted checker invocation uses only the prior state and already validated predecessors; mutual self-attestation is forbidden. The referee logs the reason for every refusal. A goal success with $W_{i,t}=\varnothing$ is still an observed win, but it is \emph{not} a new surplus victory.
+
+Define the turn victory surplus $\delta_{i,t}=W_{i,t}$ and require the atomic local update
+\[
+ D_{t+1}=D_t\cup W_{i,t},\qquad
+ \mathsf{NextTurnEnabled}\ \Longrightarrow\ W_{i,t}\ \text{is visible to every authorized reader}.\tag{LT}
+\]
+In particular, earned surplus is deposited \emph{before the next turn}. The record retains a single provenance identity across derived trait views. A proof packet has type \textsf{PROOF}; historical and coordination receipts have \textsf{AUDIT}; recorded tests have \textsf{EVAL}. A conjecture's \emph{existence and declaration} may earn an audited creation receipt, while its unproved content stays marked \textsf{HYPOTHESIS} and is never a theorem. Failed experiments and uncredited event receipts remain in the typed trace, and waking may archive such meta-events only through its separate audit gate; they cannot be promoted as victory-earned object proofs.
+
+\emph{Learning during dreaming} means the strict acquisition of at least one new authenticated, scoped and checker-accepted item into the appropriate portion of $D_t$; it is the operational interpretation of retaining earned surplus. This definition encompasses historical and epistemic records and proof results. It does \emph{not} entail improved held-out performance, a strictly stronger deductive closure, or changed model weights. These are separate learning-capability claims with additional tests.
+\end{definition}
+
+\begin{proposition}[No ghost victories and safe next-turn use]
+Suppose each credited surplus transition satisfies the actor-attributed (RV), victory-gated (SV) and atomic local update (LT), with sound object checkers and sound finite historical/meta-record validators for their respective claim languages. Then (i) every credited winner has actually reached its declared checked goal; (ii) before the next turn, every authorized player can reference its credited surplus with retained dependencies; and (iii) no newly added object-theory record in $D_t$ claims an unconditionally proved statement without a valid frozen-context proof. None of these properties establishes a positive speedup.
+\end{proposition}
+\begin{proof}
+For (i), $W_{i,t}\ne\varnothing$ implies a successful independently witnessed, actor-attributed goal step by the explicit (RV) gate. For (ii), the transition publishes $W_{i,t}$ atomically before the next selection; read permissions remain enforced. For (iii), induct on $t$. Initially, the object's certified part is sound by the checkpoint hypothesis; at the next turn, new \textsf{PROOF} packets have been checked with every undischarged hypothesis made explicit, and no other type is coerced to an unconditional theorem. Typed induction preserves the invariant. The proof says nothing about how much search effort was expended to obtain the surplus.
+\end{proof}
+
+\begin{definition}[Epistemic awareness and historical specialization]
+For an object formula $\varphi$, context $\Gamma$, player/ATP identity $j$, scope $\eta$, and time $u$, define finite record-relative judgments
+\[\begin{aligned}
+ &\mathsf{Asserted}_\eta(j,\varphi),\quad\mathsf{Certified}_\eta(j,\Gamma\vdash\varphi,w),\quad\mathsf{Accessible}_\eta(j,w),\\
+ &\mathsf{HeldAt}_\eta(j,u,\varphi,w),\quad\mathsf{UnknownIn}_\eta(j,\mathcal A,\varphi).
+\end{aligned}\]
+Each refers to an explicit, bounded and authenticated view. In particular, \(\mathsf{UnknownIn}\) means that a declared finite archive $\mathcal A$ has no relevant accepted receipt; it is \emph{not} undecidability or nonderivability. \emph{Epistemic Awareness} is the ability to answer these typed status queries with appropriate witnesses and limitations. \emph{Historical Awareness} is the temporally indexed specialization, namely the sublanguage of \(\mathsf{HeldAt}\), time-stamped \(\mathsf{Asserted}\), verifier epochs, and time-indexed action receipts. The inclusion of this historical query language in the larger epistemic language is a declared checked translation, not an identification of two validators or a claim that every epistemic question is historical.
+
+A Historical player may win by verifying an earlier possession receipt; an Epistemic player may win by a new supported distinction between proof, assertion, accessibility, and past possession. The very same authenticated receipt can be exposed in both views under a checked bridge, but its unique provenance ID prevents counting it as two independent evidence discoveries. In either case, the newly admitted warranted evidence is a form of \emph{learning}.
+\end{definition}
+
+\subsection{A fully registered ordinary-player roster}
+For the full fourteen-player game, register the ordered roster
+\[
+\begin{gathered}
+P_1=K,\ P_2=H,\ P_3=R,\ P_4=E,\ P_5=I,\ P_6=J,\ P_7=N,\\
+P_8=Q,\ P_9=S,\ P_{10}=G,\ P_{11}=M,\ P_{12}=L,\ P_{13}=C,\ P_{14}=A.
+\end{gathered}
+\]
+The roles correspond respectively to Knowledge, Historical Awareness, Reflection, Epistemic Awareness, Intuition, Imagination, Creativity, Conjecture, Strategy, Gestalt, Memory, Study, Resource Judgment, and Provenance. This roster is fixed for the full game; the letters are role codes rather than mathematical propositions.
+
+The names in the following table are operational specializations of the extensible trait registry, not claims to have discovered independent psychological faculties. For each role, the frozen contract must further specify the observation subset, cost bound, checker version and authorization scope just defined. A ``goal'' below means the goal must be \emph{reached and checked}, and the displayed packet must be fresh relative to the pre-turn typed ledger. If a listed specialty is not registered, it cannot silently take a turn.
+
+\small
+\begin{longtable}{@{}p{.155\linewidth}p{.355\linewidth}p{.395\linewidth}@{}}
+\toprule
+Ordinary player & Reached, checkable victory condition & Immediate earned surplus (before next turn)\\\midrule
+\endfirsthead
+\toprule Ordinary player & Reached victory & Type-scoped learned surplus\\\midrule
+\endhead
+Knowledge $K$ & A derivation $\Gamma\vdash\varphi$ with explicit assumptions and a fixed authorized basis $\Gamma$ is accepted by the frozen object verifier; closed theorem status needs no undischarged hypotheses. & New proof/lemma receipt in $K$; no change of axioms or automatic expansion of the deductive closure.\\[3pt]
+Historical $H$ & A precise earlier possession or action query is answered using authenticated, time-indexed evidence. & A new temporal receipt; may support a checked inclusion into epistemic awareness.\\[3pt]
+Epistemic $E$ & A previously unsettled bounded status query (asserted, certified, held, accessible, unknown-in-archive) receives a correctly scoped warrant. & Newly justified distinction or status receipt; neither historical absence nor unknown-in-archive means unprovable.\\[3pt]
+Reflection $R$ & A specified finite question about the ATP's own process or checked proof is newly answered by a valid typed meta-witness. & Reflective receipt; higher grade only if a new declared reflection tier is met.\\[3pt]
+Intuition $I$ & A bounded, incomplete-information prediction/route ranking is logged \emph{before} the outcome and passes its declared finite evaluation event. & Prediction-and-outcome record; capability improvement needs independent holdout and comparison.\\[3pt]
+Imagination $J$ & A distinct bounded branch yields a checked \emph{conditional} proof or a separately audited counterfactual relation with all branch assumptions explicit. & Conditional route, hypothesis-address graph, or useful proof subgoal; never a gratuitous unconditional theorem.\\[3pt]
+Creativity $N$ & An independently accepted proof has a predeclared normalized structural novelty score passing the role's threshold. & Proof plus novelty receipt; expected creative yield requires scored successes and failures across a frozen task population.\\[3pt]
+Conjecture $Q$ & A well-formed, corpus-relative nonduplicate target is formally frozen with premise and scope manifest. & New open-question record, \emph{not} a theorem; later resolution earns a separate proof victory.\\[3pt]
+Strategy $S$ & A new legal policy is deposited with its versioned mechanism and a passing predeclared evaluation; or an auditable optimization certificate when applicable. & Policy/evaluation packet, with charged effort and declared baseline.\\[3pt]
+Gestalt $G$ & A composite checked result depends on distinct role-scoped evidence under a specified isolated-view condition. & Provenance-complete joint result and coalition dependency ledger; speedup is not implied over equal-access centralized play.\\[3pt]
+Memory $M$ & A decoder/retrieval contract passes every declared bounded historical or proof-certificate query. & Accepted query-relative preservation witness and measured storage/retrieval cost, not arbitrary lossless compression.\\[3pt]
+Study $L$ & An authorized reading packet or self-selected study obligation is checked and accurately tagged with its basis epoch. & Retained source/proof-dependency receipt; separate held-out tests needed for improved study policy.\\[3pt]
+Resource $C$ & An auditable budget/forecast or resource-allocation evaluation is completed within the protocol. & Cost forecast/actual ledger and tested policy comparison; no cost-free control.\\[3pt]
+Provenance $A$ & A source chain, permission judgment, checker identity or dependency manifest passes an independent replay audit. & Verifiable trace/scope receipt; no extra theorem unless checked under the object calculus.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Distinguishing four often conflated kinds of progress.}
+Intuition proposes rankings under partial information; imagination explores explicitly conditional worlds; creativity credits \emph{verified novel discoveries}, rather than exploration temperature; epistemic/historical awareness records warranted knowing and having known. This separation adopts the proof/obligation distinction of \emph{OPEN. AKM} \cite{tenneson-openakm}, the branch-preserving, budget-capped counterfactual semantics of \emph{Recursive ``What If?'' Imagination} \cite{tenneson-imagination}, and the success-times-novelty creativity model of the Data-ATP treatise \cite{tenneson-creativity}. Accordingly, for a fixed policy $u$ and declared task population,
+\[
+ \mathsf{CreativeYield}(u)=\Pr(\mathsf{ProofSuccess}_u)\,
+ \mathbb E[\nu(P_u)\mid\mathsf{ProofSuccess}_u],
+\]
+with value $0$ when success probability is zero. The factorization is prior work. It is not a theorem that a player with a high exploration temperature is creative, or that one novel proof establishes a lasting gain.
+
+\begin{definition}[Turn protocol and no-surplus fallback]
+Each active dream turn consists of \emph{select, act, adjudicate, deposit, record, next}. Player~0 first selects an enabled contract and checks the allocation. The selected player executes within its cap and presents candidate evidence. An independent type checker adjudicates actual goal arrival and newness. Only after a checked, actor-attributed victory can its admissible fresh reward packets be deposited atomically in $D_{t+1}$ before another player sees the board; a victory with no eligible new packet deposits nothing. The controller then logs the charged outcome, including rejected proposals. If no checked goal is reached, or if the admitted reward set is empty, \(W_{i,t}=\varnothing\). A legal turn may produce only an auditable, nonwinning action or failure receipt. The next player sees the updated certified dream board and the bounded speculative trace separately. At wake, only an admissible and dependency-complete subset of dream-local surplus is revalidated against the actual live version and atomically promoted. A surplus earned during the dream may therefore be \emph{learned locally immediately} yet fail to persist after waking, for instance because source permissions expired or a verifier epoch changed.
+\end{definition}
+
+\begin{theorem}[Turn-level noncompensation and conditional waking learning]
+In the registered model: (i) a checked victory of type \textsf{AUDIT} or \textsf{EVAL} cannot, absent a separately approved bridge and object proof, credit a \textsf{PROOF}-typed victory; (ii) an immediately credited dream surplus is readable by authorized later players before the next turn; (iii) if a finite dream ends with an approved waking package whose proof, audit and evaluation dependencies remain valid for the live epoch, its accepted records persist as post-wake learned evidence; and (iv) no assumption here implies that every victory raises any graded trait or downstream proof-search utility.
+\end{theorem}
+\begin{proof}
+For (i), the judgment forms are disjoint and the transition protocol has no unannounced coercion. Property (ii) is the ordering condition (LT). Property (iii) follows by the definition of version-checked atomic waking commitment and the dependency-complete package. For (iv), a new receipt can fail to complete a tier, or cost more than its later benefits; a model with only duplicate future queries is an elementary counterexample.
+\end{proof}
+
+\begin{example}[Historical and epistemic cooperative victory]
+Suppose the frozen object BANK contains a currently accepted proof packet $w$ for $\Gamma\vdash p$, but the Epistemic player has no checked answer to ``did the ATP possess $w$ at epoch $e-2$?'' The Historical player obtains an authenticated archive receipt $u$ showing that possession at epoch $e-2$, and reaches its declared temporal goal. It wins and deposits $u$ \emph{before} the Epistemic player's next turn. The Epistemic player reads the authorized $u$, checks the translation into \(\mathsf{HeldAt}(M,e-2,p,w)\), and reaches its own epistemic goal, winning a distinct new \emph{status judgment} whose dependency points back to $u$. Both victories produce learned evidence; they do not prove that $p$ was first discovered in this dream, that the ATP is globally self-sound, or that future search performance improved. On waking, the records may persist only if the current authorization, timestamps, checker versions and provenance validate.
+\end{example}
+
+
+\section{Fourteen-player scheduling, nonstarvation, and infinite play}\label{gl-first-W0-s4}
+\label{sec:fairness14}
+There is only one ATP, and $P_0$ is not a fifteenth ATP or an additional proof verifier. In each \emph{ordinary-player turn} $t$, Player~0 makes an auditable selection of a member of $\{P_1,\ldots,P_{14}\}$ and applies the turn protocol in Section~\ref{sec:victory-learning}. Player~0 is serviced as the controller for each such selection, not silently inserted into the ordinary-player round-robin sequence. Its selection is a charged action and can earn independent $P_0$ surplus only by reaching its own declared checked coordination goal.
+
+\begin{definition}[Service schedule and exact nonstarvation]
+Fix the full roster $I=\{1,\ldots,14\}$. An ordinary-player schedule on a finite prefix of length $T$ is a function $s:\{0,\ldots,T-1\}\to I$, with $s(t)=i$ meaning that $P_i$ is selected for the $t$-th legal ordinary-player turn. For a schedule $s:\mathbb N\to I$ of a \emph{hypothetical infinite legal dream execution}, define the service count
+\[
+N_i(T)=\#\{t<T:s(t)=i\}.
+\]
+\emph{Unconditional nonstarvation} is the requirement
+\[
+\forall i\in I,\qquad \lim_{T\to\infty}N_i(T)=\infty.\tag{NS}
+\]
+The full protocol grants each player a legal, charged no-op when it has no currently substantive move, so every ordinary player can remain continuously eligible. The no-op is service but is not a victory and cannot itself earn a substantive surplus. If no-ops are disallowed, then (NS) must be conditionalized to the actual enabling law. Under ordinary weak fairness, a player continuously enabled from some stage must eventually be served and, if this remains true, infinitely often; under strong fairness, a player enabled infinitely often must be served infinitely often. Neither notion implies (NS) for a player permanently disabled by the game. Here (NS) is the exact full-roster objective rather than an ambiguous invocation of ``fairness.''
+\end{definition}
+
+\begin{theorem}[Round-robin nonstarvation with exact finite-prefix counts]
+Assume an infinite legal dream execution, a continuously available service action (substantive or no-op) for each of the fourteen ordinary players, and legal Player-0 selection of
+\[
+s(t)=1+(t\bmod 14),\qquad t\in\mathbb N.\tag{RR}
+\]
+For every finite $T$ and every $i\in I$,
+\[
+\left\lfloor\frac{T}{14}\right\rfloor
+\le N_i(T)\le
+\left\lceil\frac{T}{14}\right\rceil,
+\]
+so $\lvert N_i(T)-N_j(T)\rvert\le1$ for all $i,j$, and each ordinary player is served once in each consecutive aligned block of fourteen ordinary-player turns. In particular (NS) holds: all fourteen players receive infinitely many service turns.
+\end{theorem}
+\begin{proof}
+Write $T=14q+a$ with $0\le a<14$. Each full block of fourteen scheduled positions contains each player once, and the remaining $a$ positions give exactly one additional service to $P_1,\ldots,P_a$. Thus $N_i(T)=q+\mathbf1_{\{i\le a\}}$. Since $q\to\infty$ as $T\to\infty$, every $N_i(T)$ diverges, proving (NS). The bound concerns counted selections, not physical elapsed time.
+\end{proof}
+
+\begin{proposition}[Arbitrary nonstarving policies and limits of fairness]
+For any infinite legal schedule $s:\mathbb N\to I$, every ordinary player gets infinitely many turns \emph{if and only if} (NS) holds. A non-round-robin controller may use adaptive priorities and unequal service frequencies while satisfying this condition. Neither (NS) nor round-robin implies any player's goal is reachable by its chosen search policy, that a goal is won, that surplus is strictly positive, or that the ATP wakes with a higher grade. Likewise no finite observed prefix, however balanced, proves (NS) for an unobserved future schedule.
+\end{proposition}
+\begin{proof}
+The first assertion unpacks the definition of $N_i$. For the negative assertions, consider a legal instance with all players continuously eligible through no-ops and with each goal set unreachable from the frozen checkpoint. The policy (RR) is nonstarving but no substantive victory occurs, hence each surplus set $W_{i,t}$ remains empty. A finite schedule prefix can always be extended by starving one fixed player forever; therefore a finite observation does not certify the infinite-tail condition.
+\end{proof}
+
+\begin{remark}[Finite dreams versus infinite idealizations]
+A deployed ATP can wake after a \emph{finite} dream. A complete fourteen-player episode, when feasible, can give each ordinary player a turn before waking, but need not do so when an interrupt or resource cap ends play early. Infinite nonstarvation is a property of a specified \emph{infinite} legal execution, not of any finite one. In particular, if every turn has a positive minimum cost and the whole dream has a fixed finite total budget, infinite legal play is impossible; an infinite model instead needs unbounded replenishment or the absence of a global finite budget. Finite per-move interruption caps still apply. No turn-based guarantee yields a wall-clock deadline when individual service durations have no uniform upper bound.
+\end{remark}
+
+\paragraph{Surplus ordering under any admissible scheduler.}
+The scheduling rule only determines \emph{who moves next}. It never bypasses the atomic certified-surplus update (LT): when $P_i$ reaches its checkable goal on turn $t$, its newly approved surplus is committed to $D_{t+1}$ before $s(t+1)$ acts. Thus both cyclic and adaptive nonstarving play support turn-by-turn learning without granting the scheduler proof authority.
+
+\section{Every player has a reflective surplus---of the correct type}\label{gl-first-W0-s5}
+Let $U_i$ be a declared finite universe of checkable meta-questions for player $i$, for example \(\s{Performed}(i,a,e)\), \(\s{CheckedBy}(u,V^K_e)\), \(\s{HeldAt}(u,t)\), \(\s{ValidSchedulePrefix}(e,s)\), or \(\s{CanReplay}(u,e)\). Membership means a question is \emph{eligible}, not that it has been answered correctly. Nested historical warrants may be included if their exact proof objects and types are specified. The universes are disjointly typed as necessary, and any shared question has an explicit translation.
+
+\begin{definition}[Dream surplus versus certified wake surplus]
+Each $i\in\{0,\ldots,r\}$ holds a private candidate ledger
+\[
+ \widehat\Delta_i^D=\{(q,w,\mathrm{src},e,\mathrm{deps},\mathrm{claimType},c):
+ q\in U_i\},
+\]
+where $w$ is a proposed witness for $q$. The \emph{certified reflective surplus} promoted upon waking is
+\[
+ \Delta_i^W=\big\{q\in U_i:\ \exists\text{ approved packet for }q
+ \text{ in the waking transaction}\big\}.
+\]
+The raw ledger may contain incorrect candidates, duplicates, or rejected packets. Thus $\widehat\Delta_i^D\ne\varnothing$ does not imply $\Delta_i^W\ne\varnothing$, much less a strict increase in reflection grade.
+\end{definition}
+
+For \emph{all} players---not only the one named Reflection---their reflective surplus concerns facts about the status and provenance of their reasoning, historical access, checked actions, and interactions. Knowledge may learn that its candidate was validly checked; Historical Awareness may learn that its historical reconstruction was independently warranted; Reflection may acquire a new justified higher-order trace claim; Player 0 may certify that an actual finite schedule obeyed its declared permissions. A record of finite prefix scheduling is \emph{not} a proof of infinite fairness.
+
+\begin{proposition}[Universal weak event surplus]
+Assume every involved player's non-idle move receives a fresh, unforgeable, verifiably indexed action receipt, and the initial snapshot contains no record of that future event. Then each involved player has a nonempty candidate reflective surplus. If the receipt checker is sound for this action-event type and the waking gate authorizes and admits that receipt, each has a nonempty certified wake surplus.
+\end{proposition}
+\begin{proof}
+For each involved $i$, select its first non-idle move $a_i$. The transition appends the candidate $q_i=\s{Performed}(i,a_i,e)$ with its freshly issued witness. This event is not in the earlier snapshot because it describes a later authenticated occurrence. Under the further checking and admission hypotheses, the candidate is accepted. No premise here says a stronger capability level was achieved.
+\end{proof}
+
+
+\section{All dreamed traits: a typed, extensible surplus spectrum}\label{gl-first-W0-s6}
+\label{sec:spectrum}
+Restricting dream output to an increase of the \emph{Reflection} player would miss most of the point of cooperative dreaming. Every participating player can contribute to many traits; the Reflection player is a specialty, not the exclusive owner of reflective knowledge. Likewise, a Historical Awareness player may generate useful search insights and a Knowledge player may discover a fact about its own proof behavior. The same game may improve one capacity, several, or none.
+
+\begin{definition}[Trait ontology, not a single intelligence quotient]
+Let $\mathcal T$ be a finite, extensible registry of typed trait dimensions. An initial registry is
+\[
+\mathcal T=\{K,H,E,R,I,J,N,Q,S,G,M,L,C,A\}.
+\]
+For every trait $\tau$, an experiment declares a query/capability language $U_\tau$, a receipt format, an independently specified acceptance relation $V_\tau$, a retention and dependency policy, and a family of preannounced finite obligations $E_{\tau,0}\subseteq\cdots\subseteq E_{\tau,d_\tau}$. The labels name operationally testable properties, not a complete taxonomy of minds. New traits are added by declaring their own semantics and tests rather than renaming a mathematical proof as a mental quality.
+\end{definition}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}p{.19\linewidth}p{.10\linewidth}X@{}}\toprule
+Dimension & Symbol & What may count at waking\\\midrule
+Mathematical knowledge & $K$ & A new, independently checked proof or refutation relative to an explicitly frozen theory.\\
+Historical awareness & $H$ & An authenticated, time-scoped record of what was held, checked, or executed earlier; no backdating.\\
+Epistemic awareness & $E$ & Verified distinctions among assertion, derivability, accessible evidence, and actual possession; source and trust scope explicit.\\
+Reflective awareness & $R$ & Checked, well-typed claims about the ATP's own specific proofs, decisions, methods, or recorded knowledge.\\
+Intuition/heuristic foresight & $I$ & Predictions, rankings, or promising search hints with reproducible scoring on declared held-out tasks; not proofs of correctness.\\
+Counterfactual imagination & $J$ & Bounded, branch-tagged hypothetical worlds and accurately scoped conditional consequences; hypothetical premises never become BANK facts.\\
+Verified creativity & $N$ & Independently checked proof discoveries with predeclared normalized structural novelty, measured jointly with discovery success.\\
+Conjecture creation & $Q$ & A recorded and frozen new candidate question, an exact novelty check against a specified corpus, and optional later settlement.\\
+Search control / strategy & $S$ & Checked policy descriptions and experimentally measured outcomes against matched budgets; not automatic improvement elsewhere.\\
+Gestalt / cooperative synthesis & $G$ & A certified joint dependency or a useful composite plan whose required sources and equal-access baseline are recorded.\\
+Memory / compression & $M$ & A tested retrieval or history quotient preserving a declared set of queries, receipts, and costs; memory savings separately measured.\\
+Learning / self-directed study & $L$ & Authorized reading, accepted source records, and verified dependencies under an explicit basis epoch; new axioms require authorization.\\
+Cost / resource judgment & $C$ & Verified resource ledgers and calibrated, reproducible comparisons of alternative policies, including failed efforts.\\
+Authorization / provenance & $A$ & Authenticated source chains, checker versions, permission receipts, conflict handling and scoped trace accountability.\\\bottomrule
+\end{tabularx}
+\end{center}
+This registry includes the linked federation article's object-theory, history, reflection, coalition, budgeting, study, and compression themes \cite{tenneson-five}. \emph{Intuition} is an explicitly added operational dimension, not a named theorem of that article. Awareness of mathematical dependence, independence, or contradiction is likewise admissible as a separately typed subtask only when its exact logic and checkers are stated. A purported oracle, an unverifiable assertion of insight, or an estimate of one's intelligence is not a certified mathematical surplus.
+
+\begin{definition}[Every player has a surplus \emph{matrix}]
+The players are $\mathcal P=\{0,1,\ldots,r\}$. For player $i$ and trait $\tau$ let
+\[
+\widehat\Delta_{i,\tau}^{D}=\{(q,w,\mathrm{epoch},\mathrm{deps},\mathrm{mode})\}
+\]
+be the finite set of proposed dream-time packets, and let $A_{i,\tau}\subseteq\widehat\Delta_{i,\tau}^{D}$ be those selected for the wake transaction after type-specific checks. Each player also has \emph{second-order} receipts about its own activities,
+\[
+\widehat\rho_i^{D}\subseteq\widehat\Delta_{i,R}^{D}\cup\widehat\Delta_{i,H}^{D}\cup\widehat\Delta_{i,A}^{D}.
+\]
+The complete dream surplus is the typed matrix $\widehat{\boldsymbol\Delta}^{D}=(\widehat\Delta_{i,\tau}^{D})_{i\in\mathcal P,\tau\in\mathcal T}$ together with dependency edges and charged history. Every player owns a \emph{place} in this matrix, but no rule forces its cells to be nonempty or useful. A fresh authenticated action receipt can create minimal reflective \emph{event} surplus; it cannot establish a stronger reusable ability by itself.
+\end{definition}
+
+\paragraph{Two kinds of gain for the same player.}
+For example, Knowledge may derive and verify $q$ (an object-theory gain in $K$) and receive a receipt that \emph{its own proof of $q$ was checked by verifier version $v$ at epoch $e$} (a separately warranted meta-gain in $R/H/A$). Historical Awareness may reconstruct an old proof (an $H$ gain) and certify that it has now distinguished \emph{past possession} from \emph{present derivability} (an $E$ gain). An intuition process may rank a branch successfully on a predeclared test (an $I$ observation) and inspect the provenance and limitations of its own predictions (a limited $R$ claim). Neither of these two gains implies the other.
+
+\begin{definition}[Proof, audit and experiment evidence modes]
+Every approved packet is marked either \textsf{PROOF} (an exact formal or typed finite-proof certificate), \textsf{AUDIT} (authenticated facts about finite history and provenance), or \textsf{EVAL} (a reproducible empirical measurement with its data, test split, scoring rule and uncertainty). A proposed conjecture without any of these may be retained only as \textsf{HYPOTHESIS} and cannot satisfy a \textsf{PROOF}-mode obligation. A cross-type bridge must name a separately checked rule; mere numerical gains in one mode never certify another mode. Intuition and policy skills may have higher \emph{evaluated} grades without thereby acquiring logical truth status.
+\end{definition}
+
+\begin{proposition}[Historical and intuitive gains do not imply mathematical truth]
+In the typed model, without an explicit sound bridge from $\mathsf{AUDIT}$ or $\mathsf{EVAL}$ to a specified object-proof obligation, an accepted historical receipt or positive heuristic score cannot alone promote an object-theoretic proof obligation.
+\end{proposition}
+\begin{proof}The object-theory acceptance rule requires its declared $\mathsf{PROOF}$ witness. Historical records and finite evaluation scores have different acceptance relations, and the typed closure admits no unspecified coercions. Hence the missing proof obligation remains unsatisfied.\end{proof}
+
+
+\section{Operational semantics of intuition and the remaining traits}\label{gl-first-W0-s7}
+\label{sec:operational-traits}
+\textbf{Why another layer is necessary.} The registry in Section~\ref{sec:spectrum}
+provides trait names, broad evidence types, and tier obligations. Those are
+\emph{not yet, by themselves, definitions of abilities}. To measure a trait we
+must specify an input interface, permitted information, an output type, a
+verifiable evaluation rule, the comparison target, and an explicit condition
+under which the claim of improvement is false. This section supplies such
+contracts. It refines the proposed model; it does not ascribe subjective
+experience, unconscious reasoning or human-like instincts to software.
+
+\begin{definition}[Operational trait contract]
+A trait contract is a tuple
+\[
+ \Theta_\tau=(\mathcal X_\tau,\mathcal O_\tau,\mathcal Y_\tau,
+ b_\tau,V_\tau,\mathcal D_\tau,\ell_\tau,\mathcal B_\tau,
+ \mathcal P_\tau).
+\]
+Here $\mathcal X_\tau$ is a set of pre-registered test instances;
+$\mathcal O_\tau$ specifies the exact observable information the component
+may inspect; $\mathcal Y_\tau$ specifies its permitted outputs;
+$b_\tau$ is the inference-time budget; $V_\tau$ is a declared evidence or
+outcome checker; $\mathcal D_\tau$ is a stated test population or finite
+census; $\ell_\tau$ is a bounded loss or an exact pass/fail predicate;
+$\mathcal B_\tau$ fixes one or more comparators; and $\mathcal P_\tau$ defines
+snapshot, provenance, holdout, disclosure and waking-promotion rules.
+Every reported score is indexed by its contract and epoch. An undefined field
+means that the corresponding trait has \emph{not} been operationalized.
+\end{definition}
+
+\subsection{Intuition means budgeted, evidence-incomplete proof-search foresight}
+\begin{definition}[ATP intuition: an explicitly limited technical meaning]
+A \emph{proof-search intuition mechanism} is a computable map
+\[
+ h:\mathcal O(x)\longrightarrow
+ \bigl([0,1]^{A(x)},\operatorname{rank}(A(x)),\mathrm{abstain?}\bigr)
+\]
+that receives a partial view $\mathcal O(x)$ of a frozen search state $x$ and,
+within its declared forecasting budget $b_I$, assigns likelihood estimates
+and/or a ranking to a finite list $A(x)$ of candidate search actions
+(lemmas, tactics, rules, branches or subgoals). For a specified verifier,
+remaining search budget $B$, and continuation policy $\pi$, the event
+$Y(x,a;B,\pi)=1$ means that beginning with candidate $a$ leads to a
+checker-accepted proof of the \emph{frozen target} within budget $B$;
+otherwise $Y=0$. Every label records the exact continuation policy, budget,
+random seed, target and proof-checker version. A missing outcome resulting
+from timeout or incomplete observation is encoded according to a
+preannounced censoring policy, not arbitrarily set to success.
+
+This deliberately calls \emph{intuition} the capacity to forecast and prioritize
+promising search moves \emph{without first completing the very proof search
+being predicted}. It is an engineering surrogate, not a definition of human
+intuition or an assertion of machine phenomenology. The map may be a learned
+heuristic, a symbolic rule, a retrieval model or a cheap fixed predictor.
+\end{definition}
+
+The forecasting budget $b_I$ must be strictly specified and reported beside
+$B$: otherwise a predictor could secretly solve every candidate completely,
+then obtain perfect ``intuition'' scores while merely hiding full search work.
+The observable view must also exclude final proof labels, answer-bearing
+receipts from the evaluation set, and other forms of test leakage.
+
+\begin{definition}[Intuition quality, calibration and action value]
+For a test sample $Z=(z_j)_{j=1}^{N}$, where each
+$z_j=(\mathcal O(x_j),a_j,Y_j)$ has an independently checked outcome,
+define the empirical quadratic forecasting loss (Brier loss)
+\[
+ \widehat R_I(h;Z)=\frac1N\sum_{j=1}^N
+     \bigl(h(\mathcal O(x_j),a_j)-Y_j\bigr)^2.
+ \tag{I.1}
+\]
+Lower is better. Calibration assesses agreement between forecast probabilities
+and observed frequencies on declared probability bins; discrimination
+assesses the ranking of successful and unsuccessful actions. Neither alone
+shows that the \emph{selected actions} improve theorem proving. For that,
+define the post-wake policy $\pi_h$ that selects according to $h$ and compare
+its independently verified solve rate, total charged work and elapsed time
+against an equal-information, equal-budget baseline $\pi_0$. These are
+separate reported outcomes. One may optionally predefine a bounded utility
+$U(\pi,z)\in[0,1]$ integrating solving and cost; its normalization and
+cost weights must be chosen \emph{before} observing the final test results.
+\end{definition}
+
+\paragraph{Three non-equivalent intuition claims.}
+\textsf{I-Receipt}: a prediction and its outcome were recorded faithfully;
+\textsf{I-Eval}: a specified finite sample demonstrates a scored difference;
+\textsf{I-Transfer}: independent held-out evidence supports better expected
+performance in a declared task population. The first is an authenticated
+fact about an event, the second a descriptive statistic, and the third a
+statistical inference under distributional assumptions. None is a proof
+of the underlying mathematical target. The distinction parallels
+established proper-scoring and algorithm-selection practice
+\cite{brier,satzilla,leandojo}.
+
+\begin{example}[A four-task intuition ledger, not a performance result]
+Let a fixed baseline forecast $0.5$ for four hypothetical binary action
+outcomes $(1,0,1,0)$. Another \emph{constructed} forecaster outputs
+$(0.8,0.2,0.7,0.3)$. Their respective Brier losses on these four
+hand-chosen cases are $0.25$ and $0.065$, a descriptive difference of
+$0.185$. Since the examples were constructed to display a difference,
+this is \emph{not} an independently tested or statistically certified
+improvement. The future solve rate, calibration under another distribution,
+and extra cost of the second predictor are unknown.
+\end{example}
+
+\subsection{A finite-sample theorem with explicit limits}
+\begin{theorem}[Conditional held-out intuition advantage bound]
+\label{thm:intuition-bound}
+Fix before evaluation two forecasting or decision policies $h_0,h_1$, a
+bounded score $U(h,z)\in[0,1]$, and a declared target population
+$\mathcal D$. Let $z_1,\ldots,z_N$ be independent identically distributed
+draws from $\mathcal D$, independent of both fixed policies, with all
+outcomes generated under the declared verifier and resource protocol. Put
+\[
+ d_j=U(h_1,z_j)-U(h_0,z_j),\quad
+ \bar d=\frac1N\sum_j d_j,\quad \mu=\mathbb E_{z\sim\mathcal D}[d(z)].
+\]
+For any $0<\delta<1$, with probability at least $1-\delta$,
+\[
+ \mu\ \geq\ \bar d-\sqrt{\frac{2\log(1/\delta)}{N}}.
+ \tag{I.2}
+\]
+Consequently, if the displayed lower bound is strictly positive, the
+experiment provides a distribution-relative confidence statement that
+$h_1$ has higher expected declared utility. It does \emph{not} establish a
+logical theorem, a universal improvement, or a benefit on a changed
+population. If the utility includes total charges, the conclusion is
+cost-adjusted only to the extent those charges were comprehensively and
+correctly represented in $U$.
+\end{theorem}
+\begin{proof}
+Each paired difference $d_j$ lies in $[-1,1]$. Hoeffding's bounded
+independent-sample inequality gives
+$\Pr(\bar d-\mu\ge t)\le\exp(-Nt^2/2)$.
+Take $t=\sqrt{2\log(1/\delta)/N}$ and rearrange.
+The inequality is standard concentration mathematics, not a novel theorem
+of dreaming \cite{hoeffding}.
+\end{proof}
+
+\begin{corollary}[Predeclared finite policy comparison]
+If $M$ candidate policies are all fixed independently of the same untouched
+held-out sample, their individual bounds of the form (I.2) hold
+simultaneously with confidence at least $1-\delta$ after replacing
+$\log(1/\delta)$ by $\log(M/\delta)$. This claim does not apply to an
+unbounded sequence of policies adaptively selected using feedback from
+that same holdout.
+\end{corollary}
+\begin{proof}Apply the preceding theorem to each fixed policy against its
+fixed comparator with failure probability $\delta/M$ and use the union
+bound.\end{proof}
+
+\paragraph{Why waking cannot simply inspect a convenient test.}
+Selection of a policy \emph{after} seeing the final holdout destroys the
+independence hypothesis. The protocol therefore freezes the candidate,
+comparator, policy-selection procedure and checker before revealing the
+held-out labels, or must adopt a separately justified adaptive-data
+mechanism \cite{dwork}. Waking may accept a precisely described empirical
+result without accepting its generalization; a claim of \textsf{I-Transfer}
+requires a bound whose hypotheses actually hold. The extra testing
+and dream expenses are included in any report of net system value.
+
+\begin{proposition}[No unconditional intuition or transfer gain]
+There are distinct task populations that induce the same authorized frozen
+observations and identical dream traces but favor opposite post-wake
+branch choices. Hence frozen observations, cooperative player counts and
+increased certificate counts alone cannot guarantee a uniformly helpful
+intuition policy. Nor does a favorable finite evaluation score imply the
+same gain under arbitrary distribution shift.
+\end{proposition}
+\begin{proof}
+Take a search view with two indistinguishable permitted actions $a,b$.
+In world $W_a$, the only budget-successful continuation begins with $a$;
+in $W_b$ it begins with $b$. Assume neither world reveals its future
+outcome in the authorized frozen observations. Both worlds therefore
+produce the same dream input, so any deterministic advice makes the same
+choice in both and fails in one; randomized choices cannot guarantee
+success in both. A population concentrated on $W_a$ and one concentrated
+on $W_b$ provide the requested distribution-shift counterexample.
+\end{proof}
+
+\subsection{The other thirteen dimensions receive testable contracts}
+The following table is a \emph{minimum operational specification}, not a
+claim that the entire list has been implemented. A trait may have a valid
+historical or mathematical witness without a measured improvement in future
+ATP performance.
+\small
+\begin{longtable}{@{}p{.13\linewidth}p{.40\linewidth}p{.40\linewidth}@{}}
+\toprule
+Trait & Input, output and independent check & What would falsify a claimed useful gain\\\midrule
+\endfirsthead
+\toprule Trait & Input, output and independent check & What would falsify a claimed useful gain\\\midrule
+\endhead
+$K$: knowledge & Frozen theory and target; output a proof/refutation
+certificate with exact assumptions; run the declared independent checker. &
+Candidate proof rejected; old certificate duplicated; target depends on
+new unannounced premises. Increased object closure is not inferred from
+a new stored consequence.\\[3pt]
+$H$: historical awareness & Authenticated time-stamped proof and action
+receipts; answer possession/occurrence queries for a frozen epoch. &
+Wrong epoch, forged provenance, unreadable dependency, or inability to
+answer the query on an independent replay.\\[3pt]
+$E$: epistemic awareness & A typed query about \emph{asserted, derivable,
+accepted, accessible, held} or \emph{unknown} status in a specified
+bounded archive; output warrant and scope. &
+Confusing syntactic derivability with historical possession; labeling a
+lack of archived proof as nonprovability; evidence fails finite audit.\\[3pt]
+$R$: reflection & Query about this ATP's stated verifier, proof process,
+resource policy or its prior decisions; produce a sound finite trace
+or meta-derivation with explicitly bounded claim language. &
+Only an unverified self-assertion is offered; new receipts cannot answer
+new precommitted meta-queries; blanket global self-soundness is claimed.\\[3pt]
+$I$: intuition & Partially observed theorem state and eligible actions;
+forecast action success or rank candidates under $b_I$; check outcomes,
+Brier loss, calibration and later utility under fixed budgets. &
+Only training-set gains, test leakage, a solved-then-forecast shortcut,
+no independent holdout, or no benefit under the claimed objective.\\[3pt]
+$J$: imagination & Frozen context and finite depth/node/window caps; output a tagged branch tree with assumption sets and conditional target claims; verify branch addresses, scopes and conditional proof obligations. & An imagined assumption is promoted as fact, inconsistent branches are fused, or a claim of unconditional theoremhood lacks proof.\\[3pt]
+$N$: creativity & Frozen success target, normalized proof-DAG reference corpus and novelty function; output verifier-accepted proofs; score success-weighted novelty $D(u)N(u)$ on a predeclared population. & Entropy, temperature or syntactic padding is mistaken for novelty; high novelty coincides with failure to produce verified proofs.\\[3pt]
+$Q$: conjecture creation & Frozen language and authorized premise basis;
+produce well-formed targets, corpus-relative nonduplicate fingerprints
+and clearly marked proof status; later checker tests settlements. &
+Duplicate after canonicalization, ill-typed target, or volume without
+greater predeclared downstream value. Newness is corpus-relative.\\[3pt]
+$S$: strategy & Frozen instances and a policy for tactic or lemma order;
+run matched solver versions, equal evidence, seeds and budgets; log
+verified success, total operations and time. &
+Observed gain vanishes when re-run under equal resources or when
+scheduling and overhead are fully charged.\\[3pt]
+$G$: cooperation & Source-attributed inter-player dependencies,
+independent checker of composite conclusion, and full equal-access
+centralized comparator. &
+One player already suffices with equal access, or the claimed speed gain
+vanishes against the central baseline. Syntactic coalition dependency
+and computational synergy must be reported separately.\\[3pt]
+$M$: memory & Frozen historical query set and permitted decoder;
+provide compressed store, retrieval procedure and certificates,
+measure exact losslessness for that query class and charged bytes/time. &
+An admitted query changes answer, a certificate cannot be replayed,
+or decoder/indexing cost erases the claimed saving.\\[3pt]
+$L$: study & Authorized source packets, basis epoch, reading policy and
+future unseen tasks; check source dependencies and compare post-study
+capabilities under the declared continuation environment. &
+Only unauthorized axiom import, memorized training tasks, or no change
+on independently frozen transfer tasks.\\[3pt]
+$C$: resource judgment & Forecast or select resource allocations on a
+predeclared task workload; compare predicted cost, actual charged cost,
+and missed deadlines or failures. &
+Systematically miscalibrated budget predictions, omitted costs, or
+worse verified throughput under equal resources.\\[3pt]
+$A$: authorization and provenance & Challenge a typed provenance graph
+with signatures, dependency paths, verifier identifiers and allowed read/
+write scope; replay checking against current policy. &
+False attribution, broken dependency, replay across forbidden epochs,
+permissions escalation or unverifiable records.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Per-player attribution, waking grades and experimental failures}
+\begin{definition}[Observation, ability and causal contribution]
+For each player $i$ and trait $\tau$, distinguish: (i) an
+\emph{observation} $o_{i,\tau}$ passing a finite evidence check; (ii) an
+\emph{ability claim} $a_{i,\tau}$ passing a pre-registered contract on an
+eligible task population; and (iii) a \emph{causal contribution} to ATP-wide
+performance estimated by a matched ablation in which player $i$ is removed
+or its messages are masked. A counterfactual comparison requires equal
+remaining evidence access, compute accounting and an explicit rule for
+redistributing the removed player's budget. Without that design the system
+may report involvement or a trace receipt, but not measured individual
+causal credit. These three categories are stored separately at waking.
+\end{definition}
+
+\begin{definition}[Three-valued ability-promotion decision]
+A wake gate labels an ability claim $\mathsf{SUPPORTED}$ if its
+predeclared exact check, or its applicable statistical confidence rule,
+succeeds; $\mathsf{REJECTED}$ if its stated test demonstrably fails; and
+$\mathsf{UNDETERMINED}$ if evidence is missing, the bound is inconclusive,
+or evaluation assumptions are not justified. Event receipts may still be
+stored when an ability claim is undetermined. A finite score without
+statistical support must not be rewritten as a universal theorem.
+\end{definition}
+
+\begin{proposition}[Noncompensation for operational intuition]
+Let $E_{M,I,k}$ require an independent held-out utility improvement under
+one fixed $\Theta_I$. Increasing $K,H,E,R$ or adding any number of dream
+receipts, without producing new admissible held-out evidence satisfying
+that specific criterion, cannot increase $g_{M,I}$ by that criterion.
+\end{proposition}
+\begin{proof}
+The $I$ tier is defined by a task-specific evidence obligation. No other
+trait coordinate supplies that missing evaluation under the type-safe
+bridge policy. Applying the exact threshold theorem therefore leaves
+that particular tier unmet.\end{proof}
+
+\paragraph{Minimal implementable interface.}
+An experimental Player~0 can require each ordinary player to emit a record
+$({\rm trait},{\rm epoch},{\rm inputHash},{\rm output},
+ {\rm deps},{\rm mode},{\rm cost},{\rm check})$ for every candidate.
+The wake gate partitions records by trait and mode, checks exact proofs and
+historical receipts, runs independent offline evaluations for predictive
+claims, applies predeclared confidence thresholds, and commits only
+warranted effects. This retains every player's reflective activity
+without giving any player authority to certify its own untested
+forecast as improved intuition.
+
+\paragraph{A publishable limitation of the model.}
+The operational contracts do not explain or quantify subjective insight.
+They make the words \emph{intuition}, \emph{awareness} and \emph{learning}
+refutable \emph{within declared ATP experiments}. Changing the task
+population, information budget, evaluator or metric changes the question.
+An improved score is evidence about that question, never a free claim of
+general intelligence.
+
+\section{Multi-trait waking: a profile rather than a scalar reflection score}\label{gl-first-W0-s8}
+\label{sec:profiles}
+For each $i\in\mathcal P\cup\{M\}$ and $\tau\in\mathcal T$, let $C_{i,\tau}^{e}$ be the set of accepted, currently replayable obligations in that trait's declared query language. Here $M$ denotes the whole ATP, not an additional player. Define the operational grade
+\[
+  g_{i,\tau}^{e}=\max\{k\le d_{i,\tau}: E_{i,\tau,k}\subseteq C_{i,\tau}^{e}\}.
+\]
+The full profile is $\mathbf g_i^e=(g_{i,\tau}^e)_{\tau\in\mathcal T}$, and the ATP-wide profile is $\mathbf g_M^e$. For $\mathsf{EVAL}$ obligations, ``accepted'' means only that the stated evaluation criterion was satisfied on a specified test; the grade is not a logical guarantee of future performance. The reflective level of the whole ATP is exactly \emph{one coordinate} $g_{M,R}^e$, supplemented by its full accepted proof-history and introspection capabilities.
+
+The wake gate verifies one dependency-closed package $A=\bigcup_{i,\tau}A_{i,\tau}$ and then recomputes all coordinates using typed bridge rules. For each player set $C_{i,\tau}^{e+1}=C_{i,\tau}^{e}\cup\operatorname{bridge}_{i,\tau}(A)$, where the bridge is type-sound. For the whole ATP we write
+\[
+ C_{M,\tau}^{e+1}=\operatorname{cl}_{\tau}\Bigl(C_{M,\tau}^{e}\cup
+ \operatorname{bridge}_{\tau}(A)\Bigr),\quad
+\mathbf g_M^{e+1}=(g_{M,\tau}^{e+1})_{\tau\in\mathcal T}.
+\tag{TP}
+\]
+A \emph{bridge} may legitimately derive a new R-obligation by combining certified Knowledge and Historical Awareness packets, but the bridge itself must be verified. No universal scalar ``mind level'' or average of incomparable grades is asserted. If the verifier, evidence access, or benchmark population changes, the pre/post comparison requires a declared migration and revalidation; an incomparable evaluation is not called progress.
+
+\begin{theorem}[Traitwise waking monotonicity and exact coordinate thresholds]
+Assume a fixed trait registry, fixed tier obligations, no evidence revocation, extensive sound trait-specific closure rules and an authorized atomic wake package $A$. Then $g_{i,\tau}^{e+1}\geq g_{i,\tau}^{e}$ for all participating players $i$ (including Player~0), for the ATP $M$, and for every trait $\tau$. Strict growth in a coordinate $g_{M,\tau}$ occurs if and only if the post-wake certified capability set covers some tier $E_{M,\tau,k}$ with $k>g_{M,\tau}^{e}$. Simultaneous improvement on a finite set $J\subseteq\mathcal T$ occurs if and only if this criterion holds for every $\tau\in J$.
+\end{theorem}
+\begin{proof}
+Every pre-wake capability set is included in its post-wake set by extensivity and the no-revocation hypothesis, so every previously met tier stays met. Substitution of the update (TP) into the definition of $g$ gives the strictness equivalence coordinate by coordinate, and conjunction proves the simultaneous claim. This is a formal property of the declared hierarchy, not an empirical theorem about learning.
+\end{proof}
+
+\begin{theorem}[Type-separated noncompensation]
+Suppose all bridges into the $R$ trait require a valid $R$-typed witness or a checked derivation of an eligible $R$ obligation from other approved typed packets. If a wake package contains no such support for any previously unmet reflective obligation, then $g_{M,R}^{e+1}=g_{M,R}^{e}$, even if some or all of $g_{M,I},g_{M,H},g_{M,S}$ rise strictly.
+\end{theorem}
+\begin{proof}
+No new higher-tier reflective obligation enters the supported $R$ capability set under the premise. By the exact coordinate threshold, no strictly higher reflection tier is attained. Typed improvements elsewhere cannot bypass the stipulated proof of the reflective obligation.
+\end{proof}
+
+\begin{proposition}[Finite saturation and honest nonmonotonic revisions]
+Each finite fixed hierarchy admits at most $d_{M,\tau}-g_{M,\tau}^0$ strict increases in its $\tau$-coordinate. If evidence is later revoked, a checker is replaced, or the held-out test distribution changes, the fixed-context monotonicity theorem does not apply; revalidated grades may decrease without contradiction.
+\end{proposition}
+\begin{proof}There are finitely many integer grades between the initial grade and $d_{M,\tau}$. The earlier theorem explicitly assumed fixed tiers and evidence retention; removing those hypotheses permits invalidating or making inapplicable previous warrants.\end{proof}
+
+\begin{center}
+\begin{tikzpicture}[>=Latex, font=\scriptsize, bx/.style={draw,rounded corners,align=center,minimum height=8mm,inner sep=4pt}]
+\node[bx] (a) at (0,1) {Player/trait candidate matrix $\widehat\Delta_{i,\tau}^{D}$\\all active dreamers, including $P_0$};
+\node[bx] (b) at (0,-.1) {Wake verification\\proof / historical audit / finite evaluation};
+\node[bx] (c) at (-2.7,-1.4) {Trait certificate profile\\$\mathbf g_M=(g_K,g_H,g_E,\ldots,g_A)$};
+\node[bx] (d) at (2.7,-1.4) {Unpromoted candidates\\failures and hypotheses retained as such};
+\draw[->,thick] (a)--(b);
+\draw[->,thick] (b)--node[above,sloped]{approved} (c);
+\draw[->,thick] (b)--node[above,sloped]{rejected / pending} (d);
+\end{tikzpicture}
+\par\small\emph{Figure: Waking selects trait-specific justified effects, not an undifferentiated increase in reflection.}
+\end{center}
+
+\section{Reflection levels are certified capabilities, not magical truth levels}\label{gl-first-W0-s9}
+It would be unsound to let the ATP jump to a claim of complete self-soundness merely because it collected a new receipt. Instead, fix for every player a nested, finite list of \emph{reflection obligations}
+\[
+ E_{i,0}\subseteq E_{i,1}\subseteq\cdots\subseteq E_{i,d_i}\subseteq U_i,
+\]
+and for the ATP as a whole $E_{M,0}\subseteq\cdots\subseteq E_{M,d_M}\subseteq U_M$. An obligation represents a declared query which the system must be able to answer with a currently acceptable, replayable warrant. The tiers are \emph{operational levels for this experiment}; they are not automatically identical to proof-theoretic reflection hierarchies.
+
+Let $C_i^e\subseteq U_i$ be the \emph{actually warranted} query capabilities held before dreaming, and $C_M^e\subseteq U_M$ those of the ATP. For a set of verified receipts $A$, let $\cl_{\B}(C_M^e\cup A)$ be a declared, sound, monotone closure under finitely checkable bridging rules $\B$; the required proof witnesses must be retained, not erased. Let $\mathrm{bridge}_i$ translate approved packets and certified joint consequences into each player's eligible language.
+
+\begin{definition}[Evidence-relative reflection grades]
+\[
+ \Grade_i(C)=\max\{k\le d_i:E_{i,k}\subseteq C\},\qquad
+ \Grade_M(C)=\max\{k\le d_M:E_{M,k}\subseteq C\}.
+\]
+Assume $E_{i,0}\subseteq C_i^e$ and $E_{M,0}\subseteq C_M^e$. The \emph{grade} changes only if newly supported obligations complete a higher declared tier. We retain the full capability set alongside the integer: different incomparable capability vectors can share the same grade.
+\end{definition}
+
+The post-wake ATP state must therefore contain a vector of individual reflection grades and a distinct global reflection grade:\[\big(\Grade_0,\Grade_1,\ldots,\Grade_r\big),\qquad\Grade_M.\] They need not be equal and cannot safely be computed by arithmetically adding level numbers. A player can gain a verified capability yet remain at the same integer tier; a global promotion can require complementary evidence from several players.
+
+\section{Player 0, the cooperative game, and waking commitment}\label{gl-first-W0-s10}
+Player 0 chooses enabled players under an announced admissible policy, communicates typed challenges and receipts, and records each scheduling or coordination action in $\widehat\Delta_0^D$. A proof or reflective checker must be logically distinct from Player 0's ability to choose actions. All admitted self-descriptions are finite, record-relative claims checked by declared trusted validators; no player is allowed to bootstrap its own validation from unsupported self-assertions. The controller may propose a \emph{package} of dependent packets for waking, but cannot declare its own packet valid merely by selecting it.
+
+\begin{definition}[Admissible waking transaction]
+At the end of a finite dream, an \emph{approved waking set} $A$ is a subset of the finite union of candidate packets satisfying all of the following: (1) authorized packet types and receiving scopes; (2) fresh or revalidated proof/historical/reflective witnesses; (3) exact source-epoch and verifier compatibility; (4) dependency closure, so every cited dependency is present in the old live state or the same approved set; (5) no circular proof by unsupported mutual attestation; (6) explicit conflict and cost policies. The empty set is always an eligible fallback. The \emph{commit} is atomic: either all accepted effects appear together, or no effect of that proposed transaction appears.
+\end{definition}
+
+The waking selector may maximize an explicitly valued objective subject to a budget, or use a conservative priority order. In the multi-trait extension, the package carries both object/trait packets and second-order self-audit receipts for each contributor; the selector must apply the correct trait-specific checkers and recompute the entire profile $\mathbf g_M$, not only the $R$ grade. Finite evaluation grades are labeled as measurements rather than proved mathematical capabilities. Finite maximization ensures existence of a maximizer, but finding it cheaply is \emph{not} established, and controller/search costs must be charged. A competing live update between snapshot and waking may invalidate packets; an optimistic version check and revalidation or abort is required. When evidence is revoked, a separate retraction semantics is needed; the monotonicity theorems below assume \emph{no revocation} during the compared transition.
+
+\begin{center}
+\begin{tikzpicture}[>=Latex,font=\small,
+ box/.style={draw,rounded corners,align=center,text width=2.5cm,minimum height=13mm}]
+\node[box] (d) {DreamPlay\\private candidate surpluses};
+\node[box,right=5mm of d] (v) {WakeReview\\check + dependencies};
+\node[box,right=5mm of v] (c) {Atomic commit\\all approved grades updated};
+\draw[->,thick] (d)--(v);\draw[->,thick] (v)--node[above,font=\scriptsize]{accept}(c);
+\node[box,below=9mm of v] (abort) {Reject / abort\\keep prior live levels};
+\draw[->,thick] (v)--node[right,font=\scriptsize]{fail}(abort);
+\end{tikzpicture}
+\end{center}
+
+\begin{samepage}
+\paragraph{Reference pseudocode.}\vspace{-1ex}
+\begin{verbatim}
+OPEN: freeze versioned live snapshot S_e; create private BANK copies
+PLAY: while authorized DreamPlay and budget remains:
+        P0 selects enabled player; charge move; record typed outputs
+        all involved players may exchange scoped evidence and self-receipts
+STOP: close game; enter WakeReview (no game moves)
+WAKE: revalidate versions, witnesses, permissions and dependencies
+      choose one admissible package A (possibly empty)
+      atomically promote A or abort; retain rejection and cost logs
+      recompute every player-by-trait profile and ATP-wide profile
+\end{verbatim}
+\end{samepage}
+
+\section{Preservation and exact advancement results}\label{gl-first-W0-s11}
+\begin{theorem}[Frozen-copy noninterference]
+If legal game transitions write only to private copied BANKs, candidate ledgers, message queues, and cost logs, and live-state promotion is forbidden before waking, then no finite DreamPlay prefix modifies the frozen checkpoint or the ATP's live BANKs \emph{by a dream move}.
+\end{theorem}
+\begin{proof}The base case is the frozen initial state. By the transition rule, each legal step changes only the specified private coordinates. Induction over the prefix length gives the claim. Unrelated concurrent live activity is outside the quantified dream writes.\end{proof}
+
+\begin{theorem}[Soundness relative to the waking gates]
+Suppose each typed verifier is sound for its declared finite claim semantics, every approved packet is compatible with the waking epoch and its dependencies have authenticated bases or earlier acyclic proofs, and the commit is atomic. Then every newly promoted certified claim is warranted according to its declared type and checking semantics. In particular, the commit cannot justify an object-theoretic theorem solely from an unverified historical or Player-0 assertion.
+\end{theorem}
+\begin{proof}
+Order the finite dependency graph topologically. Each root is preaccepted in the compatible live state or independently checked against declared axioms, histories or machine-readable actions. At each successor, its verifier checks the exact typed proof using already warranted predecessors. Induction certifies all approved nodes. Atomicity preserves the dependency-complete package. The object-theory gate never substitutes the history or scheduling checkers for an object-proof certificate.
+\end{proof}
+
+\begin{theorem}[All-player evidence monotonicity and conditional grade advancement]
+Assume no prior accepted capabilities are revoked, all bridge rules are monotone and sound, and an approved waking set $A$ is committed. Define
+\[
+ C_i^{e+1}=C_i^e\cup\mathrm{bridge}_i(A),\qquad
+ C_M^{e+1}=\cl_{\B}\big(C_M^e\cup\mathrm{bridge}_M(A)\big).
+\]
+Then for every player, \emph{including Player 0}, and for the ATP as a whole,
+\[
+ \Grade_i(C_i^{e+1})\ge\Grade_i(C_i^e),\qquad
+ \Grade_M(C_M^{e+1})\ge\Grade_M(C_M^e).
+\]
+These inequalities may be equalities even when all participants contributed fresh accepted event receipts.
+\end{theorem}
+\begin{proof}
+Every old set is contained in its new set. If $E_{i,k}$ was previously contained in $C_i^e$, it remains contained after union. Similarly $C_M^e\subseteq\cl_{\B}(C_M^e\cup\mathrm{bridge}_M(A))$ by extensivity. The maxima over attainable tier indices therefore cannot decrease.
+\end{proof}
+
+\begin{theorem}[Exact waking-promotion threshold]
+Under the preceding update and nested-tier definitions, the ATP's global reflective grade rises strictly if and only if there exists $k>\Grade_M(C_M^e)$ with
+\[
+ E_{M,k}\subseteq\cl_{\B}\big(C_M^e\cup\mathrm{bridge}_M(A)\big).
+\tag{1}
+\]
+The corresponding condition with $E_{i,k}$ and $C_i^e\cup\mathrm{bridge}_i(A)$ characterizes strict advancement for each individual player.
+\end{theorem}
+\begin{proof}Substitute the post-wake capability set into the definition of grade. Its new maximum exceeds its old maximum precisely when some larger tier is completely supported.\end{proof}
+
+\begin{corollary}[Simultaneous upgrades are neither automatic nor algebraically additive]
+A package upgrades \emph{every} declared player and the ATP if and only if condition (1) and its playerwise analogues hold simultaneously. The numerical ATP grade is not, in general, the sum or the maximum of individual player grades.
+\end{corollary}
+\begin{proof}The first assertion is the conjunction of the exact criteria. For the second, take $E_{M,1}=\{g\}$ where $g$ requires three complementary receipts, while each player can satisfy a nonempty local tier from its own receipt without deriving $g$. Then individual grades may rise while $\Grade_M$ does not. Conversely, one global witness may satisfy a global tier even if unrelated local tiers remain unfilled.\end{proof}
+
+\section{A finite certified cooperative-synergy witness}\label{gl-first-W0-s12}
+We demonstrate \emph{typed cooperation}, not a computation speedup. This is an active coalition inside the full fourteen-player host: $P_1$ (Knowledge), $P_2$ (Historical Awareness) and $P_3$ (Reflection) make substantive moves, and Player~0 coordinates them. The other eleven ordinary players remain registered but need not act in this \emph{coalition-relative} episode. No conclusion about their surplus or complete full-roster participation follows.
+
+Let four first-order or audit-type validated records be
+\[
+\begin{aligned}
+ a_0&=\s{CertifiedSchedule}(s),& a_1&=\s{CheckedProof}(u),\\
+ a_2&=\s{VerifiedHistory}(h),& a_3&=\s{CheckedReflection}(v).
+\end{aligned}
+\]
+For $a_1$, the checker verifies a concrete finite object proof of a frozen-theory consequence and records that check. Player~0 has a separately frozen coordination objective: furnish a valid, budget-respecting schedule in which the proof check precedes the dependent reflection check and all three requested ordinary-role operations are serviced; its replay validator verifies this obligation rather than crediting a mere action log. The other record validators independently replay the appropriate historical and finite reflection claims. The assumed trust base authenticates original timestamps and trace identities; the protocol cannot infer their authenticity from unsigned narrative alone. Initial admissible evidence contains none of these fresh records.
+
+The proof, audit and meta-evidence languages remain distinct. For each $i\in\{0,1,2,3\}$, introduce an \emph{$R$-typed}, finite and replayable audit query $r_i$: ``player $i$ produced record $a_i$, and the declared versioned validator accepted its correctly scoped claim.'' A frozen, independently checked projection rule $B_i$ admits $r_i$ \emph{only} from the validated $a_i$ together with its checker receipt and dependencies:
+\[
+  a_i\;\wedge\;\s{ValidatorReceipt}(a_i)\xrightarrow{\;B_i\;} r_i
+  \qquad(i=0,1,2,3). \tag{2a}
+\]
+The receiving $R$-language has a separate checker for this precise finite fact, so the rule is \emph{not} a general coercion from \textsf{AUDIT} or \textsf{PROOF} to arbitrary reflection. Finally register the finite meta-bridge
+\[
+ (r_0\wedge r_1\wedge r_2\wedge r_3)\xrightarrow{\;B_g\;} g,
+ \tag{2b}
+\]
+where $g$ means only that this exact four-component checked audit package is complete. All bridge proofs carry the validated source records; nothing establishes a semantic self-soundness principle.
+
+\begin{theorem}[A four-role, type-correct joint audit witness]
+There is a finite legal coalition-relative dreaming episode in the registered singleton ATP such that: (i) $P_0,P_1,P_2,P_3$ each obtain a newly checked $R$-typed receipt $r_i$; (ii) the waking gate may admit a dependency-complete package containing the four source records, their validation receipts, their projected reflective receipts, and $g$; (iii) each of these \emph{four} roles advances one \emph{declared operational} reflective grade; (iv) the ATP advances one separately declared global reflective grade; and (v) under the specifically restricted isolated-private-evidence comparator, no individual role can derive $g$. This theorem asserts no gains for the other eleven ordinary players and no strict advantage over an equal-access centralized ATP.
+\end{theorem}
+\begin{proof}
+Choose a frozen calculus with a trivial checkable theorem and a replayably valid proof $u$; construct honest finite trace events and authenticated receipts for $a_0,a_2,a_3$ in the stipulated toy state. Execute the three ordinary roles, with a substantive checked Player-0 coordination action, under a finite resource budget. Each owner reaches its separately predeclared goal through an attributable action, and the corresponding valid, fresh reward record is checked by its matching validator and admitted under the victory-gated (SV). Apply each frozen $B_i$ to obtain $r_i$, then apply $B_g$ to obtain $g$. The directed dependencies $a_i\to r_i\to g$ are finite and acyclic, so all packets can be checked in topological order and revalidated at waking.
+
+Fix before opening $E_{i,0}=\varnothing$, $E_{i,1}=\{r_i\}$ for the four active roles, and $E_{M,0}=\varnothing$, $E_{M,1}=\{g\}$. Since none of these obligations is initially warranted, the grades start at zero and end at one after the stipulated admissible wake. Under the isolated comparator, each role sees only its own $a_i$, validation receipt and $r_i$; no role has the other three $r_j$. The conjunction (2b) therefore cannot be checked in any isolated view. A centralized equal-access simulator can collect all four $r_i$ and check $g$, so no strict performance benefit is inferred. The result is conditional on the independent checkers and authentication assumptions, not a machine-verified implementation.
+\end{proof}
+
+\begin{center}
+\begin{tikzpicture}[>=Latex,font=\small,
+box/.style={draw,rounded corners,align=center,minimum width=1.65cm,minimum height=11mm}]
+\node[box] (a0) at (-3.25,0) {$P_0$\\$a_0\Rightarrow r_0$};
+\node[box] (a1) at (-1.08,0) {$P_1$\\$a_1\Rightarrow r_1$};
+\node[box] (a2) at (1.08,0) {$P_2$\\$a_2\Rightarrow r_2$};
+\node[box] (a3) at (3.25,0) {$P_3$\\$a_3\Rightarrow r_3$};
+\node[box,minimum width=5.3cm] (g) at (0,-1.55) {Independent $R$-typed bridge $B_g$\\checked finite audit claim $g$};
+\node[box,minimum width=5.3cm] (up) at (0,-2.95) {Dependency-complete waking transaction\\four local grades and global grade: $0\to1$};
+\foreach \x in {a0,a1,a2,a3}{\draw[->,thick] (\x)--(g);}
+\draw[->,thick] (g)--(up);
+\end{tikzpicture}
+\end{center}
+
+\begin{remark}[What the witness does and does not prove]
+The constructed strict gains are \emph{operational warrant levels} for an intentionally finite family of reflective queries. They do not establish that a pre-existing real ATP became more intelligent, that its internal consistency was proven, or that reflection itself accelerates theorem proving. Requiring all four evidence sources makes the instance a minimal coalition witness relative to its declared access restrictions; this is not a new general theorem about Horn logic.
+\end{remark}
+
+\section{Negative results and logical boundaries}\label{gl-first-W0-s13}
+\begin{proposition}[No guaranteed positive reflection gain]
+There are legal finite dreams with nonempty trace-event candidate surpluses for all involved players, but with no strict certified grade increase for any player or for the ATP.
+\end{proposition}
+\begin{proof}Let every new packet be a duplicate of already warranted grade-relevant capabilities, or let the waking policy reject all candidates due to a budget of zero. Fresh action-event logs can still exist as candidates, but no higher obligations are completed.\end{proof}
+
+\begin{proposition}[Countermodel to universal strict speedup]
+The protocol axioms alone do not imply a strictly smaller total charged cost than \emph{every} equal-access centralized implementation. In particular, a centralized implementation may match the cooperative cost when allowed to execute the same sequence of finite operations with no greater eventwise charges.
+\end{proposition}
+\begin{proof}
+Consider a permitted cost model in which a centralized interpreter has all the same authorized evidence and reproduces the cooperative execution's scheduling choices, checker calls, dependency updates and wake transaction. Assign it each corresponding computation/check charge no greater than the cooperative charge; if desired, charge its simulation overhead zero in this constructed comparison. It produces the same accepted packets at no larger cost. Thus the universal \emph{strict} speedup claim is false in this countermodel. This does \emph{not} give a simulation bound in other machine, parallelism, communication or accounting models; those require separate proofs and measured charges.
+\end{proof}
+
+\begin{remark}[The Gödel boundary]
+Reflection here means certified, typed answers about finite proof and action records. It is \emph{not} a general inference from $\s{Prov}_T(\ulcorner\varphi\urcorner)$ to the unrestricted truth of $\varphi$, nor a purported internal proof of $\s{Con}(T)$. Familiar restrictions from G\"odel's second incompleteness theorem and L\"ob-style reflection principles \cite{godel-sep} apply when stronger expressible arithmetical theories are considered. A higher operational reflection grade must not be advertised as unrestricted semantic self-certification.
+\end{remark}
+
+\section{A worked waking ledger with an illustrative partial cost tariff}\label{gl-first-W0-s14}
+Consider an active coalition with $P_1,P_2,P_3$ inside the registered $r=14$ ordinary-player host, with each of the three coalition members required to make a substantive move. This is not a complete full-roster fourteen-player session. Give each of the four substantive coalition-role actions (including the Player-0 coordination action) a service charge of 1 cost unit and a bundled source-validation and reflective-projection check charge of 2. The joint $B_g$ bridge check costs 2 more. The other eleven registered ordinary roles are inactive in this example. The toy session can then use the following ledger; this is a \emph{constructed accounting example}, not an experimental benchmark.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}lXccc@{}}\toprule
+Player & Proposed reflective packet & Valid? & Wake accepted? & Gain in local grade\\\midrule
+$P_0$ & Validated schedule receipt $a_0$ and $R$ projection $r_0$ & yes & yes & $0\to1$\\
+$P_1$ & Validated proof receipt $a_1$ and $R$ projection $r_1$ & yes & yes & $0\to1$\\
+$P_2$ & Validated history receipt $a_2$ and $R$ projection $r_2$ & yes & yes & $0\to1$\\
+$P_3$ & Validated reflection receipt $a_3$ and $R$ projection $r_3$ & yes & yes & $0\to1$\\
+Joint gate & $g$, checked from $r_0\wedge r_1\wedge r_2\wedge r_3$ & yes & yes & ATP: $0\to1$\\\bottomrule
+\end{tabularx}
+\end{center}
+
+The subtotal is exactly $4(1+2)+2=14$ \emph{toy units under the declared restricted tariff}, including four bundled $a_i\mapsto r_i$ checks and one $B_g$ check. It is emphatically not a fully burdened cost. A deployed comparison must measure $C_{\rm total}=C_{\rm toy}+C_{\rm storage}+C_{\rm queue}+C_{\rm serialization}+C_{\rm communication}+C_{\rm revalidation}+C_{\rm other}$ (with overlapping bundled costs counted only once). These omitted nonnegative terms have no numerical values in this construction, so the genuine full cost is not claimed to equal $14$.  If any required $r_i$ fails, (2b) does not certify $g$. A waking policy could retain the other successful local receipts while the ATP's global grade remains 0. That outcome is central: \emph{partial local reflection gains need not make the whole ATP cross a reflective threshold}.
+
+
+\section{A cooperative dream that changes more than reflection}\label{gl-first-W0-s15}
+\label{sec:multi-witness}
+The preceding four-player Horn witness isolates a jointly certified reflective conclusion. We can combine it with separate capability obligations from several other traits, without falsely making the gain in one trait certify the gain in another.
+
+\begin{example}[One dream; five different forms of useful surplus]
+Use the same active coalition $P_0,P_1,P_2,P_3$ and its jointly verified source and projected reflective receipts from the earlier finite witness. Add the following separately verified packets, using a finite propositional system and an explicitly constructed toy experiment.
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $P_1$ proves a fresh propositional consequence $q$ from an authorized fixed theory and receives an accepted proof certificate: a $K$ gain.
+\item $P_2$ checks a formerly unindexed timestamped proof-possession receipt: an $H$ gain. It also verifies that possession at an earlier time is not identical to mere present derivability: an $E$ query is now answerable.
+\item $P_3$ verifies the exact nested claim that $P_1$'s proof-check receipt was accepted under the specified verifier version: an $R$ gain, without any global self-soundness assertion.
+\item $P_0$ records a checked finite schedule, scopes every packet, and produces a valid provenance ledger: an $A$ gain and a modest R-typed event receipt for its own choices.
+\item As a separate $I$-test, the registered Intuition role $P_5$ predicts the correct branch on a previously reserved \emph{finite} test problem, retains the predicted ranking, scoring rule and result, and meets a predefined elementary test obligation. This is an accepted \textsf{EVAL} packet (a limited $I$ gain), but does not prove that the predictor will generalize or that it has discovered a theorem.
+\end{enumerate}
+Define each indicated first nontrivial trait tier to require the corresponding named receipt, and set the prior certified capability sets to lack those receipts. The post-wake package consists of the independently checked, dependency-complete finite receipts. Thus $g_{M,K}$, $g_{M,H}$, $g_{M,E}$, $g_{M,R}$, $g_{M,A}$ and the predeclared evaluation grade $g_{M,I}$ each increase from $0$ to $1$ in this toy model. There is no assertion that $J,N,Q,S,G,M,L,C$ must also improve. All substantively active players obtain authenticated self-action receipts; the separate $R$ upgrade follows only from its warranted exact obligation. The other ordinary roles are not asserted to have increased. The restricted isolated-view baseline still cannot combine the needed cross-player evidence, whereas a fully centralized equal-access baseline can.
+\end{example}
+
+\begin{corollary}[Multi-trait cooperative existence; no universal uplift]
+There exists a finite legal singleton-ATP cooperative dream in which waking strictly raises at least six independently defined trait coordinates, with a separate genuine proof-carrying mathematical gain and a separately labeled finite intuition-test gain. It is false that every legal dream must raise any fixed one of these coordinates.
+\end{corollary}
+\begin{proof}
+Take the explicitly constructed finite example and the grade criteria in Section~\ref{sec:profiles}. Each witness passes its declared type-specific acceptance relation; the strict changes follow from the missing pre-dream obligations and their inclusion after waking. For the negative assertion, use an episode containing only duplicate candidate receipts or a wake gate that rejects all; none of the designated higher obligations is newly met.
+\end{proof}
+
+\paragraph{Why the result is deliberately modest.}
+The existential witness partly defines its first tiers by the exact toy receipts and hence is an existence demonstration for a specified architecture, not evidence of a naturally occurring improvement in intuition or a major new theorem in metareasoning. Establishing real advantages requires fixed preannounced tests, nontrivial baselines, evidence access parity, and cost-adjusted downstream performance. In particular, adding more trait labels cannot make the ATP's proof calculus stronger by definition.
+
+\section{Experimental protocol for real ATPs}\label{gl-first-W0-s16}
+A concrete implementation should use a small, explicitly declared proof calculus, machine-checkable receipt formats, and a frozen source snapshot. Suggested conditions are: (A) isolated specialty dreamers with the same authorized evidence but no communication; (B) cooperative dreamers with $P_0$ scheduling and typed messages; (C) a centralized equal-access baseline that can inspect every receipt; and (D) a no-dream ATP baseline. Evaluate matched frozen targets, persistent-checker soundness tests, novelty of accepted meta-capabilities, post-wake grades, verifier and promotion failures, total cost, and wall-clock latency. Charges must include scheduling, failed candidates, proof checking, metadata storage, communication, waking validation, and reflection-tier assessment.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}\toprule
+Metric & Exact interpretation\\\midrule
+Per-player reflective surplus & Number of new accepted, distinct, source-checked meta-capabilities for each $i=0,\ldots,r$\\
+Global reflective level & Largest fully supported declared set of ATP-wide meta-obligations, not sum of local levels\\
+Multi-trait profile & Per-player and ATP-wide certified/evaluated grade vectors for all fourteen dimensions $K,H,E,R,I,J,N,Q,S,G,M,L,C,A$; state checker epoch and whether each coordinate is unchanged or revalidated downward\\
+Intuition calibration & Fixed test-suite score, leakage checks, uncertainty and future holdout transfer; not proof validity\\
+Imagination validity & Independently replayed branch scopes and dependency-preserving conditional proofs, with no unconditional promotion of hypothetical premises\\
+Creativity evaluation & Verifier-accepted novel proofs and normalized success-weighted novelty against a frozen corpus and baseline\\
+Synergy & Certified joint queries unavailable to an explicitly permission-matched isolated view\\
+Net benefit & Improvement in fixed downstream task utility after all dream, gate, scheduling, and storage costs\\
+Safety & Rate of unauthorized promotions, checker failures, stale-epoch acceptance, and unsupported circular receipts\\\bottomrule
+\end{tabularx}
+\end{center}
+
+The strongest empirical test is \emph{downstream}: after waking, does the same ATP solve new frozen conjectures more efficiently or correctly because of the retained accepted trait-specific and reflective surpluses? Positive event counts alone do not answer that question. Intuition must be evaluated on precommitted held-out tasks; historical and epistemic claims require fresh provenance checks; and reflective tiers must correspond to new answerable, replayable meta-obligations. Evaluate both the \emph{full vector} and the time/cost for obtaining its components.
+
+\section{Research questions and conjectures}\label{gl-first-W0-s17}
+\begin{conjecture}[Transfer of bounded intuitive surplus]
+There exist preannounced nontrivial theorem-search workloads for which a cooperative dream improves a finite intuition/strategy evaluation profile on independent, previously unseen targets after accounting for the entire cost of training, dreaming, calibration, and waking; the same effect is not reproduced by a matched equal-information, equal-budget non-dream search baseline. This is an empirical and mathematical research problem, not established by a one-task witness.
+\end{conjecture}
+
+\begin{conjecture}[Joint multi-trait surplus with true reflection transfer]
+There exists a realistic fixed workload family in which a certified waking package jointly improves epistemic, historical, and reflective query capability, and those increases help future proof search more than the same information supplied as an unstructured searchable log. Fair comparison must charge indexing and retrieval for both architectures.
+\end{conjecture}
+
+\begin{conjecture}[Cost-adjusted reflective cooperation]
+For an explicitly specified family of ATP proof-search workloads, a Player-0-coordinated cooperative dream can produce an additional certified reflective capability with \emph{less total charged work} than every matched noncooperative architecture in a restricted, clearly described baseline class. This is open and is false for unrestricted baselines that can simulate the same finite program at comparable cost.
+\end{conjecture}
+
+\begin{conjecture}[Predictive reflection thresholds]
+There exist practically meaningful finite reflective-obligation tiers whose certified waking attainment predicts improved future theorem-search decisions after controlling for extra compute and equivalent metadata indexing. Not established by the coalition witness.
+\end{conjecture}
+
+\begin{conjecture}[Useful repeated waking]
+In a specified, nontrivial resource-bounded family, iterated \(\mathrm{Awake}\to\mathrm{DreamPlay}\to\mathrm{WakeReview}\to\mathrm{Awake}\) cycles can realize a sequence of strict, independently checked increases in a fixed operational reflective hierarchy with beneficial downstream effects. An unbounded universal or never-ending strict ascent is not implied; a finite hierarchy saturates.
+\end{conjecture}
+
+\paragraph{Additional open obligations.} How should evidence revocation or changing checker versions decrease previously published grades? When are cross-player historical receipts sufficient for reusable reflection without expensive full replay? Can the required wake validation be performed online without violating the proposed dream/play biconditional? What minimum receipt metadata preserves the capability-query answers? How does an interrupted or crashed dream recover while maintaining atomic waking semantics? These are defined research tasks, not settled theorems.
+
+\section{Prior art, provenance, and claim-by-claim distinctiveness}\label{gl-first-W0-s18}
+The ancestor \emph{Dreaming in a Five-ATP Federation} already distinguishes $m=1$, $n=5$, internal players $r_i$, local board-players, frozen snapshots, authenticated historical awareness, closure conservativity, and costed fairness \cite{tenneson-five}. It explicitly recovers the singleton theory when cross-member transport is suppressed; its earlier singleton synthesis is listed in its references \cite{tenneson-singleton}. This manuscript therefore \emph{does not} claim to invent those foundations. The Version 0.3 forecast-score and held-out confidence guarantees follow from classical algorithm-selection, proper-scoring and concentration results \cite{satzilla,brier,hoeffding,dwork}; they are not claimed as original statistical theorems. Here $n=1$ and all players live \emph{inside} the same ATP, with immediate certified within-dream surplus learning, a separate wake-only live-state promotion rule, and Player-0 provenance and reflective ledgers. The \emph{typed cognitive profile} and distinction between first-order trait gains and second-order reflective receipts constitute this note\'s principal additional formalization, not an independent proof of general intelligence.
+
+Current formal-proving work already demonstrates learning from verified proofs, prover--conjecturer self-play, lifelong theorem-prover memory, and abstract self-play growth under assumptions \cite{alphaproof,stp,leanagent,selfplaytheory}; this paper claims none of these as inventions. More closely, \emph{OpenProver} (Kripner and Straka, July 2026) uses a planner, parallel workers, a verifier, a shared whiteboard and a repository of intermediate findings \cite{openprover}; that implementation already embodies coordinated reuse of proof-search artifacts and formally checked workers. \emph{Maestro} (Li et al., October 2026) coordinates formal-proof workers, diagnoses failures, repairs upstream plans, and reuses certified development inside a shared proof workspace \cite{maestro}. Neither is evidence for the novelty of generic planner/worker coordination or shared proof memory. The narrower proposed distinction here is the formal \emph{actor-attributed victory-to-immediate-surplus gate}, plus a separate version-checked waking transaction and typed per-player and whole-ATP capability profiles. No unique-implementation priority or empirically superior performance is asserted against these systems. Earlier literature covers blackboard cooperation and control scheduling \cite{hayes,nii}; transaction-based blackboards \cite{transboard}; reflective computation \cite{smith}; proof-carrying evidence/checking \cite{necula}; epistemic knowledge modalities \cite{fagin}, and the computational value of deliberation \cite{russell}. The formal limits of general self-reflection are classical \cite{godel-sep}. These comparisons rule out sweeping originality claims about cooperative control, evidence certificates, transactions, or the concept of reflection.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}p{.30\linewidth}X@{}}\toprule
+Claim in this note & Status / originality qualification\\\midrule
+Game active exactly during dreaming & A proposed operational definition; not an empirical discovery\\
+Typed multi-trait surplus and wake vector & Defined extension to the prior singleton construction; the mathematical properties are conditional consequences of the admission rules\\
+Intuition / heuristic trait & Defined in detail by budgeted, partially observed action forecasts, scoring and independent holdout; no claim of semantic correctness, a universal intuition metric, or broad benchmark transfer\\
+All-player candidate reflective ledgers, including Player 0 & Proposed explicit architecture and policy; OpenProver and Maestro already demonstrate nearby coordinated/shared-state proving designs\\
+Certified atomic waking promotion & Conditional transaction invariant; atomic commitment itself is classical\\
+Exact grade-increase criterion & Follows directly from a newly specified evidence-obligation level definition; not advertised as a deep new logical theorem\\
+Four-player joint audit witness & Correct constructed Horn cooperation witness under restricted private evidence; classical logic underneath\\
+Universal benefit, unrestricted reflection, self-soundness & \textbf{Not proved} and not claimed\\\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Conclusion}\label{gl-first-W0-s19}
+With the turn-level victory and learning refinement, any actually reached checked goal can yield a type-scoped, fresh surplus that is committed to the dream board \emph{before the next turn}; this is learning in the restricted sense of certified evidence acquisition. Historical awareness is a temporal specialization of epistemic awareness. In its full version it contains fourteen ordinary dreaming players and a separate Player~0; round-robin is sufficient, but not necessary, for infinite full-roster nonstarvation under the stated eligibility and resource hypotheses. The proposed singleton ATP does not merely ``gain a level of reflection'' whenever a dream runs. It plays a cooperative Player-0-controlled GBG+ game \emph{exactly when it is operationally dreaming}; every participating player, including Player~0, collects distinct typed first-order trait candidates and may also collect second-order reflective surplus about its own contributions. A waking transaction can then add certified mathematical knowledge, historically warranted observations, epistemic distinctions, finite operational reflection capabilities, and limited empirically assessed heuristic skills to a \emph{vector} of ATP-wide traits---but only when the corresponding evidence and acceptance conditions are met. Each trait's advancement criterion is explicit, and the reflection coordinate cannot be inflated by intuition, historical event counts, or scheduling optimism alone.
+
+Conditional preservation, type-safe promotion, exact coordinate thresholds and a finite multi-trait coalition witness support consistency of a specified mathematical protocol, rather than empirical feasibility of an implemented ATP. They do not show that an unmodified real ATP dreams, that real intuition or creativity can be assigned universally valid levels, that all traits improve, or that cost-adjusted proof search necessarily accelerates. The useful research program is to ask which interactions among Knowledge, Historical Awareness, Epistemic Awareness, Reflection, Intuition, search and memory generate \emph{verified, persistent, downstream gains}, under exactly matched cost and evidence access. That is more demanding, and more informative, than counting dream outputs or indiscriminately raising one reflection number.
+
+\begin{thebibliography}{99}\small
+\bibitem{tenneson-creativity} B. Tenneson, \emph{Creativity in Automated Theorem Proving: A Data-ATP Experimental Treatise}, private experimental draft v0.1, 8 August 2026. Supplied source manuscript; ten stylized conditional results and explicit experimental limits.
+\bibitem{tenneson-imagination} B. Tenneson, \emph{Recursive ``What If?'' Imagination in AMLD: Chess-Style Counterfactual Search Guided by MAPQUEST}, research note, 19 October 2026. Supplied source manuscript.
+\bibitem{tenneson-openakm} B. Tenneson with AI mathematical drafting, \emph{OPEN. AKM: Theoremgraph Reversal and the Conversion of Intuition into Certified Proof}, v0.3, 24 October 2026. Supplied research working manuscript; conditions on hypothetical proof obligations and proof-local recoverability apply.
+\bibitem{tenneson-five} B. Tenneson with AI-assisted development, \emph{Dreaming in a Five-ATP Federation: One AMLD+0 Conjecture Settler, Five ATP Members, Certified Dreaming, and Self-Directed Mathematical Study}, version 0.4R, 2026. \url{https://btenneson.github.io/pub/cs.LO_Logic_in_Computer_Science/five_atp_one_amld_dreaming_0_4r_atlas_repaired/}.
+\bibitem{tenneson-singleton} B. Tenneson and DATA MIND, \emph{Dreaming in a Singleton ATP Federation}, integrated version 0.2 (ancestral working manuscript, as cited in the five-ATP paper). Full bibliographic metadata and independent publication status not verified here.
+\bibitem{hayes} B. Hayes-Roth, ``A Blackboard Architecture for Control,'' \emph{Artificial Intelligence} \textbf{26} (1985), 251--321. \url{https://doi.org/10.1016/0004-3702(85)90063-3}.
+\bibitem{transboard} J. R. Ensor and J. D. Gabbe, ``Transactional Blackboards,'' \emph{Proceedings of the Ninth International Joint Conference on Artificial Intelligence} (IJCAI-85), 1985, pp. 340--343. \url{https://ijcai.org/proceedings/1985/65}.
+\bibitem{nii} H. P. Nii, ``The Blackboard Model of Problem Solving and the Evolution of Blackboard Architectures,'' \emph{AI Magazine} \textbf{7}(2) (1986), 38--53. \url{https://doi.org/10.1609/aimag.v7i2.537}.
+\bibitem{fagin} R. Fagin, J. Y. Halpern, Y. Moses, and M. Y. Vardi, \emph{Reasoning About Knowledge}, MIT Press, first edition 1995; paperback reissue 2004. \url{https://mitpress.mit.edu/9780262562003/reasoning-about-knowledge/}.
+\bibitem{smith} B. C. Smith, ``Reflection and Semantics in LISP,'' \emph{Proceedings of POPL} (1984), 23--35. \url{https://doi.org/10.1145/800017.800513}.
+\bibitem{necula} G. C. Necula, ``Proof-Carrying Code,'' \emph{Proceedings of POPL} (1997), 106--119. \url{https://doi.org/10.1145/263699.263712}.
+\bibitem{russell} S. Russell and E. Wefald, ``Principles of Metareasoning,'' \emph{Artificial Intelligence} \textbf{49} (1991), 361--395. \url{https://doi.org/10.1016/0004-3702(91)90015-C}.
+\bibitem{brier} G. W. Brier, ``Verification of Forecasts Expressed in Terms of Probability,'' \emph{Monthly Weather Review} \textbf{78}(1) (1950), 1--3. \url{https://doi.org/10.1175/1520-0493(1950)078%3C0001:VOFEIT%3E2.0.CO;2}.
+\bibitem{satzilla} L. Xu, F. Hutter, H. H. Hoos, and K. Leyton-Brown, ``SATzilla: Portfolio-Based Algorithm Selection for SAT,'' \emph{Journal of Artificial Intelligence Research} \textbf{32} (2008), 565--606. \url{https://doi.org/10.1613/JAIR.2490}.
+\bibitem{leandojo} K. Yang et al., ``LeanDojo: Theorem Proving with Retrieval-Augmented Language Models,'' \emph{NeurIPS} \textbf{36} (2023), Datasets and Benchmarks. \url{https://arxiv.org/abs/2306.15626}.
+\bibitem{hoeffding} W. Hoeffding, ``Probability Inequalities for Sums of Bounded Random Variables,'' \emph{Journal of the American Statistical Association} \textbf{58}(301) (1963), 13--30. \url{https://doi.org/10.1080/01621459.1963.10500830}.
+\bibitem{dwork} C. Dwork, V. Feldman, M. Hardt, T. Pitassi, O. Reingold, and A. Roth, ``The Reusable Holdout: Preserving Validity in Adaptive Data Analysis,'' \emph{Science} \textbf{349} (2015), 636--638. \url{https://doi.org/10.1126/science.aaa9375}.
+\bibitem{alphaproof} T. Hubert et al., ``Olympiad-Level Formal Mathematical Reasoning with Reinforcement Learning,'' \emph{Nature} \textbf{651} (2026), 607--613 (online 12 November 2025). \url{https://doi.org/10.1038/s41586-025-09833-y}.
+\bibitem{stp} K. Dong and T. Ma, ``STP: Self-play LLM Theorem Provers with Iterative Conjecturing and Proving,'' \emph{Proceedings of the 42nd International Conference on Machine Learning}, PMLR 267 (2025), 14114--14136. \url{https://proceedings.mlr.press/v267/dong25h.html}.
+\bibitem{leanagent} A. Kumarappan et al., ``LeanAgent: Lifelong Learning for Formal Theorem Proving,'' \emph{International Conference on Learning Representations} (2025). \url{https://arxiv.org/abs/2410.06209}.
+\bibitem{openprover} M. Kripner and M. Straka, ``OpenProver: Agentic and Interactive Theorem Proving with Lean 4,'' arXiv:2607.09217, submitted 10 July 2026. \url{https://arxiv.org/abs/2607.09217}.
+\bibitem{maestro} H. Li, Z. Shui, Y. Zhang, F. Erata, B. Mikek, M. K. Ramanathan, and H. Zhou, ``Maestro: Agentic Formal Proof Development by Coordination,'' arXiv:2610.25920, submitted 19 October 2026, revised 27 October 2026. \url{https://arxiv.org/abs/2610.25920}.
+\bibitem{selfplaytheory} T. Chen and Z. Li, ``A Theoretical Framework for Self-Play Theorem Proving Algorithms,'' arXiv:2606.01861 (2026), preprint. \url{https://arxiv.org/abs/2606.01861}.
+\bibitem{godel-sep} ``G\"odel's Incompleteness Theorems,'' \emph{Stanford Encyclopedia of Philosophy}, revised 2025. \url{https://plato.stanford.edu/entries/goedel-incompleteness/}.
+\end{thebibliography}
+
+\clearpage
+\section*{AI Disclaimer and Authorship Declaration}
+\addcontentsline{toc}{section}{AI Disclaimer and Authorship Declaration}
+\label{sec:ai-disclaimer}
+\small
+The research conception, questions, mathematical direction, proposed conclusions, and oversight of this manuscript are attributable to \textless{}Brian Tenneson\textgreater{}. This is a hybrid human--AI research document. DATA MIND (OpenAI GPT-6) contributed some statements, formulations, proofs, bibliography checks, typesetting, and individual characters; it did not independently originate or control every seed, direction, or conclusion. The manuscript seeks factual accuracy, logically sound exposition, and completeness in the ordinary sense of including relevant facts and explicit assumptions (\emph{not} completeness in the technical G\"odelian sense). Every effort has been made to make its mathematical claims provable under their stated hypotheses or at least amenable to rigorous refutation, but correctness, internal consistency, historical priority, and provability are not guaranteed. ``Certified'' throughout names a defined conditional verifier-gated property; neither the stated theorems nor the proposed ATP protocol have been independently machine-checked, externally peer-reviewed, or demonstrated as a deployed autonomous system. The named formal results should be evaluated against their exact hypotheses, and their underlying logical, reflection-theoretic, cooperative-control, and transaction-processing antecedents are cited. The manuscript includes authored definitions refining GBG+ for reached victories and immediately learned dream-local surplus; these are proposed conditional semantics, not independently validated laws of cognition. The fourteen-player infinite nonstarvation statements are conditional scheduling results, not claims that finite-budget machines run or learn forever. The manuscript explicitly marks proposed architecture, conditional demonstrations, toy constructions, and open conjectures so that originality is not overstated. AI-assisted audits through version 0.4.3 repaired actor attribution, deterministic surplus admission, toy cost labeling, comparators, types, and layout; no independent human referee, machine proof checker or external certification is claimed to have verified this version. Proposed intuition and strategy grades reflect only declared finite evaluations or confidence-bound statements under explicit statistical hypotheses, and the broader multi-trait profile must not be mistaken for consciousness, semantic self-soundness, or a comprehensive measurement of intelligence.
+
+\vfill\noindent\emph{End of standalone research manuscript 0.4.3.}
+\end{document}
