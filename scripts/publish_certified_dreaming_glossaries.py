@@ -142,6 +142,23 @@ def main():
     if len({x["id"] for x in old}) != len(old):
         raise RuntimeError("Existing catalog contains duplicate IDs; refusing to reorder")
     # Existing slots are the current list order; preserve their relative order.
+    # Repair one pre-existing catalog metadata omission required by the
+    # repository-wide quote audit. Preserve its PDF, reader and card identity.
+    legacy_id = "cs.LO_Logic_in_Computer_Science/epistemic_computational_geometry_mathematical_histories_0_2"
+    legacy_quote = "A proof-seeking machine has at least three different mathematical identities"
+    for x in old:
+        if x["id"] == legacy_id and not x.get("quote"):
+            legacy_pdf = fitz.open(DOCS / x["pdf"])
+            try:
+                if normalized(legacy_quote) not in normalized(legacy_pdf[0].get_text()):
+                    raise RuntimeError("Existing legacy quote missing on page 1")
+            finally:
+                legacy_pdf.close()
+            x["quote"] = legacy_quote
+            x["quote_page"] = 1
+            x["quote_attribution"] = x["title"] + " — p. 1"
+            x["quote_also_on_card"] = True
+            print("Repaired pre-existing missing quote metadata on original slot 8.", flush=True)
     for i, x in enumerate(created + old, 1):
         x["order"] = i
     catalog["items"] = created + old
