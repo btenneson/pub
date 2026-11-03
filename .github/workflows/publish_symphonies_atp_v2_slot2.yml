@@ -1,0 +1,48 @@
+name: Publish Symphonies of Automated Theorem Provers v2 at slot 2
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_symphonies_atp_v2_slot2.yml'
+      - 'scripts/publish_symphonies_atp_v2_slot2.py'
+      - 'incoming_publications/symphonies_of_atps_v2/source.tex'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-symphonies-atp-v2-slot2
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install manuscript fonts and PDF verification tools
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-pictures texlive-science lmodern
+          python -m pip install --quiet pymupdf==1.26.4
+      - name: Compile, verify, and create slot-2 publication
+        run: python scripts/publish_symphonies_atp_v2_slot2.py
+      - name: Commit verified reader, PDF and shifted catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A docs scripts/publications.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Symphonies v2 at slot 2 and preserve MUSIC at slot 1 [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo 'No publication changes to commit.'
+          fi
