@@ -1,0 +1,45 @@
+name: Publish Undecidable Attained Labels in library slot 1
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish_undecidable_labels_slot1.yml'
+      - 'scripts/publish_undecidable_labels_slot1.py'
+      - 'docs/cs.LO_Logic_in_Computer_Science/undecidable_attained_labels_with_finite_checkable_witnesses/Undecidable_Attained_Labels_with_Finite_Checkable_Witnesses.pdf'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-undecidable-labels-slot1
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF validation dependency
+        run: python -m pip install --quiet pymupdf==1.26.4
+      - name: Verify exact approved PDF and shift publication index
+        run: python scripts/publish_undecidable_labels_slot1.py
+      - name: Commit verified publication pages and slot order
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A docs scripts/publications.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Undecidable Attained Labels at slot 1, shift existing library [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo 'No publication changes to commit.'
+          fi
