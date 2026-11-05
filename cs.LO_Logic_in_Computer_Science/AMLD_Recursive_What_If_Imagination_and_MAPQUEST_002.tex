@@ -1,0 +1,222 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{docmute}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{AMLD Recursive What-If Imagination}
+\rhead{Version 2.0 --- GBG+}
+\cfoot{\thepage}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\newtheorem{remark}[definition]{Remark}
+\newtheorem{principle}[definition]{Design Principle}
+
+\newcommand{\BANK}{\ensuremath{\mathsf{BANK}}}
+\newcommand{\MQ}{\ensuremath{\mathsf{MAPQUEST}}}
+\newcommand{\AMLD}{\ensuremath{\mathsf{AMLD}}}
+\newcommand{\V}{\ensuremath{\mathsf{V}}}
+\newcommand{\W}{\mathcal{W}}
+\newcommand{\Th}{\operatorname{Th}}
+\newcommand{\Pred}{\operatorname{Pred}}
+\newcommand{\Enabled}{\operatorname{Enabled}}
+\newcommand{\Score}{\operatorname{Score}}
+\newcommand{\Novelty}{\operatorname{Novelty}}
+\newcommand{\Gain}{\operatorname{Gain}}
+\newcommand{\Cost}{\operatorname{Cost}}
+\newcommand{\Res}{\operatorname{Res}}
+
+\title{\textbf{Recursive ``What If?'' Imagination in AMLD}\\[0.4em]
+\large Chess-Style Counterfactual Search Guided by MAPQUEST\\[0.4em]
+\normalsize Version 2.0 --- GBG+ Reciprocal Extension}
+\author{Brian Tenneson}
+\date{October 2026}
+
+\begin{document}
+
+% Version 2.0 deliberately preserves Version 1.0 in its original order.
+% docmute suppresses the old preamble and document wrapper while retaining
+% the body.  The new title metadata above is therefore used by the original
+% \maketitle command.
+\input{AMLD_Recursive_What_If_Imagination_and_MAPQUEST_001.tex}
+
+\appendix
+\section{GBG+ Realization and the Reciprocal Effect of Imagination}
+
+This appendix adds a two-way connection between recursive AMLD imagination and the formal GBG/GBG+ substrate.  The first direction is conservative: GBG+ supplies a rule-complete legal-transition semantics for the machinery that creates, schedules, evaluates, and retires speculative proof worlds.  The second direction is more important conceptually: recursive imagination supplies a new optional capability for GBG+ itself.  A board-player need not merely schedule, remember, certify, hand off, or mutate a single current board.  It may legally create verifier-isolated counterfactual subgames, explore them recursively, extract strategic information, and return that information to the parent game without treating imagined states as certified states.
+
+\subsection{GBG+ constrains imagination}
+
+Let a rule-complete enlarged state contain
+\[
+S=(q,M_1,\ldots,M_N,M_B,\sigma,\Pi,\mathcal I),
+\]
+where $q$ is the current certified problem state, $M_i$ are local memories, $M_B$ is trusted board memory, $\sigma$ is scheduler state, $\Pi$ is provenance/certificate data, and $\mathcal I$ is a finite registry of speculative worlds.  Ordinary AMLD processes are represented by ordinary participants $P_1,\ldots,P_N$, while the distinguished board-player is
+\[
+P_0=B^\star.
+\]
+Every operation attributed to imagination---spawning a speculative world, extending it, scheduling an analysis process, checkpointing it, extracting a candidate lemma, retiring the world, or requesting verification---must be a declared legal transition of the enlarged game.  Thus recursive imagination inherits the GBG+ non-sovereignty principle: imagination may be adventurous about hypotheses, but the machine executing imagination has no undeclared meta-authority.
+
+\begin{theorem}[GBG+ realization of recursive imagination]
+Suppose an AMLD recursive-imagination architecture has finitely encoded rule-complete states, declared operational transitions, verifier-gated trusted deposits, and no transition from speculative state to trusted state except through an accepted certificate.  Then the operational architecture admits a GBG+ presentation in which each finite imaginative run is a legal path in an enlarged state graph.
+\end{theorem}
+
+\begin{proof}
+Encode the complete operational state, including the speculative-world registry and all rule-relevant metadata, as the enlarged GBG state.  Give each declared AMLD operation a canonical move label and its uniquely determined partial successor rule.  Authorize ordinary search operations to the corresponding ordinary participants and board-level scheduling, routing, storage, checkpoint, spawn, retire, and verifier-dispatch operations to $P_0$ when their declared preconditions hold.  Rule completeness makes legal continuations state-determined, and the no-extra-authority condition ensures that the board-player acts only through declared rules.  Hence a finite run is exactly a finite legal transition history in the enlarged game.
+\end{proof}
+
+\subsection{Imagination enlarges what the plus can mean operationally}
+
+The base GBG already generalizes ordinary board games by treating rule-complete states as formal objects and legal moves as declared partial transitions.  GBG+ adds the board as a distinguished participant.  Recursive imagination reveals a stronger use of that added participant: the board can operate not only \emph{on} the current game but also on a controlled family of hypothetical games derived from it.
+
+This motivates an optional \emph{Imagination Package} for GBG+.
+
+\begin{definition}[Counterfactual subgame]
+Given a certified parent state $S$ and a finite hypothetical packet $H$, a counterfactual subgame is a tagged GBG+ instance
+\[
+G^+_{S,H}
+\]
+whose initial speculative state contains the parent snapshot together with $H$, and whose trusted-output channel is disabled except through an explicit verifier-gated return rule.
+\end{definition}
+
+The tag is essential.  It distinguishes
+\[
+\text{true in the certified parent game}
+\qquad\text{from}\qquad
+\text{assumed inside a counterfactual subgame}.
+\]
+The subgame may reason freely from its temporary assumptions.  Those assumptions acquire no certified status in the parent merely because the subgame finds them useful.
+
+\begin{principle}[I-1: legal imaginative spawning]
+A board-player may create a counterfactual subgame only through a declared spawn transition
+\[
+\operatorname{Spawn}(S,H):S\longrightarrow S',
+\]
+where $S'$ records the new tagged child and its resource budget.
+\end{principle}
+
+\begin{principle}[I-2: speculative isolation]
+No proposition whose only support uses a hypothetical assumption in a child game may enter trusted parent memory as a theorem.
+\end{principle}
+
+\begin{principle}[I-3: verifier-gated return]
+A child may return a candidate, heuristic score, proposed subgoal, route, obstruction, or search policy to the parent.  A mathematical proposition is promoted to trusted parent state only after the parent verifier accepts a certificate from the frozen certified environment.
+\end{principle}
+
+\begin{principle}[I-4: recursive spawning]
+A counterfactual child may itself spawn counterfactual descendants when the selected GBG+ architecture declares such moves and charges their costs.  Thus imagination generates a finite or budget-bounded tree or DAG of GBG+ instances rather than an untyped collection of fantasies.
+\end{principle}
+
+\begin{principle}[I-5: provenance of hypothetical dependence]
+Every returned object records whether it is certified, heuristic, or dependent on one or more hypothetical assumptions.  Erasing the speculative tag is not a legal handoff transformation.
+\end{principle}
+
+\subsection{The imaginative federation}
+
+For a parent game $G^+$, let
+\[
+\mathfrak I_d(G^+,S,T)
+\]
+denote the family of counterfactual descendants explored to depth at most $d$ while pursuing target $T$.  Each node is itself a legal GBG+ instance or legal tagged local board.  Parent-child edges are spawn/handoff relations rather than proof implications.
+
+This changes the geometry of search.  Ordinary GBG reachability asks which states can be reached by legal moves in one game.  Imaginative GBG+ additionally asks which \emph{legal game instances} can be generated, inspected, compared, and retired by the board-player.  The search object therefore has two levels:
+\[
+\text{within-game state graph}
+\qquad\text{and}\qquad
+\text{between-game imagination graph}.
+\]
+The second graph is generated by legal board actions.  It does not replace the first.
+
+\begin{definition}[Imagination graph]
+The imagination graph has a vertex for each active or archived tagged counterfactual game instance and a directed edge
+\[
+G^+_a\longrightarrow G^+_b
+\]
+when $G^+_b$ was legally spawned from $G^+_a$.  Edge metadata records the hypothetical packet, cost, provenance boundary, and return policy.
+\end{definition}
+
+This provides a formal home for the recursive ``what if?'' tree already used by AMLD.  It also gives GBG+ a natural recursive interpretation: a board-player may legally create boards that contain board-players that create further boards, subject to declared depth, budget, verifier, and handoff rules.
+
+\subsection{Counterfactual conservativity across the federation}
+
+\begin{theorem}[Federated counterfactual conservativity]
+Assume every trusted parent deposit requires verifier acceptance from the certified parent environment and every hypothetical dependency remains tagged until independently discharged.  Then arbitrary finite recursive spawning of counterfactual GBG+ children does not enlarge the trusted parent consequence set merely by imagination.
+\end{theorem}
+
+\begin{proof}
+Induct on trusted parent deposits rather than on the number of speculative descendants.  The base trusted state is certified.  A new trusted proposition can enter only through the verifier-gated return rule, so it has an accepted parent-environment certificate.  Child assumptions, regardless of recursive depth, cannot themselves satisfy this rule.  Therefore speculative branching can change search priorities and candidate selection but cannot by itself add an uncertified theorem to trusted parent state.
+\end{proof}
+
+The theorem is stronger operationally than a single-board statement because the number and depth of speculative boards are irrelevant to soundness.  Soundness is controlled at the return boundary.
+
+\subsection{How imagination changes the interpretation of GBG+}
+
+Recursive imagination suggests that the plus sign should be read as more than ``one extra player label.''  Formally, the minimal foundation may continue to define GBG+ by the distinguished board-player $P_0=B^\star$; that is the stable core.  Operationally, however, the board-player becomes the gateway to a family of conservative meta-capabilities:
+\[
+\boxed{
+\begin{array}{c}
+\text{schedule}\\
+\text{remember}\\
+\text{route and hand off}\\
+\text{verify and certify}\\
+\text{spawn hypothetical boards}\\
+\text{compare counterfactual futures}\\
+\text{recurse over boards}\\
+\text{return only verifier-safe discoveries}
+\end{array}}
+\]
+This is exactly where the generalized-board-game idea becomes especially powerful.  A ``board'' need not be a chessboard, a single theorem state, or even a single fixed search world.  It can be a rule-complete formal environment whose legal dynamics include the controlled construction of further formal environments.
+
+The reciprocal relationship is therefore
+\[
+\boxed{
+\text{GBG+ gives imagination legal semantics; imagination gives GBG+ recursive counterfactual reach.}
+}
+\]
+
+\subsection{Interaction with MAPQUEST}
+
+MAPQUEST can be lifted from navigation inside one state graph to navigation across the imagination graph.  Within a child game it estimates target geometry, residual distance, option gain, and useful local regions.  Across children it can rank whole counterfactual worlds by a score such as
+\[
+Q(G^+_a)=
+-\alpha\widehat h(T\mid G^+_a)
++\beta\operatorname{Novelty}(G^+_a)
++\gamma\operatorname{OptionGain}(G^+_a)
+-\delta\operatorname{Cost}(G^+_a).
+\]
+Thus MAPQUEST acquires two navigation scales: proof navigation inside a board and imagination navigation among boards.
+
+\subsection{Version 2.0 summary}
+
+Version 1.0 established the central separation
+\[
+\text{imagine}\to\text{navigate}\to\text{prove}\to\text{verify}\to\BANK.
+\]
+Version 2.0 places that pipeline inside GBG+ and then sends the influence back in the other direction.  The resulting architecture is
+\[
+\boxed{
+\begin{array}{c}
+\text{certified parent GBG+}\\
+\downarrow\;\operatorname{Spawn}\\
+\text{counterfactual GBG+ federation}\\
+\downarrow\;\text{MAPQUEST analysis}\\
+\text{candidate subgoals / strategies / obstructions}\\
+\downarrow\;\text{independent proof and verification}\\
+\text{trusted parent BANK}
+\end{array}}
+\]
+The conceptual advance is that imagination is no longer merely a heuristic running inside AMLD.  It becomes a candidate optional GBG+ package: a verifier-safe mechanism by which a generalized board can legally create, explore, compare, and retire hypothetical generalized boards.
+
+\end{document}
