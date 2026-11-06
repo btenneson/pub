@@ -18,7 +18,7 @@ Hilbert-directed candidate search and GBG+ Player-0, with fair-discovery boundar
 
 > “Traversal is a permutation of a finite action list; it does not create inference legality.”
 
-[Open audited PDF in GitHub](https://github.com/btenneson/pub/blob/main/docs/cs.LO_Logic_in_Computer_Science/hilbert_filled_inference_spaces_gbgplus_player0_v2_0/HFIS_GBGplus_Player0_Research_Edition_1_0%282%29v2.0%282).pdf)
+[Open audited PDF in GitHub](https://github.com/btenneson/pub/blob/main/docs/cs.LO_Logic_in_Computer_Science/hilbert_filled_inference_spaces_gbgplus_player0_v2_0/HFIS_GBGplus_Player0_Research_Edition_1_0%282%29v2.0%282%29.pdf)
 
 ### 3. Certified Multiarticle Intertwining: Six Proof-Carrying Low-Fan-In Shells
 
@@ -34,7 +34,7 @@ Certified round-trip proof translation with a repaired flow diagram.
 
 > “A candidate dependency graph is not a proof by itself.”
 
-[Open audited PDF in GitHub](https://github.com/btenneson/pub/blob/main/docs/cs.LO_Logic_in_Computer_Science/trading_intuition_and_return_v2_0/Trading_Intuition_and_Return_0_1_REGENERATED%285%29v2.0%284).pdf)
+[Open audited PDF in GitHub](https://github.com/btenneson/pub/blob/main/docs/cs.LO_Logic_in_Computer_Science/trading_intuition_and_return_v2_0/Trading_Intuition_and_Return_0_1_REGENERATED%285%29v2.0%284%29.pdf)
 
 ### 5. A Four-Island Multiarticle: TISO, Certified GBG Self-Embeddings, Undecidable Attainment, and J4
 
