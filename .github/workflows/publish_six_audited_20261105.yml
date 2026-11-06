@@ -32,7 +32,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A docs scripts/publications.json incoming_publications/six_final_audited_20261105
+          git add -A -- docs scripts/publications.json incoming_publications
           if git diff --cached --quiet; then
             echo "Publication already present."
             exit 0
