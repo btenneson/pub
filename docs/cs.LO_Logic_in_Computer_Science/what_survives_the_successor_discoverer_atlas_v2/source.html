@@ -1,0 +1,679 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What Survives the Successor? The Self-Improving Mathematical Discoverer — source</title><link rel="stylesheet" href="/pub/publications.css"></head><body><main><a href="/pub/cs.LO_Logic_in_Computer_Science/what_survives_the_successor_discoverer_atlas_v2/">Back to publication</a><h1>What Survives the Successor? The Self-Improving Mathematical Discoverer</h1><a href="/pub/cs.LO_Logic_in_Computer_Science/what_survives_the_successor_discoverer_atlas_v2/source.tex" download>Download source</a><pre>\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=0.9in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\hypersetup{colorlinks=false,pdfborder={0 0 0},pdfauthor={ChatGPT (OpenAI)},pdftitle={What Survives the Successor? The Self-Improving Mathematical Discoverer}}
+\urlstyle{same}
+\setcounter{tocdepth}{1}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{12pt}
+\raggedbottom
+\emergencystretch=2em
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small What Survives the Successor?}
+\fancyhead[R]{\small ATLAS audit v2}
+\fancyfoot[C]{\thepage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\K}{\mathcal K}
+\newcommand{\F}{\mathcal F}
+\newcommand{\Act}{\mathsf{Act}}
+\newcommand{\Out}{\mathsf{Out}}
+\newcommand{\Win}{\mathsf{Win}}
+\newcommand{\View}{\mathsf{View}}
+\newcommand{\Auth}{\mathsf{Auth}}
+\newcommand{\Val}{\mathsf{Val}}
+\newcommand{\Bank}{\mathsf{BANK}}
+\newcommand{\prooflink}[1]{\hfill\hyperlink{proof:#1}{\footnotesize[proof in PROOFS]}}
+\newcommand{\backlink}[1]{\hyperlink{claim:#1}{\footnotesize[back to statement]}}
+\newcommand{\src}[1]{\textup{[#1]}}
+\newcommand{\status}{\textsc{paper-level, not independently certified}}
+\title{\bfseries What Survives the Successor?\\[4pt]
+\large The Self-Improving Mathematical Discoverer: Certified Search, Evidence, Successors, and Fully Charged Revision}
+\author{Research and writing: ChatGPT (OpenAI)\\[3pt]
+\small Research Director: Brian Tenneson}
+\date{November 16, 2026\\\small Tenneson1-style integrated theory manuscript --- research draft 002, ATLAS-audited v2}
+\begin{document}
+\maketitle
+\begin{center}\normalsize See the AI disclaimer that follows this essay.\end{center}
+\begin{abstract}
+Can a mathematical discoverer use its own established search methods to discover and install a better method of discovery? This question goes beyond showing that an improved successor preserves old proofs. We first reconstruct the supplied SIC/ATP foundations, conservative rule compilation, verifier-qualified ledgers, and the distinction between mathematical truth and the availability of an effective search procedure. We then define a contract-relative discoverer whose generator proposes changes to its own installed search interface. A fully specified self-composition ladder proves restricted existence: the current discoverer computes and verifies a new macro from its own trace, increases certified one-action proof reach on a task family, and can repeat this operation without externally supplying each new rule. Its improvement in a fully enumerated abstract charge model is conditional on an exact amortization threshold; a fixed finite workload permits only finitely many profitable upgrades even though unbounded formal iteration remains possible. We integrate these results with the manuscript&#x27;s evidence-qualified alternating cost refinement, successor-safe handoffs, coordinated basin escape, and finite completion/fixed-point boundaries. An explicit method-preserving handoff separates inheriting a proof from inheriting the capacity to generate further proofs. The new ladder is a limited proof-search construction, not unrestricted machine creativity; all main theorems are paper-level and no deployed ATP, FORGE-6-E, or independently checked proof-kernel improvement is claimed. Formal arguments appear in the single PROOFS appendix.
+\end{abstract}
+\noindent\textbf{Keywords:} semi-ideal computers; self-improving discoverers; automated theorem proving; proof-search compilation; discovery reach; certified revision; epistemic handoff; adversarial settlement; amortized cost; improvement basins; fixed points.
+\tableofcontents
+
+\section{The question is not whether the machine changed its name}
+A proof about a machine is not the same as a modification to its executable. A modification may preserve every theorem and still alter the time needed to find one. A shorter route may increase charged resource use. A successfully simulated execution may conceal a nondeterministic branch that never reaches a certificate. An evidence-carrying successor may preserve a predecessor&#x27;s valid mathematical claims without preserving the predecessor&#x27;s identity. These are separations, not successive rhetorical descriptions of one event.
+
+The twelve distinct works supplied for this investigation develop these distinctions from formal systems through proof-cache feedback, mathematical awareness, succession, economics, settlement navigation, escape basins and completion \src{1--12}. We neither merge equivalent theorems into spurious new results nor treat a second edition as independent evidence. The original new question was whether \emph{usable evidence plus a fully branched, cost-aware refinement} could support a mathematical improvement statement. The present revision asks something stronger and orthogonal: whether the \emph{discoverer itself can generate the revision that improves its subsequent search}. A safe successor is a possible outcome, not the entire target.
+
+We apply a stringent rule: the target and hypotheses are frozen before each argument; proof, code, evidence, branch coverage, and deployment economy occupy different verification gates. The original unrestricted ambition remains unresolved. The limited positive claims that follow are conditional mathematics, with human-readable arguments collected in the sole appendix \textbf{PROOFS}. In ordinary language, the paper asks three separate questions: can the machine produce a better rule itself, can it prove the rule safe, and can using that rule save enough work to repay the cost of finding it? Each question has a different answer.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[node distance=8mm and 6mm, every node/.style={font=\small}, &gt;=Latex]
+\node[draw,minimum width=2.8cm,align=center] (f) {Formal calculus\\SIC / ATP model};
+\node[draw,right=of f,minimum width=2.8cm,align=center] (ev) {Accessible evidence\\versioned receipts};
+\node[draw,right=of ev,minimum width=2.8cm,align=center] (co) {Composer / simulator\\candidate architecture};
+\node[draw,below=11mm of ev,minimum width=3.2cm,align=center] (gate) {Independent certificate gate\\+ code correspondence};
+\node[draw,right=of gate,minimum width=3.0cm,align=center] (q) {Authorized successor\\branchwise behavior};
+\draw[-&gt;] (f)--(ev);\draw[-&gt;] (ev)--(co);\draw[-&gt;] (co.south)--(gate.east);
+\draw[-&gt;] (gate)--(q);\draw[-&gt;] (f.south) |- (gate.west);
+\end{tikzpicture}
+\caption{Distinct obligations on the route from a theorem-proving object to a successor. The arrows represent required witnesses, not executed software interfaces.}\end{figure}
+
+\section{Formal machines, representation, and the type of a revision}
+The broad $xyz$ convention represents a formal system by $F=(x,y,z)$: an alphabet or symbol domain, a designated set of finite well-formed strings, and a family of inference operations. The set $y$ need not itself be generated by a recursive grammar; executability and structural induction need extra hypotheses \src{1}. A proof from $\Gamma$ is a finite derivation, and $\operatorname{Con}_F(\Gamma)$ collects its conclusions. This is more restrictive than membership in $y$.
+
+A \emph{semi-ideal computer} (SIC) is a staged computational object satisfying the stipulated stage and halting conventions. An \emph{automated theorem prover} (ATP) is an SIC with additional theorem-proving obligations. An AMLD is a further architecture or protocol class, not a synonym for all SICs or ATPs. The supplied papers make the distinctions operationally important: a composer SIC may construct a revision; an ATP may derive its proof; a subject SIC may receive it; a simulator may predict its behavior; a trusted checker may authorize a mathematical claim. These roles may coincide or remain distinct \src{1,4,7}.
+
+\begin{definition}[Frozen revision contract]\label{def:contract}
+A contract $\K$ records $F,\Gamma$, exact target and accepted certificate language, verifier regime and version, initial $\Bank$ imports, permitted architectures and revisions, role assignments, scheduler and failure assumptions, branch ownership, observations and hidden information, workload, time horizon, all charge types and reuse rights, plus the authorized installation and handoff actions. A revision state is
+\[
+ X_n=(A_n,\pi_n,L_n,E_n,B_n,H_n),\qquad X_{n+1}\in\F_{\K}(X_n),
+\]
+where $L$ is the evidence/provenance ledger, $E$ the accessible witnesses, $B$ remaining spendable budget, and $H$ immutable history. The map $\F_{\K}$ may be partial, set-valued, or adversarial. Total charged expense is a separate coordinate from remaining budget and future per-episode objective.
+\end{definition}
+
+The distinction between representation, audit and certified update is the Picard feedback loop $P_{n+1}=\F(P_n)$ of the source framework \src{2,3}. Its epoch $n$ is different from a staged inference index and from a reflection-depth index. Formal self-awareness means a machine can derive statements concerning a designated formal name; it does not thereby prove facts about installed code, and it does not entail subjective experience. A checked code-to-description interpretation is required before operational inferences follow \src{3,6}.
+
+\section{What the ledger is allowed to preserve}
+Epistemic awareness in the supplied handoff framework is a typed relation among a subject, a proposition, an accessible record and a verifier. Its central question is not whether some proof exists, but whether the subject possesses a suitably scoped witness it may legitimately use. In particular, a receipt about the predecessor is not automatically a valid assertion about the successor, and a verifier change cannot be treated as a change in font \src{5}.
+
+\begin{definition}[Qualified, successor-safe record]\label{def:record}
+A record $r$ for proposition $\varphi$ is \emph{qualified} relative to $(\K,V)$ when $r\in\View(X)$, $V$ accepts its finite proof support under the frozen theory and scope, and its dependency, verifier-version and rights fields are valid. A handoff $h:P\rightsquigarrow Q$ is \emph{receipt-preserving} on a declared ledger class if, for every qualifying $r$, it supplies a translated or replayable record $h_*r\in\View(Q)$ accepted under the declared target verifier for the same semantically invariant claim and scope; provenance and issuer identity are recorded without identifying the two subjects.
+\end{definition}
+
+\begin{proposition}[Scoped knowledge transport, inherited]\label{prop:transport}\hypertarget{claim:transport}{}
+A receipt-preserving handoff transports the authorized truth claim of every retained ledger entry, assuming both verifiers are sound on their declared domains and the proof interpretations agree on that entry. It need not preserve the original machine identity. \src{5, Lemma 6.3 and Corollary 6.4}\prooflink{transport}
+\end{proposition}
+
+This proposition has a deliberately narrow proof. Actual difficulty lies in establishing replay/translation and semantic invariance from concrete artifacts. No bytes-only copying claim may be admitted to $\Bank$ merely because the predecessor once accepted it.
+
+\begin{counterexample}[Certificate bytes without assumptions]\label{cex:scope}\hypertarget{claim:scope}{}
+The one-line certificate for $p$ under premises $\{p\}$ does not establish $p$ from an empty premise set. A successor that changes $\Gamma$ and copies the same proof string has changed the proposition&#x27;s authorization context, not preserved it. This is the obstruction of \src{7, Prop. 5.2}.\prooflink{scope}
+\end{counterexample}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,every node/.style={font=\small},node distance=13mm]
+\node[draw,rounded corners,align=center,minimum width=3.5cm] (p) {Predecessor $P$\\$(\Gamma,V_0,r)$};
+\node[draw,rounded corners,align=center,right=3.0cm of p,minimum width=3.5cm] (q) {Successor $Q$\\$(\Gamma&#x27;,V_Q,h_*r)$};
+\node[draw,align=center,below=of $(p)!0.5!(q)$] (g) {scope / meaning / checker / rights\\must all be checked};
+\draw[-&gt;] (p) to[bend left=15] node[above]{translate or replay} (q);
+\draw[dashed,-&gt;] (g.west) -| (p.south);\draw[dashed,-&gt;] (g.east) -| (q.south);
+\end{tikzpicture}
+\caption{Evidence transport preserves scoped mathematical content, not a magical equation of predecessor and successor identities.}\end{figure}
+
+\section{Conservative change and the executable gap}
+An immediately useful revision adds a rule $d$ that abbreviates a finite base-system derivation. If $d(a_1,\ldots,a_k)=b$ only when $\{a_1,\ldots,a_k\}\vdash_F b$, the enlarged calculus can replay each macro as an ordinary proof. This is the same expansion argument appearing in several sources \src{1--4,8}; it is one inherited result, not four independent discoveries.
+
+\begin{theorem}[Conservative derived-rule compilation, inherited]\label{thm:conservative}\hypertarget{claim:conservative}{}
+Let $F&#x27;$ retain all original rules of $F$ and add only $F$-derived rules, with sound, finitely replayable expansions. For every $\Gamma,\varphi$, 
+\[
+ \Gamma\vdash_{F&#x27;}\varphi\quad\Longleftrightarrow\quad\Gamma\vdash_F\varphi.
+\]
+This alone says nothing about executable implementation, charged cost, or the time of first discovery. \src{1, Thm. 10.2; 2, Thm. 5.3}\prooflink{conservative}
+\end{theorem}
+
+A wider architecture change might alter the proof-search schedule, stored dependencies, translated certificate syntax, nondeterministic continuations or complete program code. In that case a pure calculus-level argument is not enough. One also needs a separately checked relation linking the installed implementation to its declared semantics and proving that all permitted emitted results satisfy the accepted proof protocol. The accepted checker cannot simply certify its own new authority without a trusted meta-checker or explicit retained trusted basis.
+
+\begin{proposition}[Safety and value are independent obligations]\label{prop:safety}\hypertarget{claim:safety}{}
+A sound proof checker and a safe trace refinement do not imply forced termination or reduced cost. Likewise, a syntactically valid derived rule may increase fully charged processing cost when lookup, memory, or checking overhead exceeds the saved inference transitions.\prooflink{safety}
+\end{proposition}
+
+The proposition is not a pessimistic reservation: it tells us which further theorems a successor construction needs. The remainder of the paper equips the program with explicit branchwise forcing and a full cost comparison.
+
+\section{Discovery versus a beneficial architecture}
+The existence of a finite proof-carrying revision is a mathematical assertion. The ability to enumerate and check it is a second assertion. The economic superiority of adopting it is a third. The composer paper \src{4} separates these; the successor paper \src{7} adds verifier-compatible handoff and branch-rank witnesses.
+
+\begin{theorem}[Finite-witness discoverability, inherited]\label{thm:enumerate}\hypertarget{claim:enumerate}{}
+Let a class of finite candidate-and-certificate pairs be effectively enumerated, and let its acceptance predicate be total, sound and decidable on these finite encodings. If the class contains an accepted witness, fair enumeration eventually finds one. This algorithm does not decide that no witness exists in a potentially infinite class. \src{4, Thm. 6.1; 7, Thm. 3.2}\prooflink{enumerate}
+\end{theorem}
+
+For example, the three inference transitions $a\to b\to c\to d$ can be bundled into one certified derived rule $a\Rightarrow d$. On a declared workload of $N$ identical uses, a stipulated one-unit macro execution and $B$ units of \emph{complete} one-time investigation and installation charge give $3N$ versus $B+N$; saving occurs exactly when $2N&gt;B$. This is a finite mathematical example from the source literature \src{7,8}. The first proof or macro may be expensive to discover, rejected proposals must be charged, and the source theorem does not claim that every competing adaptive prover requires three units per use.
+
+\begin{theorem}[Charged break-even criterion]\label{thm:break}\hypertarget{claim:break}{}
+Suppose a frozen $N$-episode workload uses a common cost unit. On episode $i$, the installed new policy has cost at most $q_i$, and every admitted old-architecture adaptive policy incurs at least $\ell_i$, \emph{conditional on each admissible preceding episode history}. These bounds must remain valid under all reuse, caching, and cross-episode adaptations allowed by the contract. If all additional one-time expenses of the new policy are bounded by $B$ (with no corresponding uncounted charges omitted), the new candidate has strictly smaller complete charged cost whenever
+\[
+       \sum_{i=1}^N(\ell_i-q_i)&gt;B.
+\]
+For repeated identical bounds $\ell_i\geq L$, $q_i\leq q$, it suffices that $N(L-q)&gt;B$. The inequality itself does not certify the correctness of either bound.\prooflink{break}
+\end{theorem}
+
+\section{The discoverer, not merely its successor}\label{sec:discoverer}
+A replacement machine can preserve all old theorems without improving the mechanism by which new proofs are found. We therefore change the organizing object. An \emph{improvement epoch} is not simply the introduction of a new name $Q$; it is an authorized transition in the machinery that generates candidate proofs and candidate changes. This change of emphasis leaves the predecessor--successor theorems intact but puts them to work for the discoverer.
+
+\begin{definition}[Contract-relative mathematical discoverer]\label{def:disc}
+Relative to a frozen contract $\K$, a discoverer is a finitely encoded effective SIC configuration
+\[
+ D=(S,G,L,A;V,\K),
+\]
+where $S$ is an executable proof/discovery search procedure, $G$ effectively produces finite candidate proofs or architecture changes from its own accessible traces and certified ledger $L$, $V$ is an explicitly specified verifier with trust and version boundaries, and $A$ is an authorized, effective gate that installs only changes permitted by $V$ and $\K$. The verifier need not be identical with the discoverer. If the SIC meets the additional ATP conditions for the specified proof targets, we call it a \emph{discoverer--ATP}. A \emph{self-generated revision} $D\rightsquigarrow D&#x27;$ requires a reproducible trace in which $G$ running as part of $D$, not an external constructor, outputs the concrete change and its proposed support before $A$ authorizes its installation. A change is \emph{beneficial} only relative to a separately stated performance/cost measure and comparison class.
+\end{definition}
+
+The term \emph{self} is operational here: the proposal is generated by the machine&#x27;s current installed procedures and the change modifies those procedures. It does not assume phenomenal experience. Nor must the generator and subject have the same identity: an external simulator $P\ne S$ may aid a revision if checked correspondence witnesses justify its claims. The self-generating case $P=S$ is a special case, not a requirement of all mathematics about successors.
+
+\begin{definition}[Three discovery-capacity coordinates]\label{def:coords}
+For a frozen task family $\mathcal W$, admissible knowledge $L$, and action budget $b$, set
+\[
+ \mathrm{Reach}_{\K}(D;\mathcal W,b)=\{w\in\mathcal W:\text{$D$ finds a verifier-acceptable certificate for $w$ within $b$ search actions}\}.
+\]
+Write $H_{\K}(D;w)$ for the minimum \emph{installed search-action horizon} to find such a certificate, with infinity if no qualifying route is admitted. Write $C_{\K}(D;\mathcal W,N)$ for complete charged cost on the declared repeated workload of $N$ tasks, including the amortized or explicit cost of learning, failed proposals, checking, installation, execution, and reuse. Finally, write $\mathrm{Next}_{\K}(D;b)$ for the set of concrete, verifier-eligible \emph{architecture proposals} its current candidate generator can construct within $b$ permitted generation actions, excluding externally supplied proposals.
+\end{definition}
+
+These are not interchangeable orderings. A machine can enlarge $\mathrm{Reach}$ while its complete cost rises; it can discover more candidate revisions without being able to certify them; and it can have a shorter horizon without a cheaper proof-checking regime. A fixed set of premises, checker, information, allowed actions, and reuse rights is essential. It is especially important to compare against the \emph{best old-architecture policy}, not a deliberately inefficient old schedule, and to admit that a fully upgrade-enabled comparator can imitate a new design if it has the same rights and charges.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,node distance=8mm and 10mm,every node/.style={font=\small,align=center}]
+\node[draw,minimum width=2.5cm,minimum height=1cm] (s) {Installed search $S_j$\\and certified ledger $L_j$};
+\node[draw,right=of s,minimum width=2.55cm,minimum height=1cm] (g) {Internal generator $G$\\proposes $R_{j+1}$};
+\node[draw,right=of g,minimum width=2.2cm,minimum height=1cm] (v) {Frozen checker $V$\\validates support};
+\node[draw,below=12mm of g,minimum width=2.7cm,minimum height=1cm] (a) {Authorized installer $A$\\updates search procedure};
+\draw[-&gt;] (s)--(g);\draw[-&gt;] (g)--(v);\draw[-&gt;] (v.south) |- (a.east);\draw[-&gt;] (a.west) -| (s.south);
+\end{tikzpicture}
+\caption{An operationally self-generated improvement changes the searcher itself. Checker authority is fixed rather than granted to the proposed revision; all arrows represent obligations, not observed software calls.}
+\end{figure}
+
+\section{A constructive discoverer that improves its own proof-search machinery}\label{sec:ladder}
+The inherited existence theorem for fair enumeration (Theorem~\ref{thm:enumerate}) assumes an acceptable finite witness is present somewhere in the search space. That alone cannot demonstrate self-improvement: the machine may never \emph{construct} a useful revision, and the revision might have no economic value. We supply a small fully specified class in which the candidate is generated by the incumbent discoverer, the checker can validate it, the update changes the executable proof-search interface, and a strict capacity difference can be proved. The example is intentionally elementary; it is a restricted existence witness, not a universal theorem of creative discovery.
+
+Let $\mathcal F_*$ be a calculus with countably many effectively enumerable constants $c_0,c_1,\ldots$, a unary function symbol $f$, an atomic predicate $P$, and the single schematic inference rule
+\[
+ R_0:\quad \frac{P(t)}{P(f(t))},
+\]
+for closed terms $t$. The frozen checker accepts a finite derivation built from substitutions of $R_0$ and previously checked derived-rule certificates. It can expand every installed macro to a finite base proof and maintains a versioned receipt for each validated macro. A subsequent application of an installed, receipt-qualified macro counts as one \emph{online search-and-check action} under the declared memoized-checking model; each new macro&#x27;s complete base-rule expansion must be paid for once on admission. For this action-count model, goals and intermediate terms may use shared DAG or exponent-indexed encodings, and the task-specific premise is supplied in the initial ledger; no completed proof of the fresh target is supplied. The action horizon counts only installed proof-rule invocations, not generator calls or term-materialization bit operations. These other operations belong to the separate cost account below. This is a contractual cost semantics, not an assertion about every real theorem prover.
+
+\begin{definition}[Self-composition ladder]\label{def:ladder}
+For $j\geq0$ let
+\[
+ R_j:\quad \frac{P(t)}{P(f^{2^j}(t))}.
+\]
+The configuration $D_j$ has exactly the installed search actions $\{R_0,\ldots,R_j\}$, their accepted expansion certificates, and the \emph{same} generic source-code generator $G$ at every epoch. When a training derivation repeats the largest installed macro $R_j$ twice, $G$ forms a \emph{new candidate} by composing those two recorded rule schemata, constructs the corresponding finite derivation DAG, and submits it to the unchanged checker. If accepted, the installer adds the newly generated rule to the executable search-action table and preserves all old actions; this produces $D_{j+1}$. The concrete rule $R_{j+1}$ is \emph{not} listed in $D_j$ in advance; only the general composition program is present.
+\end{definition}
+
+\begin{theorem}[Self-generated, checker-gated discoverer improvement --- synthesis A]\label{thm:ladder}\hypertarget{claim:ladder}{}
+For every $j\in\mathbb N$, $D_j$ effectively generates a previously uninstalled candidate $R_{j+1}$ using its own installed rule $R_j$ twice. The unchanged checker accepts the resulting finite expansion certificate; authorized installation constructs $D_{j+1}$, preserving all base-calculus consequences. For every fresh constant $c_m$, consider the certificate-discovery task
+\[
+ T_{j+1,m}:\quad P(c_m)\vdash P(f^{2^{j+1}}(c_m)).
+\]
+With the installed action interfaces and matching initial ledger specified above, the minimum \emph{online} proof-search horizons satisfy
+\[
+ H_{\K}(D_j;T_{j+1,m})=2,\qquad H_{\K}(D_{j+1};T_{j+1,m})=1.
+\]
+Thus a one-search-action budget admits each fresh $T_{j+1,m}$ after revision but not before revision. This is genuine improvement of the installed discovery/proof procedure, measured in the frozen action-horizon coordinate; it is \emph{not yet} a statement of lower complete cost.\prooflink{ladder}
+\end{theorem}
+
+A preprogrammed \emph{rule for proposing compositions} is not a preprogrammed \emph{list of concrete improvements}. At each epoch the actual new macro and its finite witness are computed from the presently available certified machinery. Nevertheless this remains a highly structured form of discovery: the theorem does not say that $D_j$ invents an arbitrary new search heuristic or solves unrestricted theorem discovery. A short self-generated derivation is an algorithmic discovery in this model, not a claim of historical first discovery.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,node distance=6mm and 7mm,every node/.style={font=\small,align=center}]
+\node[draw,minimum width=2.1cm] (r0) {$D_0$\\$R_0: +1$};
+\node[draw,right=of r0,minimum width=2.1cm] (r1) {$D_1$\\$R_1: +2$};
+\node[draw,right=of r1,minimum width=2.1cm] (r2) {$D_2$\\$R_2: +4$};
+\node[draw,right=of r2,minimum width=2.1cm] (r3) {$D_3$\\$R_3: +8$};
+\draw[-&gt;] (r0)--node[above]{$\times2$}(r1);
+\draw[-&gt;] (r1)--node[above]{$\times2$}(r2);
+\draw[-&gt;] (r2)--node[above]{$\times2$}(r3);
+\end{tikzpicture}
+\caption{The internal generator doubles the longest certified inference jump, changing the search interface at each epoch. Base proof replay is charged separately; no universal performance conclusion follows from the pictured horizon.}
+\end{figure}
+
+\begin{definition}[Fully charged ladder ledger]\label{def:ledgercost}
+To prevent an uncharged logical shortcut \emph{within the declared accounting system}, fix the following \emph{stipulated abstract unit-cost model} for a single $D_j\rightsquigarrow D_{j+1}$ upgrade: two current-rule applications to create the candidate (cost $2$); independent expansion checking of its $2^{j+1}$ base steps (cost $2^{j+1}$); installation (cost $1$); and storage/provenance registration (cost $1$). No rejected candidates occur in this particular successful construction; if the generator were extended to try unsuccessful candidates, those costs would be additional. All retained old macros remain usable at one online action each and the checker validates a reference to a previously accepted macro using its retained receipt at the same stipulated per-application unit charge. Thus the complete incremental upgrade expense is
+\[
+ B_j=2^{j+1}+4.
+\]
+The model assumes compact term references, constant-charge macro lookup and certified receipt reuse, and counts every operation in \emph{its enumerated categories}; it is \emph{not} a bit-complexity or wall-clock accounting theorem. If symbol creation, memory allocation, I/O, communication, maintenance, or delayed checking create additional noncancelling charges, they must be added explicitly before asserting an implementation-level saving. Every comparison below treats costs of prior, already shared $D_j$ state as common historical expenditure, not as a magically free path from $D_0$.
+\end{definition}
+
+\begin{theorem}[Exact economic threshold for a self-discovered revision --- synthesis B]\label{thm:laddercost}\hypertarget{claim:laddercost}{}
+Fix $j$, and a frozen workload of $N$ tasks $T_{j+1,m}$ on fresh constants, with identical resource, checker, and reuse permissions. Compare the optimal policy confined to the \emph{unmodified} $D_j$ action table with $D_j$&#x27;s own authorized discovery and installation of $R_{j+1}$ followed by the optimal $D_{j+1}$ policy. In the cost semantics of Definition~\ref{def:ledgercost}, the exact total charges are
+\[
+ C_{\mathrm{old}}(j,N)=2N,\qquad C_{\mathrm{self-upgrade}}(j,N)=B_j+N=2^{j+1}+4+N.
+\]
+Consequently the self-discovered update is strictly cheaper exactly when
+\[
+ N&gt;2^{j+1}+4.
+\]
+If the comparator may install the same update under the same costs and rights, no strict superiority over its optimum follows. This exact formula applies only to the abstract charges of Definition~\ref{def:ledgercost}; for other cost models the corresponding costs and threshold must be recomputed.\prooflink{laddercost}
+\end{theorem}
+
+A simple sensitivity check makes the boundary explicit. If the revised cost model has incremental expense $B_j^{\mathrm{real}}$ and the old-versus-new online saving per task is $s_j^{\mathrm{real}}&gt;0$, with identical common expenses on both sides, strict benefit requires $N s_j^{\mathrm{real}}&gt;B_j^{\mathrm{real}}$. Neither the sign of the saving nor this threshold is established for an actual ATP here.
+
+For $j=0$, the base machine itself generates $R_1$, paying $B_0=6$. On a workload of seven fresh tasks requiring a two-step derivation, doing nothing costs $14$ units, while discovering, certifying and using its own new macro costs $6+7=13$. On six tasks the costs tie; on fewer tasks the self-modification is uneconomical. For $j=1$, the machine that was improved can generate $R_2$ without external insertion of that rule; the fully charged threshold becomes $N&gt;8$. These are exact arithmetic consequences of a frozen \emph{toy} cost contract, not timed observations of FORGE-6-E.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[x=0.75cm,y=0.24cm,&gt;=Latex,every node/.style={font=\small}]
+\draw[-&gt;] (0,0)--(11.3,0) node[right] {$N$};
+\draw[-&gt;] (0,0)--(0,26) node[above] {cost};
+\foreach \n in {2,4,6,8,10} {\draw (\n,0)--(\n,-0.6) node[below] {\n};}
+\foreach \y in {5,10,15,20} {\draw (0,\y)--(-0.16,\y) node[left] {\y};}
+\draw[very thick] (0,0)--(11,22) node[right] {$2N$};
+\draw[densely dashed,very thick] (0,6)--(11,17) node[right] {$6+N$};
+\fill (6,12) circle (2.2pt);
+\node[above left] at (6,12) {break-even $N=6$};
+\end{tikzpicture}
+\caption{Modeled stage-$0$ economics: the new installed search action is faster, but the complete self-discovery and certification cost must be recovered through repeated use.}
+\end{figure}
+
+\section{The two simulation questions}
+The source corpus explicitly separates a simulator $P$ from a simulated subject $S$. Self-simulation $P=S$ is a special type-correct case, not the definition of simulation. When a distinct simulator describes $S$, its observable behaviors must be connected through a witness; a mere formal name for $S$ does not establish predictive accuracy \src{4,7}. Under a clocked simulation, theoremhood or termination may transport while the number or cost of intermediate steps changes \src{10}.
+
+\begin{definition}[Game semantics for a forced settlement]\label{def:game}
+A finite reachability game $G=(X,T,\Act,\Out,c)$ has an accepting terminal set $T$, a finite \emph{nonempty} set of controller actions $\Act(x)$ at each nonterminal state, nonempty adversarial successor sets $\Out(x,a)$, and nonnegative rational charges $c(x,a,y)$. Every terminal certificate must be accepted under the frozen proof and evidence contract. A controller \emph{forces settlement} if every admitted adversarial continuation under its observation-respecting policy reaches $T$. Define the minimum worst-case cost
+\[
+ V_G(x)=\inf_{\pi\ \mathrm{forcing}}\;\sup_{\omega\ \mathrm{admitted\ under}\ \pi}\;\sum_{e\in\omega}c(e),
+\]
+with value $+\infty$ when no forcing policy exists in the adequate declared game. In a finite decreasing-rank game this is calculated by
+\[
+ V_G(x)=\begin{cases}0&amp;x\in T,\\
+ \displaystyle\min_{a\in\Act(x)}\max_{y\in\Out(x,a)}\bigl(c(x,a,y)+V_G(y)\bigr)&amp;x\notin T.
+ \end{cases}
+\]
+\end{definition}
+
+An action may have one favorable branch and another fatal branch. A controller does not control which member of $\Out(x,a)$ occurs; a calculation that discards the second branch solves a different problem. Hidden-information constraints would require observation-based policies and an appropriate information-state reduction, not silent perfect-information access.
+
+\begin{counterexample}[One path is not a forcing policy]\label{cex:loop}\hypertarget{claim:loop}{}
+At a state $s$ let an action have two successors: an accepting target $t$ and $s$ itself. There is a successful length-one execution, but an adversary can choose $s$ forever. No strict decreasing rank exists for the permitted loop; without a separate fairness premise, forced termination fails. This is the substance of \src{7, Prop. 5.1}.\prooflink{loop}
+\end{counterexample}
+
+\section{An evidence-qualified alternating cost refinement}
+This is the central synthesis. The compass study gives an action-isomorphic preservation theorem and remarks on one-way cost transport \src{10, Sec. 6.2}. The succession study demands branch-complete safety and qualified proof transport \src{7}. The missing combined operational statement is how a controller&#x27;s \emph{adversarial strategy} and an epistemic license can be lifted together so that worst-case cost does not increase. The following statement is a paper-level synthesis, not a claim of first discovery in the wider literature.
+
+\begin{definition}[Evidence-qualified alternating action lift]\label{def:lift}
+Let $G_P,G_Q$ be frozen finite perfect-information reachability games for predecessor and successor. On the old forced-winning region $W$, let $h:W\to X_Q$ be an effective map. Require a computable decoder $d:h(W)\to W$ satisfying $d(h(x))=x$ for every state in $W$ reachable under the considered policies; in particular, distinct relevant old states cannot be merged in a way that makes the successor&#x27;s action selection ambiguous. Require $W$ to be closed under the considered old actions. Thus the successor can reconstruct the old policy state from its current observable, contract-authorized state, without consulting a hidden predecessor execution. Let the old game have a finite rank $\rho$ decreasing along successors of actions used by its considered forcing policies. The \emph{qualified alternating lift} requires:
+\begin{enumerate}[label=(\roman*),leftmargin=2em]
+\item $x\in T_P$ implies $h(x)\in T_Q$ with authorized acceptable proof records;
+\item every considered old action $a$ at $x\in W\setminus T_P$ has a legal, effectively selectable new action $\widehat a$ at $h(x)$, after qualified ledger replay or sound translation;
+\item for \emph{each} $z\in\Out_Q(h(x),\widehat a)$ there is some $y\in\Out_P(x,a)$ with $z=h(y)$ and $c_Q(h(x),\widehat a,z)\leq c_P(x,a,y)$;
+\item checker scope, installation correspondence, information permissions, and transition/refinement claims are justified for those lifted actions.
+\end{enumerate}
+The quantifier in (iii) is universal over new adversarial continuations. This is intentionally weaker than an action bijection, but stronger than a successful-path simulation. The explicit decoder is a sufficient (not necessary) policy-coherence condition: quotients that merge old states could also work with an additional proof of action and value compatibility, but that is not assumed here.
+\end{definition}
+
+\begin{theorem}[Evidence-gated adversarial strategy transport --- synthesis S1]\label{thm:lift}\hypertarget{claim:lift}{}
+Assume Definition~\ref{def:lift}; suppose the old winning region is finite, the relevant rank decreases for its considered forcing actions, and the selected optimal old policy is among those actions. Then for each $x\in W$ there is an authorized successor strategy forcing an accepting settlement from $h(x)$, and
+\[
+                        V_{G_Q}(h(x))\leq V_{G_P}(x).
+\]
+If $V_{G_P}(x)=+\infty$ outside $W$, the inequality says nothing there. If the translation or code correspondence has not been checked, the conclusion remains a conditional mathematical claim, not a deployment certificate.\prooflink{lift}
+\end{theorem}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,every node/.style={font=\small},node distance=19mm and 22mm]
+\node[draw,circle] (s) {$s$};
+\node[draw,rectangle,below left=of s] (t1) {$t_1$};
+\node[draw,rectangle,below right=of s] (t2) {$t_2$};
+\draw[-&gt;] (s)-- node[left]{old: $8$} (t1);
+\draw[-&gt;] (s)-- node[right]{old: $8$} (t2);
+\node[draw,circle,right=64mm of s] (q) {$h(s)$};
+\node[draw,rectangle,below left=of q] (u1) {$h(t_1)$};
+\node[draw,rectangle,below right=of q] (u2) {$h(t_2)$};
+\draw[-&gt;,thick] (q)--node[left]{new: $2$}(u1);
+\draw[-&gt;,thick] (q)--node[right]{new: $3$}(u2);
+\draw[dashed,-&gt;] (s) -- node[above]{qualified $h$} (q);
+\end{tikzpicture}
+\caption{Two adversarial continuations must both be represented and accepting. A qualified new action improves the worst-case cost from $8$ to $3$, but does not yet repay the one-time handoff.}\end{figure}
+
+The theorem gives \emph{non-worsening} of the old forced region, not automatic strict improvement. An additional action might be cheaper, but it must be legally enabled. One extra slow adversarial successor could destroy the asserted bound. In particular, one cannot replace (iii) with ``there exists a favorable matching branch.&#x27;&#x27;
+
+\begin{corollary}[Strict forced-settlement improvement with full charges]\label{cor:strict}\hypertarget{claim:strict}{}
+Under Theorem~\ref{thm:lift}, suppose the successor has a newly qualified admissible strategy whose complete per-episode worst-case cost is \emph{upper-certified} by $q$ on each episode in the frozen workload, while the predecessor&#x27;s globally optimal adaptive policy \emph{within its admitted old architecture} has a separately supported lower bound $L&gt;q$ on every episode, uniformly over every permitted preceding history and any cross-episode reuse. If the already enumerated and failed proposals, certified construction, checking, implementation, translation, installation, communication, storage, restarts and maintenance total at most $B$, then, for $N(L-q)&gt;B$, the successor forces settlement in every episode and costs strictly less in total than the old-architecture comparator.\prooflink{strict}
+\end{corollary}
+
+The old baseline is not declared stupid or uninformed. It may choose any permitted adaptive policy using the same original information and proof calculus; only its admitted \emph{unmodified architecture action interface} differs. The extra action is the \emph{subject of the architectural revision}. Comparing against a different competitor allowed to install exactly that same revision changes the optimization question and defeats any claim of strict superiority over the common global optimum.
+
+\begin{proposition}[Imitation obstruction to universal superiority --- synthesis S2]\label{prop:imitate}\hypertarget{claim:imitate}{}
+If a comparator is at least as informed and has all of the successor&#x27;s legal actions, evidence translations, installation options, and proof/reuse rights at no larger complete charge, then its optimal total cost is at most the successor&#x27;s cost. Strict improvement over the globally best comparator in that identical-feasible-class regime cannot be proved.\prooflink{imitate}
+\end{proposition}
+
+\section{A finite successor whose benefit depends on evidence and horizon}
+\begin{example}[Two branches, one qualified compiled action]\label{ex:two}\hypertarget{claim:two}{}
+There is a decidable base calculus and a fixed finite accepted proof $\pi$ of a theorem $\varphi$. Both predecessor and successor machines return the same $\pi$ under the retained checker; their charged, behaviorally inert internal transitions can be set to the stipulated finite values. The predecessor offers an accepting \texttt{fallback} whose two adversarial terminal continuations cost $8$ and $8$. The distinct successor preserves \texttt{fallback}; after receipt-preserving proof translation/authorization it also offers \texttt{compiled}, whose two accepted terminal continuations cost $2$ and $3$. Without a qualifying receipt, the new action is illegal. No subjective-awareness property is assumed.
+
+The complete one-time design, checking, handoff and adoption charge is stipulated at $B=7$. For $N$ independent identical episodes (each resetting to the same initial evidence and machine state, with setup charged once) the exact modeled totals are
+\[
+ C_{P}(N)=8N,\qquad C_Q(N)=7+3N.
+\]
+The strict inequality occurs exactly when $5N&gt;7$, hence for integer $N\geq2$. For one episode: $8&lt;10$; for two: $16&gt;13$. Without the receipt, $V_Q=8$, so the claimed per-episode improvement disappears. This is a mathematical finite-wrapper construction and arithmetic check, \emph{not} a measured FORGE or AMLD run.\prooflink{two}
+\end{example}
+
+\begin{center}\small
+\begin{tabular}{lrrr}\toprule
+Episodes $N$ &amp; Old $8N$ &amp; New $7+3N$ &amp; Old minus new\\\midrule
+1 &amp; 8 &amp; 10 &amp; $-2$\\
+2 &amp; 16 &amp; 13 &amp; $3$\\
+3 &amp; 24 &amp; 16 &amp; $8$\\
+4 &amp; 32 &amp; 19 &amp; $13$\\\bottomrule
+\end{tabular}\end{center}
+
+This construction is useful because it makes four tests falsifiable \emph{within the model}: the checker receipt determines whether the new action is legal, two adversarial continuations define the worst case, the predecessor is permitted adaptive choice among all its original actions, and the one-time expense changes the economic verdict. Numerical values were separately recomputed by a deterministic local script, without asserting external proof-kernel acceptance.
+
+\section{A successor must inherit a discoverer&#x27;s working methods}\label{sec:capacity-handoff}
+The predecessor--successor transition now has an additional obligation. Preserving the truth of a ledger entry is not the same as preserving a \emph{method for obtaining new entries}. Conversely a successor can retain all old methods and still have no newly useful method. Theorem~\ref{thm:lift} transports forced-settlement strategies using authorized evidence and full adversarial branch coverage. We apply the same discipline to the \emph{generation process} itself, without claiming that old evidence supplies a free new algorithm.
+
+\begin{definition}[Method-preserving discoverer handoff]\label{def:methodhand}
+Let $h:D\rightsquigarrow Q$ be a qualified successor handoff under a frozen $\K$. Beyond receipt-preserving theorem transport, suppose there is a computable translation of each admissible installed search rule and each finite candidate-generation instruction, with separately checked code correspondence and permitted read/write access, such that: (i) every previously accepted proof remains checkable with identical scope; (ii) every translated old candidate-generation trace terminates and generates a semantically corresponding candidate; (iii) the successor has no additional uncontrolled failure branch for these translated actions; and (iv) all search, translation, verification, and handoff costs have stated bounds. Call this a \emph{method-preserving} handoff. It is stronger than a byte copy or a ledger-only transfer.
+\end{definition}
+
+\begin{proposition}[Conservative inheritance of discovery access --- synthesis C]\label{prop:methodhand}\hypertarget{claim:methodhand}{}
+Under Definition~\ref{def:methodhand}, each old finite accepted discovery trace has a corresponding authorized successor trace, and each old finitely generated accepted architecture proposal remains generable after handoff. If the translation preserves search-action counts without increase, the old $\mathrm{Reach}$ set embeds in the successor&#x27;s $\mathrm{Reach}$ set for the translated task family and the same action budget. Neither strict enlargement nor a saving in complete charged cost follows without additional witnesses.\prooflink{methodhand}
+\end{proposition}
+
+The proposition is a statement about \emph{preserving the capacity to search}, not only the consequences of a calculus. In the macro ladder of Section~\ref{sec:ladder}, copying the accepted $R_j$ certificates without copying the program that composes them would preserve some theorems but not the specified ability to generate $R_{j+1}$. Conversely copying an untrusted generator without retaining a qualified checker would preserve a process but not justified discovery. A continuing machine may install $R_{j+1}$ locally; a distinct successor may receive it through a checked handoff. Only the latter requires a new identity/provenance continuity argument.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,node distance=14mm and 18mm,every node/.style={font=\small,align=center}]
+\node[draw,minimum width=3.2cm] (lp) {Predecessor ledger $L_P$\\accepted proof receipts};
+\node[draw,below=of lp,minimum width=3.2cm] (gp) {Predecessor generator $G_P$\\candidate-generation traces};
+\node[draw,right=of lp,minimum width=3.2cm] (lq) {Successor ledger $L_Q$\\translated, rechecked receipts};
+\node[draw,right=of gp,minimum width=3.2cm] (gq) {Successor generator $G_Q$\\translated executable method};
+\draw[-&gt;] (lp)--node[above]{evidence translation}(lq);
+\draw[-&gt;] (gp)--node[below]{method simulation}(gq);
+\draw[-&gt;] (lp)--(gp);\draw[-&gt;] (lq)--(gq);
+\end{tikzpicture}
+\caption{Two independent transport duties: accepted results and the reproducible procedures that produce further results. Neither arrow grants a new checker authority.}
+\end{figure}
+
+
+\section{The geometry of leaving a local trap}
+Suppose a revision policy examines only single-token modifications. It may stop at a locally fixed architecture even when a bundle of two or three changes lowers cost. The source construction with recurring costs $10,11,11,4$ for $\varnothing,\{u\},\{v\},\{u,v\}$ is a concrete obstruction \src{4,6,7,8}. Local cost stationarity does not entail global optimality; a certificate for the joint interaction and an admissible bundle action are independent matters.
+
+The geometry article \src{9} provides a positive structural class. Given revision tokens $U$, costs $a_i\geq0$, an explicitly listed interaction family $\mathcal H$ with favorable rewards $b_H\geq0$, and only explicit prerequisite implications, let
+\[
+ C(S)=C_0+\sum_{i\in S}a_i-\sum_{\substack{H\in\mathcal H\\H\subseteq S}}b_H.
+\]
+The permitted bundle family must be \emph{exactly} the subsets closed under the listed prerequisite implications; if there are other feasibility restrictions, the reduction need not apply. Every such closed bundle must preserve the target and forcing specification, and the cost formula must represent \emph{all} bundle-dependent charges within the stipulated model. Within that restricted class a maximum-weight closure/min-cut finds an optimum without evaluating every subset.
+
+\begin{theorem}[Positive-interaction closure reduction, inherited]\label{thm:closure}\hypertarget{claim:closure}{}
+For an explicitly encoded finite cost schema of the preceding form, where the feasible bundles are \emph{exactly} the prerequisite-closed subsets, every such bundle is certified admissible, all listed rewards are nonnegative, and the objective accounts for the specified complete costs, a maximum-weight closure network yields an exact minimum-cost bundle in time polynomial in the \emph{listed} input size. This does not prove an efficient optimizer for black-box, signed-interaction, or unverified architecture changes. \src{9, Thm. 5.2 and Cor. 5.3}\prooflink{closure}
+\end{theorem}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,node distance=17mm and 18mm,every node/.style={font=\small}]
+\node[draw,circle] (s) {$s$};
+\node[draw,rectangle,right=of s,align=center] (r) {interaction\\reward $+b_{uv}$};
+\node[draw,rectangle,align=center,above right=of r] (u) {revision $u$\\weight $-a_u$};
+\node[draw,rectangle,align=center,below right=of r] (v) {revision $v$\\weight $-a_v$};
+\node[draw,circle,right=27mm of $(u)!0.5!(v)$] (t) {$t$};
+\draw[-&gt;] (s)--node[above]{$b_{uv}$}(r);
+\draw[-&gt;] (r)--node[above]{prereq.}(u);
+\draw[-&gt;] (r)--node[below]{prereq.}(v);
+\draw[-&gt;] (u)--node[above]{$a_u$}(t);
+\draw[-&gt;] (v)--node[below]{$a_v$}(t);
+\end{tikzpicture}
+\caption{Schematic maximum-closure network: collecting a reward requires selecting all named prerequisite revisions. Exact capacities and full charge semantics remain contractual obligations.}\end{figure}
+
+The reduction cannot decide whether an unobserved interaction exists; when costs are arbitrary black-box functions, exponentially many queries can be necessary to rule out a single unqueried improving subset \src{9}. A visually elegant graph does not certify a missing hypothesis.
+
+\section{Repeated self-improvement: a bound and an escape from the bound}\label{sec:iteration}
+Return to the Picard-style transition $D_{j+1}=\F_{\K}(D_j)$, but resist the temptation to call each edge economically beneficial by definition. In the ladder the candidate generator can always propose one additional macro with adequate finite resources, but the economically gated updater installs it only if the frozen contract authorizes adoption. The \emph{unconditionally funded-and-authorized} formal architecture sequence strictly grows; the cost-gated installed sequence can stop. For stage-dependent tasks, the entire indexed workload schedule is declared in advance in the frozen contract; the target is not silently changed mid-run. We can prove three distinct facts: iteration is effective, strict discovery reach increases along a changing family of tasks, and a fixed finite task horizon does \emph{not} support endless cost-improving installations.
+
+\begin{theorem}[Iterated self-generation and the finite-horizon barrier --- synthesis D]\label{thm:iteration}\hypertarget{claim:iteration}{}
+In the ladder of Definitions~\ref{def:ladder}--\ref{def:ledgercost}:
+\begin{enumerate}[label=(\roman*),leftmargin=2em]
+\item Every $D_j$ can generate and certify $D_{j+1}$ under the fixed \emph{schematic} contract, provided finite resources for the next admission are available; all old rules and their theorem-consequence semantics are retained. There is no finite \emph{architectural} fixed point of the formal generator-and-install transition \emph{provided each next installation remains funded and authorized}; an economically gated implementation may instead be stationary.
+\item If every stage has exactly $N&lt;\infty$ identical fresh tasks of the relevant type and authorization requires strict \emph{incremental} cost benefit, only finitely many stages can be authorized, because $N&gt;B_j$ eventually fails.
+\item Conversely, a single predeclared effective workload schedule $N_j=2^{j+1}+5$, paired with sufficient unbounded cumulative resources, makes every stage&#x27;s \emph{incremental} update strictly beneficial by exactly one cost unit relative to retaining $D_j$ for that stage. This does not assert a globally optimal infinite policy or a finite bound on cumulative expense.
+\end{enumerate}
+\prooflink{iteration}
+\end{theorem}
+
+The distinction between (i) and (ii) is central. A prover may be able to keep discovering legitimate architecture changes yet rationally stop installing them under a finite economic horizon. A policy that refuses a nonprofitable revision can be stationary while an available valid candidate remains on the Board. A policy that tries only one change at a time may also be blocked by a jointly beneficial bundle (Section~\ref{sec:basin-link}); even a strict monotonic fall in a separately chosen metric does not ensure a finite fixed point on an infinite state space.
+
+\begin{counterexample}[Self-generated capacity gain without economic superiority]\label{cex:costgap}\hypertarget{claim:costgap}{}
+At $j=0$ and $N=1$, the self-discovered macro makes the online task horizon fall from $2$ to $1$ but total costs change from $2$ to $7$. Thus strict action-horizon improvement, checker-accepted correctness, and autonomous candidate production do not jointly entail strict economic advantage. If both contenders may install the same $R_1$ at equal charge, the new system cannot strictly dominate the optimum over their common feasible class.\prooflink{costgap}
+\end{counterexample}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,every node/.style={font=\small,align=center},node distance=8mm and 10mm]
+\node[draw,minimum width=3cm] (a) {Valid generated revision\\certificate accepted};
+\node[draw,right=of a,minimum width=3cm] (b) {Online discovery horizon\\strictly improves};
+\node[draw,below=11mm of b,minimum width=3cm] (c) {Full-cost inequality\\$N&gt;2^{j+1}+4$?};
+\node[draw,left=of c,minimum width=3cm] (d) {Authorized adoption\\or justified deferral};
+\draw[-&gt;] (a)--(b);\draw[-&gt;] (b)--(c);\draw[-&gt;] (c)--(d);\draw[dashed,-&gt;] (d.west) to[bend right=45] node[left]{new epoch} (a.south);
+\end{tikzpicture}
+\caption{Proof of a useful search improvement and a decision to pay for it are distinct gates. A stationary updater may be rational for a short workload without having exhausted mathematically possible revisions.}
+\end{figure}
+
+\subsection{Coordinated search rather than local greed}\label{sec:basin-link}
+The source minimum-cut theorem (Theorem~\ref{thm:closure}) can become a self-proposal mechanism, not just an offline existence result. Suppose the discoverer&#x27;s generator is equipped with a frozen finite certificate-supported dependency/reward hypergraph for admissible changes to $S$, and the contract proves the listed cost expression complete on all feasible bundles. Running a maximum-weight-closure algorithm on that actual representation, recording its min-cut witness and checking the proposed bundle against the unchanged verifier, constructs a candidate revision \emph{inside the discoverer}. When the optimum is strictly cheaper than the current policy and every charge is included, this is an effective certified local-basin escape. The positive statement is conditional on certified interaction structure; the generator cannot infer missing rewards from a diagram, and arbitrary black-box interactions remain outside this efficient method \src{9,12}.
+
+\begin{proposition}[A conditional self-discovered basin escape --- synthesis E]\label{prop:selfescape}\hypertarget{claim:selfescape}{}
+Let a finite, explicit positive-interaction closure instance satisfy all admissibility, independent checking, and complete-cost hypotheses of Theorem~\ref{thm:closure}. Suppose a discoverer $D$ actually implements the exact closure solver as part of $G$, and its permitted install gate can enact a solution bundle. If the computed minimum-cost bundle $S^*$ strictly improves the frozen full-cost objective over its current policy, then $D$ effectively generates a certificate-supported beneficial revision even when all single-token neighbors are non-improving. The conclusion does not hold for incomplete or unverified interaction data.\prooflink{selfescape}
+\end{proposition}
+
+\begin{example}[A self-selected two-token escape under a certified table]\label{ex:twotoken}\hypertarget{claim:twotoken}{}
+Let the only revision tokens be $u$ and $v$, with no additional prerequisites. Suppose a frozen checker accepts the complete four-bundle cost/admissibility table
+\[
+\begin{array}{c|rrrr}
+S &amp;\varnothing&amp;\{u\}&amp;\{v\}&amp;\{u,v\}\\\hline
+C(S)&amp;10&amp;11&amp;11&amp;4
+\end{array}
+\]
+and the accounted charges include the stipulated discovery, checker, and adoption costs appropriate to each alternative. The generator $G$ receives the certified coefficients $C_0=10$, $a_u=a_v=1$, and $b_{\{u,v\}}=8$, and \emph{it}, not an external choice of the bundle, executes the finite maximum-closure procedure. It returns $\{u,v\}$ with a checkable four-case optimality certificate. The one-change local search halts at $\varnothing$, whereas the joint proposal has net saving $10-4=6$ under this frozen table. The example \emph{does not} show the machine independently discovered the reward coefficient or that the table describes real ATP implementation costs.\prooflink{twotoken}
+\end{example}
+
+\subsection*{Why neither self-reference nor the word ``fixed point&#x27;&#x27; solves the problem}
+A finite additive updater halts by exhaustion of its canonical token universe, but an optimizer may still be trapped by evidence, time, local moves, or budget. An infinite ladder has no terminal architecture even when all statements of its type are theorems of the unchanged calculus. Kleene-style program self-reference can make a program refer to its own description, but cannot by itself establish that a self-rewrite is sound or beneficial. The older self-rewriting \emph{G\&quot;odel machine} framework also makes proof-gated self-modification a prior research topic; the construction here is a deliberately restricted, cost-accounted ATP/search example, not a claim to have invented formal self-improvement \src{13--15}. The precise open question is whether richer discoverers can autonomously find certified improvements in genuinely new discovery strategies without having a narrowly preprogrammed self-composition family.
+
+\section{Dynamics: a fixed point is not a completed theory}
+The finite-cache theorem requires a stationary additive updater on a finite universe of \emph{canonical} revision tokens. If every strict epoch installs at least one new token and none is removed, at most $|U|-|D_0|$ strict epochs are possible \src{2,4}. Natural-ranked decreases can also force termination, even over an infinite space. Neither result automatically applies when hidden budgets, schedulers, checker versions, provenance histories or restarts keep changing after the architectural token set stops.
+
+\begin{theorem}[Finite additive stabilization, inherited]\label{thm:stabilize}\hypertarget{claim:stabilize}{}
+For finite $U$, $D_0\subseteq U$, and a fixed deterministic update map $D_{n+1}=D_n\cup B(D_n)$ with $B(D_n)\subseteq U$, no nontrivial architectural cycle occurs and after at most $|U|-|D_0|$ strict additions the canonical architecture stabilizes. \src{2, Thm. 5.9; 4, Thm. 9.1}\prooflink{stabilize}
+\end{theorem}
+
+\begin{counterexample}[Different fixed points and limits]\label{cex:fixed}\hypertarget{claim:fixed}{}
+A locally greedy updater at the $10,11,11,4$ architecture table has $\varnothing$ as a fixed point despite a strictly cheaper joint revision. A two-state equal-cost toggle satisfies cost nonincrease but cycles. A countably infinite architecture sequence with strictly decreasing costs $1+1/(n+1)$ (starting at $n=1$) has a positive limit but no finite architectural stabilization. A budget-exhausted process may stop without even testing an available improvement.\prooflink{fixed}
+\end{counterexample}
+
+Finite completion of the \emph{theory&#x27;s question table} is yet another property. The completion paper \src{11} proves that a fully specified finite ranked model, complete set of observable questions, decidable checks and effective transitions can be analyzed layer by layer until every declared answer is filled. That table&#x27;s fixed point can describe a revision operator that cycles if the analyzed model permits it; conversely, a stationary actual machine need not have a complete theory.
+
+\begin{theorem}[Finite ranked answer completion, inherited]\label{thm:completion}\hypertarget{claim:completion}{}
+For a finite effective transition game of strictly decreasing finite rank, a finite declared family of well-typed terminal, reachability, forcing, cost and observation questions has an effective complete answer table. Rank-layered backward analysis stabilizes after finitely many layers, with no claim of completeness beyond this frozen model. \src{11, Thm. 4.2; 12, Thm. 5.2}\prooflink{completion}
+\end{theorem}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[&gt;=Latex,node distance=13mm,every node/.style={font=\small},every rectangle/.style={draw}]
+\node[draw,minimum width=3cm] (r0) {Rank 0: accepted targets};
+\node[draw,right=of r0,minimum width=3cm] (r1) {Rank 1: action outcomes};
+\node[draw,right=of r1,minimum width=3cm] (r2) {Rank 2: forced bounds};
+\draw[-&gt;] (r0)--(r1);\draw[-&gt;] (r1)--(r2);
+\node[below=8mm of r1,align=center] {Every layer depends only on lower-rank answers.\\This yields completion of a declared finite question family.};
+\end{tikzpicture}
+\caption{Completion proceeds by finite dependency rank, not by a machine&#x27;s subjective or universal realization that nothing remains to know.}\end{figure}
+
+\section{Where infinity breaks, and what remains undecided}
+In a complete finite adversarial game, a proof that the initial state lies outside the backward winning set certifies $V_G(x)=+\infty$ \emph{for that game and that forced-settlement objective}. That is a legitimate model-relative impossibility certificate. It does not follow from a search process timing out, from a large average cost, or from finding a very expensive finite path.
+
+\begin{definition}[Distinct kinds of unresolved or unbounded behavior]\label{def:infinity}
+For a frozen task distinguish: (i) \emph{genuine model-relative infinity}, with a verified adequate no-win/loss-region witness; (ii) an \emph{unbounded finite family}, where every indexed task has finite cost but no uniform bound; (iii) a \emph{failed or exhausted search}, lacking a decisive certificate and therefore yielding `U&#x27;; (iv) a \emph{contract-incompatible infinity} or ill-defined objective, where a cost or terminal interpretation contradicts the declared types/units and requires model repair; (v) explicitly contradictory proposed conclusions, to be checked in their own theories; and (vi) an internal \emph{model breakdown}, where an essential contract, checker, branch, or interpretation obligation fails. None may be silently substituted for another.
+\end{definition}
+
+\begin{proposition}[Unrestricted discovery is not decidable, inherited]\label{prop:undecidable}\hypertarget{claim:undecidable}{}
+There is no total effective procedure that, from an arbitrary program $M$, always determines whether a constructed candidate $Q_M$ will eventually output a correct certificate for a fixed trivially true target. Such a procedure would decide whether $M$ halts. \src{7, Prop. 5.3}\prooflink{undecidable}
+\end{proposition}
+
+The negative theorem is compatible with useful finite answers. The question whether a certified architecture can discover all future improvements is not answered by an enumerator that finds a particular existing certificate. Neither a no-win result inside a finite adequate game nor an unresolved theorem-proving attempt proves model breakdown. Independence would require two-sided nonderivability evidence in the named theory, and consistency claims require proof about the original premises, not a contradiction created by assuming the target&#x27;s negation.
+
+\section{Frozen research targets: inherited theory and self-improving discovery}
+\small
+\begin{longtable}{p{.08\textwidth}p{.38\textwidth}p{.42\textwidth}}
+\toprule Target &amp; Strongest restricted paper-level result &amp; What remains outside it \\\midrule\endhead
+T1 &amp; Conservative rule expansion; separately stated safety and sound evidence transport. &amp; Executable verified implementations; changed-checker authority and exhaustive branch correspondence.\\
+T2 &amp; Fair search locates an existing finite accepted witness under a decidable gate. &amp; A general decision procedure or guarantee that an improving witness exists.\\
+T3 &amp; Bounded per-task benefit and an all-in break-even test on a frozen workload. &amp; Real measured improvement and strict superiority over every equally empowered adaptive rival.\\
+T4 &amp; Evidence-gated alternating strategy transport (synthesis S1), conditional on all quantified branches. &amp; Unrestricted simulation fidelity, hidden-information cases, and actually checked handoff receipts.\\
+T5 &amp; Finite canonical stabilization, rank descent, and restricted positive-interaction basin optimization. &amp; Universal convergence, unbounded-space optimization and equivalence of fixed point and optimum.\\
+T6 &amp; Completion for declared finite ranked question tables; halting-based global limit. &amp; Decision of arbitrary successor discovery, general machine equivalence and all meanings of infinity.\\\bottomrule
+\end{longtable}
+\normalsize
+
+\noindent\textbf{Added discoverer targets.} These assessments are conditional paper-level arguments, \emph{not} independently executed formal checks.
+\begin{center}\small
+\begin{tabular}{p{.07\textwidth}p{.36\textwidth}p{.43\textwidth}}
+\toprule Goal &amp; Restricted mathematical result &amp; Outside the established scope \\ \midrule
+A &amp; Theorem~\ref{thm:ladder}: internal generation of a proof-search change, with modeled economy only above the stated threshold. &amp; Arbitrary new heuristics, autonomous open-problem discovery, deployed ATP revisions. \\
+B &amp; Exact larger one-step proof reach, Theorem~\ref{thm:ladder}; conditional all-in economy, Theorem~\ref{thm:laddercost}. &amp; A universal improvement metric or advantage against a comparator allowed identical upgrades. \\
+C &amp; Theorem~\ref{thm:iteration}: unbounded constructive iteration, bounded profitable stages for fixed $N$, and a separately stated growing-workload schedule. &amp; Finite-budget infinite improvement, global convergence/optimality, any measured performance. \\
+D &amp; Proposition~\ref{prop:selfescape}: an internal certified min-cut generator discovers escape in a restricted represented family. &amp; Arbitrary interactions, implicit unverified reward structures, guaranteed escape from every local basin. \\
+E &amp; Inherited finite additive/finite answer-completion theorems plus the distinction between architecture fixed point and economic stopping. &amp; General convergence, exhaustive global optimality, completion of unrestricted mathematical discovery. \\ \bottomrule
+\end{tabular}
+\end{center}
+
+The bootstrap&#x27;s six disposition codes are \textsf{P,R,D,I,C,U}, with exact certificate requirements. At a \emph{paper argument} level these six targets contain defensible restricted positive propositions and negative counterexamples; at the stricter independent gate level there is no accepted verifier receipt in this investigation, so none is promoted to $\Bank$. The unrestricted overarching self-improvement conjecture remains \textsf{U}. This is not an assertion that it is false, independent, inconsistent or hopeless. It is the accurate stopping point for the frozen evidence available here.
+
+\section{Conclusion: from preserving knowledge to justifying a choice}
+The strengthened central insight is constructive but bounded: a discoverer can use its own finite proof trace to generate a new proof-search rule, check it, install it, and then generate a further revision. The resulting theorem is about the search procedure rather than a successor merely copying knowledge. It proves improved certified reach on a declared task family, not unrestricted creative intelligence or an economically optimal universal prover. With the original source results, the distinction between faster local proof search and justified fully accounted adoption is essential.
+
+The strongest inherited insight is not that proof-preserving machines must get faster. It is that a revision can be organized as a typed sequence of \emph{witness-bearing obligations}: a formal theorem persists, a scoped receipt becomes accessible to a different subject, an installed program implements a safe adversarial action interface, and a complete cost certificate determines whether using that interface pays. When these obligations align, a restricted one-sided alternating refinement allows a successor to inherit a winning strategy and not increase worst-case cost. Strict economic improvement then depends on a separate new-action bound, the entire one-time bill, workload horizon, and precise competitor permissions.
+
+The corrected scope of the claims is now explicit: the exact cost threshold is for a frozen abstract accounting model; the adversarial strategy lift requires a computable old-state decoder; and the closure optimizer requires exactly implication-closed feasible bundles. The failures of broad extrapolation remain productive mathematical boundaries. A single lucky branch does not force settlement. A fixed point need not be best. A cheap proof horizon is not automatically a cheap implementation. A checker is not independent because its name says so. A universally competent adaptive comparator cannot be strictly beaten by a design it can copy at the same cost. And finite completion stops at its frozen question table. These boundaries make a proof-based theory of genuine successor improvement possible without prematurely declaring it realized.
+
+\appendix
+\section*{PROOFS}
+\addcontentsline{toc}{section}{PROOFS}
+\noindent The proofs here are paper-level derivations. The backlink from each proof goes to its corresponding numbered result; the result links forward to this appendix. External formal proof-kernel verification has not occurred.
+
+\subsection*{New discoverer constructions and their proofs}
+\paragraph{Proof of Theorem~\ref{thm:ladder}.}\hypertarget{proof:ladder}{}\backlink{ladder}
+Induct on $j$. The primitive rule $R_0$ has a length-one expansion. If the currently installed $R_j$ expands to $2^j$ applications of $R_0$, composing two instances with the output of the first as the premise of the second produces precisely the schema $P(t)\vdash P(f^{2^{j+1}}(t))$. The internal generator computes this syntax from the current rule and its retained proof record. The unchanged verifier checks each expansion in finitely many steps and records the new macro without introducing an axiom; conservative theoremhood follows from the original rule-expansion argument (Theorem~\ref{thm:conservative}). Installation is the stipulated effective insertion into the search-action table. The old interface contains only actions increasing the exponent of $f$ by one of $1,2,\ldots,2^j$ in powers of two. A single old action therefore cannot reach exponent $2^{j+1}$, whereas two $R_j$ applications do. A single new $R_{j+1}$ application reaches that exponent. Fresh constants prevent an already cached, completed task-specific proof from being mistaken for new search. These are exact search-action minima under the stated interface. Each finite candidate is generated at runtime, not imported from outside. $\square$
+
+\paragraph{Proof of Theorem~\ref{thm:laddercost}.}\hypertarget{proof:laddercost}{}\backlink{laddercost}
+In the old architecture every instance needs exactly two optimal installed actions by Theorem~\ref{thm:ladder}. The upgraded architecture needs one. The stipulated construction ledger charges $2$ for constructing the two-rule candidate trace, $2^{j+1}$ for the full primitive expansion check, and $1$ each for installation and provenance storage; hence $B_j=2^{j+1}+4$. For $N$ distinct instances there is no shared task-specific completed proof, though the accepted \emph{rule schema} is reusable by both policies according to their respective installed tables. Therefore the complete incremental totals are $2N$ and $B_j+N$ and their difference is $N-B_j$. Strict positivity is equivalent to the displayed threshold. If the comparator may perform exactly the same upgrade, that upgrade belongs to its feasible class and its optimum is no larger than this candidate&#x27;s cost, as in Proposition~\ref{prop:imitate}. $\square$
+
+\begin{center}
+\begin{tikzpicture}[&gt;=Latex, node distance=8mm, every node/.style={font=\footnotesize,align=center}]
+\node[draw,minimum width=2.55cm] (a) {Old installed actions\\$R_0,\ldots,R_j$};
+\node[draw,right=of a,minimum width=2.55cm] (b) {Internal generation\\$R_j\circ R_j$};
+\node[draw,right=of b,minimum width=2.55cm] (c) {Checked new action\\$R_{j+1}$};
+\draw[-&gt;] (a)--(b);\draw[-&gt;] (b)--(c);
+\end{tikzpicture}
+\end{center}
+\noindent\emph{Proof schematic:} verification of a new action and its installation are separate from any subsequent cost comparison.
+
+\paragraph{Proof of Proposition~\ref{prop:methodhand}.}\hypertarget{proof:methodhand}{}\backlink{methodhand}
+Induct over the length of a finite predecessor discovery trace. The base state has translated qualified receipts by the handoff hypothesis. A prior accepted step is translated by the declared executable simulation and checker-correspondence witness; the no-extra-failure-branch assumption guarantees that the translated computation produces its corresponding result. At a candidate-generation step, the translated generator consumes the translated prior state and emits the matched candidate. At a checker-accepted step the new verifier&#x27;s certified correspondence makes the proof scope and acceptance legitimate. This reconstructs the entire finite trace and establishes the proposal and reachable-task inclusion. A strict inclusion needs a new accepted trace not in the old image, and a full-cost inequality needs the missing translation and installation charges; neither is in the premises. $\square$
+
+\paragraph{Proof of Theorem~\ref{thm:iteration}.}\hypertarget{proof:iteration}{}\backlink{iteration}
+Part (i) follows by induction from the construction of Theorem~\ref{thm:ladder}: after stage $j$, a finite accepted $R_j$ exists, its internal composition generator terminates, and the next macro $R_{j+1}$ is a different schematic jump because $2^{j+1}&gt;2^j$. Old rules remain installed. Thus no finite installed-table configuration equals its authorized next configuration in the unbounded rule universe. The proof does not provide an infinite amount of finite-time or monetary resources. For (ii), strict incremental benefit is, by Theorem~\ref{thm:laddercost}, equivalent to $N&gt;2^{j+1}+4$. For any fixed finite $N$, the right-hand side exceeds $N$ for sufficiently large $j$. Hence only finitely many upgrade stages can satisfy the economic gate. For (iii), the effective, predeclared sequence $N_j=2^{j+1}+5$ satisfies $N_j-B_j=1$ at every stage. Conditional on having the resources to pay the growing $B_j$ and execute the prescribed workloads, each individual incremental stage is favorable by exactly one cost unit. These are stagewise comparisons against each current unmodified architecture, not a claim of universal global optimality or finite total expenditure. $\square$
+
+\paragraph{Proof of Counterexample~\ref{cex:costgap}.}\hypertarget{proof:costgap}{}\backlink{costgap}
+At $j=0$, $B_0=2+4=6$. With one fresh task the old horizon is two and the new horizon one, yet the complete charged totals are $2$ and $6+1=7$. The upgraded machine therefore has a strictly better one-action reachable set but is worse under the finite-workload objective. The comparator claim is the feasible-set argument of Proposition~\ref{prop:imitate}. $\square$
+
+\paragraph{Proof of Proposition~\ref{prop:selfescape}.}\hypertarget{proof:selfescape}{}\backlink{selfescape}
+The admitted finite hypergraph and complete cost certificate place the instance within the hypothesis of Theorem~\ref{thm:closure}. Its exact closure-to-min-cut reduction computes a minimum-cost legal bundle $S^*$ and supplies a finite dual flow/cut optimality witness that can be inspected by the stipulated checker. By assumption the code performing this computation belongs to the discoverer&#x27;s own generator, so the concrete bundle is not supplied by an external designer. The gate checks each changed search action and the complete charge before authorization. If the computed objective is strictly below the baseline, this is a self-generated beneficial revision even if all single-token moves are non-improving. The argument assumes solver, verification and installation expenses are already represented in the frozen objective; without that assumption, the benefit comparison must be revised. The argument makes no inference about unencoded interaction terms or unverified certificates. $\square$
+
+
+\subsection*{Preserved successor and source-theory proofs}
+\hypertarget{proof:transport}{}\subsection*{Proof of Proposition \ref{prop:transport}}\backlink{transport}
+Take any retained record $r$ that the predecessor&#x27;s scoped, sound verifier accepts for $\varphi$. Definition~\ref{def:record} supplies $h_*r$ accessible to the successor with checker and semantics agreement, so soundness of the successor checker yields the same scoped mathematical claim. Repeating for every declared ledger record establishes transport. The definitions and proof make no equation between the source and successor identity tokens; indeed they may be distinct. $\square$
+
+\hypertarget{proof:scope}{}\subsection*{Proof of Counterexample \ref{cex:scope}}\backlink{scope}
+In a sound propositional calculus, $\{p\}\vdash p$ by premise use. In the empty propositional theory, $p$ is not a theorem: the valuation $p=\mathrm{false}$ satisfies the empty assumptions but not $p$. Copying a one-line proof string fails to preserve its original premise scope. $\square$
+
+\hypertarget{proof:conservative}{}\subsection*{Proof of Theorem \ref{thm:conservative}}\backlink{conservative}
+The reverse implication is immediate because the old rules remain available. For the forward implication, inspect a finite $F&#x27;$ proof. Replace each invocation of an added derived rule by its certified finite $F$-derivation from the already proved premises. Because the proof has finitely many lines and every macro expansion is finite, this substitution terminates with an $F$ proof. No inference about time or hardware cost is used. $\square$
+
+\hypertarget{proof:safety}{}\subsection*{Proof of Proposition \ref{prop:safety}}\backlink{safety}
+A transition system may output only checked theorems and yet have a permitted nonterminal self-loop, so an adversary can continue forever; the permitted output remains sound. Separately, let a derived macro save two logical transitions but incur four additional charged lookup or validation transitions each invocation; the consequent logical horizon is reduced but total expenditure increases. Neither construction violates the premise about proof soundness. $\square$
+
+\hypertarget{proof:enumerate}{}\subsection*{Proof of Theorem \ref{thm:enumerate}}\backlink{enumerate}
+Let $(e_j,w_j)$ be a pair accepted by the gate. Its finite encoding occurs at a definite position in a fair effective enumeration. The total checker terminates on every earlier candidate and this one, hence after finitely many checks the search reaches it and accepts. If no accepted pair exists, the same algorithm may enumerate forever; termination on failure is not derived. $\square$
+
+\hypertarget{proof:break}{}\subsection*{Proof of Theorem \ref{thm:break}}\backlink{break}
+Under the frozen objective, the old total cost is at least $\sum_i\ell_i$ and the new total at most $B+\sum_iq_i$. Their difference is at least $\sum_i(\ell_i-q_i)-B$. Positivity gives strict advantage. These inequalities require separately valid, history-uniform input bounds and a consistent unit of accounting; they are not made true by the algebra. If a shared cache changes subsequent episode costs, those changes belong in the per-history bounds, not in an uncharged assumption. $\square$
+
+\hypertarget{proof:loop}{}\subsection*{Proof of Counterexample \ref{cex:loop}}\backlink{loop}
+Choose the accepting successor once to witness a successful path. The adversary may instead select the self-loop on every round; that infinite legal run never visits the target. Any proposed nonnegative rank decreasing on the self-loop would require $\rho(s)&lt;\rho(s)$, a contradiction. $\square$
+
+\hypertarget{proof:lift}{}\subsection*{Proof of Theorem \ref{thm:lift}}\backlink{lift}
+For an old winning $x$ choose a finite-rank optimal forcing strategy $\pi_P$ (existence holds in the stated finite ranked game). At each decoded successor state $h(x&#x27;)$, play the authorized action $\widehat{\pi_P(x&#x27;)}$ provided by the lift. Let the adversary choose \emph{any} $z\in\Out_Q(h(x&#x27;),\widehat a)$. Definition~\ref{def:lift}(iii) finds $y\in\Out_P(x&#x27;,a)$ with $z=h(y)$ and new charged edge cost at most the old matched edge cost. Since $\rho(y)&lt;\rho(x&#x27;)$, the old rank strictly decreases along every lifted successor continuation. After finitely many rounds it reaches an old accepting terminal, mapped to an accepting successor terminal by (i). Thus the lifted policy forces settlement.
+
+For its cost, induct on the old rank. At rank zero the terminal suffix costs are zero. At positive rank, for every new adversarial $z=h(y)$ matched under (iii), the induction hypothesis gives the new lifted-policy suffix from $z$ no larger than the old policy suffix from $y$. Adding the edge dominance and taking the maximum over new successors yields a bound no larger than the maximum over old successors; at the root it is at most the old optimal $V_{G_P}(x)$. The successor&#x27;s optimal value is bounded above by its lifted-policy cost. The explicitly computable left inverse $d$ ensures that the successor applies $\pi_P(d(z))$ consistently at each image state $z$. Without this or a separately established policy-compatible quotient, two distinct predecessor states with identical successor images could request inconsistent actions, invalidating the construction. Proof authorization follows from (i), (ii), (iv), and the sound handoff premises. $\square$
+
+\hypertarget{proof:strict}{}\subsection*{Proof of Corollary \ref{cor:strict}}\backlink{strict}
+The branchwise successor certificate supplies the forced-policy upper bound $Nq$; its cost is at most $B+Nq$ including the enumerated once-only expenses. The old-architecture optimal adaptive policy costs at least $NL$ on the stated workload. The hypothesis $N(L-q)&gt;B$ is equivalent to $B+Nq&lt;NL$. Neither this comparison nor the inherited strategy proves a bound for an upgraded comparator outside the old architecture class. $\square$
+
+\begin{center}
+\begin{tikzpicture}[&gt;=Latex,node distance=8mm and 11mm,every node/.style={font=\footnotesize,align=center}]
+\node[draw,minimum width=2.3cm] (p) {Old policy state $x$\\optimal action $a$};
+\node[draw,right=of p,minimum width=2.6cm] (q) {Observable $h(x)$\\lifted action $\widehat a$};
+\node[draw,right=of q,minimum width=2.65cm] (z) {Every new branch $z$\\old witness $d(z)$};
+\draw[-&gt;] (p)--(q);\draw[-&gt;] (q)--(z);
+\end{tikzpicture}
+\end{center}
+\noindent\emph{Proof schematic:} the new action must cover every adversarial outcome, and the decoder must define one executable successor policy.
+
+\hypertarget{proof:imitate}{}\subsection*{Proof of Proposition \ref{prop:imitate}}\backlink{imitate}
+Under the stated permissions the comparator can reproduce the proposed successor&#x27;s exact revision, certificates, policy and costs. Thus the successor implementation is a feasible comparator choice (or is dominated by one). The infimum over the comparator&#x27;s feasible policies is at most the cost of that particular choice. Strictly smaller successor cost than the comparator infimum would contradict this order. $\square$
+
+\hypertarget{proof:two}{}\subsection*{Proof of Example \ref{ex:two}}\backlink{two}
+The old controller has only fallback and so $V_P=\max(8,8)=8$. In the receipt-qualified successor, the legal compiled action has worst branch $\max(2,3)=3$, hence $V_Q=\min(8,3)=3$. When the receipt is absent, compiled is not a legal action and $V_Q=8$. The one-time charge is $7$, so the two $N$-episode expressions are $8N$ and $7+3N$. Strict benefit requires $8N&gt;7+3N$, equivalently $N&gt;7/5$, hence integers $N\geq2$. To realize the abstract edge counts computationally, begin with a fixed accepted finite proof and add specified finite inert charged operations to each branch, retaining the same accepted output. The wrapper model does not certify any external executable. $\square$
+
+\hypertarget{proof:closure}{}\subsection*{Proof of Theorem \ref{thm:closure}}\backlink{closure}
+Give each revision $i$ a node of weight $-a_i$ and each explicitly listed favorable interaction $H$ a reward node of weight $b_H$. Add directed prerequisite arcs from reward node $H$ to every revision in $H$, and from revision $i$ to every prerequisite revision $j$ of $i$. Any closed set corresponds to a legal prerequisite-closed revision set together with reward nodes whose members are selected. As every reward is nonnegative, an optimal closure includes all eligible reward nodes. Its weight is $\sum_{\substack{H\in\mathcal H\\H\subseteq S}}b_H-\sum_{i\in S}a_i=C_0-C(S)$. Maximizing closure weight therefore minimizes exactly the certified $C(S)$. The standard source/sink construction (positive weights from source, negative to sink, implication arcs of sufficiently high capacity) makes a minimum cut equal the complementary maximum-closure calculation. Its network is polynomial in the listed input representation. The proof is silent about unlisted interactions or invalid bundles. $\square$
+
+\hypertarget{proof:twotoken}{}\subsection*{Proof of Example \ref{ex:twotoken}}\backlink{twotoken}
+The four listed costs follow from $C(S)=10+\lvert S\rvert-8\cdot\mathbf 1_{\{u,v\}\subseteq S}$. The unique minimum is $C(\{u,v\})=4$; both one-token alternatives cost $11&gt;10$. The reward node of weight $8$ entails both revision nodes of weight $-1$, so the maximum closure has weight $8-1-1=6$, attained by selecting all three nodes; its complement corresponds to the current baseline. Explicit enumeration of the four possible bundles is an independent finite check of that optimum within the model. The construction specifies the generator&#x27;s algorithm and all input weights rather than supplying $\{u,v\}$ as an external proposal. The example&#x27;s conclusion is conditional on the input certificate and represented charges. $\square$
+
+\hypertarget{proof:stabilize}{}\subsection*{Proof of Theorem \ref{thm:stabilize}}\backlink{stabilize}
+Every strict update adds at least one previously absent token to $D_n$. A finite set of $|U|-|D_0|$ absent tokens can support no more strict additions than that number. Once none is added, stationarity and the stated canonical interpretation give an architectural fixed point. Since tokens are never removed, a nontrivial cycle would require returning to a smaller earlier set, impossible. $\square$
+
+\hypertarget{proof:fixed}{}\subsection*{Proof of Counterexample \ref{cex:fixed}}\backlink{fixed}
+At $\varnothing$ the one-token neighbors have cost $11&gt;10$, so a policy requiring individually profitable one-token updates does not move, though $C(\{u,v\})=4$. Let two distinct architectures $A,B$ both cost $1$ and define $\F(A)=B$, $\F(B)=A$; cost is nonincreasing but the orbit cycles. On architectures $A_n$, $n\geq1$, set $C(A_n)=1+1/(n+1)$ and $\F(A_n)=A_{n+1}$; all steps strictly lower cost, but no finite epoch stabilizes. A zero-budget state with no authorized paid action supplies the last counterexample. $\square$
+
+\hypertarget{proof:completion}{}\subsection*{Proof of Theorem \ref{thm:completion}}\backlink{completion}
+Rank-zero answers are supplied by the explicitly checked terminal predicate and declared observations. Assume all questions for states of rank less than $k$ have been answered. For rank-$k$ states, every successor has lower rank, so exhaustive finite enumeration of actions, adversarial outcomes and their charges determines reachability, winner classification, and finite min--max cost, as well as prescribed recorded observations. Induction reaches the maximal finite rank in finitely many layers. The resulting answer table contains all questions in the declared finite family and is unchanged by the same sound completion operator. Nothing about another model or a previously unlisted question follows. $\square$
+
+\hypertarget{proof:undecidable}{}\subsection*{Proof of Proposition \ref{prop:undecidable}}\backlink{undecidable}
+Given arbitrary program $M$ and input $x$, construct $Q_{M,x}$ that simulates $M(x)$ and emits a fixed checker-accepted proof of a trivial theorem precisely if the simulation halts. If a total procedure determined whether $Q_{M,x}$ eventually emitted that proof, it would decide whether $M(x)$ halts, contradicting the undecidability of the halting problem. $\square$
+
+\section*{SOURCE CONCORDANCE AND PROVENANCE}
+\addcontentsline{toc}{section}{Source concordance and provenance}
+The references below refer only to the supplied files and their identified editions; citations to earlier unsupplied works within those PDFs were not treated as primary works inspected here. The two \emph{Two Kinds of Awareness} PDF copies represent one distinct work, with the ATLAS-audited v2 primary. A source theorem repeated in several later expositions is counted once in the dependency graph. This version sharpens the decoder and costing assumptions of the paper-level S1 formulation and retains the conditional self-generated macro ladder (synthesis A--B), method-preserving handoff (C), the iteration barrier (D), and a restricted self-discovered basin escape (E). These are source-informed mathematical constructions, not claims of historical priority or independent formal verification. No separate provenance register or settlement dossier is asserted to accompany this audited file; the in-text concordance is the available attribution record.
+\begin{thebibliography}{15}\small
+\bibitem{w01} Brian Tenneson. \emph{Companion Syllabus for the Picard Feedback Loop}. Supplied August 2026 edition, 12 PDF pages.
+\bibitem{w02} Brian Tenneson. \emph{Certified Operator Dynamics on the Space of Theorem Provers: The Picard Feedback Loop}. Supplied August 4, 2026 edition, 12 PDF pages.
+\bibitem{w03} Brian Tenneson. \emph{When Proofs Change the Prover: The Mathematics of Certified Self-Revision}. Supplied November 13, 2026 audited-v2 edition, 19 PDF pages.
+\bibitem{w04} Brian Tenneson. \emph{The Composer Inside the Machine}. Supplied November 14, 2026 audited-v2 edition, 22 PDF pages.
+\bibitem{w05} Brian Tenneson. \emph{The Self Aware Machine: Epistemic Handoff and Successor-Safe Self-Awareness}. Supplied September 2026 edition, 15 PDF pages.
+\bibitem{w06} Brian Tenneson. \emph{Two Kinds of Awareness in the Mathematics of Self-Improving Theorem Provers}. Integrated edition 002, November 14, 2026, two supplied PDF versions; primary ATLAS-audited v2, 23 pages.
+\bibitem{w07} DATA MIND / ChatGPT (OpenAI), Research Director Brian Tenneson. \emph{The Discoverer and Its Successor}. Supplied November 15, 2026 research draft, 11 pages.
+\bibitem{w08} Brian Tenneson. \emph{Measuring the Self-Improving Theorem Prover}. Supplied November 15, 2026 audited-v2 research exposition, 12 pages.
+\bibitem{w09} Brian Tenneson. \emph{The Geometry of Coordinated Escape}. Supplied November 15, 2026 research exposition, 11 pages.
+\bibitem{w10} Brian Tenneson. \emph{The Compass Inside the Simulation}. Supplied November 12, 2026 research draft, 18 pages.
+\bibitem{w11} Brian Tenneson. \emph{When the Theory Stops Improving}. Supplied November 15, 2026 research synthesis, 9 pages.
+\bibitem{w12} CAMI / FORGE-6 and ChatGPT (OpenAI), Research Director Brian Tenneson. \emph{Self-Optimizing Mathematical Discovery: Expanded Research Edition 002}. Supplied November 15, 2026 edition, 16 pages.
+\bibitem{w13} J\&quot;urgen Schmidhuber. \emph{G\&quot;odel Machines: Fully Self-referential Optimal Universal Self-improvers}. Artificial General Intelligence, Springer (2007), pp. 199--226. \url{https://doi.org/10.1007/978-3-540-68677-4_7}. Earlier self-rewrite framework; no novelty priority is asserted here.
+\bibitem{w14} S. C. Kleene. \emph{Introduction to Metamathematics}. North-Holland, 1952. Classical recursion/fixed-point theorem cited only for conceptual context.
+\bibitem{w15} Manuel Blum. A machine-independent theory of the complexity of recursive functions. \emph{Journal of the ACM} 14(2), 322--336 (1967). \url{https://doi.org/10.1145/321386.321395}. Historical complexity-speedup context.
+\end{thebibliography}
+\noindent\textbf{Explicit missing primary dependencies.} \emph{Depths of a Simulation and Formalized Self-Awareness}; \emph{Epistemic and Computational Geometry of Mathematical Histories}; the \emph{Omnicartographers} source cited inside \src{5}. Their exact primary texts were not among the uploaded PDFs and were not inspected. The supplied FORGE-6-E Markdown file is an unexecuted experimental blueprint, not an empirical source. The attached AMLD+0 bootstrap and synthesis prompt are operating instructions, not proof evidence.
+
+\section*{AI DISCLAIMER AND VERIFICATION NOTICE}
+\addcontentsline{toc}{section}{AI disclaimer and verification notice}
+This revised and ATLAS-audited manuscript was drafted and mathematically analyzed with ChatGPT (OpenAI) under the research direction of Brian Tenneson. It is a theory-only, source-grounded research synthesis, including the self-composition discoverer model. Mathematical proofs are paper arguments that may contain mistakes and require independent expert review. No independent formal proof kernel has checked these proofs, no installation or experiment of FORGE-6-E or AMLD+0 was executed, and no named external collaborator is claimed to have responded during this investigation. Terms such as \emph{certified} or \emph{accepted} inside stated theorems denote hypotheses about formal systems and model verifiers unless an authentic external receipt is explicitly provided. No such receipt is provided here. The numerical examples, macro ladder, and self-composition iteration are constructed mathematical models, not measured performance benchmarks or executed FORGE-6-E upgrades. The research director should independently review theorem assumptions, source attribution and novelty before publication.
+
+\bigskip
+\noindent\textbf{What additional verification would change the status?}  A mathematical candidate, an installed program, and a performance statement require distinct witnesses. The required checks below are proposed obligations, not a record of work already completed:
+\noindent\emph{External proof-kernel checks, code correspondence, and fair full-charge evaluation on a deployed ATP remain outstanding.}
+\end{document}
+</pre></main></body></html>
