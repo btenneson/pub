@@ -1,0 +1,42 @@
+name: Publish What Survives the Successor ATLAS v2 in slot 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming_publications/what_survives_the_successor_discoverer_atlas_v2/source.tex'
+      - 'scripts/publish_what_survives_successor_discoverer_atlas_v2_slot1.py'
+      - '.github/workflows/publish_what_survives_successor_discoverer_atlas_v2_slot1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-what-survives-successor-atlas-v2
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install LaTeX and PDF checks
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-pictures lmodern
+          python -m pip install pymupdf==1.26.4
+      - name: Compile audited manuscript and publish only new files
+        run: python scripts/publish_what_survives_successor_discoverer_atlas_v2_slot1.py
+      - name: Audit publication catalog
+        run: python scripts/audit_subject_catalog_106.py
+      - name: Commit published PDF, source, catalog, and reader
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs scripts/publications.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Publish What Survives the Successor ATLAS v2 as library slot 1"
+          git push origin HEAD:main
