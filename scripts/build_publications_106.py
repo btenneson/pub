@@ -63,6 +63,9 @@ def expanded_catalog():
 def install_pdf_reader():
     (DOCS / "pdf-reader.html").write_text(PDF_READER_HTML)
     (DOCS / "pdf-reader.js").write_text(PDF_READER_JS)
+    with (DOCS / "pdf-reader.js").open("a", encoding="utf-8") as f:
+        f.write("\n;(()=>{const s=document.createElement('script');s.src='/pub/analytics.js';s.async=true;document.head.appendChild(s)})();\n")
+
     changed = 0
     for reader_page in DOCS.glob("*/*/index.html"):
         source = reader_page.read_text(errors="replace")
