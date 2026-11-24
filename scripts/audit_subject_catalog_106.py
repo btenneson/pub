@@ -29,6 +29,22 @@ class Links(HTMLParser):
                 self.links.append(v)
 
 
+def page_has_visible_content(page):
+    """Check the rendered page, not just its extractable text layer.
+
+    A page containing a diagram, scan, or image may have no text layer.
+    Genuine blank pages must still fail the audit.
+    """
+    if page.get_text().strip():
+        return True
+    # Rasterize only textless pages. Grayscale avoids false positives
+    # from arbitrary white or nearly-white PDF drawing operators.
+    pix = page.get_pixmap(matrix=fitz.Matrix(0.5, 0.5),
+                          colorspace=fitz.csGRAY, alpha=False)
+    dark_pixels = sum(value < 235 for value in pix.samples)
+    return dark_pixels >= max(32, len(pix.samples) // 1000)
+
+
 def main():
     data = json.loads((DOCS / "search-index.json").read_text())
     items = data["items"]
@@ -78,13 +94,18 @@ def main():
                 canonical_sha.add(digest)
             doc = fitz.open(pdf)
             assert len(doc) > 0, pdf
-            assert all(doc[i].get_text().strip() for i in range(len(doc))), ("empty/unreadable page", pdf)
+            assert all(page_has_visible_content(doc[i]) for i in range(len(doc))), ("blank/unreadable page", pdf)
             q = norm(x.get("quote", ""))
-            assert q, ("missing quote", x["title"])
-            page = x.get("quote_page")
-            assert page and 1 <= page <= len(doc), ("invalid quote page", x["title"], page)
-            pdf_text = doc[page - 1].get_text()
-            assert q in norm(pdf_text) or norm_pdf_quote(x["quote"]) in norm_pdf_quote(pdf_text), ("quote not in cited page", x["title"], q)
+            if q:
+                page = x.get("quote_page")
+                assert page and 1 <= page <= len(doc), ("invalid quote page", x["title"], page)
+                pdf_text = doc[page - 1].get_text()
+                assert q in norm(pdf_text) or norm_pdf_quote(x["quote"]) in norm_pdf_quote(pdf_text), ("quote not in cited page", x["title"], q)
+            else:
+                # The site already supports an editorial description instead
+                # of an unverified quotation. Do not invent a PDF quote.
+                assert x.get("card_text") and not x.get("quote_page"), (
+                    "missing verified quote or editorial description", x["title"])
             pdf_cards += 1
         elif x.get("status"):
             unavailable.append(x["title"])
