@@ -2,7 +2,16 @@
 
 The main subject-indexed publication library is at **https://btenneson.github.io/pub/**. The six featured papers below were added to the repository on November 5, 2026, in exactly the displayed order. These direct GitHub file links work independently of GitHub Pages deployment.
 
-## Featured publications — slots 1–6
+## Picard research papers — current slots 1 and 2 (24 November 2026)
+
+**BY PICARD:** Mathematical drafting and analysis by ChatGPT under the Picard research protocol; research direction by Brian Tenneson. Picard is a ChatGPT-based mathematical collaborator, not an independently deployed human-like agent or a claim of machine-checked theorem proving.
+
+1. [The Geometry of Mathematical Obstruction — full web edition](docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/index.html) · [LaTeX source](docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/The_Geometry_of_Mathematical_Obstruction_001v2.tex)
+2. [Depths of a Possible Machine — full web edition](docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/index.html) · [LaTeX source](docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/Depths_of_a_Possible_Machine_001.tex)
+
+Both papers have accessible full-text website editions. A repository workflow also compiles the original LaTeX manuscripts into PDFs; deployment of built PDFs should be checked separately.
+
+## Earlier featured publications — November 5 sequence (retained in the catalog)
 
 ### 1. The Trading Theorem for SIC Formal Systems
 
