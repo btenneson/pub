@@ -1,0 +1,553 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Geometry of Mathematical Obstruction — Picard research</title><meta name="description" content="A proof-obstruction geometry for automated theorem proving"><style>body{margin:0;background:#f7f8fa;color:#18212b;font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}a{color:#17617c}main{max-width:1020px;margin:auto;padding:22px}h1{line-height:1.17;font-size:clamp(1.8rem,4vw,2.7rem)}h2{line-height:1.28}header{padding-bottom:12px;border-bottom:1px solid #d6e0e5}.eyebrow{font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:#336e7f;font-size:.82rem}.lede{font-size:1.12rem;color:#354857}.credit{font-size:.94rem;color:#324856}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin:1rem 0}.buttons a{padding:9px 14px;border:1px solid #c6d3dc;border-radius:8px;background:white;text-decoration:none;font-weight:700}.picard{border:1px solid #d5dfe7;border-radius:12px;background:#fff;padding:19px 24px;margin:25px 0}.paperreader{margin:24px 0}.pdf-frame{width:100%;height:78vh;min-height:480px;border:1px solid #bdcbd4;border-radius:8px;background:white}.page{border:1px solid #dce3e8;border-radius:10px;background:#fff;margin:14px 0;padding:14px}.page h3{margin:0 0 8px;font-size:.95rem;color:#516874}.page pre{font:14px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}.note{padding:12px 15px;border-left:3px solid #8a9aa3;background:#edf1f4}.source{overflow-wrap:anywhere}details summary{cursor:pointer;font-weight:750;padding:14px 0}footer{margin-top:36px;padding:20px 0;border-top:1px solid #dce3e7;color:#5c6a73}@media(max-width:650px){main{padding:15px}.picard{padding:15px}.page{padding:10px}.page pre{font-size:12px}.pdf-frame{min-height:360px;height:65vh}}</style></head><body><main><nav><a href="/pub/">← Research library</a> · <a href="#about-picard">About Picard</a> · <a href="#transcript">Complete text</a></nav><header><p class="eyebrow">BY PICARD · ChatGPT mathematical research protocol · November 24, 2026</p><h1>The Geometry of Mathematical Obstruction</h1><p class="lede">Proof–Obstruction Duality, Certified Deductive Navigation, and MAPQUEST in the 24th Century</p><p class="credit"><strong>Research direction:</strong> Brian Tenneson<br><strong>Mathematical drafting and analysis:</strong> ChatGPT (Picard research protocol)</p><p>The paper asks whether reasoning about what every successful proof must overcome can complement searching directly for a proof. In finite monotone deductive hypergraphs, it develops target cuts, blocker duality, replayable cost lower bounds, transport of obstruction certificates under knowledge growth, abstraction-sensitive bounds, and a finite repair-cover criterion. It connects these constructions to MAPQUEST while keeping the scope and verifier fixed.</p><p class="note"><strong>Research status:</strong> 11-page Atlas-audited research edition 001v2. Finite-model tests and manuscript-level arguments; no deployed theorem prover, independent proof-kernel checking, or measured search speedup is claimed.</p><div class="buttons"><a href="The_Geometry_of_Mathematical_Obstruction_001v2.pdf" id="pdf-download" download>Download PDF</a><a class="source" href="The_Geometry_of_Mathematical_Obstruction_001v2.tex" download>Original LaTeX manuscript</a><a href="#transcript">Read complete text mirror</a></div></header><section class="picard" id="about-picard"><h2>Who and what is Picard?</h2><p><strong>Picard is a named mathematical research and writing role operated through ChatGPT, not a separate human author or an independently deployed AI system.</strong> The work is directed by <strong>Brian Tenneson, Research Director</strong>. In this collaboration, Tenneson defines the scientific questions, contributes the underlying research manuscripts and mathematical frameworks, and sets the scope. ChatGPT working under the Picard research protocol develops and tests definitions, explores mathematical constructions, proposes lemmas and proofs, seeks counterexamples and obstruction certificates, connects proposals to prior literature, and prepares draft manuscripts for audit and revision.</p><p>The name <em>Picard</em> also refers to an earlier formal <em>Picard Protocol</em> in Tenneson's semi-ideal-computer (SIC) research, concerning a mathematical machine's ability to prove a specified property of its recoded copy. That formal protocol is a research object; calling the current ChatGPT collaboration Picard does <em>not</em> establish that it satisfies the idealized protocol, has consciousness, possesses autonomous authority, runs continuously, or has installed self-modifying code.</p><p>Picard's editorial distinction is between <strong>mathematical possibility and demonstrated capability</strong>: a manuscript-level argument is not the same thing as an independently checked proof; a finite test is not a general theorem; a proposed verifier or successor contract is not an operational deployment. These two articles explicitly preserve those distinctions, credit established results, and expose remaining research obligations.</p><p class="credit">Attribution used in both manuscripts: <strong>Research direction: Brian Tenneson</strong>; <strong>Mathematical drafting and analysis: ChatGPT (Picard research protocol)</strong>.</p></section><section class="paperreader"><h2>Read the manuscript</h2><p id="pdf-status" class="note">The PDF viewer will appear if the compiled document is available. The complete text mirror and original LaTeX source are provided below.</p><div id="pdf-container"></div><details id="transcript" open><summary>Complete accessible text mirror (11 pages)</summary><p class="note">Text extraction preserves the words and many formulas but not all mathematical spacing, figures, or layout. The LaTeX source and PDF are authoritative for notation.</p><section class="page" id="page-1"><h3>Page 1</h3><pre>The Geometry of Mathematical Obstruction
+                    Proof–Obstruction Duality, Certified Deductive Navigation,
+                             and MAPQUEST in the 24th Century
+
+                             Research direction: Brian Tenneson
+           Mathematical drafting and analysis: ChatGPT (Picard research protocol)
+
+                  24 November 2026           —     Research edition 001v2 (Atlas audit)
+
+
+                                                    Abstract
+         A proof describes a sufficient collection of inference instances; an obstruction describes a condition
+     that every successful collection must overcome. We develop this dual perspective for finite monotone
+     deductive hypergraphs, where shared lemmas are charged once. Cut crossing, blocker duality, and a
+     cut-based integer program recover established shortest-hyperpath and transversal mathematics. We
+     use these foundations to develop a certificate-oriented approach to deductive navigation: rational
+     cut prices give replayable lower bounds, surviving cuts transport information as verified knowledge
+     grows, and an explicit forward relaxation permits lower bounds to transfer from a finite abstraction
+     to a larger proof system. We prove a finite repair-cover criterion for independently composable edge
+     additions and distinguish it from arbitrary operational revisions. An exhaustive small-model check
+     accompanies the paper. The concluding sections specialize the mathematics to the MAPQUEST
+     trilogy and then to a sovereign game, the “24th century.” The work is a mathematical research
+     proposal with manuscript-level proofs, not an implemented theorem prover or a claim of speedup.
+
+Scope and provenance. Sections 1–7 are independent of MAPQUEST and sovereign games. Sections
+8–9 apply the results without modifying the three supplied source manuscripts. Known cut and blocker
+results are identified as such; the certificate transport and revision interfaces are developed here as
+research constructions, without a priority claim. The final target and its verifier are not changed by the
+proposed applications.
+Keywords: deductive hypergraph; obstruction; proof DAG; weighted cut; certificate; automated
+theorem proving; sovereign revision.
+Reading map. Sections 1–3 establish the deductive geometry and duality; Sections 4–7 develop cost
+certificates, transport, complexity and discovery. Sections 8–9 specialize to MAPQUEST and sovereign
+revision; Section 10 collects open obligations.
+
+
+
+
+                                                         1</pre></section>
+<section class="page" id="page-2"><h3>Page 2</h3><pre>1    A finite deductive landscape
+Let X be a finite set of formula identifiers (including any necessary context tags), B ⊆ X an initial set
+of established formulas, T ∈ X a target, and E a finite set of individually identified inference instances.
+An instance e consists of its premise set Pe ⊆ X, its single conclusion qe ∈ X, and a rational cost
+ce ≥ 0. Distinct instances may have identical premise and conclusion sets. Any ordered premise list,
+substitution, side condition or proof context needed for an actual certificate belongs to the instance’s
+separate witness record. A zero-premise instance is allowed. In the abstract model all instances have
+fixed legality once their premises are present. Context-sensitive, consumable, or nonmonotone systems
+require a richer state model before the following results can be used.
+    For A ⊆ E, define clA (B) by starting from B and repeatedly adjoining qe whenever e ∈ A and Pe is
+contained in the current set. The process terminates because X is finite. It computes the least A-closed
+superset of B. A derivation is a finite list of instances in which each premise is in B or is an earlier
+conclusion. Thus T ∈ clA (B) if and only if A contains a derivation of T . The empty derivation is valid
+when T ∈ B.
+Definition 1.1 (Additive proof cost). The cost of a derivation is the sum of the costs of its executed
+inference occurrences. Define
+                                            {                          }
+                                              ∑
+                           JE (B, T ) = min     ce : A ⊆ E, T ∈ clA (B) ,
+                                                e∈A
+
+with the minimum of the empty feasible family interpreted as +∞.
+    Every derivation determines a feasible support of cost no greater than its occurrence cost. Conversely,
+closure produces a derivation from each feasible support using an instance at most once. Hence JE
+is the exact minimum additive derivation cost. This identification relies on reusable knowledge and
+nonnegative, fixed costs. It does not measure how long it takes to discover the derivation or check the
+complete certificate. Every operational implementation must account for those costs separately.
+
+Three views of discovery. Forward closure identifies what can be derived. Backward search proposes
+possible dependencies of the target. An obstruction asks what every possible successful support must
+accomplish. The third view provides constraints, not automatically a preferred proof. Its value lies in
+the interaction with the first two.
+
+
+2    Proof cuts and necessary crossing
+Definition 2.1 (Target cut). For T ∈    / B, a target cut is a set U ⊆ X \ B containing T . Let U(B, T )
+be the family of these sets. Its crossing instances are
+                                   δE (U ) = {e ∈ E : qe ∈ U, Pe ∩ U = ∅}.
+The condition on the entire premise set is essential; an inference with even one unavailable premise
+inside U cannot introduce the first formula of U .
+Theorem 2.2 (Cut characterization). For every A ⊆ E,
+                     T ∈ clA (B)     ⇐⇒      A ∩ δE (U ) ̸= ∅   for every U ∈ U(B, T ).
+Proof. If a derivation succeeds, its first conclusion in U is obtained by an instance all of whose premises
+are outside U . It therefore crosses U . Conversely, if the closure R = clA (B) does not contain T , let
+U = X \ R. It is a target cut, and an A-instance crossing it would derive a new formula from premises
+in R, contrary to closure. If T ∈ B, the cut family is empty and both sides hold.
+
+                                                      2</pre></section>
+<section class="page" id="page-3"><h3>Page 3</h3><pre>target cut U
+                                        a
+
+                             B                 e         L                  T
+                                         b
+
+                           The inference {a, b} → L crosses the cut.
+
+Figure 1: A hyperedge crosses only when all its premises lie outside the cut. The illustration is schematic;
+it does not assert uniqueness of a crossing.
+
+
+Corollary 2.3 (Negative certificate). A cut with δE (U ) = ∅ certifies that no derivation exists in the
+specified catalogue. If T is not reachable, X \ clE (B) supplies such a cut.
+
+    Direct table checking of this certificate inspects every instance of the declared complete catalogue;
+a sound symbolic summary of the same complete catalogue may replace enumeration. It is not a
+certificate of underivability in a larger formal system whose instances have not been accounted for.
+The cut characterization is a single-head version of established directed-hypergraph reachability and
+shortest-hyperpath mathematics [1, 3].
+
+
+3    Proof–obstruction duality
+Definition 3.1. Let P be the inclusion-minimal subsets of E that derive T from B. Let O be the
+inclusion-minimal subsets O ⊆ E for which T ∈
+                                            / clE\O (B). For a family F, write Tr(F) for its family
+of inclusion-minimal hitting sets.
+
+Theorem 3.2 (Blocker duality and cut identification).
+
+                   O = Tr(P),        P = Tr(O),       O = min{δE (U ) : U ∈ U(B, T )}.
+                                                              ⊆
+
+Proof. Removal of O prevents success exactly when O intersects every minimal successful support.
+Taking minimal sets proves the first identity. A set A is successful exactly when it hits every minimal
+removal obstruction: if not successful, E \ A contains such an obstruction; if it misses one, it is contained
+in the remaining unsuccessful catalogue. Minimality proves the second identity. Removing all crossing
+instances of any cut prevents success by Theorem 2.2. Conversely, for any removal obstruction O,
+closure under E \ O gives a cut whose crossings are contained in O. Taking minimal elements yields the
+third identity.
+
+    This includes the degenerate cases: an initially established target has P = {∅} and O = ∅; a target
+unreachable even with all of E has P = ∅ and O = {∅}. No hitting set exists for a family containing
+the empty set, and the unique minimal hitting set of an empty family is empty.
+    The first two identities are classical hypergraph transversal duality, not a new combinatorial theorem
+[2]. The deductive interpretation is useful because proof checking and closure provide complementary
+oracles. It does not imply that all minimal proofs or obstructions can be listed efficiently. For example,
+m independent choices between two parallel instances along a chain yield 2m minimal proofs with only
+2m instances. Conversely, m disjoint two-edge paths from a seed to a target have 2m minimal removal
+obstructions.
+
+
+
+
+                                                     3</pre></section>
+<section class="page" id="page-4"><h3>Page 4</h3><pre>4    Cost certificates and obstruction-directed optimization
+Theorem 4.1 (Cut optimization). The following integer program has optimum JE (B, T ), with infeasi-
+bility interpreted as +∞:
+                                      ∑
+                               min        ce xe                                                 (1)
+                                                e∈E
+                                                  ∑
+                                subject to                  xe ≥ 1   (U ∈ U(B, T )),                        (2)
+                                                e∈δE (U )
+
+                                               xe ∈ {0, 1}       (e ∈ E).                                   (3)
+
+Proof. Feasible binary vectors correspond exactly to successful supports by Theorem 2.2. The objective
+is their additive cost, and Section 1 identifies that minimum with the derivation optimum.
+
+    The cut formulation and iterative addition of missing constraints have prior art in shortest-hyperpath
+optimization [3]. For an exact finite optimizer, begin with any subset of cut constraints, solve the
+restricted binary program to optimality, and compute closure of the selected support. If the target is
+reached, the restricted optimum is also the full optimum. Otherwise add the cut complementary to
+closure. This cut is violated by the current binary solution and therefore was not already imposed.
+Repeat. At most |U(B, T )| new cuts can be added. Infeasibility of the restricted problem also certifies
+infeasibility of the full problem, provided the solver’s conclusion has a trusted proof. No polynomial-time
+bound follows; fractional separation is a different problem from binary closure separation.
+
+Definition 4.2 (Cut-price receipt). A receipt consists of a finite list of target cuts Ui and rational
+prices yi ≥ 0 such that                ∑
+                                ℓe =          yi ≤ ce     (e ∈ E).
+                                             i:e∈δE (Ui )
+                   ∑
+Its value is L =    i yi .
+
+Theorem 4.3 (Certified lower bound). Every successful derivation costs at least L. A derivation of
+cost exactly L is an optimality certificate in this model.
+
+Proof. For its support A, each listed cut has at least one crossing in A. Therefore
+                             ∑        ∑        ∑                       ∑
+                                 ce ≥     ℓe =     yi |A ∩ δE (Ui )| ≥   yi .
+                               e∈A       e∈A            i                      i
+
+A matching derivation supplies the upper bound.
+
+    Dropping integrality and imposing xe ≥ 0 gives a covering LP; xe &gt; 1 can be truncated to 1 without
+loss for nonnegative costs. Its dual is exactly the cut-price system above. A receipt need not maximize
+the dual objective to be valid. Its checker only needs cut membership, exact rational summation and
+catalogue completeness. One edge crossing multiple cuts cannot be charged beyond its cost.
+
+Example 4.4 (Shared proof capital). From a seed s, derive L at cost 3, derive a and b from L at
+cost 1 each, and derive T from {a, b} at cost 1. These are all the instances. A tree expansion charges
+the shared derivation of L twice, obtaining 9; the DAG costs 6. Four cuts, namely {L, a, b, T }, {a, T },
+{b, T } and {T }, have crossing sets consisting respectively of the four individual instances. Prices 3, 1, 1, 1
+certify the exact value 6.
+
+
+
+
+                                                             4</pre></section>
+<section class="page" id="page-5"><h3>Page 5</h3><pre>Example 4.5 (Fractional certificates need not be exact). Take three requirements a, b, c, and selectors
+uab , uac , ubc obtainable from a seed at unit cost. Each selector supplies its two named requirements by
+zero-cost unary instances; a zero-cost binary conjunction chain derives T from all three. Any successful
+support buys at least two selectors, and two suffice. The fractional solution with all selector variables
+1/2 and all zero-cost variables 1 satisfies every cut: if no zero-cost instance crosses a cut, backwards
+closure along the zero-cost conjunction forces at least one requirement into the cut and then both its
+selectors into the cut. Both corresponding selector instances cross. Thus the LP value is at most 3/2,
+whereas the integer optimum is 2. A lower bound is not automatically a complete optimality certificate.
+
+
+5    The transport of obstruction certificates
+A static certificate can be expensive to discover. An intelligent navigator should ask which portions of
+a previously established lower bound survive a change of search state or presentation. We develop three
+transport results. Their claims are about the declared cost model, not about correctness of unverified
+mathematical proposals.
+Theorem 5.1 (Persistence under knowledge growth). Let (Ui , yi ) be a cut-price receipt for (B, E, c, T ).
+If B ⊆ B ′ ⊆ X, retain only indices i with Ui ∩ B ′ = ∅. Their prices form a valid receipt for (B ′ , E, c, T ),
+with value                                             ∑
+                                          L′ = L −           yi .
+                                                          i:Ui ∩B ′ ̸=∅
+
+Proof. Every retained cut still contains T and avoids the new initial set. Edge loads can only decrease,
+so each inequality remains valid. The asserted value follows by summing surviving prices.
+
+    The loss of a price is not the cost of the derivation that entered its region, nor a proof that the
+optimal continuation decreased by that amount. It measures loss of this particular certificate. For
+a single enabled action e adding qe , all previously valid cuts containing qe are crossed by e, because
+Pe ⊆ B. Thus the total lost price is at most ce . This gives a consistent one-step potential for a fixed
+receipt. When the receipt is recomputed, the maximum over all valid cut prices also satisfies
+
+                                         L∗ (B) ≤ ce + L∗ (B ∪ {qe })
+
+whenever the former is finite: transport a maximizing receipt and bound the dropped load by ce . If the
+target is already known, the empty certificate has value zero. Infinite infeasibility claims are handled
+separately by empty cuts.
+Theorem 5.2 (Repricing after a catalogue extension). Let E ⊆ E ′ on the same domain and B, T
+unchanged, with the original costs retained. A prior cut-price receipt remains valid after extension
+exactly when every added instance f ∈ E ′ \ E satisfies
+                                             ∑
+                                                     yi ≤ cf .
+                                              i:f ∈δE ′ (Ui )
+
+If 0 ≤ α ≤ 1 is the minimum of 1 and all ratios cf /ℓf for added instances with positive load, scaling all
+old prices by α gives a valid new receipt of value αL.
+Proof. The old load constraints do not change, and the displayed inequalities are precisely the remaining
+new constraints. Scaling never increases an old load and enforces every new one by definition of α.
+
+   A new zero-cost edge with positive old load can annihilate this uniform bound; selective repricing
+may preserve more. These quantities can prioritize proposed revisions for investigation, but a weakened
+lower bound does not establish an improved achievable upper bound.
+
+                                                           5</pre></section>
+<section class="page" id="page-6"><h3>Page 6</h3><pre>Theorem 5.3 (Sound transfer from an optimistic abstraction). Consider a concrete monotone deductive
+system with possibly infinite formula and instance sets Xc , Ec , and a finite abstract system Xa , Ea .
+Suppose a map π : Xc → Xa sends concrete initial formulas into Ba and the concrete target to Ta . For
+every concrete inference e, require an abstract derivation of π(qe ) from π(Pe ) of additive cost at most
+the concrete inference charge ce . An empty abstract derivation is allowed. Then
+
+                                       JEa (Ba , Ta ) ≤ JEc (Bc , Tc ),
+
+where the concrete value is an infimum over finite derivations. Every checked abstract cut-price receipt
+transfers as a lower bound. An abstract empty-cut certificate rules out every concrete proof covered by
+the mapping contract.
+
+Proof. Follow any finite concrete derivation in order. Initially the mapped seeds are present. At
+each concrete step, the mapped premises are available by induction. Execute the stipulated abstract
+derivation; its cost is at most the concrete charge. Previously established abstract formulas can be
+reused. The resulting abstract derivation reaches Ta at no greater cost. Taking infima gives the
+inequality. If no abstract derivation exists, a concrete derivation would contradict the simulation. The
+price claim follows from Theorem 4.3.
+
+    This transfer theorem is deliberately one-sided. Abstract inferences may overapproximate concrete
+legality, abstract proof paths may be spurious, and the converse does not follow. Conversely, an
+underapproximation formed by collecting only visited instances can produce a false global obstruction:
+the omitted direct route s → T of cost 1 defeats a restricted catalogue containing only a route of cost
+100. Merely increasing a Hilbert resolution does not establish the simulation hypothesis. In an infinite
+formal system that hypothesis needs a symbolic proof over rule schemata and witnesses, not a sample
+of observed candidates.
+
+
+6    Computational complexity and the role of sharing
+Theorem 6.1 (Hardness in an elementary fragment). For finite acyclic single-head deductive hypergraphs
+of premise arity at most two and nonnegative integer costs, deciding whether JE (B, T ) ≤ k is NP-
+complete.
+
+Proof. A support is a polynomial-size witness: sum its weights and compute closure in polynomial time.
+For NP-hardness reduce SET COVER. Given a nonempty universe {a1 , . . . , an }, subsets S1 , . . . , Sm
+and cover bound k, start from seed s. For each j add s → uj of cost one. For each ai ∈ Sj add uj → ai
+of cost zero. Use a fixed binary conjunction chain with zero costs to obtain T precisely when all ai are
+established (for n = 1 use a1 as target). The graph is acyclic in the order seed, selectors, requirements,
+conjunction stages. Every cover induces a successful support of its cardinality, and every successful
+support contains paid selectors covering the universe. Thus the two decisions agree. The construction
+is polynomial in the incidence description.
+
+   Shortest-hyperpath hardness is already known even for acyclic singleton-head systems [4]; the
+reduction above records a convenient explicit proof for the chosen fragment. Zero-premise axioms and
+duplicate instances do not affect membership in NP.
+
+Proposition 6.2 (Unary tractability and an exact finite-state algorithm). If every instance has arity
+at most one, the minimum cost is an ordinary nonnegative shortest-path problem from a super-source
+linked at zero cost to all seeds. Zero-premise instances are edges from the super-source at their stated
+cost. More generally, an exact algorithm for arbitrary finite X runs shortest-path search on at most
+2|X| knowledge states, using transitions S → S ∪ {qe } whenever Pe ⊆ S and qe ∈ / S, with cost ce .
+
+                                                      6</pre></section>
+<section class="page" id="page-7"><h3>Page 7</h3><pre>Proof. In the unary case a target derivation contains an ancestor chain ending at a seed or a zero-premise
+rule; selecting that chain never increases cost. Each graph path is a derivation. For the second assertion,
+an edge is exactly an enabled knowledge-expanding inference; redundant occurrences may be deleted
+from any proof without increasing cost. State paths and such derivations correspond. Every transition
+strictly increases cardinality, so the state graph is acyclic and admits a dynamic program in increasing
+cardinality.
+
+    The second algorithm is exact but exponential, not a practical general ATP. In both cases cost is a
+property of executed inferences under the finite model. Even a cheap optimal proof may be difficult to
+discover in an effective infinite syntax.
+
+
+7    From obstruction mathematics to a discovery method
+The mathematics suggests a procedure in which forward closure, backward obligations and obstruction
+receipts are complementary. A bounded discovery engine may propose a region U , verify its crossing
+catalogue or its abstract simulation contract, assign cut prices and use the most expensive obligations
+as targets for search. A successful new lemma changes B; Theorem 5.1 permits receipt reuse. A
+proposed new representation must justify its proof translations and cost relation; Theorem 5.3 permits
+lower-bound transfer only in the direction stated. A proposed macro needs an expanded proof certificate
+and changes the charged catalogue only when its operational availability is established.
+
+Budget-safe pruning. Given a remaining budget b, if a valid lower bound on all possible continuations
+exceeds b, the declared additive-cost task cannot finish within that budget. This conclusion is not a
+proof of ¬T . A lower bound on only a selected catalogue cannot prune paths outside it. If search,
+checking, migration and other charges are all nonnegative and the additive inference model is a lower
+bound on the actual charged executions, the same certificate safely excludes a fully charged budget.
+Otherwise it remains advisory.
+
+Joint targets. For a finite target family D, replace cuts containing T by cuts intersecting D. A
+support derives every member of D exactly when it hits every such cut: apply the single-target result
+to each target. A joint proof cost can be smaller than the sum of individual costs because common
+lemmas are reusable. This provides a rigorous way to pose multi-target navigation rather than treating
+lemma popularity as mathematical value. It does not establish that joint search is computationally
+cheaper after discovery overhead.
+
+A small computational check. The companion obstruction checks.py uses the Python standard
+library and seed 2400. It generates 160 finite random systems with 2–6 vertices, one seed, 1–8 indexed
+instances, arity 0–2, and costs 0–4. Cycles, duplicates and zero-premise instances are permitted. It
+exhaustively enumerates every inference subset and target cut in each sample, computes closure, and
+compares cut feasibility, minimal proof supports and minimal removal obstructions. It also checks
+the repair-cover identity in Section 9 for three randomly generated packages per model. The actual
+execution returned:
+     160 models; 11306 inference-subset checks;
+     1280 gift-subset checks; all passed.
+
+The original script and log were not supplied with the current audit inputs, so the preceding counts are
+historical reported results, not an independent reproduction. A new audit script (distributed separately)
+enumerates small random catalogues and tests cut feasibility, blocker duality, repair coverage, exact
+support costs against state-space dynamic programming, and cut-price transport. The new run (200
+
+                                                    7</pre></section>
+<section class="page" id="page-8"><h3>Page 8</h3><pre>models, seed 2400) passed 12,874 support checks, 1,600 repair checks and 370 enabled-action transport
+checks, in addition to the per-model duality and cost comparisons. These checks do not certify all
+theorems, establish novelty, evaluate a live ATP, or test the abstraction premise. The proof arguments
+above are independent of these finite checks. The experiment is deliberately small enough to inspect
+and replay.
+
+
+8     Specialization to the MAPQUEST trilogy
+The MAPQUEST trilogy [5, 6, 7] supplies an addressable search architecture rather than a new
+logical calculus. Paper I uses rule-tagged premise-coordinate components, finite Hilbert orderings and
+enumerable instantiation witnesses. Paper II adds a protected fair queue, target cones and waiting
+frames indexed by missing premises. Paper III requires full-packet verification after extraction of a
+finite provenance DAG. We use the November 8 v2 controlling amendments: numerical proximity is not
+proof distance; arity is coordinate count rather than the topological dimension of a rational point space;
+fair service must actually complete; local acceptance alone is not global certificate acceptance.
+
+An obstruction-directed guided lane. Keep the ordinary Hilbert-fair service and exact rule/witness
+identifiers intact. At bounded guided turns, a new procedure may:
+
+    1. Build a finite, version-tagged candidate catalogue or an explicitly justified optimistic abstraction.
+       Distinguish these two models in every receipt.
+
+    2. Compute a backward cone from the target and forward closure from available verified formulas.
+       Generate cuts from unsuccessful candidate supports; use waiting frames to record missing premises.
+
+    3. Produce cut-price receipts, or use restricted-catalogue scores as heuristics only. Rank a proposed
+       action by its cost plus a valid remaining-cost estimate, alongside declared heuristic advice.
+
+    4. Upon an accepted new formula, update waiting frames and transport surviving cut prices. On
+       target acquisition assemble and replay the complete scoped proof packet under the original verifier.
+
+A concrete action ranking is c(e) + L(B ∪ {qe }) for an enabled candidate with a verified lower-bound
+function L; its value is a lower bound on the best completion through that immediate action in the
+additive model. Ranking does not prove that the chosen action has the shortest continuation. When
+a complete proof of cost U has been found, prune only the continuation branch conditioned on that
+immediate action if its lower bound (plus any already incurred path cost) exceeds U ; equality may be
+pruned if no alternative optimum is needed. This does not justify removing the inference from the
+global catalogue: it may be useful later after other premises or shared knowledge have been established.
+Recompute or transport bounds when the state or catalogue changes.
+
+Proposition 8.1 (Protected positive completeness). Suppose the v2 MAPQUEST hypotheses hold:
+effective complete candidate addressing including axiom instances; terminating acceptance-complete
+local verification; durable scoped provenance; a monotone BANK; and actual nonstarving finite service
+of eligible proof-required instances. Also suppose full-packet acceptance is ensured by the declared
+compositionality or checked replay contract, and packet extraction, replay and receipt emission for a
+reached target receive terminating, nonstarving service. A valid finite proof must be expressible in the
+addressed interface with its full context. If obstruction analysis is bounded or preemptible and cannot
+remove required fair obligations, then the extended unbounded search retains positive completeness and
+reports proof success only after full acceptance.
+
+
+
+
+                                                     8</pre></section>
+<section class="page" id="page-9"><h3>Page 9</h3><pre>Proof. For a finite proof, process its nodes in topological order. Axioms and hypotheses are seeds
+or eventually generated by fair service. After all premises of a node are available, its legal instance
+is eventually serviced and accepted; its provenance is retained. Finite induction establishes eventual
+acquisition of the target. The full acceptance hypothesis gives the required final packet. The obstruction
+lane cannot invalidate this induction under the stated protection. In a finite stopped run without an
+accepted packet, the result remains unknown (U).
+
+    This is a preservation result, not a proof of acceleration. The principal experiment compares the
+existing two-queue method with the additional obstruction-guided lane, at matched targets, seeds,
+verifier, initial BANK and total charged budget. Record candidate visits, cut computation, verification,
+peak memory, certificate size, actual proof success and total work. A third control should spend the
+same guidance budget on alternative ordinary search to isolate the cost of certificate generation. Tests
+should hold out target solutions and prevent preloaded proof leakage. The hypothesis that obstruction
+receipts improve discovery is open.
+
+
+9    Sovereign navigation in the 24th century
+Here “24th century” denotes an underlying game involving a sovereign. The previous sections require
+no sovereign, no Player Zero and no architectural intervention. The following is a specialization, not
+an axiom of deductive geometry. Use a versioned operational controller, frozen mathematical target
+and verifier, and the cumulative admission and exercise distinction of the sovereign basin-escape and
+CDF-C frameworks [8, 9].
+
+Definition 9.1 (Monotone repair catalogue). Fix a finite envelope E + on X and a baseline E0 ⊆ E + .
+Let G be a finite collection of packages, each adding a fixed set Dg ⊆ E + of instances when legally
+exercised. Assume, for this restricted model, that each selected package can be jointly admitted and
+executed in an authorized finite order, that additions persist, and that no interaction changes other
+instances, initial knowledge, or the receipt semantics. Every exposed inference is already sound for the
+frozen object calculus; closure witnesses can be executed and replayed under the unchanged verifier.
+For the unconstrained set-cover optimization assume every subset of packages is jointly executable
+(otherwise optimize over the separately specified feasible family). These are hypotheses, not consequences
+of individual consistency.
+
+Theorem 9.2 (Exact repair-cover criterion).⋃Let M = {U ∈ U(B, T ) : δE0 (U ) = ∅} be the old
+un-crossed cuts. For H ⊆ G, write EH = E0 ∪ g∈H Dg . Then
+
+                       T ∈ clEH (B) ⇐⇒ ∀U ∈ M ∃g ∈ H : Dg ∩ δE + (U ) ̸= ∅.
+
+Proof. Every cut not in M has a persistent baseline crossing. A cut in M has a crossing in EH exactly
+when some selected package supplies one. Apply Theorem 2.2.
+
+    When package charges are additive and nonnegative, and every subset is jointly executable, minimiz-
+ing the acquisition cost of a successful package collection is a set-cover problem over the old un-crossed
+cuts, with package g covering the cuts it crosses. This optimizes acquisition only; total settlement
+requires including exercise, proof, verification and all construction costs. An empty cut in the whole
+envelope proves the insufficiency of that envelope. The theorem is nonvacuous even when the baseline
+cannot derive the target.
+
+Example 9.3 (A conditional finite improvement). Suppose the full object calculus already validates
+s → a and a → T but the initial operational catalogue exposes neither. Under the monotone repair
+hypotheses, two legal packages expose the respective existing inference instances. Their exercise plus
+
+                                                    9</pre></section>
+<section class="page" id="page-10"><h3>Page 10</h3><pre>package g1               package g2
+                           s                         a                       T
+
+
+                                   U1 = {a, T }              U2 = {T }
+
+Figure 2: Complementary packages. The baseline has neither edge; either package alone is insufficient,
+whereas both cross the two missing cuts. These are abstract packages, not automatically admissible
+historical GBG+S atoms.
+
+proof execution yields a finite cost witness, whereas the baseline cannot settle. The object theory is
+unchanged. The example does not show that such packages exist in every GBG+S game or that either
+can be discovered effectively.
+
+Why the general sovereign case is different. Gifts may remove permissions, revise representation,
+require an ordered support-indexed grammar or change which later gift is admissible. Cumulative
+consistency, actual authorized exercise, lifecycle, unique sovereign office, provenance and all resource
+costs must be checked for the complete history. Set cover does not model those dependencies. The
+actual object-game transition system, enclosing game of admission and exercise, and target receipt
+must be distinguished. A full state-space construction, with version and history included, can use a
+settlement-game certificate instead of the monotone formula closure model. Where adversarial successors
+exist, a single repaired path is not a winning strategy; a forced result needs all-outcome coverage. No
+unrestricted syntactic relative-consistency theorem or general consistency oracle is assumed.
+
+A proposed discovery cycle. A mathematical navigator first obtains a scoped obstruction, then
+imagines a capability that crosses it, then tests whether the new capability is useful in a complete
+candidate continuation. A candidate revision is not admitted merely because it makes a lower bound
+smaller. It needs a typed contract and an external cumulative-consistency and preservation receipt,
+legal authorization and actual execution. The final proof needs the same complete-packet acceptance as
+before. In this sense a navigator can investigate changes to its own roads without gaining the authority
+to declare a theorem true.
+
+
+10     Conclusion and research obligations
+The general contribution is a deductive interpretation and certificate-oriented development of proof–
+obstruction duality. It connects sufficient supports, unavoidable crossings, lower-bound accounting,
+knowledge growth and transfer through optimistic abstractions. In a restricted finite repair model it
+also identifies which combinations of operational capabilities suffice to remove every baseline obstruction.
+None of these results requires sovereignty as a starting assumption.
+    The principal open problems are to find compact abstraction contracts for useful infinite rule families;
+determine tractable cut-price and certificate-reuse subclasses; measure the net value of obstruction-
+guided search against fair and heuristic comparators; and generalize the repair criterion to ordered,
+interacting, adversarial sovereign histories. The MAPQUEST extension is the first intended application,
+not a prerequisite of the mathematics.
+Evidence status. The theorems are manuscript-level arguments under explicit assumptions. The
+original edition reports an executed finite test; the exact original script was not supplied for this audit.
+The v2 audit also independently checks the finite identities with a separate reproducible script (Section
+7); neither is a proof-assistant check. The literature comparison identifies close precedents but is not
+
+
+                                                    10</pre></section>
+<section class="page" id="page-11"><h3>Page 11</h3><pre>exhaustive. No module has been installed, no existing publication has been modified, and no new
+empirical theorem-proving speedup is claimed. Research direction is attributed to Brian Tenneson; the
+drafting and analysis were AI-assisted. The term Picard denotes the conversational research protocol,
+not a claim of an independently deployed agent.
+
+
+References
+ [1] G. Ausiello and L. Laura, “Directed hypergraphs: Introduction and fundamental algorithms—A sur-
+     vey,” Theoretical Computer Science, 2017. https://www.sciencedirect.com/science/article/pii/
+     S0304397516002097.
+
+ [2] T. Eiter and G. Gottlob, “Identifying the minimal transversals of a hypergraph and related problems,”
+     SIAM Journal on Computing, 1995. https://doi.org/10.1137/S0097539793250299.
+
+ [3] S. Krieger and J. Kececioglu, “Computing shortest hyperpaths for pathway inference in cellular reaction
+     networks,” RECOMB, LNBI 13976, pp. 155–173, 2023. See the authors’ algorithm description: https:
+     //hyperpaths.cs.arizona.edu/.
+
+ [4] S. Krieger and J. Kececioglu, “Heuristic shortest hyperpaths in cell signaling hypergraphs,” Algorithms for
+     Molecular Biology, 17:12, 2022. https://doi.org/10.1186/s13015-022-00217-9.
+
+ [5] B. Tenneson, MAPQUEST for Formal Proof: A Hilbert–Tenneson Navigation Algorithm for Verifier-Gated
+     Automated Theorem Proving, September 2026, ATLAS corrective edition v2, November 8, 2026. Supplied
+     manuscript.
+
+ [6] B. Tenneson, MAPQUEST: Hilbert-Fair Navigation: From Addressable Inferences to a Verified Target,
+     September 2026, ATLAS corrective edition v2, November 8, 2026. Supplied manuscript.
+
+ [7] B. Tenneson, MAPQUEST III: Target Certification, September 2026, ATLAS corrective edition v2, November
+     8, 2026. Supplied manuscript.
+
+ [8] B. Tenneson (research direction), ChatGPT (analysis), Basin Escape: Sufficient Conditions, Guarantees,
+     and Limits, v0.3, sovereign-game edition, November 24, 2026. Supplied manuscript.
+
+ [9] B. Tenneson, with OpenAI assistance, CDF: Certified Discovery Federation, version 13, November 23, 2026,
+     especially Section 21. Supplied manuscript.
+
+
+
+
+                                                      11</pre></section></details></section><footer>Research direction: Brian Tenneson · Mathematical drafting and analysis: ChatGPT (Picard research protocol) · No assertion of independent proof certification.</footer></main><script>(async function(){try{const url="The_Geometry_of_Mathematical_Obstruction_001v2.pdf";const r=await fetch(url,{method:'HEAD'});if(!r.ok||!(r.headers.get('content-type')||'').toLowerCase().includes('pdf'))return;const iframe=document.createElement('iframe');iframe.className='pdf-frame';iframe.title='PDF manuscript';iframe.loading='lazy';iframe.src=url;document.getElementById('pdf-container').append(iframe);document.getElementById('pdf-status').textContent='PDF available. The text mirror remains below for accessibility.';}catch(e){}})()</script></body></html>
