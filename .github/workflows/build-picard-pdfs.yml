@@ -24,6 +24,10 @@ jobs:
             docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/The_Geometry_of_Mathematical_Obstruction_001v2.tex
             docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/Depths_of_a_Possible_Machine_001.tex
           work_in_root_file_dir: true
+      - name: Verify both PDFs were compiled
+        run: |
+          test -s 'docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/The_Geometry_of_Mathematical_Obstruction_001v2.pdf'
+          test -s 'docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/Depths_of_a_Possible_Machine_001.pdf'
       - name: Commit compiled PDFs to the site
         run: |
           git config user.name "github-actions[bot]"
@@ -31,5 +35,6 @@ jobs:
           git add -f 'docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/The_Geometry_of_Mathematical_Obstruction_001v2.pdf' 'docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/Depths_of_a_Possible_Machine_001.pdf'
           if ! git diff --cached --quiet; then
             git commit -m "Publish compiled Picard article PDFs"
-            git push
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
