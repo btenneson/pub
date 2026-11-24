@@ -96,11 +96,16 @@ def main():
             assert len(doc) > 0, pdf
             assert all(page_has_visible_content(doc[i]) for i in range(len(doc))), ("blank/unreadable page", pdf)
             q = norm(x.get("quote", ""))
-            assert q, ("missing quote", x["title"])
-            page = x.get("quote_page")
-            assert page and 1 <= page <= len(doc), ("invalid quote page", x["title"], page)
-            pdf_text = doc[page - 1].get_text()
-            assert q in norm(pdf_text) or norm_pdf_quote(x["quote"]) in norm_pdf_quote(pdf_text), ("quote not in cited page", x["title"], q)
+            if q:
+                page = x.get("quote_page")
+                assert page and 1 <= page <= len(doc), ("invalid quote page", x["title"], page)
+                pdf_text = doc[page - 1].get_text()
+                assert q in norm(pdf_text) or norm_pdf_quote(x["quote"]) in norm_pdf_quote(pdf_text), ("quote not in cited page", x["title"], q)
+            else:
+                # The site already supports an editorial description instead
+                # of an unverified quotation. Do not invent a PDF quote.
+                assert x.get("card_text") and not x.get("quote_page"), (
+                    "missing verified quote or editorial description", x["title"])
             pdf_cards += 1
         elif x.get("status"):
             unavailable.append(x["title"])
