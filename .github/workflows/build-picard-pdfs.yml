@@ -1,0 +1,35 @@
+name: Compile Picard research PDFs
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/The_Geometry_of_Mathematical_Obstruction_001v2.tex'
+      - 'docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/Depths_of_a_Possible_Machine_001.tex'
+      - '.github/workflows/build-picard-pdfs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pdfs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out research sources
+        uses: actions/checkout@v4
+      - name: Compile the two original LaTeX articles
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: |
+            docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/The_Geometry_of_Mathematical_Obstruction_001v2.tex
+            docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/Depths_of_a_Possible_Machine_001.tex
+          work_in_root_file_dir: true
+      - name: Commit compiled PDFs to the site
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f 'docs/cs.LO_Logic_in_Computer_Science/picard_geometry_of_mathematical_obstruction/The_Geometry_of_Mathematical_Obstruction_001v2.pdf' 'docs/cs.LO_Logic_in_Computer_Science/picard_depths_of_a_possible_machine/Depths_of_a_Possible_Machine_001.pdf'
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish compiled Picard article PDFs"
+            git push
+          fi
