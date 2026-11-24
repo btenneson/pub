@@ -1,0 +1,32 @@
+name: Compile audited Oracle v2 PDF
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/cs.LO_Logic_in_Computer_Science/what_makes_an_oracle_001v2/What_Makes_an_Oracle_001(1)v2.tex'
+      - '.github/workflows/build-oracle-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LaTeX
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends latexmk texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-pictures lmodern
+      - name: Compile audited source
+        run: |
+          cd 'docs/cs.LO_Logic_in_Computer_Science/what_makes_an_oracle_001v2'
+          latexmk -pdf -interaction=nonstopmode -halt-on-error 'What_Makes_an_Oracle_001(1)v2.tex'
+          test -s 'What_Makes_an_Oracle_001(1)v2.pdf'
+      - name: Publish PDF
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f 'docs/cs.LO_Logic_in_Computer_Science/what_makes_an_oracle_001v2/What_Makes_an_Oracle_001(1)v2.pdf'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish compiled What Makes an Oracle? v2 PDF'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
