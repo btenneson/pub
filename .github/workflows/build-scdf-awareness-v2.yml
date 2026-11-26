@@ -1,0 +1,33 @@
+name: Compile SCDF awareness 001v2 PDF
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/cs.LO_Logic_in_Computer_Science/scdf_certified_awareness_price_of_choosing_001v2/SCDF_Certified_Awareness_and_the_Price_of_Choosing_001v2.tex'
+      - '.github/workflows/build-scdf-awareness-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LaTeX
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends latexmk texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-pictures lmodern
+      - name: Compile and check
+        run: |
+          cd 'docs/cs.LO_Logic_in_Computer_Science/scdf_certified_awareness_price_of_choosing_001v2'
+          latexmk -pdf -interaction=nonstopmode -halt-on-error 'SCDF_Certified_Awareness_and_the_Price_of_Choosing_001v2.tex'
+          test -s 'SCDF_Certified_Awareness_and_the_Price_of_Choosing_001v2.pdf'
+          python3 'SCDF_Certified_Awareness_001v2_checks.py'
+      - name: Commit compiled PDF
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f 'docs/cs.LO_Logic_in_Computer_Science/scdf_certified_awareness_price_of_choosing_001v2/SCDF_Certified_Awareness_and_the_Price_of_Choosing_001v2.pdf'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish compiled SCDF awareness 001v2 PDF'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
