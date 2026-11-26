@@ -1,0 +1,33 @@
+name: Render Creative Sovereign original manuscript pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/creative-sovereign-static-reader.yml'
+      - '.build/creative-sovereign-static-reader/render.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: creative-sovereign-static-reader
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install PDF renderer
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils
+      - name: Render and validate all original pages
+        run: python3 '.build/creative-sovereign-static-reader/render.py' 'docs/cs.LO_Logic_in_Computer_Science/the_creative_sovereign_001v2/index.html' 'docs/cs.LO_Logic_in_Computer_Science/the_creative_sovereign_001v2/The_Creative_Sovereign_001v2.pdf' 'pages'
+      - name: Commit static reader and images
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f 'docs/cs.LO_Logic_in_Computer_Science/the_creative_sovereign_001v2/index.html' 'docs/cs.LO_Logic_in_Computer_Science/the_creative_sovereign_001v2/pages'
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Restore typeset Creative Sovereign reader with all 16 original pages'
+          git pull --rebase origin main
+          git push origin HEAD:main
