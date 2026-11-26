@@ -27,6 +27,6 @@ def replacement(m):
     src=f"{sys.argv[3]}/page-{n:02d}.png"
     return m.group(0).replace("<pre>",f'<a href="{src}" target="_blank" rel="noopener"><img class="typeset-page" data-static-typeset="true" src="{src}" width="{w}" height="{h}" decoding="async" alt="Original typeset manuscript page {n} of 16"></a><details><summary>Optional text transcript</summary><pre>',1).replace("</pre>","</pre></details>",1)
 s,count=re.subn(r'<section class="paper-page" id="page-(\d+)">.*?</section>',replacement,s,flags=re.S)
-assert count==16 and s.count('data-static-typeset="true"')==16 and s.count('Optional text transcript')==16
+assert count==16 and s.count('data-static-typeset="true"')==16 and s.count('<summary>Optional text transcript</summary>')==16
 reader.write_text(s)
 print("Verified 16 rendered pages, original PDF unchanged, optional transcript preserved")
